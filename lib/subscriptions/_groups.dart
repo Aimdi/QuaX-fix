@@ -112,8 +112,6 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
   late String icon;
   Color? color;
   Set<String> members = <String>{};
-  double breakpointScreenWidth1 = 200;
-  double breakpointScreenWidth2 = 400;
 
   @override
   void initState() {
@@ -209,30 +207,11 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         );
       }),
     ];
-    double screenWidth = MediaQuery.of(context).size.width;
-
     return AlertDialog(
+      actionsOverflowAlignment: OverflowBarAlignment.end,
       actions: [
-        SizedBox(
-            width: screenWidth,
-            child: screenWidth >= breakpointScreenWidth2
-                ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    ...buttonsLst1,
-                    ...buttonsLst2,
-                  ])
-                : screenWidth >= breakpointScreenWidth1
-                    ? Column(mainAxisSize: MainAxisSize.min, children: [
-                        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          ...buttonsLst1,
-                        ]),
-                        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          ...buttonsLst2,
-                        ]),
-                      ])
-                    : Column(mainAxisSize: MainAxisSize.min, children: [
-                        ...buttonsLst1,
-                        ...buttonsLst2,
-                      ])),
+        ...buttonsLst1,
+        ...buttonsLst2,
       ],
       content: Form(
         key: _formKey,
