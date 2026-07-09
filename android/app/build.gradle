@@ -33,9 +33,9 @@ if (keystorePropertiesFile.exists()) {
 
 def keystoreFile = System.getenv('KEY_PATH')
 if (keystoreFile != null && !keystoreFile.isEmpty()) {
-    keystoreProperties.setProperty('storePassword', System.getenv('KEY_STORE_PASSWORD'));
-    keystoreProperties.setProperty('keyPassword', System.getenv('KEY_PASSWORD'));
-    keystoreProperties.setProperty('keyAlias', System.getenv('KEY_ALIAS'));
+    keystoreProperties.setProperty('storePassword', System.getenv('KEY_STORE_PASSWORD') ?: '');
+    keystoreProperties.setProperty('keyPassword', System.getenv('KEY_PASSWORD') ?: '');
+    keystoreProperties.setProperty('keyAlias', System.getenv('KEY_ALIAS') ?: '');
     keystoreProperties.setProperty('storeFile', System.getenv('KEY_PATH'));
 }
 
@@ -90,7 +90,9 @@ android {
         }
 
         release {
-            signingConfig signingConfigs.release
+            // Fall back to debug signing when no release keystore is configured,
+            // so release builds work on forks without the upstream signing secrets
+            signingConfig keystoreProperties.getProperty('storeFile') ? signingConfigs.release : signingConfigs.debug
 
             minifyEnabled = true
             shrinkResources = true
