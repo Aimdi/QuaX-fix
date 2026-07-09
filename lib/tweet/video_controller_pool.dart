@@ -1,0 +1,151 @@
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
+import 'package:quax/tweet/video_quality.dart';
+
+/// One cached video player: the libmpv [Player] together with the
+/// [VideoController] that renders it, plus the resolved download URL, the
+/// selectable [qualities] and the [currentStreamUrl] currently open. The pool
+/// owns this pair and is the only thing allowed to dispose it (on LRU eviction)
+/// — widgets attach/detach but never dispose. Disposing the [Player] also
+/// releases the [VideoController]'s native texture.
+class PooledVideo {
+  final Player player;
+  final VideoController videoController;
+  final String? downloadUrl;
+  final List<TweetVideoQuality> qualities;
+
+  /// False for muted looping GIFs, which the single-audible-video policy leaves
+  /// playing.
+  final bool pausableByPolicy;
+
+  /// The MP4 variant currently open in [player]; updated on a quality switch.
+  String currentStreamUrl;
+
+  bool _disposed = false;
+
+  PooledVideo({
+    required this.player,
+    required this.videoController,
+    required this.downloadUrl,
+    required this.qualities,
+    required this.currentStreamUrl,
+    required this.pausableByPolicy,
+  });
+
+  Future<void> dispose() async {
+    // Two disposal paths can race on the same pair — an explicit restart and the
+    // widget's own teardown — and disposing a [Player] twice trips libmpv's
+    // "[Player] has been disposed" assertion. Guard so only the first wins.
+    if (_disposed) return;
+    _disposed = true;
+    // Disposing a still-active [Player] races an in-flight libmpv wakeup callback
+    // against the FFI callback being freed, aborting the process with
+    // "Callback invoked after it has been deleted". Unloading the media first —
+    // and giving the resulting mpv event burst a moment to drain — means the
+    // native callback is freed while mpv is idle, closing the race window.
+    try {
+      await player.stop();
+      await Future<void>.delayed(const Duration(milliseconds: 250));
+    } catch (_) {}
+    await player.dispose();
+  }
+}
+
+class _Entry {
+  final Future<PooledVideo> future;
+  PooledVideo? value;
+  int refCount = 0;
+
+  _Entry(this.future) {
+    () async {
+      try {
+        value = await future;
+      } catch (_) {}
+    }();
+  }
+
+  void disposeWhenReady() {
+    future.then((p) => p.dispose()).catchError((_) {});
+  }
+}
+
+/// An LRU cache of video players, keyed by `tweetId:mediaIndex`.
+///
+/// Why this exists: navigating to a tweet (or scrolling back to it) used to build
+/// a brand-new player and restart playback from zero. Keeping the player alive
+/// lets the same video keep playing across screens and avoids re-fetching it. A
+/// single instance is provided app-wide.
+///
+/// Lifetime contract:
+///  - [acquire] returns the cached pair (creating it on a miss) and marks it in
+///    use; concurrent callers for the same key share one player.
+///  - [release] marks a widget as gone but does NOT dispose — the entry stays
+///    cached for instant reuse.
+///  - Only eviction disposes, and only entries with no live widget (refCount 0),
+///    so a player on screen is never disposed from under its widget.
+class VideoControllerPool {
+  final int maxSize;
+  final Map<String, _Entry> _entries = {};
+  final Map<String, Set<Object>> _visibleTokens = {};
+  VideoControllerPool({this.maxSize = 5});
+  bool contains(String key) => _entries.containsKey(key);
+  PooledVideo? peek(String key) => _entries[key]?.value;
+
+  void markVisible(String key, Object token) {
+    (_visibleTokens[key] ??= {}).add(token);
+  }
+
+  void markHidden(String key, Object token) {
+    final tokens = _visibleTokens[key];
+    if (tokens == null) return;
+    tokens.remove(token);
+    if (tokens.isEmpty) _visibleTokens.remove(key);
+  }
+
+  bool anyVisible(String key) => _visibleTokens[key]?.isNotEmpty ?? false;
+
+  /// Pause every other policy-pausable player so only [active] is audible.
+  void pauseOthers(PooledVideo active) {
+    for (final entry in _entries.values) {
+      final video = entry.value;
+      if (video == null || identical(video, active)) continue;
+      if (!video.pausableByPolicy) continue;
+      if (video.player.state.playing) video.player.pause();
+    }
+  }
+
+  Future<PooledVideo> acquire(String key, Future<PooledVideo> Function() create) {
+    var entry = _entries.remove(key) ?? _Entry(create());
+    _entries[key] = entry;
+    entry.refCount++;
+    _evict();
+    return entry.future;
+  }
+
+  void invalidate(String key) {
+    _entries.remove(key)?.disposeWhenReady();
+    _visibleTokens.remove(key);
+  }
+
+  void release(String key) {
+    final entry = _entries[key];
+    if (entry == null) return;
+    if (entry.refCount > 0) entry.refCount--;
+    _evict();
+  }
+
+  void _evict() {
+    while (_entries.length > maxSize) {
+      String? victimKey;
+      for (final e in _entries.entries) {
+        if (e.value.refCount == 0) {
+          victimKey = e.key;
+          break;
+        }
+      }
+      if (victimKey == null) break;
+      _entries.remove(victimKey)!.disposeWhenReady();
+      _visibleTokens.remove(victimKey);
+    }
+  }
+}
