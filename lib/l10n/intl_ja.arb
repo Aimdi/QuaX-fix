@@ -349,8 +349,6 @@
   "@not_set": {},
   "note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": "注意：Twitterの制限により全てのツイートが含まれない可能性があります",
   "@note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": {},
-  "notify_on_new_posts": "新しいツイートを通知",
-  "@notify_on_new_posts": {},
   "numberFormat_format_total_votes": "{num, plural, zero{0 票} one{1 票} two{2 票} few{{numFormatted} 票} many{{numFormatted} 票} other{{numFormatted} 票}}",
   "@numberFormat_format_total_votes": {},
   "ok": "OK",

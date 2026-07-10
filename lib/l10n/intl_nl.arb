@@ -349,8 +349,6 @@
   "@not_set": {},
   "note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": "Opmerking: door een beperking bij Twitter kunnen niet alle tweets worden opgenomen",
   "@note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": {},
-  "notify_on_new_posts": "Melden bij nieuwe tweets",
-  "@notify_on_new_posts": {},
   "numberFormat_format_total_votes": "{num, plural, zero{Geen stemmen} one{Één stem} other{{numFormatted} stemmen}}",
   "@numberFormat_format_total_votes": {},
   "ok": "OK",

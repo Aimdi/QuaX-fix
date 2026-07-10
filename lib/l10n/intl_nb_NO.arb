@@ -349,8 +349,6 @@
   "@not_set": {},
   "note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": "Merk: På grunn av en Twitter-begrensning kan det hende at ikke alle tweets er inkludert",
   "@note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": {},
-  "notify_on_new_posts": "Varsle om nye tweets",
-  "@notify_on_new_posts": {},
   "numberFormat_format_total_votes": "{num, plural, zero{ingen stemmer} one{én stemme} two{to stemmer} few{{numFormatted} stemmer} many{{numFormatted} stemme} other{{numFormatted} stemmer}}",
   "@numberFormat_format_total_votes": {},
   "ok": "OK",

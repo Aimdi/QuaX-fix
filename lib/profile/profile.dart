@@ -5,7 +5,6 @@ import 'package:flutter_triple/flutter_triple.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
-import 'package:quax/notifications/post_notifications.dart';
 import 'package:quax/profile/_follows.dart';
 import 'package:quax/profile/_media_grid.dart';
 import 'package:quax/profile/_saved.dart';
@@ -554,10 +553,6 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
                           margin: EdgeInsets.fromLTRB(128, profileImageTop + 64, 16, 16),
                           child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                             ProfileFeedSettingsButton(
-                              user: user,
-                              color: theme.colorScheme.primary,
-                            ),
-                            PostNotificationBell(
                               user: user,
                               color: theme.colorScheme.primary,
                             ),

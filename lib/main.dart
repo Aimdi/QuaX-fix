@@ -23,7 +23,6 @@ import 'package:quax/home/_feed.dart';
 import 'package:quax/home/home_model.dart';
 import 'package:quax/home/home_screen.dart';
 import 'package:quax/import_data_model.dart';
-import 'package:quax/notifications/post_notifications.dart';
 import 'package:quax/profile/profile.dart';
 import 'package:quax/saved/liked_tweet_model.dart';
 import 'package:quax/saved/saved_folders_screen.dart';
@@ -281,13 +280,6 @@ Future<void> main() async {
       await Repository().migrate();
     } catch (_) {
       // Ignore, as we'll catch it later instead
-    }
-
-    try {
-      // New-post notifications are best-effort: never block startup on them
-      await initPostNotifications();
-    } catch (e, s) {
-      Logger('main').warning('Could not initialise post notifications', e, s);
     }
 
     var importDataModel = ImportDataModel();

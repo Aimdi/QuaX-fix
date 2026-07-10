@@ -277,11 +277,15 @@ class Repository {
         SqlMigration(
             'CREATE TABLE IF NOT EXISTS $tableRetweetFilter (user_id VARCHAR PRIMARY KEY, screen_name VARCHAR NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
             reverseSql: 'DROP TABLE $tableRetweetFilter'),
+      ],
+      30: [
+        // The new-post notification feature was removed; drop its table.
+        SqlMigration('DROP TABLE IF EXISTS $tablePostNotification'),
       ]
     });
     await openDatabase(
       databaseName,
-      version: 29,
+      version: 30,
       onUpgrade: myMigrationPlan.call,
       onCreate: myMigrationPlan.call,
       onDowngrade: myMigrationPlan.call,

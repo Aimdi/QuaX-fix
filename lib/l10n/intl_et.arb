@@ -349,8 +349,6 @@
   "@not_set": {},
   "note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": "Märkus: Twitteri määratud piirangute tõttu ei pruugi kõik säutsud olla kaasatud",
   "@note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": {},
-  "notify_on_new_posts": "Teavita uutest säutsudest",
-  "@notify_on_new_posts": {},
   "numberFormat_format_total_votes": "{num, plural, zero{pole hääletatud} one{üks hääl} two{kaks häält} few{{numFormatted} häält} many{{numFormatted} häält} other{{numFormatted} häält}}",
   "@numberFormat_format_total_votes": {},
   "ok": "Sobib",

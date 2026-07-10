@@ -349,8 +349,6 @@
   "@not_set": {},
   "note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": "Uwaga: Ze względu na ograniczenia Twittera nie wszystkie tweety mogą zostać uwzględnione",
   "@note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": {},
-  "notify_on_new_posts": "Powiadamiaj o nowych tweetach",
-  "@notify_on_new_posts": {},
   "numberFormat_format_total_votes": "{num, plural, zero{Brak głosów} one{1 głos} two{2 głosy} few{{numFormatted} głosy} many{{numFormatted} głosów} other{{numFormatted} głosów}}",
   "@numberFormat_format_total_votes": {},
   "ok": "OK",
