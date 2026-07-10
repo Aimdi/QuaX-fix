@@ -239,6 +239,8 @@ Future<void> main() async {
     optionMediaAllowBackgroundPlayOtherApps: false,
     optionMediaVideoPrefetchSeconds: 0,
     optionNonConfirmationBiasMode: false,
+    optionTweetsShowSubscribeBadge: true,
+    optionZenMode: false,
     optionShouldCheckForUpdates: true,
     optionSubscriptionGroupsOrderByAscending: true,
     optionDisableWarningsForUnrelatedPostsInFeed: false,

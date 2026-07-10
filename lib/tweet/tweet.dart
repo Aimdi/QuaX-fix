@@ -741,7 +741,8 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
             child: UserAvatar(uri: tweet.user!.profileImageUrlHttps),
           );
 
-    final avatar = hideAuthorInformation || !_canSubscribeTo(tweet.user)
+    final showSubscribeBadge = prefs.get(optionTweetsShowSubscribeBadge) != false;
+    final avatar = hideAuthorInformation || !showSubscribeBadge || !_canSubscribeTo(tweet.user)
         ? plainAvatar
         : ScopedBuilder<SubscriptionsModel, List<Subscription>>(
             store: context.read<SubscriptionsModel>(),

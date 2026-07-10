@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Улічыце, што метад, які выкарыстоўвае QuaX для імпарту падпісак, вельмі абмежаваны хуткасцю Twitter, таму пры наяўнасці вялікай колькасці падпісак гэта можа не спрацаваць.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Папулярныя",
+  "@popular": {},
+  "popular_feed_description": "Паказваць спачатку самыя папулярныя твіты замест самых новых",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Магчыма чулліва",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Гэты профіль можа змяшчаць патэнцыйна чуллівыя выявы, выказванні або іншае змесціва. Вы ўсё яшчэ хочаце прагледзець яго?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Паказваць ярлыкі навігацыі",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Паказваць кнопку падпіскі на аватарах",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Паказвае кнопку + на аватарах аўтараў, на якіх вы не падпісаныя",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Ад",
   "@since_date": {},
   "something_broke_in_fritter": "Нешта пайшло не так.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Вы павінны ўсталяваць як мінімум дзве старонкі для галоўнага экрана",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Ваш профіль павінен быць адкрытым, інакш імпарт ня будзе працаваць",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Дзэн-рэжым",
+  "@zen_mode": {},
+  "zen_mode_description": "Паказваць у стужках толькі самыя папулярныя нядаўнія твіты кожнага чалавека",
+  "@zen_mode_description": {}
 }

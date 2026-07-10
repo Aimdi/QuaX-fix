@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Pamiętaj, że metoda, której używa QuaX do importowania subskrypcji, jest mocno ograniczona przez Twittera, więc może się to nie udać, jeśli masz dużo obserwowanych kont.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Popularne",
+  "@popular": {},
+  "popular_feed_description": "Pokazuj najpierw najpopularniejsze tweety zamiast najnowszych",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Potencjalnie wrażliwy",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Ten profil może zawierać potencjalnie wrażliwe obrazy, język lub inne treści. Czy nadal chcesz go wyświetlić?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Pokaż etykiety nawigacji",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Pokazuj przycisk subskrypcji na zdjęciach profilowych",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Pokazuje przycisk + na zdjęciach profilowych autorów, których nie subskrybujesz",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Od",
   "@since_date": {},
   "something_broke_in_fritter": "Coś się popsuło we Quackerze.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Musisz mieć co najmniej 2 karty",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Profil musi być publiczny, inaczej import nie zadziała",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Tryb zen",
+  "@zen_mode": {},
+  "zen_mode_description": "Pokazuj w kanałach tylko najpopularniejsze ostatnie tweety każdej osoby",
+  "@zen_mode_description": {}
 }

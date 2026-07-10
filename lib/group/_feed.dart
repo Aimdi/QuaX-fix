@@ -311,8 +311,8 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
         // Perform our search for the next page of results for this chunk, and add those tweets to our collection
         var query = _buildSearchQuery(chunk.users);
-        TweetStatus result =
-            await Twitter.searchTweets(query, widget.includeReplies, cursor: searchCursor);
+        TweetStatus result = await Twitter.searchTweets(query, widget.includeReplies,
+            cursor: searchCursor, product: widget.group.popular ? 'Top' : 'Latest');
         shouldShowUnrelatedPostsInFeedWarning |= feedContainsUnrelatedTweets(result, chunk.users);
 
         if (result.chains.isNotEmpty) {
@@ -336,10 +336,14 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     // The stored chunks and the fresh fetch overlap at their window boundaries,
     // so drop repeated chains before display.
     var result = (await Future.wait(futures));
-    var threads = sortChainsNewestFirst(dedupeChainsById(result.expand((element) => element).toList()));
+    var threads = _sortChains(dedupeChainsById(result.expand((element) => element).toList()));
 
     if (!mounted) {
       return (chains: <TweetChain>[], nextCursor: null);
+    }
+
+    if (PrefService.of(context).get(optionZenMode) == true) {
+      threads = _applyZenMode(threads);
     }
 
     if (shouldShowUnrelatedPostsInFeedWarning &&
@@ -348,6 +352,40 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     }
 
     return (chains: threads, nextCursor: nextCursor);
+  }
+
+  static int _likesOf(TweetChain chain) => chain.tweets.firstOrNull?.favoriteCount ?? 0;
+
+  /// Popular groups order by likes; recent ones (the default) by date.
+  List<TweetChain> _sortChains(List<TweetChain> chains) {
+    if (!widget.group.popular) {
+      return sortChainsNewestFirst(chains);
+    }
+    return chains.sorted((a, b) => _likesOf(b).compareTo(_likesOf(a))).toList();
+  }
+
+  /// Zen mode: keep only each author's few most popular posts of the page,
+  /// preserving the page's ordering.
+  List<TweetChain> _applyZenMode(List<TweetChain> chains) {
+    final byAuthor = <String, List<TweetChain>>{};
+    for (final chain in chains) {
+      final author = chain.tweets.firstOrNull?.user?.idStr;
+      if (author != null) {
+        byAuthor.putIfAbsent(author, () => []).add(chain);
+      }
+    }
+
+    final keep = <String>{};
+    for (final authored in byAuthor.values) {
+      keep.addAll(authored
+          .sorted((a, b) => _likesOf(b).compareTo(_likesOf(a)))
+          .take(zenModeMaxTweetsPerAuthor)
+          .map((c) => c.id));
+    }
+
+    return chains
+        .where((chain) => chain.tweets.firstOrNull?.user?.idStr == null || keep.contains(chain.id))
+        .toList();
   }
 
   /// Loads a page for the media grid: same pages as the tweet list, mapped to

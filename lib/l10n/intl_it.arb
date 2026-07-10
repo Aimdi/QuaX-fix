@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Si ricorda che il metodo che QuaX usa per importare le iscrizioni è fortemente limitato da Twitter, quindi potrebbe fallire se segui molti account.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Popolari",
+  "@popular": {},
+  "popular_feed_description": "Mostra prima i tweet più popolari invece dei più recenti",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Potenzialmente sensibile",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Questo profilo può includere immagini, linguaggio o altri contenuti potenzialmente sensibili. Desideri comunque vederlo?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Mostra etichette di navigazione",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Mostra il pulsante di iscrizione sulle immagini del profilo",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Mostra un pulsante + sulle immagini del profilo degli autori a cui non sei iscritto",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Da",
   "@since_date": {},
   "something_broke_in_fritter": "Qualcosa si è rotto in QuaX.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Devi avere almeno due pagine nella home",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Il tuo profilo deve essere pubblico, altrimenti l'importazione non funzionerà",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Modalità zen",
+  "@zen_mode": {},
+  "zen_mode_description": "Mostra solo i tweet recenti più popolari di ogni persona nei tuoi feed",
+  "@zen_mode_description": {}
 }

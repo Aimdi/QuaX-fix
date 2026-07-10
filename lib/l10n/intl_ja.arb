@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Quackerが登録アカウントをインポートする際に使うメソッドはTwitterが厳しくレート制限しているため、フォローアカウントが多い場合は失敗する可能性があります。",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "人気",
+  "@popular": {},
+  "popular_feed_description": "最新のツイートではなく人気のツイートを先に表示します",
+  "@popular_feed_description": {},
   "possibly_sensitive": "センシティブな内容",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "プロフィールにセンシティブな画像、言語、その他のコンテンツが含まれる可能性があります。表示しますか？",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Show navigation labels?",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "プロフィール画像にフォローボタンを表示",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "フォローしていない投稿者のプロフィール画像に+ボタンを表示します",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "開始日",
   "@since_date": {},
   "something_broke_in_fritter": "Quackerに異常が発生しました。",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "ホーム画面にはページが少なくとも2つ必要です",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "公開アカウントである必要があります",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "禅モード",
+  "@zen_mode": {},
+  "zen_mode_description": "フィードに各ユーザーの人気の最近のツイートだけを表示します",
+  "@zen_mode_description": {}
 }

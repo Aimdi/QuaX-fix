@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Please note that the method QuaX uses to import subscriptions is heavily rate-limited by X, so this may fail if you have a lot of followed accounts.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Popular",
+  "@popular": {},
+  "popular_feed_description": "Show the most popular posts first instead of the most recent",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Potentially sensitive",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "This profile may include potentially sensitive images, language, or other content. Do you still want to view it?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Show navigation labels?",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Show subscribe button on profile pictures",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Show a + button on the profile pictures of authors you are not subscribed to",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Since",
   "@since_date": {},
   "something_broke_in_fritter": "Something broke in QuaX.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "You must have at least 2 home screen pages",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Your profile must be public, otherwise the import will not work",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Zen mode",
+  "@zen_mode": {},
+  "zen_mode_description": "Only show each person's most popular recent posts in your feeds",
+  "@zen_mode_description": {}
 }

@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Vezměte prosím na vědomí, že způsob, který používá QuaX pro import odběrů je silně limitován Twitterem, takže při velkém množství sledovaných účtů může tato akce selhat.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Populární",
+  "@popular": {},
+  "popular_feed_description": "Zobrazit nejdříve nejpopulárnější tweety místo nejnovějších",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Potenciálně citlivé",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Tento profil může obsahovat potenciálně citlivé obrázky, jazyk nebo jiný obsah. Chcete jej přesto zobrazit?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Zobrazit navigační popisky",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Zobrazit tlačítko odběru na profilových obrázcích",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Zobrazí tlačítko + na profilových obrázcích autorů, které neodebíráte",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Od",
   "@since_date": {},
   "something_broke_in_fritter": "Něco se pokazilo ve Quackeru.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Musíte mít alespoň 2 stránky domovské obrazovky",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Váš profil musí být veřejný, jinak nebude import fungovat",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Zen režim",
+  "@zen_mode": {},
+  "zen_mode_description": "Zobrazit v kanálech jen nejpopulárnější nedávné tweety každé osoby",
+  "@zen_mode_description": {}
 }

@@ -38,6 +38,16 @@ class SettingsPostsFragment extends StatelessWidget {
             subtitle: Text(L10n.of(context).disable_warnings_for_unrelated_posts_in_feed_description),
             pref: optionDisableWarningsForUnrelatedPostsInFeed,
           ),
+          PrefSwitch(
+            title: Text(L10n.of(context).show_subscribe_button_on_avatars),
+            subtitle: Text(L10n.of(context).show_subscribe_button_on_avatars_description),
+            pref: optionTweetsShowSubscribeBadge,
+          ),
+          PrefSwitch(
+            title: Text(L10n.of(context).zen_mode),
+            subtitle: Text(L10n.of(context).zen_mode_description),
+            pref: optionZenMode,
+          ),
         ]),
       ),
     );

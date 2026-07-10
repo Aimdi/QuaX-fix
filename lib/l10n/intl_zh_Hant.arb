@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "請注意，QuaX 用於匯入訂閱的方法受到 X 的嚴格速率限制，因此如果您有大量追蹤的帳號，此操作可能會失敗。",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "熱門",
+  "@popular": {},
+  "popular_feed_description": "優先顯示最熱門的推文而非最新的",
+  "@popular_feed_description": {},
   "possibly_sensitive": "可能含敏感內容",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "此個人資料可能包含潛在敏感的圖片、語言或其他內容。您仍要檢視嗎？",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "顯示導覽標籤？",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "在頭像上顯示訂閱按鈕",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "在未訂閱作者的頭像上顯示 + 按鈕",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "開始日期",
   "@since_date": {},
   "something_broke_in_fritter": "QuaX 發生了問題。",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "您必須至少有 2 個主畫面頁面",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "您的個人資料必須為公開，否則匯入將無法運作",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "禪模式",
+  "@zen_mode": {},
+  "zen_mode_description": "在時間軸中只顯示每個人最熱門的近期推文",
+  "@zen_mode_description": {}
 }

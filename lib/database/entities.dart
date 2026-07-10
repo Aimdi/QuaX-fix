@@ -247,6 +247,7 @@ class SubscriptionGroupGet {
   final List<Subscription> subscriptions;
   bool includeReplies;
   bool includeRetweets;
+  bool popular;
 
   SubscriptionGroupGet(
       {required this.id,
@@ -254,7 +255,8 @@ class SubscriptionGroupGet {
       required this.icon,
       required this.subscriptions,
       required this.includeReplies,
-      required this.includeRetweets});
+      required this.includeRetweets,
+      required this.popular});
 }
 
 class SubscriptionGroupEdit {

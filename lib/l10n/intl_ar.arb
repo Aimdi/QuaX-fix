@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "يرجى ملاحظة أن الطريقة التي يستخدمها QuaX لاستيراد الاشتراكات محدودة بشكل كبير من قبل Twitter ، لذلك قد يفشل هذا إذا كان لديك الكثير من الحسابات المتابعة.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "الشائعة",
+  "@popular": {},
+  "popular_feed_description": "عرض التغريدات الأكثر شيوعًا أولًا بدلًا من الأحدث",
+  "@popular_feed_description": {},
   "possibly_sensitive": "يحتمل أن تكون حساسة",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "قد يتضمن ملف التعريف هذا صورًا أو لغة أو محتوى آخر يحتمل أن يكون حساسًا. هل مازلت تريد مشاهدته؟",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "إظهار تسميات التنقل",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "إظهار زر الاشتراك على صور الملف الشخصي",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "يعرض زر + على صور الملف الشخصي للمؤلفين غير المشترك بهم",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "منذ",
   "@since_date": {},
   "something_broke_in_fritter": "حدث خطأ ما في فريتر.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "يجب أن يكون لديك على الأقل 2 صفحات الشاشة الرئيسية",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "يجب أن يكون ملف التعريف الخاص بك عاما، وإلا لن يعمل الاستيراد",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "وضع الهدوء",
+  "@zen_mode": {},
+  "zen_mode_description": "عرض التغريدات الحديثة الأكثر شيوعًا فقط لكل شخص في مواجزك",
+  "@zen_mode_description": {}
 }

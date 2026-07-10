@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Kali łaska, źviarnicie ŭvahu, što mietad, jaki QuaX vykarystoŭvaje dlia importu padpisak, maje žorskija ahraničеńni X, tamu heta možna nie atrymaŭsia, kali ŭ vas šmat akaunty, za jakimi vy ścieżycie.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Papularnyja",
+  "@popular": {},
+  "popular_feed_description": "Pakazvać spačatku samyja papularnyja tvity zamiest samych novych",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Patencyjalna čulivaje",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Hety profil možа ŭtrymlivać patencyjalna čulivyja vyjavы, movu abo inšy miestv. Ci ŭsio adna chočacie jaho hledziĺ?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Pakazać etyketki navihacyji",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Pakazvać knopku padpiski na avatarach",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Pakazvaje knopku + na avatarach aŭtaraŭ, na jakich vy nie padpisanyja",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Ad",
   "@since_date": {},
   "something_broke_in_fritter": "Nešta złamałasia ŭ QuaX.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "U vas pavinna być jak mienš 2 staronki hałoŭnaha ekrana",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Vaš profil pavinen być publički, inačej import nie spracuje",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Dzen-režym",
+  "@zen_mode": {},
+  "zen_mode_description": "Pakazvać u stužkach toĺki samyja papularnyja niadaŭnija tvity kožnaha čałavieka",
+  "@zen_mode_description": {}
 }

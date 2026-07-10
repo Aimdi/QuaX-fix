@@ -36,7 +36,8 @@ class GroupModel extends Store<SubscriptionGroupGet> {
             icon: defaultGroupIcon,
             subscriptions: [],
             includeRetweets: false,
-            includeReplies: false));
+            includeReplies: false,
+            popular: false));
 
   Future<void> loadGroup() async {
     await execute(() async {
@@ -54,7 +55,8 @@ class GroupModel extends Store<SubscriptionGroupGet> {
             icon: group['icon'] as String,
             subscriptions: subscriptions,
             includeReplies: group['include_replies'] == 1,
-            includeRetweets: group['include_retweets'] == 1);
+            includeRetweets: group['include_retweets'] == 1,
+            popular: group['popular'] == 1);
       }
 
       var searchSubscriptions = (await database.rawQuery(
@@ -76,7 +78,8 @@ class GroupModel extends Store<SubscriptionGroupGet> {
           icon: group['icon'] as String,
           subscriptions: [...userSubscriptions, ...searchSubscriptions],
           includeReplies: group['include_replies'] == 1,
-          includeRetweets: group['include_retweets'] == 1);
+          includeRetweets: group['include_retweets'] == 1,
+          popular: group['popular'] == 1);
     });
   }
 
@@ -94,6 +97,15 @@ class GroupModel extends Store<SubscriptionGroupGet> {
       (await Repository.writable())
           .rawUpdate('UPDATE $tableSubscriptionGroup SET include_retweets = ? WHERE id = ?', [value, state.id]);
       state.includeRetweets = value;
+      return state;
+    });
+  }
+
+  Future<void> toggleSubscriptionGroupPopular(bool value) async {
+    await execute(() async {
+      (await Repository.writable())
+          .rawUpdate('UPDATE $tableSubscriptionGroup SET popular = ? WHERE id = ?', [value, state.id]);
+      state.popular = value;
       return state;
     });
   }

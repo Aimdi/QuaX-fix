@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Palun arvesta, et QuaX kasutab tellimuste impordiks päringut, mille kasutamise sagedust Twitter piirab. Seega kui sul on palju jälgitavaid kontosid, siis import ei pruugi õnnestuda.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Populaarsed",
+  "@popular": {},
+  "popular_feed_description": "Kuva kõigepealt populaarseimad säutsud, mitte uusimad",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Võimalik ebasobilik sisu",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Selles profiilis võib leiduda ebasobilikke pilte, sõnakasutust või muud sisu. Ka sa siiski soovid seda vaadata?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Kuva navigeerimissildid",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Kuva tellimisnupp profiilipiltidel",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Kuvab +-nupu autorite profiilipiltidel, keda sa ei jälgi",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Alates",
   "@since_date": {},
   "something_broke_in_fritter": "Midagi läks nüüd QuaX'is katki.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Sul peaks olema vähemalt 2 kodulehte",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Sinu profiil peab olema avalik, muidu import ei toimi",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Zen-režiim",
+  "@zen_mode": {},
+  "zen_mode_description": "Kuva voogudes ainult iga inimese populaarseimad hiljutised säutsud",
+  "@zen_mode_description": {}
 }

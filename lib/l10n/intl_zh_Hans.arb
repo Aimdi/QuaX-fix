@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "请注意，QuaX 用于导入订阅的方法受到 Twitter 严格的速率限制，因此如果您有很多关注账号，这可能会失败。",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "热门",
+  "@popular": {},
+  "popular_feed_description": "优先显示最热门的推文而不是最新的",
+  "@popular_feed_description": {},
   "possibly_sensitive": "潜在敏感",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "该个人资料可能包含潜在的敏感图像、语言或其他内容。是否仍要浏览？",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "显示导航标签",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "在头像上显示订阅按钮",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "在未订阅作者的头像上显示 + 按钮",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "开始日期",
   "@since_date": {},
   "something_broke_in_fritter": "QuaX 发生异常。",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "必须至少有 2 个主屏幕页面",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "你的个人资料必须是公开的，否则无法导入",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "禅模式",
+  "@zen_mode": {},
+  "zen_mode_description": "在时间线中只显示每个人最热门的近期推文",
+  "@zen_mode_description": {}
 }

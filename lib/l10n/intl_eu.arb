@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Kontuan izan QuaX-ek Twitter bidez harpidetzak inportatzeko erabiltzen duen modua oso mugatuta dagoela eta kontu asko jarraian baditu, huts egin dezakeela.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Ezagunak",
+  "@popular": {},
+  "popular_feed_description": "Erakutsi lehenik txio ezagunenak, berrienak beharrean",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Potentzialki sentikorra",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Baliteke profil honek irudi, hizkuntz edo bestelako eduki sentikorrak izan ditzazkeela. Hala ere ikusi nahi al duzu?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Erakutsi nabigazioko etiketak",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Erakutsi harpidetza-botoia profileko argazkietan",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Harpidetuta ez zauden egileen profileko argazkietan + botoia erakusten du",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Noiztik",
   "@since_date": {},
   "something_broke_in_fritter": "QuaX-en zerbait hautsi da.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Hasierako 2 orrialde izan behar ditu gutxienez",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Zure profilak publikoa izan behar du, bestela inportazioak ez du funtzionatuko",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Zen modua",
+  "@zen_mode": {},
+  "zen_mode_description": "Erakutsi jarioetan pertsona bakoitzaren azken txio ezagunenak soilik",
+  "@zen_mode_description": {}
 }

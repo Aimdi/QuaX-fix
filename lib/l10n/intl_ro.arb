@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Rețineți că metoda pe care QuaX o folosește pentru a importa abonamente este puternic limitată de X, deci poate eșua dacă aveți multe conturi urmărite.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Populare",
+  "@popular": {},
+  "popular_feed_description": "Afișează mai întâi cele mai populare tweeturi în locul celor mai recente",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Posibil sensibil",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Acest profil poate include imagini, limbaj sau alt conținut posibil sensibil. Doriți totuși să îl vizualizați?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Afișați etichetele de navigare",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Afișează butonul de abonare pe fotografiile de profil",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Afișează un buton + pe fotografiile de profil ale autorilor la care nu ești abonat",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Începând cu",
   "@since_date": {},
   "something_broke_in_fritter": "Ceva s-a stricat în QuaX.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Trebuie să aveți cel puțin 2 pagini de ecran de start",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Profilul dvs. trebuie să fie public, altfel importul nu va funcționa",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Modul zen",
+  "@zen_mode": {},
+  "zen_mode_description": "Afișează în fluxuri doar cele mai populare tweeturi recente ale fiecărei persoane",
+  "@zen_mode_description": {}
 }

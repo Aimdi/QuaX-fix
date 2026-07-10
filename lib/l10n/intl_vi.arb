@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Lưu ý là phương thức của QuaX đang bị giới hạn nặng nề bởi Twitter vậy nên có thể thất bại khi bạn đang có quá nhiều người theo dõi",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Phổ biến",
+  "@popular": {},
+  "popular_feed_description": "Hiển thị bài viết phổ biến nhất trước thay vì mới nhất",
+  "@popular_feed_description": {},
   "possibly_sensitive": "NSFW",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Trang cá nhân này có thể chứa những nội dung nhạy cảm hoặc gây khó chịu cho một số người, bạn có chắc muốn xem nó không ",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Hiện thị thanh điều hướng ",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Hiện nút theo dõi trên ảnh đại diện",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Hiển thị nút + trên ảnh đại diện của tác giả bạn chưa theo dõi",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Từ ngày",
   "@since_date": {},
   "something_broke_in_fritter": "Có gì đó đã hỏng trong QuaX.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Bạn phải để 2 trang trên màn hình chính",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Bạn phải để tài khoản của bạn ở chế độ công khai, nếu không thì sẽ không hoạt động",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Chế độ zen",
+  "@zen_mode": {},
+  "zen_mode_description": "Chỉ hiển thị những bài viết gần đây phổ biến nhất của mỗi người trong bảng tin",
+  "@zen_mode_description": {}
 }

@@ -77,6 +77,11 @@ const optionLikedFirstToastShown = 'saved.liked_first_toast_shown';
 const optionUserTrendsLocations = 'trends.locations';
 
 const optionNonConfirmationBiasMode = 'other.improve_non_confirmation_bias';
+const optionTweetsShowSubscribeBadge = 'tweets.show_subscribe_badge';
+const optionZenMode = 'other.zen_mode';
+
+// How many posts per author survive a feed page in zen mode
+const zenModeMaxTweetsPerAuthor = 4;
 
 
 final Map<String, String> userAgentHeader = {

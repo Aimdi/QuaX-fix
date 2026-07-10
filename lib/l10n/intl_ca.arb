@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Tingueu en compte que el mètode que QuaX utilitza per importar subscripcions està fortament limitat per Twitter, de manera que això pot fallar si teniu molts comptes seguits.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Populars",
+  "@popular": {},
+  "popular_feed_description": "Mostra primer els tuits més populars en lloc dels més recents",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Potencialment sensible",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Aquest perfil pot incloure imatges, vocabulari o contingut potencialment sensible. Segur que vols veure'l?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Mostra les etiquetes de navegació",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Mostra el botó de subscripció a les fotos de perfil",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Mostra un botó + a les fotos de perfil dels autors als quals no estàs subscrit",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Des de",
   "@since_date": {},
   "something_broke_in_fritter": "S'ha trencat alguna cosa a QuaX.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Heu de tenir almenys 2 pàgines de pantalla d'inici",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "El teu perfil ha de ser públic, en cas contrari la importació no funcionarà",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Mode zen",
+  "@zen_mode": {},
+  "zen_mode_description": "Mostra només els tuits recents més populars de cada persona als teus canals",
+  "@zen_mode_description": {}
 }

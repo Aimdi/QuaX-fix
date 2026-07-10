@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Bitte beachte, dass QuaX zum Importieren der Abonnements eine von Twitter stark durchsatzratenbegrenzte Methode verwendet. Der Import schlägt möglicherweise fehl, wenn du vielen Accounts folgst.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Beliebt",
+  "@popular": {},
+  "popular_feed_description": "Zeigt die beliebtesten Tweets zuerst statt der neuesten",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Potentiell anstößig",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Auf diesem Profil befinden sich potentiell anstößige Bilder, Sprache oder anderes Material. Willst du es wirklich sehen?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Navigationsbeschriftungen anzeigen",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Abonnieren-Knopf auf Profilbildern anzeigen",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Zeigt ein + auf den Profilbildern von Autoren, die du nicht abonniert hast",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Seit",
   "@since_date": {},
   "something_broke_in_fritter": "Etwas in QuaX ist kaputt.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Du musst mindestens 2 Tabs auf der Startseite haben",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Ein öffentliches Profil ist erforderlich, sonst funktioniert der Import nicht",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Zen-Modus",
+  "@zen_mode": {},
+  "zen_mode_description": "Zeigt in deinen Feeds nur die beliebtesten aktuellen Tweets jeder Person",
+  "@zen_mode_description": {}
 }

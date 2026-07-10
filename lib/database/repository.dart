@@ -257,11 +257,16 @@ class Repository {
         SqlMigration(
             'CREATE TABLE IF NOT EXISTS $tableLikedTweet (id VARCHAR PRIMARY KEY, content TEXT NOT NULL, user_id VARCHAR DEFAULT NULL, liked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
             reverseSql: 'DROP TABLE $tableLikedTweet'),
+      ],
+      27: [
+        // Per-group feed ordering: popular (Top search results) vs recent (Latest, the default).
+        SqlMigration('ALTER TABLE $tableSubscriptionGroup ADD COLUMN popular BOOLEAN DEFAULT 0',
+            reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN popular'),
       ]
     });
     await openDatabase(
       databaseName,
-      version: 26,
+      version: 27,
       onUpgrade: myMigrationPlan.call,
       onCreate: myMigrationPlan.call,
       onDowngrade: myMigrationPlan.call,

@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Bonvolu noti, ke la metodon QuaX uzas por importi abonojn peze rapidolimigante de Twitter, do eble malsukcesus se vi havus tre multajn da kontojn abonitajn.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Popularaj",
+  "@popular": {},
+  "popular_feed_description": "Montri unue la plej popularajn pepojn anstataŭ la plej novajn",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Eble sentema",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Tiu ĉi profilo eble enhavas eble sentemajn bildojn, idiomon, aŭ alian enhavon. Ĉu vi ankoraŭ deziras vidi ĝin?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Montri navigaciajn etikedojn",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Montri abonbutonon sur profilbildoj",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Montras +-butonon sur la profilbildoj de aŭtoroj, kiujn vi ne abonas",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Ekde",
   "@since_date": {},
   "something_broke_in_fritter": "Io malfunkciis en QuaX.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Vi devas havi malpleje 2 paĝojn de hejmekrano",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Via profilo devas esti publika, alie la importo ne funkcios",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Zena reĝimo",
+  "@zen_mode": {},
+  "zen_mode_description": "Montri en viaj fluoj nur la plej popularajn lastatempajn pepojn de ĉiu persono",
+  "@zen_mode_description": {}
 }

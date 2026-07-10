@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Mohon dicatat bahwa metode yang QuaX gunakan untuk mengimpor langganan sangat dibatasi oleh Twitter, jadi ini mungkin akan gagal jika Anda mengikuti banyak akun.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Populer",
+  "@popular": {},
+  "popular_feed_description": "Tampilkan cuitan terpopuler lebih dulu, bukan yang terbaru",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Kemungkinan sensitif",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Profil ini mungkin mengandung gambar, bahasa, atau konten lain yang kemungkinan sensitif. Apakah Anda masih ingin melihatnya?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Tampilkan label navigasi",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Tampilkan tombol langganan di foto profil",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Menampilkan tombol + di foto profil penulis yang tidak Anda ikuti",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Sejak",
   "@since_date": {},
   "something_broke_in_fritter": "Sesuatu rusak di QuaX.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Anda harus paling tidak memiliki dua halaman beranda",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Profil Anda harus publik, jika tidak impor tidak akan bekerja",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Mode zen",
+  "@zen_mode": {},
+  "zen_mode_description": "Hanya tampilkan cuitan terbaru terpopuler dari setiap orang di feed Anda",
+  "@zen_mode_description": {}
 }

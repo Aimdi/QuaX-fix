@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "Будь ласка, зверніть увагу, що метод, який використовує QuaX для імпорту підписок, сильно обмежений Twitter, тому він може не спрацювати, якщо у вас багато акаунтів, на які ви підписані.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "Популярні",
+  "@popular": {},
+  "popular_feed_description": "Показувати спочатку найпопулярніші твіти замість найновіших",
+  "@popular_feed_description": {},
   "possibly_sensitive": "Потенційно чутливе",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "Цей профіль може містити потенційно чутливі зображення, мову або інший вміст. Ви все одно хочете його переглянути?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "Показувати мітки навігації",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "Показувати кнопку підписки на аватарах",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "Показує кнопку + на аватарах авторів, на яких ви не підписані",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "Від",
   "@since_date": {},
   "something_broke_in_fritter": "Щось зламалося в QuaX.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "Потрібно мати щонайменше 2 сторінки головного екрана",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Ваш профіль має бути публічним, інакше імпорт не спрацює",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "Дзен-режим",
+  "@zen_mode": {},
+  "zen_mode_description": "Показувати у стрічках лише найпопулярніші нещодавні твіти кожної людини",
+  "@zen_mode_description": {}
 }

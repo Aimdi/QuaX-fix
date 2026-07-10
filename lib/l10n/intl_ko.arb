@@ -365,6 +365,10 @@
   "@please_enter_a_name": {},
   "please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": "QuaX가 구독을 가져오는 방법은 X에 의해 많이 제한되어 있으므로, 팔로우하는 계정이 많은 경우 실패할 수 있습니다.",
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
+  "popular": "인기",
+  "@popular": {},
+  "popular_feed_description": "최신 트윗 대신 인기 트윗을 먼저 표시합니다",
+  "@popular_feed_description": {},
   "possibly_sensitive": "민감할 수 있음",
   "@possibly_sensitive": {},
   "possibly_sensitive_profile": "이 프로필에는 민감한 이미지, 언어 또는 기타 콘텐츠가 포함될 수 있습니다. 그래도 보시겠습니까?",
@@ -457,6 +461,10 @@
   "@show_in_main_feed": {},
   "show_navigation_labels": "탐색 레이블 표시",
   "@show_navigation_labels": {},
+  "show_subscribe_button_on_avatars": "프로필 사진에 구독 버튼 표시",
+  "@show_subscribe_button_on_avatars": {},
+  "show_subscribe_button_on_avatars_description": "구독하지 않은 작성자의 프로필 사진에 + 버튼을 표시합니다",
+  "@show_subscribe_button_on_avatars_description": {},
   "since_date": "시작일",
   "@since_date": {},
   "something_broke_in_fritter": "QuaX에서 문제가 발생했습니다.",
@@ -624,5 +632,9 @@
   "you_must_have_at_least_2_home_screen_pages": "홈 화면 페이지가 최소 2개 있어야 합니다",
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "프로필은 공개 상태여야 합니다. 그렇지 않으면 가져오기가 작동하지 않습니다",
-  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {}
+  "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "zen_mode": "젠 모드",
+  "@zen_mode": {},
+  "zen_mode_description": "피드에 각 사람의 가장 인기 있는 최근 트윗만 표시합니다",
+  "@zen_mode_description": {}
 }
