@@ -18,6 +18,7 @@ import 'package:quax/status.dart';
 import 'package:quax/tweet/_ExpandableTweetText.dart';
 import 'package:quax/tweet/_card.dart';
 import 'package:quax/tweet/_media.dart';
+import 'package:quax/tweet/quotes_screen.dart';
 import 'package:quax/article/article.dart';
 import 'package:quax/ui/dates.dart';
 import 'package:quax/ui/errors.dart';
@@ -271,7 +272,11 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                 _createFooterTextButton(
                     Icons.repeat,
                     numberFormat.format((tweet.retweetCount! + tweet.quoteCount!)),
-                    buttonsColor(context)),
+                    buttonsColor(context),
+                    tweet.idStr == null
+                        ? null
+                        : () => Navigator.pushNamed(context, routeQuotes,
+                            arguments: QuotesScreenArguments(id: tweet.idStr!))),
               Consumer<LikedTweetModel>(builder: (context, likedModel, child) {
                 var isLiked = likedModel.isLiked(tweet.idStr!);
                 var label = tweet.favoriteCount != null ? numberFormat.format(tweet.favoriteCount) : '';

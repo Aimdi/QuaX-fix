@@ -35,6 +35,7 @@ import 'package:quax/settings/_home.dart';
 import 'package:quax/settings/settings.dart';
 import 'package:quax/settings/settings_export_screen.dart';
 import 'package:quax/status.dart';
+import 'package:quax/tweet/quotes_screen.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/trends/trends_model.dart';
 import 'package:quax/tweet/_video.dart';
@@ -527,6 +528,7 @@ class _FritterAppState extends State<FritterApp> {
                           routeSettings: (context) => const SettingsScreen(),
                           routeSettingsExport: (context) => const SettingsExportScreen(),
                           routeSettingsHome: (context) => const SettingsHomeFragment(),
+                          routeQuotes: (context) => const QuotesScreen(),
                           routeStatus: (context) => const StatusScreen(),
                         },
                         builder: (context, child) {

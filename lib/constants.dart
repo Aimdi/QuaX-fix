@@ -103,4 +103,5 @@ const routeSavedFolders = '/saved/folders';
 const routeSettings = '/settings';
 const routeSettingsExport = '/settings/export';
 const routeSettingsHome = '/settings/home';
+const routeQuotes = '/quotes';
 const routeStatus = '/status';
