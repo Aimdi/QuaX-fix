@@ -10,20 +10,16 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/feed_cache.dart';
 import 'package:quax/group/feed_session_cache.dart';
 import 'package:quax/group/group_screen.dart';
+import 'package:quax/profile/media_grid/media_grid.dart';
+import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:quax/tweet/paginated_tweet_list.dart';
 import 'package:quax/tweet/tweet_context_scope.dart';
 import 'package:quax/utils/iterables.dart';
+import 'package:quax/utils/paging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:quax/utils/urls.dart';
-
-bool _tweetHasMedia(TweetWithCard tweet) =>
-    (tweet.extendedEntities?.media?.isNotEmpty ?? false) ||
-    (tweet.retweetedStatusWithCard != null && _tweetHasMedia(tweet.retweetedStatusWithCard!)) ||
-    (tweet.quotedStatusWithCard != null && _tweetHasMedia(tweet.quotedStatusWithCard!));
-
-bool _chainHasMedia(TweetChain chain) => chain.tweets.any(_tweetHasMedia);
 
 class SubscriptionGroupFeed extends StatefulWidget {
   final SubscriptionGroupGet group;
@@ -58,6 +54,11 @@ class SubscriptionGroupFeed extends StatefulWidget {
 
 class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   late final TweetFeedController _feedController;
+  // Grid-mode paging, created on first use. Kept separately from the tweet
+  // list's controller so toggling the media filter swaps views without
+  // refetching either of them.
+  CursorPagingController<String, MediaGridItem>? _mediaPaging;
+  final Set<String> _seenMediaKeys = <String>{};
   FeedSessionCache? _cache;
   ScrollController? _innerScrollController;
   bool _scrollRestoreScheduled = false;
@@ -66,6 +67,9 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   List<TweetChain>? _cachedPreview;
 
   bool get _usesCache => widget.cacheKey != null;
+
+  CursorPagingController<String, MediaGridItem> get _mediaController =>
+      _mediaPaging ??= CursorPagingController(_loadMediaPage);
 
   @override
   void initState() {
@@ -137,6 +141,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
   @override
   void dispose() {
+    _mediaPaging?.dispose();
     if (!_usesCache) {
       _feedController.dispose();
     }
@@ -151,9 +156,9 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
     if (oldWidget.includeReplies != widget.includeReplies ||
         oldWidget.includeRetweets != widget.includeRetweets ||
-        oldWidget.mediaOnly != widget.mediaOnly ||
         !_chunksMatch(oldWidget.chunks, widget.chunks)) {
       _feedController.controller.refresh();
+      _mediaPaging?.pagingController.refresh();
     }
   }
 
@@ -345,23 +350,46 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     return (chains: threads, nextCursor: nextCursor);
   }
 
-  /// Applies the media-only filter to a loaded page. Media posts can be
-  /// sparse, so when a page filters down to nothing, look a few pages ahead
-  /// before returning an empty page — which the controller treats as the end
-  /// of the feed.
-  Future<TweetPageResult> _loadPage(String? cursor) async {
-    var result = await _listTweets(cursor);
-    if (!widget.mediaOnly) return result;
+  /// Loads a page for the media grid: same pages as the tweet list, mapped to
+  /// their media entries. Media posts can be sparse, so when a page maps to
+  /// nothing, look a few pages ahead before returning an empty page — which
+  /// the controller treats as the end of the feed.
+  Future<CursorPage<String, MediaGridItem>> _loadMediaPage(String? cursor) async {
+    if (cursor == null) {
+      _seenMediaKeys.clear();
+    }
 
-    var filtered = result.chains.where(_chainHasMedia).toList();
+    var result = await _listTweets(cursor);
+    var items = _unseenMediaItems(result.chains);
     var lookahead = 0;
-    while (filtered.isEmpty && result.chains.isNotEmpty && result.nextCursor != null && lookahead < 4) {
+    while (items.isEmpty && result.chains.isNotEmpty && result.nextCursor != null && lookahead < 4) {
       result = await _listTweets(result.nextCursor);
-      filtered = result.chains.where(_chainHasMedia).toList();
+      items = _unseenMediaItems(result.chains);
       lookahead++;
     }
 
-    return (chains: filtered, nextCursor: result.nextCursor);
+    return (items: items, nextCursor: result.nextCursor);
+  }
+
+  // Successive search windows overlap at their boundaries, so keep only media
+  // entries not shown on an earlier page.
+  List<MediaGridItem> _unseenMediaItems(List<TweetChain> chains) {
+    return mediaItemsFromChains(chains)
+        .where((m) => _seenMediaKeys.add('${m.tweetId}/${m.mediaIndex}'))
+        .toList();
+  }
+
+  Widget _buildMediaGrid(BuildContext context) {
+    return Scaffold(
+      body: TweetContextScope(
+        child: MediaGrid(
+          controller: _mediaController.pagingController,
+          firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets_for_the_feed,
+          newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
+          emptyMessage: L10n.of(context).could_not_find_any_posts_with_media,
+        ),
+      ),
+    );
   }
 
   @override
@@ -374,7 +402,9 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       );
     }
 
-    final preview = widget.mediaOnly ? _cachedPreview?.where(_chainHasMedia).toList() : _cachedPreview;
+    if (widget.mediaOnly) {
+      return _buildMediaGrid(context);
+    }
 
     return Scaffold(
       body: TweetContextScope(
@@ -382,18 +412,16 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
           onNotification: _onScrollNotification,
           child: PaginatedTweetList(
             feed: _feedController,
-            loadPage: _loadPage,
+            loadPage: _listTweets,
             username: null,
-            firstPagePreview: preview,
+            firstPagePreview: _cachedPreview,
             onRefresh: () async {
               var repository = await Repository.writable();
               await repository.delete(tableFeedGroupChunk);
             },
             firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets_for_the_feed,
             newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
-            emptyMessage: widget.mediaOnly
-                ? L10n.of(context).could_not_find_any_posts_with_media
-                : L10n.of(context).could_not_find_any_tweets_from_the_last_7_days,
+            emptyMessage: L10n.of(context).could_not_find_any_tweets_from_the_last_7_days,
           ),
         ),
       ),
