@@ -688,6 +688,7 @@ class Twitter {
       "querySource": "typed_query",
       "product": product,
       "withGrokTranslatedBio": true,
+      "withBirdwatchNotes": true,
       "withQuickPromoteEligibilityTweetFields": false,
     };
 
