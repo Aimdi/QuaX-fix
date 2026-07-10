@@ -52,6 +52,27 @@ class SettingsMediaFragment extends StatelessWidget {
                     child: Text('$count'),
                   ),
               ]),
+          ExpansionTile(
+            leading: const Icon(Icons.grid_view),
+            title: Text(L10n.of(context).media_layout),
+            children: [
+              PrefRadio<String>(
+                title: Text(L10n.of(context).media_layout_masonry),
+                value: mediaGridLayoutMasonry,
+                pref: optionMediaGridLayout,
+              ),
+              PrefRadio<String>(
+                title: Text(L10n.of(context).media_layout_feed),
+                value: mediaGridLayoutFeed,
+                pref: optionMediaGridLayout,
+              ),
+              PrefRadio<String>(
+                title: Text(L10n.of(context).media_layout_two_columns),
+                value: mediaGridLayoutTwoColumns,
+                pref: optionMediaGridLayout,
+              ),
+            ],
+          ),
           PrefSwitch(
             pref: optionMediaDefaultMute,
             title: Text(L10n.of(context).mute_videos),

@@ -12,18 +12,18 @@ import 'package:quax/ui/errors.dart';
 import 'package:quax/utils/paging.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-typedef MediaGridConfig = ({int columns, bool square});
+typedef MediaGridConfig = ({int columns, double spacing, double radius});
 
 /// Resolves the media-layout preference: masonry follows the column-count
-/// setting; the square (Instagram-like) grid is 3 uniform tiles per row; the
-/// two-column layout keeps natural aspect ratios at 2 per row.
+/// setting; the feed layout is one full-width item per row (a timeline
+/// without text); the two-per-row layout is a roomier two-column masonry.
 MediaGridConfig mediaGridConfigOf(BuildContext context) {
   var prefs = PrefService.of(context);
   var layout = prefs.get<String>(optionMediaGridLayout) ?? mediaGridLayoutMasonry;
   return switch (layout) {
-    mediaGridLayoutSquare => (columns: 3, square: true),
-    mediaGridLayoutTwoColumns => (columns: 2, square: false),
-    _ => (columns: prefs.get<int>(optionMediaGridColumns) ?? 3, square: false),
+    mediaGridLayoutFeed => (columns: 1, spacing: 8.0, radius: 12.0),
+    mediaGridLayoutTwoColumns => (columns: 2, spacing: 8.0, radius: 12.0),
+    _ => (columns: prefs.get<int>(optionMediaGridColumns) ?? 3, spacing: 2.0, radius: 8.0),
   };
 }
 
@@ -70,14 +70,14 @@ class _MediaGridState extends State<MediaGrid> with AutomaticKeepAliveClientMixi
         builder: (context, state, fetchNextPage) => PagedMasonryGridView<int, MediaGridItem>.count(
           state: state,
           fetchNextPage: fetchNextPage,
-          padding: const EdgeInsets.all(2),
+          padding: EdgeInsets.all(config.spacing),
           crossAxisCount: config.columns,
-          mainAxisSpacing: 2,
-          crossAxisSpacing: 2,
+          mainAxisSpacing: config.spacing,
+          crossAxisSpacing: config.spacing,
           addAutomaticKeepAlives: false,
           builderDelegate: PagedChildBuilderDelegate<MediaGridItem>(
             itemBuilder: (context, item, index) =>
-                _MediaGridTile(item: item, gifGate: _gifGate, square: config.square),
+                _MediaGridTile(item: item, gifGate: _gifGate, radius: config.radius),
             firstPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
               error: pagingErrorOf(state)?.error,
               stackTrace: pagingErrorOf(state)?.stackTrace,
@@ -136,14 +136,14 @@ class _StaticMediaGridState extends State<StaticMediaGrid> {
     var config = mediaGridConfigOf(context);
 
     return MasonryGridView.count(
-      padding: const EdgeInsets.all(2),
+      padding: EdgeInsets.all(config.spacing),
       physics: const AlwaysScrollableScrollPhysics(),
       crossAxisCount: config.columns,
-      mainAxisSpacing: 2,
-      crossAxisSpacing: 2,
+      mainAxisSpacing: config.spacing,
+      crossAxisSpacing: config.spacing,
       itemCount: widget.items.length,
       itemBuilder: (context, index) =>
-          _MediaGridTile(item: widget.items[index], gifGate: _gifGate, square: config.square),
+          _MediaGridTile(item: widget.items[index], gifGate: _gifGate, radius: config.radius),
     );
   }
 }
@@ -151,9 +151,9 @@ class _StaticMediaGridState extends State<StaticMediaGrid> {
 class _MediaGridTile extends StatefulWidget {
   final MediaGridItem item;
   final GifPlaybackGate gifGate;
-  final bool square;
+  final double radius;
 
-  const _MediaGridTile({required this.item, required this.gifGate, this.square = false});
+  const _MediaGridTile({required this.item, required this.gifGate, this.radius = 8});
 
   @override
   State<_MediaGridTile> createState() => _MediaGridTileState();
@@ -231,9 +231,9 @@ class _MediaGridTileState extends State<_MediaGridTile> {
     }
 
     return AspectRatio(
-      aspectRatio: widget.square ? 1 : item.aspectRatio,
+      aspectRatio: item.aspectRatio,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(widget.square ? 0 : 8),
+        borderRadius: BorderRadius.circular(widget.radius),
         child: body,
       ),
     );

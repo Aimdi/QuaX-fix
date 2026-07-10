@@ -82,7 +82,7 @@ const optionZenMode = 'other.zen_mode';
 const optionMediaGridLayout = 'media.grid_layout';
 
 const mediaGridLayoutMasonry = 'masonry';
-const mediaGridLayoutSquare = 'square';
+const mediaGridLayoutFeed = 'feed';
 const mediaGridLayoutTwoColumns = 'two_columns';
 
 // How many posts per author survive a feed page in zen mode

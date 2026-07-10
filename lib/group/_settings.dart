@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
@@ -81,37 +79,6 @@ void showFeedSettings(BuildContext context, GroupModel model) {
                         ),
                       ],
                     ),
-                    StatefulBuilder(builder: (context, setSheetState) {
-                      var prefs = PrefService.of(context, listen: false);
-                      var layout = prefs.get<String>(optionMediaGridLayout) ?? mediaGridLayoutMasonry;
-
-                      String labelOf(String value) => switch (value) {
-                            mediaGridLayoutSquare => L10n.of(context).media_layout_square,
-                            mediaGridLayoutTwoColumns => L10n.of(context).media_layout_two_columns,
-                            _ => L10n.of(context).media_layout_masonry,
-                          };
-
-                      RadioListTile<String> option(String value) => RadioListTile<String>(
-                            title: Text(labelOf(value)),
-                            value: value,
-                            groupValue: layout,
-                            onChanged: (v) async {
-                              await prefs.set(optionMediaGridLayout, v ?? mediaGridLayoutMasonry);
-                              setSheetState(() {});
-                            },
-                          );
-
-                      return ExpansionTile(
-                        leading: const Icon(Icons.grid_view),
-                        title: Text(L10n.of(context).media_layout),
-                        subtitle: Text(labelOf(layout)),
-                        children: [
-                          option(mediaGridLayoutMasonry),
-                          option(mediaGridLayoutSquare),
-                          option(mediaGridLayoutTwoColumns),
-                        ],
-                      );
-                    }),
                   ],
                 );
               },
