@@ -397,6 +397,8 @@
   "@rate_limited_message": {},
   "rate_limited_title": "𝕏 ограничивает запросы",
   "@rate_limited_title": {},
+  "recent": "Недавние",
+  "@recent": {},
   "released_under_the_mit_license": "Опубликовано под лицензией MIT",
   "@released_under_the_mit_license": {},
   "rename": "Переименовать",

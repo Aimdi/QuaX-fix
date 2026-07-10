@@ -397,6 +397,8 @@
   "@rate_limited_message": {},
   "rate_limited_title": "Rate limited by 𝕏",
   "@rate_limited_title": {},
+  "recent": "Recent",
+  "@recent": {},
   "released_under_the_mit_license": "Released under the MIT License",
   "@released_under_the_mit_license": {},
   "rename": "Rename",

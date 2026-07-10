@@ -397,6 +397,8 @@
   "@rate_limited_message": {},
   "rate_limited_title": "𝕏의 요청 제한",
   "@rate_limited_title": {},
+  "recent": "최신",
+  "@recent": {},
   "released_under_the_mit_license": "MIT 라이선스에 따라 출시",
   "@released_under_the_mit_license": {},
   "rename": "이름 변경",

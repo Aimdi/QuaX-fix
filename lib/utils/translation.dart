@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_cache/flutter_cache.dart' as cache;
 import 'package:quax/client/accounts.dart';
 import 'package:quax/client/headers.dart';
@@ -129,4 +131,10 @@ class TranslationAPI {
 
     return TranslationAPIResult(success: false, body: body, errorMessage: message);
   }
+}
+
+/// Lets one tweet's translate button request translation of every tweet
+/// currently shown in the same provider scope (e.g. a whole conversation).
+class TranslationBroadcast extends ChangeNotifier {
+  void requestAll() => notifyListeners();
 }

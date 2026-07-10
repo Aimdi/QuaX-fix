@@ -397,6 +397,8 @@
   "@rate_limited_message": {},
   "rate_limited_title": "𝕏 обмежує запити",
   "@rate_limited_title": {},
+  "recent": "Нещодавні",
+  "@recent": {},
   "released_under_the_mit_license": "Випущено за ліцензією MIT",
   "@released_under_the_mit_license": {},
   "rename": "Перейменувати",

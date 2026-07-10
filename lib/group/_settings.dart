@@ -53,17 +53,25 @@ void showFeedSettings(BuildContext context, GroupModel model) {
                         onChanged: (value) async {
                           await model.toggleSubscriptionGroupIncludeRetweets(value);
                         }),
-                    SwitchListTile(
-                        title: Text(
-                          L10n.of(context).popular,
+                    ExpansionTile(
+                      leading: const Icon(Icons.sort),
+                      title: Text(model.state.popular ? L10n.of(context).popular : L10n.of(context).recent),
+                      subtitle: Text(L10n.of(context).popular_feed_description),
+                      children: [
+                        RadioListTile<bool>(
+                          title: Text(L10n.of(context).recent),
+                          value: false,
+                          groupValue: model.state.popular,
+                          onChanged: (_) async => await model.toggleSubscriptionGroupPopular(false),
                         ),
-                        subtitle: Text(
-                          L10n.of(context).popular_feed_description,
+                        RadioListTile<bool>(
+                          title: Text(L10n.of(context).popular),
+                          value: true,
+                          groupValue: model.state.popular,
+                          onChanged: (_) async => await model.toggleSubscriptionGroupPopular(true),
                         ),
-                        value: model.state.popular,
-                        onChanged: (value) async {
-                          await model.toggleSubscriptionGroupPopular(value);
-                        }),
+                      ],
+                    ),
                   ],
                 );
               },

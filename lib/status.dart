@@ -9,6 +9,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/utils/paging.dart';
+import 'package:quax/utils/translation.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class StatusScreenArguments {
@@ -158,8 +159,14 @@ class _StatusScreenState extends State<_StatusScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: ChangeNotifierProvider<TweetContextState>(
-        create: (context) => TweetContextState(PrefService.of(context, listen: false).get(optionTweetsHideSensitive)),
+      body: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<TweetContextState>(
+              create: (context) =>
+                  TweetContextState(PrefService.of(context, listen: false).get(optionTweetsHideSensitive))),
+          // Long-pressing any translate button translates the whole conversation
+          ChangeNotifierProvider<TranslationBroadcast>(create: (_) => TranslationBroadcast()),
+        ],
         child: _showingPreview ? _buildPreview(context) : _buildConversation(context),
       ),
     );

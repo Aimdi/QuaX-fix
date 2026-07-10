@@ -397,6 +397,8 @@
   "@rate_limited_message": {},
   "rate_limited_title": "被 𝕏 限流",
   "@rate_limited_title": {},
+  "recent": "最新",
+  "@recent": {},
   "released_under_the_mit_license": "以 MIT 许可证发布",
   "@released_under_the_mit_license": {},
   "rename": "重命名",

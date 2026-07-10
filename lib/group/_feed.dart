@@ -156,6 +156,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
     if (oldWidget.includeReplies != widget.includeReplies ||
         oldWidget.includeRetweets != widget.includeRetweets ||
+        oldWidget.group.popular != widget.group.popular ||
         !_chunksMatch(oldWidget.chunks, widget.chunks)) {
       _feedController.controller.refresh();
       _mediaPaging?.pagingController.refresh();
@@ -311,8 +312,8 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
         // Perform our search for the next page of results for this chunk, and add those tweets to our collection
         var query = _buildSearchQuery(chunk.users);
-        TweetStatus result = await Twitter.searchTweets(query, widget.includeReplies,
-            cursor: searchCursor, product: widget.group.popular ? 'Top' : 'Latest');
+        TweetStatus result =
+            await Twitter.searchTweets(query, widget.includeReplies, cursor: searchCursor);
         shouldShowUnrelatedPostsInFeedWarning |= feedContainsUnrelatedTweets(result, chunk.users);
 
         if (result.chains.isNotEmpty) {
@@ -356,7 +357,8 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
   static int _likesOf(TweetChain chain) => chain.tweets.firstOrNull?.favoriteCount ?? 0;
 
-  /// Popular groups order by likes; recent ones (the default) by date.
+  /// Popular groups order the same recent window by likes; recent ones (the
+  /// default) by date.
   List<TweetChain> _sortChains(List<TweetChain> chains) {
     if (!widget.group.popular) {
       return sortChainsNewestFirst(chains);

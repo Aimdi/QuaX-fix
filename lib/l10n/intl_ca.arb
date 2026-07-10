@@ -397,6 +397,8 @@
   "@rate_limited_message": {},
   "rate_limited_title": "𝕏 ha limitat les peticions",
   "@rate_limited_title": {},
+  "recent": "Recents",
+  "@recent": {},
   "released_under_the_mit_license": "Llançat sota la llicència MIT",
   "@released_under_the_mit_license": {},
   "rename": "Canvia el nom",

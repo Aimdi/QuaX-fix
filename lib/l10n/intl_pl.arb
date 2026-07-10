@@ -397,6 +397,8 @@
   "@rate_limited_message": {},
   "rate_limited_title": "Ograniczenie liczby żądań przez 𝕏",
   "@rate_limited_title": {},
+  "recent": "Najnowsze",
+  "@recent": {},
   "released_under_the_mit_license": "Wydany na licencji MIT",
   "@released_under_the_mit_license": {},
   "rename": "Zmień nazwę",

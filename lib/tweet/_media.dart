@@ -133,6 +133,35 @@ class _TweetMediaItemState extends State<_TweetMediaItem> {
   }
 }
 
+/// Downloads a media item's original file, with the same progress snackbars
+/// as the fullscreen viewer's download button.
+Future<void> downloadMediaItem(BuildContext context, Media media, String username) async {
+  final mediaUrl = media.mediaUrlHttps;
+  if (mediaUrl == null) {
+    return;
+  }
+
+  final fileName = '$username-${path.basename(mediaUrl)}';
+
+  await downloadUriToPickedFile(
+    context,
+    Uri.parse('$mediaUrl:orig'),
+    fileName,
+    prefs: PrefService.of(context, listen: false),
+    onStart: () {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(L10n.of(context).downloading_media),
+      ));
+    },
+    onSuccess: () {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(L10n.of(context).successfully_saved_the_media),
+      ));
+    },
+  );
+}
+
 class TweetMedia extends StatefulWidget {
   final bool? sensitive;
   final List<Media> media;
@@ -207,6 +236,8 @@ class _TweetMediaState extends State<TweetMedia> {
                                 media: widget.media,
                                 username: widget.username,
                                 tweetId: widget.tweetId))),
+                onLongPress:
+                    item.type == 'photo' ? () => downloadMediaItem(context, item, widget.username) : null,
                 child: _TweetMediaItem(
                     media: item,
                     index: index + 1,

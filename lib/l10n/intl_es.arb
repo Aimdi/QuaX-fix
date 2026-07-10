@@ -397,6 +397,8 @@
   "@rate_limited_message": {},
   "rate_limited_title": "𝕏 está limitando las solicitudes",
   "@rate_limited_title": {},
+  "recent": "Recientes",
+  "@recent": {},
   "released_under_the_mit_license": "Publicado bajo la Licencia MIT",
   "@released_under_the_mit_license": {},
   "rename": "Cambiar nombre",

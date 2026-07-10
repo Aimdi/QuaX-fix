@@ -126,7 +126,7 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
         final users = filteredUsers.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).toList();
 
         var chunks = partition(users, 16)
-            .map((e) => SubscriptionGroupFeedChunk(e, group.includeReplies, group.includeRetweets, group.popular))
+            .map((e) => SubscriptionGroupFeedChunk(e, group.includeReplies, group.includeRetweets))
             .toList();
 
         return SubscriptionGroupFeed(
@@ -147,14 +147,11 @@ class SubscriptionGroupFeedChunk {
   final List<Subscription> users;
   final bool includeReplies;
   final bool includeRetweets;
-  final bool popular;
 
-  SubscriptionGroupFeedChunk(this.users, this.includeReplies, this.includeRetweets, this.popular);
+  SubscriptionGroupFeedChunk(this.users, this.includeReplies, this.includeRetweets);
 
   String get hash {
-    // The popular flag only extends the hash when set, so recent-mode chunks
-    // keep their pre-existing cache entries.
-    var toHash = '${users.map((e) => e.id).join(', ')}$includeReplies$includeRetweets${popular ? 'popular' : ''}';
+    var toHash = '${users.map((e) => e.id).join(', ')}$includeReplies$includeRetweets';
 
     return sha1.convert(toHash.codeUnits).toString();
   }

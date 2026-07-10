@@ -91,6 +91,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   late final bool isBirdwatchQuote;
 
   TranslationStatus _translationStatus = TranslationStatus.original;
+  TranslationBroadcast? _translationBroadcast;
 
   List<RichTextPart> _originalParts = [];
   List<RichTextPart> _displayParts = [];
@@ -122,6 +123,26 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       _initializeTweetParts();
       _isInitialized = true;
     }
+
+    // A conversation screen provides a broadcast so one long-press can
+    // translate every loaded tweet; feeds don't, and that's fine.
+    TranslationBroadcast? broadcast;
+    try {
+      broadcast = context.read<TranslationBroadcast>();
+    } on ProviderNotFoundException {
+      broadcast = null;
+    }
+    if (!identical(broadcast, _translationBroadcast)) {
+      _translationBroadcast?.removeListener(_onTranslationBroadcast);
+      _translationBroadcast = broadcast;
+      _translationBroadcast?.addListener(_onTranslationBroadcast);
+    }
+  }
+
+  @override
+  void dispose() {
+    _translationBroadcast?.removeListener(_onTranslationBroadcast);
+    super.dispose();
   }
 
   void _initializeTweetParts() {
@@ -136,6 +157,26 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       _displayParts = tweetParts;
       _originalParts = tweetParts;
     });
+  }
+
+  Locale _effectiveLocale() {
+    var localeStr = PrefService.of(context, listen: false).get<String>(optionLocale);
+    final isSystemLocale = (localeStr ?? optionLocaleDefault) == optionLocaleDefault;
+    if (isSystemLocale) {
+      localeStr = Platform.localeName;
+    }
+
+    final splitLocale = localeStr!.split(RegExp(r'[-_]'));
+    return splitLocale.length == 1 ? Locale(splitLocale[0]) : Locale(splitLocale[0], splitLocale[1]);
+  }
+
+  // Translates this tile when a long-press on any translate button in the
+  // same scope (e.g. the whole conversation) broadcasts a request.
+  void _onTranslationBroadcast() {
+    if (!mounted || _translationStatus != TranslationStatus.original) {
+      return;
+    }
+    onClickTranslate(context, _effectiveLocale());
   }
 
   Future<void> onClickTranslate(BuildContext context, Locale locale) async {
@@ -456,7 +497,20 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                       });
                 },
               ),
-              if (!isArticle) _buildTranslateButton(locale),
+              if (!isArticle)
+                GestureDetector(
+                  // Long-press translates the whole conversation when a
+                  // broadcast is in scope; otherwise just this tweet.
+                  onLongPress: () {
+                    final broadcast = _translationBroadcast;
+                    if (broadcast != null) {
+                      broadcast.requestAll();
+                    } else {
+                      onClickTranslate(context, locale);
+                    }
+                  },
+                  child: _buildTranslateButton(locale),
+                ),
             ],
           ),
         ),
@@ -701,19 +755,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
           ));
     }
 
-    var localeStr = PrefService.of(context).get<String>(optionLocale);
-    final isSystemLocale = (localeStr ?? optionLocaleDefault) == optionLocaleDefault;
-    if (isSystemLocale) {
-      localeStr = Platform.localeName;
-    }
-
-    final splitLocale = localeStr!.split(RegExp(r'[-_]'));
-    late Locale locale;
-    if (splitLocale.length == 1) {
-      locale = Locale(splitLocale[0]);
-    } else {
-      locale = Locale(splitLocale[0], splitLocale[1]);
-    }
+    final locale = _effectiveLocale();
 
     final footerBar = _buildFooterBar(tweet, tweetText, shareBaseUrl, locale, numberFormat, isArticle: tweet.article != null);
 
@@ -756,18 +798,24 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                 children: [
                   plainAvatar,
                   Positioned(
-                    right: -4,
-                    bottom: -4,
+                    right: -2,
+                    bottom: -2,
                     child: GestureDetector(
+                      // Keep the hit area comfortable even though the visible
+                      // badge is small.
+                      behavior: HitTestBehavior.opaque,
                       onTap: () => _showSubscribeSheet(context, _subscriptionFor(tweet.user!)),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Theme.of(context).colorScheme.surface, width: 1.5),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Theme.of(context).colorScheme.surface, width: 1),
+                          ),
+                          padding: const EdgeInsets.all(1.5),
+                          child: Icon(Icons.add, size: 12, color: Theme.of(context).colorScheme.onPrimary),
                         ),
-                        padding: const EdgeInsets.all(2),
-                        child: Icon(Icons.add, size: 16, color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ),
                   ),
