@@ -2,12 +2,16 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:io' show Platform;
 import 'package:auto_direction/auto_direction.dart';
+import 'package:dart_twitter_api/twitter_api.dart' show User;
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_triple/flutter_triple.dart';
 import 'package:quax/client/client.dart';
 import 'package:quax/constants.dart';
+import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/import_data_model.dart';
 import 'package:quax/profile/profile.dart';
 import 'package:quax/saved/folder_picker.dart';
@@ -224,6 +228,56 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     ));
   }
 
+  bool _canSubscribeTo(User? user) =>
+      user != null && user.idStr != null && user.screenName != null && user.name != null;
+
+  UserSubscription _subscriptionFor(User user) => UserSubscription(
+      id: user.idStr!,
+      screenName: user.screenName!,
+      name: user.name!,
+      profileImageUrlHttps: user.profileImageUrlHttps,
+      verified: user.verified ?? false,
+      createdAt: user.createdAt ?? DateTime.now(),
+      inFeed: true);
+
+  /// Offers to subscribe to a not-yet-followed author, or to file them into
+  /// groups right away (which subscribes them too).
+  void _showSubscribeSheet(BuildContext context, UserSubscription user) {
+    showModalBottomSheet(
+        context: context,
+        builder: (sheetContext) {
+          return SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.person_add),
+                  title: Text(L10n.of(context).subscribe),
+                  onTap: () async {
+                    Navigator.pop(sheetContext);
+                    await context.read<SubscriptionsModel>().toggleSubscribe(user, false);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.group_add),
+                  title: Text(L10n.of(context).add_to_group),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    showDialog(
+                        context: context,
+                        builder: (_) => FollowButtonSelectGroupDialog(
+                              user: user,
+                              followed: false,
+                              groupsForUser: const [],
+                            ));
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
   TextButton _createFooterTextButton(IconData icon, String label, [Color? color, Function()? onPressed]) {
     return TextButton.icon(
       icon: Icon(icon, size: 20, color: color),
@@ -272,7 +326,10 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                 _createFooterTextButton(
                     Icons.repeat,
                     numberFormat.format((tweet.retweetCount! + tweet.quoteCount!)),
-                    buttonsColor(context),
+                    // Green marks the posts that have quotes to open
+                    tweet.quoteCount! > 0
+                        ? Colors.green.harmonizeWith(Theme.of(context).colorScheme.primary)
+                        : buttonsColor(context),
                     tweet.idStr == null
                         ? null
                         : () => Navigator.pushNamed(context, routeQuotes,
@@ -677,11 +734,45 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       createdAt = tweet.createdAt;
     }
 
-    final avatar = hideAuthorInformation
+    final plainAvatar = hideAuthorInformation
         ? const Icon(Icons.account_circle, size: 48)
         : ClipRRect(
             borderRadius: BorderRadius.circular(64),
             child: UserAvatar(uri: tweet.user!.profileImageUrlHttps),
+          );
+
+    final avatar = hideAuthorInformation || !_canSubscribeTo(tweet.user)
+        ? plainAvatar
+        : ScopedBuilder<SubscriptionsModel, List<Subscription>>(
+            store: context.read<SubscriptionsModel>(),
+            onState: (_, subscriptions) {
+              final followed = subscriptions.any((s) => s.id == tweet.user!.idStr);
+              if (followed) {
+                return plainAvatar;
+              }
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  plainAvatar,
+                  Positioned(
+                    right: -4,
+                    bottom: -4,
+                    child: GestureDetector(
+                      onTap: () => _showSubscribeSheet(context, _subscriptionFor(tweet.user!)),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Theme.of(context).colorScheme.surface, width: 1.5),
+                        ),
+                        padding: const EdgeInsets.all(2),
+                        child: Icon(Icons.add, size: 16, color: Theme.of(context).colorScheme.onPrimary),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           );
 
     void onTapProfile() {
