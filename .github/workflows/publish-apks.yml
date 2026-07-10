@@ -1,0 +1,35 @@
+name: Publish APKs
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "ID of the ci workflow run whose APK artifact to publish"
+        required: true
+        type: string
+      tag:
+        description: "Release tag"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: apks
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create release with APKs
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: ${{ inputs.tag }}
+          files: "*.apk"
