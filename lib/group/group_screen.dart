@@ -8,6 +8,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/_feed.dart';
 import 'package:quax/group/_feed_shell.dart';
 import 'package:quax/group/feed_cache.dart';
+import 'package:quax/group/feed_session_cache.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/tweet/cached_tweet_list.dart';
 import 'package:quax/tweet/tweet_context_scope.dart';
@@ -69,8 +70,9 @@ class _GroupScreenState extends State<GroupScreen> {
 class SubscriptionGroupScreenContent extends StatefulWidget {
   final String id;
   final String? cacheKey;
+  final bool mediaOnly;
 
-  const SubscriptionGroupScreenContent({super.key, required this.id, this.cacheKey});
+  const SubscriptionGroupScreenContent({super.key, required this.id, this.cacheKey, this.mediaOnly = false});
 
   @override
   State<SubscriptionGroupScreenContent> createState() => _SubscriptionGroupScreenContentState();
@@ -132,6 +134,7 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
           chunks: chunks,
           includeReplies: group.includeReplies,
           includeRetweets: group.includeRetweets,
+          mediaOnly: widget.mediaOnly,
           cacheKey: widget.cacheKey,
           initialPreview: _preview,
         );
@@ -154,7 +157,7 @@ class SubscriptionGroupFeedChunk {
   }
 }
 
-class SubscriptionGroupScreen extends StatelessWidget {
+class SubscriptionGroupScreen extends StatefulWidget {
   final ScrollController scrollController;
   final String id;
   final String name;
@@ -171,18 +174,56 @@ class SubscriptionGroupScreen extends StatelessWidget {
       this.cacheKey});
 
   @override
+  State<SubscriptionGroupScreen> createState() => _SubscriptionGroupScreenState();
+}
+
+class _SubscriptionGroupScreenState extends State<SubscriptionGroupScreen> {
+  bool _mediaOnly = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Restore the filter together with the cached feed it was applied to, so a
+    // re-pushed route never shows filtered tweets under an unfiltered toggle.
+    final cacheKey = widget.cacheKey;
+    if (cacheKey != null) {
+      _mediaOnly = context.read<FeedSessionCache>().readMediaOnly(cacheKey);
+    }
+  }
+
+  void _toggleMediaOnly() {
+    setState(() => _mediaOnly = !_mediaOnly);
+    final cacheKey = widget.cacheKey;
+    if (cacheKey != null) {
+      context.read<FeedSessionCache>().saveMediaOnly(cacheKey, _mediaOnly);
+    }
+  }
+
+  Widget _mediaOnlyToggle(BuildContext context) => IconButton(
+        isSelected: _mediaOnly,
+        icon: const Icon(Icons.photo_library_outlined),
+        selectedIcon: const Icon(Icons.photo_library),
+        tooltip: L10n.of(context).only_show_posts_with_media,
+        onPressed: _toggleMediaOnly,
+      );
+
+  @override
   Widget build(BuildContext context) {
     return GroupFeedShell(
-      scrollController: scrollController,
-      groupId: id,
-      titleBuilder: (context) => Text(name),
-      bodyBuilder: (context) => SubscriptionGroupScreenContent(id: id, cacheKey: cacheKey),
-      actionsBuilder: (context) => defaultGroupActions(
-        context,
-        model: context.read<GroupModel>(),
-        scrollToTopController: scrollController,
-        extra: actions ?? const [],
-      ),
+      scrollController: widget.scrollController,
+      groupId: widget.id,
+      titleBuilder: (context) => Text(widget.name),
+      bodyBuilder: (context) =>
+          SubscriptionGroupScreenContent(id: widget.id, cacheKey: widget.cacheKey, mediaOnly: _mediaOnly),
+      actionsBuilder: (context) => [
+        _mediaOnlyToggle(context),
+        ...defaultGroupActions(
+          context,
+          model: context.read<GroupModel>(),
+          scrollToTopController: widget.scrollController,
+          extra: widget.actions ?? const [],
+        ),
+      ],
     );
   }
 }

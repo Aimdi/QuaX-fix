@@ -11,6 +11,7 @@ import 'package:quax/tweet/paginated_tweet_list.dart';
 class FeedSessionCache {
   final Map<String, TweetFeedController> _controllers = {};
   final Map<String, double> _offsets = {};
+  final Map<String, bool> _mediaOnly = {};
 
   TweetFeedController getOrCreateController(String key) {
     return _controllers.putIfAbsent(key, () => TweetFeedController());
@@ -22,6 +23,15 @@ class FeedSessionCache {
 
   double? readOffset(String key) => _offsets[key];
 
+  // The media-only filter lives here with the controller because the cached
+  // controller holds tweets loaded under that filter — restoring one without
+  // the other would show mismatched content.
+  void saveMediaOnly(String key, bool value) {
+    _mediaOnly[key] = value;
+  }
+
+  bool readMediaOnly(String key) => _mediaOnly[key] ?? false;
+
   // Drop references without disposing: a currently-mounted feed state may
   // still hold a reference and will detach its own listener in its dispose().
   // The old controller becomes garbage once the body remounts via the shell's
@@ -29,5 +39,6 @@ class FeedSessionCache {
   void invalidateAll() {
     _controllers.clear();
     _offsets.clear();
+    _mediaOnly.clear();
   }
 }

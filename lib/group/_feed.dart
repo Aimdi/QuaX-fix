@@ -18,11 +18,19 @@ import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:quax/utils/urls.dart';
 
+bool _tweetHasMedia(TweetWithCard tweet) =>
+    (tweet.extendedEntities?.media?.isNotEmpty ?? false) ||
+    (tweet.retweetedStatusWithCard != null && _tweetHasMedia(tweet.retweetedStatusWithCard!)) ||
+    (tweet.quotedStatusWithCard != null && _tweetHasMedia(tweet.quotedStatusWithCard!));
+
+bool _chainHasMedia(TweetChain chain) => chain.tweets.any(_tweetHasMedia);
+
 class SubscriptionGroupFeed extends StatefulWidget {
   final SubscriptionGroupGet group;
   final List<SubscriptionGroupFeedChunk> chunks;
   final bool includeReplies;
   final bool includeRetweets;
+  final bool mediaOnly;
   // When non-null, the PagingController and scroll offset are stored in the
   // app-scoped FeedSessionCache under this key, so pop+push of the same route
   // restores tweets and scroll position. When null, state is local to this
@@ -40,6 +48,7 @@ class SubscriptionGroupFeed extends StatefulWidget {
       required this.chunks,
       required this.includeReplies,
       required this.includeRetweets,
+      required this.mediaOnly,
       this.cacheKey,
       this.initialPreview});
 
@@ -142,6 +151,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
     if (oldWidget.includeReplies != widget.includeReplies ||
         oldWidget.includeRetweets != widget.includeRetweets ||
+        oldWidget.mediaOnly != widget.mediaOnly ||
         !_chunksMatch(oldWidget.chunks, widget.chunks)) {
       _feedController.controller.refresh();
     }
@@ -333,6 +343,25 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     return (chains: threads, nextCursor: nextCursor);
   }
 
+  /// Applies the media-only filter to a loaded page. Media posts can be
+  /// sparse, so when a page filters down to nothing, look a few pages ahead
+  /// before returning an empty page — which the controller treats as the end
+  /// of the feed.
+  Future<TweetPageResult> _loadPage(String? cursor) async {
+    var result = await _listTweets(cursor);
+    if (!widget.mediaOnly) return result;
+
+    var filtered = result.chains.where(_chainHasMedia).toList();
+    var lookahead = 0;
+    while (filtered.isEmpty && result.chains.isNotEmpty && result.nextCursor != null && lookahead < 4) {
+      result = await _listTweets(result.nextCursor);
+      filtered = result.chains.where(_chainHasMedia).toList();
+      lookahead++;
+    }
+
+    return (chains: filtered, nextCursor: result.nextCursor);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.chunks.isEmpty) {
@@ -343,22 +372,26 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       );
     }
 
+    final preview = widget.mediaOnly ? _cachedPreview?.where(_chainHasMedia).toList() : _cachedPreview;
+
     return Scaffold(
       body: TweetContextScope(
         child: NotificationListener<ScrollNotification>(
           onNotification: _onScrollNotification,
           child: PaginatedTweetList(
             feed: _feedController,
-            loadPage: _listTweets,
+            loadPage: _loadPage,
             username: null,
-            firstPagePreview: _cachedPreview,
+            firstPagePreview: preview,
             onRefresh: () async {
               var repository = await Repository.writable();
               await repository.delete(tableFeedGroupChunk);
             },
             firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets_for_the_feed,
             newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
-            emptyMessage: L10n.of(context).could_not_find_any_tweets_from_the_last_7_days,
+            emptyMessage: widget.mediaOnly
+                ? L10n.of(context).could_not_find_any_posts_with_media
+                : L10n.of(context).could_not_find_any_tweets_from_the_last_7_days,
           ),
         ),
       ),
