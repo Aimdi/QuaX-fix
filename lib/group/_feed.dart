@@ -22,6 +22,15 @@ import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:quax/utils/urls.dart';
 
+Iterable<BigInt> _tweetIdsOf(Iterable<TweetChain> chains) =>
+    chains.expand((c) => c.tweets).map((t) => t.idStr).whereType<String>().map(BigInt.tryParse).whereType<BigInt>();
+
+BigInt? _newestTweetIdOf(Iterable<TweetChain> chains) =>
+    _tweetIdsOf(chains).fold<BigInt?>(null, (max, id) => max == null || id > max ? id : max);
+
+BigInt? _oldestTweetIdOf(Iterable<TweetChain> chains) =>
+    _tweetIdsOf(chains).fold<BigInt?>(null, (min, id) => min == null || id < min ? id : min);
+
 class SubscriptionGroupFeed extends StatefulWidget {
   final SubscriptionGroupGet group;
   final List<SubscriptionGroupFeedChunk> chunks;
@@ -284,6 +293,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
         var tweets = <TweetChain>[];
 
         String? searchCursor;
+        BigInt? storedNewestId;
 
         if (cursorKey == null) {
           // We're loading the initial content for the feed screen, so load all the chunks we already have
@@ -292,6 +302,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
           // Make sure we load any existing stored tweets from the chunk
           tweets.addAll(chainsFromStoredChunks(storedChunks));
+          storedNewestId = _newestTweetIdOf(tweets);
 
           // Use the latest chunk's top cursor to load any new tweets since the last time we checked
           var latestChunk = storedChunks.firstOrNull;
@@ -329,6 +340,32 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
             'cursor_bottom': result.cursorBottom,
             'response': jsonEncode(result.chains.map((e) => e.toJson()).toList())
           });
+        }
+
+        // A single fetch returns only the newest page, so a long absence
+        // leaves a hole between it and the stored posts. Keep paging down
+        // until the fresh content overlaps what was stored (bounded, so a
+        // week away can't trigger dozens of requests).
+        var page = result;
+        var gapFills = 0;
+        while (storedNewestId != null &&
+            page.chains.isNotEmpty &&
+            (_oldestTweetIdOf(page.chains) ?? BigInt.zero) > storedNewestId &&
+            page.cursorBottom != null &&
+            gapFills < maxFeedGapFillPages) {
+          page = await Twitter.searchTweets(query, widget.includeReplies, cursor: page.cursorBottom);
+          gapFills++;
+
+          if (page.chains.isNotEmpty) {
+            tweets.addAll(page.chains);
+            await repository.insert(tableFeedGroupChunk, {
+              'cursor_id': int.parse(nextCursor),
+              'hash': hash,
+              'cursor_top': page.cursorTop,
+              'cursor_bottom': page.cursorBottom,
+              'response': jsonEncode(page.chains.map((e) => e.toJson()).toList())
+            });
+          }
         }
 
         return tweets;

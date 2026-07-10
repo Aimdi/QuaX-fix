@@ -88,6 +88,10 @@ const mediaGridLayoutTwoColumns = 'two_columns';
 // How many posts per author survive a feed page in zen mode
 const zenModeMaxTweetsPerAuthor = 4;
 
+// How many extra pages an initial feed load may fetch per chunk to close the
+// gap between freshly fetched posts and the previously stored ones
+const maxFeedGapFillPages = 4;
+
 
 final Map<String, String> userAgentHeader = {
   'user-agent':
