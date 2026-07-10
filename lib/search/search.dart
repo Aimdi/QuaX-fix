@@ -6,6 +6,7 @@ import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/profile/profile.dart';
+import 'package:quax/search/advanced_search.dart';
 import 'package:quax/search/search_media_grid.dart';
 import 'package:quax/search/search_model.dart';
 import 'package:quax/tweet/_video.dart';
@@ -130,6 +131,19 @@ class _ResultsScreenState extends State<_ResultsScreen> with SingleTickerProvide
             textInputAction: TextInputAction.search,
             leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
             trailing: [
+              IconButton(
+                icon: const Icon(Icons.tune),
+                tooltip: L10n.of(context).advanced_search,
+                onPressed: () async {
+                  final query = await Navigator.push<String>(
+                    context,
+                    MaterialPageRoute(fullscreenDialog: true, builder: (_) => const AdvancedSearchScreen()),
+                  );
+                  if (query != null && query.trim().isNotEmpty) {
+                    _queryController.text = query;
+                  }
+                },
+              ),
               FollowButton(user: SearchSubscription(id: _queryController.text, createdAt: DateTime.now())),
             ],
           ),
