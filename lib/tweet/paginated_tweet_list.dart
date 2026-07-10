@@ -35,7 +35,13 @@ class TweetFeedController {
   Future<CursorPage<String, TweetChain>> _fetch(String? cursor) async {
     final result = await _loader!(cursor);
     final next = result.nextCursor;
-    return (items: result.chains, nextCursor: _isLastPage(result.chains, next, cursor) ? null : next);
+    // Later pages can overlap earlier ones (search cursors aren't exact
+    // boundaries), so drop chains that are already displayed. Last-page
+    // detection stays on the unfiltered page: an all-duplicates page still
+    // carries a cursor worth following.
+    final seen = cursor == null ? <String>{} : (_paging.items ?? const <TweetChain>[]).map((e) => e.id).toSet();
+    final items = result.chains.where((c) => seen.add(c.id)).toList();
+    return (items: items, nextCursor: _isLastPage(result.chains, next, cursor) ? null : next);
   }
 
   // Pagination ends on an empty page, a missing/blank cursor, or a cursor that

@@ -327,9 +327,11 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       }));
     }
 
-    // Wait for all our searches to complete, then build our list of tweet conversations
+    // Wait for all our searches to complete, then build our list of tweet conversations.
+    // The stored chunks and the fresh fetch overlap at their window boundaries,
+    // so drop repeated chains before display.
     var result = (await Future.wait(futures));
-    var threads = sortChainsNewestFirst(result.expand((element) => element).toList());
+    var threads = sortChainsNewestFirst(dedupeChainsById(result.expand((element) => element).toList()));
 
     if (!mounted) {
       return (chains: <TweetChain>[], nextCursor: null);

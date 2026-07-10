@@ -17,6 +17,14 @@ List<TweetChain> chainsFromStoredChunks(List<Map<String, Object?>> storedChunks)
       .toList();
 }
 
+/// Keeps only the first occurrence of each chain id. Stored chunk rows and
+/// successive search windows overlap at their boundaries, so the same chain
+/// routinely appears in several sources.
+List<TweetChain> dedupeChainsById(List<TweetChain> chains) {
+  var seen = <String>{};
+  return chains.where((c) => seen.add(c.id)).toList();
+}
+
 List<TweetChain> sortChainsNewestFirst(List<TweetChain> chains) {
   return chains.sorted((a, b) {
     var aCreatedAt = a.tweets[0].createdAt;
@@ -38,7 +46,7 @@ Future<List<TweetChain>> readCachedChainsForHashes(Database repository, Iterable
         where: 'hash = ?', whereArgs: [hash], orderBy: 'created_at DESC');
     chains.addAll(chainsFromStoredChunks(storedChunks));
   }
-  return sortChainsNewestFirst(chains);
+  return sortChainsNewestFirst(dedupeChainsById(chains));
 }
 
 /// Every cached tweet across all chunks, newest first and de-duplicated. Used to
@@ -46,7 +54,5 @@ Future<List<TweetChain>> readCachedChainsForHashes(Database repository, Iterable
 /// before the per-chunk hashes are known.
 Future<List<TweetChain>> readAllCachedChains(Database repository) async {
   var storedChunks = await repository.query(tableFeedGroupChunk, orderBy: 'created_at DESC');
-  var seen = <String>{};
-  var chains = chainsFromStoredChunks(storedChunks).where((c) => seen.add(c.id)).toList();
-  return sortChainsNewestFirst(chains);
+  return sortChainsNewestFirst(dedupeChainsById(chainsFromStoredChunks(storedChunks)));
 }
