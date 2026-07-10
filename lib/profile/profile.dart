@@ -10,6 +10,7 @@ import 'package:quax/profile/_follows.dart';
 import 'package:quax/profile/_media_grid.dart';
 import 'package:quax/profile/_saved.dart';
 import 'package:quax/profile/_tweets.dart';
+import 'package:quax/profile/profile_feed_settings.dart';
 import 'package:quax/profile/profile_model.dart';
 import 'package:quax/search/search.dart';
 import 'package:quax/tweet/_media.dart';
@@ -552,6 +553,10 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
                           alignment: Alignment.topRight,
                           margin: EdgeInsets.fromLTRB(128, profileImageTop + 64, 16, 16),
                           child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                            ProfileFeedSettingsButton(
+                              user: user,
+                              color: theme.colorScheme.primary,
+                            ),
                             PostNotificationBell(
                               user: user,
                               color: theme.colorScheme.primary,

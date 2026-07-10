@@ -23,6 +23,7 @@ const String tableSubscriptionGroupMember = 'subscription_group_member';
 
 const String tableAccounts = 'accounts';
 const String tablePostNotification = 'post_notification';
+const String tableRetweetFilter = 'retweet_filter';
 
 class Repository {
   static final log = Logger('Repository');
@@ -270,11 +271,17 @@ class Repository {
         SqlMigration(
             'CREATE TABLE IF NOT EXISTS $tablePostNotification (user_id VARCHAR PRIMARY KEY, screen_name VARCHAR NOT NULL, name VARCHAR, last_tweet_id VARCHAR DEFAULT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
             reverseSql: 'DROP TABLE $tablePostNotification'),
+      ],
+      29: [
+        // Users whose retweets are hidden from all feeds ("turn off reposts").
+        SqlMigration(
+            'CREATE TABLE IF NOT EXISTS $tableRetweetFilter (user_id VARCHAR PRIMARY KEY, screen_name VARCHAR NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+            reverseSql: 'DROP TABLE $tableRetweetFilter'),
       ]
     });
     await openDatabase(
       databaseName,
-      version: 28,
+      version: 29,
       onUpgrade: myMigrationPlan.call,
       onCreate: myMigrationPlan.call,
       onDowngrade: myMigrationPlan.call,

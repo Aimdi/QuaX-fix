@@ -12,6 +12,7 @@ import 'package:quax/group/feed_session_cache.dart';
 import 'package:quax/group/group_screen.dart';
 import 'package:quax/profile/media_grid/media_grid.dart';
 import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
+import 'package:quax/profile/profile_feed_settings.dart';
 import 'package:quax/tweet/paginated_tweet_list.dart';
 import 'package:quax/tweet/tweet_context_scope.dart';
 import 'package:quax/utils/iterables.dart';
@@ -91,6 +92,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   Future<void> _loadPreview() async {
     var repository = await Repository.readOnly();
     var cached = await readCachedChainsForHashes(repository, widget.chunks.map((e) => e.hash));
+    cached = filterHiddenRetweets(cached, await hiddenRetweetScreenNames());
     if (!mounted) return;
     setState(() => _cachedPreview = cached);
   }
@@ -338,6 +340,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     // so drop repeated chains before display.
     var result = (await Future.wait(futures));
     var threads = _sortChains(dedupeChainsById(result.expand((element) => element).toList()));
+    threads = filterHiddenRetweets(threads, await hiddenRetweetScreenNames());
 
     if (!mounted) {
       return (chains: <TweetChain>[], nextCursor: null);
