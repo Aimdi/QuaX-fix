@@ -345,6 +345,8 @@
   "@not_set": {},
   "note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": "Not: Twitter sınırlaması nedeniyle, tüm tweet'ler dahil edilmeyebilir",
   "@note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": {},
+  "notify_on_new_posts": "Yeni tweetleri bildir",
+  "@notify_on_new_posts": {},
   "numberFormat_format_total_votes": "{num, plural, zero{Oy yok} one{Bir oy} two{İki oy} few{{numFormatted} oy} many{{numFormatted} oy} other{{numFormatted} oy}}",
   "@numberFormat_format_total_votes": {},
   "ok": "TAMAM",

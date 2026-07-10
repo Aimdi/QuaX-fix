@@ -22,6 +22,7 @@ const String tableSubscriptionGroup = 'subscription_group';
 const String tableSubscriptionGroupMember = 'subscription_group_member';
 
 const String tableAccounts = 'accounts';
+const String tablePostNotification = 'post_notification';
 
 class Repository {
   static final log = Logger('Repository');
@@ -262,11 +263,18 @@ class Repository {
         // Per-group feed ordering: popular (Top search results) vs recent (Latest, the default).
         SqlMigration('ALTER TABLE $tableSubscriptionGroup ADD COLUMN popular BOOLEAN DEFAULT 0',
             reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN popular'),
+      ],
+      28: [
+        // Users watched for new-post notifications, with the newest post id
+        // already handled (NULL = baseline not yet established).
+        SqlMigration(
+            'CREATE TABLE IF NOT EXISTS $tablePostNotification (user_id VARCHAR PRIMARY KEY, screen_name VARCHAR NOT NULL, name VARCHAR, last_tweet_id VARCHAR DEFAULT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+            reverseSql: 'DROP TABLE $tablePostNotification'),
       ]
     });
     await openDatabase(
       databaseName,
-      version: 27,
+      version: 28,
       onUpgrade: myMigrationPlan.call,
       onCreate: myMigrationPlan.call,
       onDowngrade: myMigrationPlan.call,

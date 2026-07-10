@@ -345,6 +345,8 @@
   "@not_set": {},
   "note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": "Zaŭvaha: U suviazi z abmiežavańniem Twitter, nie ŭsie tvity mohuć być uklučany",
   "@note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": {},
+  "notify_on_new_posts": "Apaviaščać pra novyja tvity",
+  "@notify_on_new_posts": {},
   "numberFormat_format_total_votes": "{num, plural, zero{Niama hałasou} one{Adzin hałas} few{{numFormatted} hałasy} many{{numFormatted} hałasou} other{{numFormatted} hałasou}}",
   "@numberFormat_format_total_votes": {},
   "ok": "OK",

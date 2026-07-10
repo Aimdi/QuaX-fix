@@ -345,6 +345,8 @@
   "@not_set": {},
   "note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": "Poznámka: kvuli imitaci Twitteru nemusí byt zahrnuty všechny tweety",
   "@note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": {},
+  "notify_on_new_posts": "Upozorňovat na nové tweety",
+  "@notify_on_new_posts": {},
   "numberFormat_format_total_votes": "{num, plural, zero{Žádné hlasy} one{Jeden hlas} two{Dva hlasy} few{{numFormatted} hlasy} many{{numFormatted} hlasů} other{{numFormatted} hlasů}}",
   "@numberFormat_format_total_votes": {},
   "ok": "OK",

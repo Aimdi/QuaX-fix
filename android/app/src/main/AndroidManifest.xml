@@ -4,6 +4,8 @@
     android:installLocation="auto">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- New-post notifications (Android 13+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Force usage of the file picker library even on SDKs < 19, as we handle it at runtime -->
     <uses-sdk tools:overrideLibrary="com.kineapps.flutter_file_dialog" />

@@ -345,6 +345,8 @@
   "@not_set": {},
   "note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": "Catatan: Karena batasan Twitter, tidak semua cuitan akan disertakan",
   "@note_due_to_a_twitter_limitation_not_all_tweets_may_be_included": {},
+  "notify_on_new_posts": "Beri tahu tentang cuitan baru",
+  "@notify_on_new_posts": {},
   "numberFormat_format_total_votes": "{num, plural, zero{Tidak ada pemilihan} one{Satu pemilihan} two{Dua pemilihan} few{{numFormatted} pemilihan} many{{numFormatted} pemilihan} other{{numFormatted} pemilihan}}",
   "@numberFormat_format_total_votes": {},
   "ok": "Oke",
