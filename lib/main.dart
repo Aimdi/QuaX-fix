@@ -241,6 +241,7 @@ Future<void> main() async {
     optionNonConfirmationBiasMode: false,
     optionTweetsShowSubscribeBadge: true,
     optionZenMode: false,
+    optionMediaGridLayout: mediaGridLayoutMasonry,
     optionShouldCheckForUpdates: true,
     optionSubscriptionGroupsOrderByAscending: true,
     optionDisableWarningsForUnrelatedPostsInFeed: false,

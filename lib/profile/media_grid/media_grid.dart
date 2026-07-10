@@ -1,5 +1,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pref/pref.dart';
 import 'package:quax/constants.dart';
@@ -10,6 +11,21 @@ import 'package:quax/status.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/utils/paging.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
+typedef MediaGridConfig = ({int columns, bool square});
+
+/// Resolves the media-layout preference: masonry follows the column-count
+/// setting; the square (Instagram-like) grid is 3 uniform tiles per row; the
+/// two-column layout keeps natural aspect ratios at 2 per row.
+MediaGridConfig mediaGridConfigOf(BuildContext context) {
+  var prefs = PrefService.of(context);
+  var layout = prefs.get<String>(optionMediaGridLayout) ?? mediaGridLayoutMasonry;
+  return switch (layout) {
+    mediaGridLayoutSquare => (columns: 3, square: true),
+    mediaGridLayoutTwoColumns => (columns: 2, square: false),
+    _ => (columns: prefs.get<int>(optionMediaGridColumns) ?? 3, square: false),
+  };
+}
 
 class MediaGrid extends StatefulWidget {
   final PagingController<int, MediaGridItem> controller;
@@ -45,7 +61,7 @@ class _MediaGridState extends State<MediaGrid> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
 
-    var columns = PrefService.of(context).get<int>(optionMediaGridColumns) ?? 3;
+    var config = mediaGridConfigOf(context);
 
     return RefreshIndicator(
       onRefresh: () async => widget.controller.refresh(),
@@ -55,12 +71,13 @@ class _MediaGridState extends State<MediaGrid> with AutomaticKeepAliveClientMixi
           state: state,
           fetchNextPage: fetchNextPage,
           padding: const EdgeInsets.all(2),
-          crossAxisCount: columns,
+          crossAxisCount: config.columns,
           mainAxisSpacing: 2,
           crossAxisSpacing: 2,
           addAutomaticKeepAlives: false,
           builderDelegate: PagedChildBuilderDelegate<MediaGridItem>(
-            itemBuilder: (context, item, index) => _MediaGridTile(item: item, gifGate: _gifGate),
+            itemBuilder: (context, item, index) =>
+                _MediaGridTile(item: item, gifGate: _gifGate, square: config.square),
             firstPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
               error: pagingErrorOf(state)?.error,
               stackTrace: pagingErrorOf(state)?.stackTrace,
@@ -81,11 +98,62 @@ class _MediaGridState extends State<MediaGrid> with AutomaticKeepAliveClientMixi
   }
 }
 
+/// Non-paginated media grid for an in-memory item list (e.g. saved posts),
+/// sharing the paginated grid's tiles and layout preference.
+class StaticMediaGrid extends StatefulWidget {
+  final List<MediaGridItem> items;
+  final String emptyMessage;
+
+  const StaticMediaGrid({super.key, required this.items, required this.emptyMessage});
+
+  @override
+  State<StaticMediaGrid> createState() => _StaticMediaGridState();
+}
+
+class _StaticMediaGridState extends State<StaticMediaGrid> {
+  final GifPlaybackGate _gifGate = GifPlaybackGate();
+
+  @override
+  void dispose() {
+    _gifGate.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.items.isEmpty) {
+      return LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Center(child: Text(widget.emptyMessage)),
+          ),
+        ),
+      );
+    }
+
+    var config = mediaGridConfigOf(context);
+
+    return MasonryGridView.count(
+      padding: const EdgeInsets.all(2),
+      physics: const AlwaysScrollableScrollPhysics(),
+      crossAxisCount: config.columns,
+      mainAxisSpacing: 2,
+      crossAxisSpacing: 2,
+      itemCount: widget.items.length,
+      itemBuilder: (context, index) =>
+          _MediaGridTile(item: widget.items[index], gifGate: _gifGate, square: config.square),
+    );
+  }
+}
+
 class _MediaGridTile extends StatefulWidget {
   final MediaGridItem item;
   final GifPlaybackGate gifGate;
+  final bool square;
 
-  const _MediaGridTile({required this.item, required this.gifGate});
+  const _MediaGridTile({required this.item, required this.gifGate, this.square = false});
 
   @override
   State<_MediaGridTile> createState() => _MediaGridTileState();
@@ -163,9 +231,9 @@ class _MediaGridTileState extends State<_MediaGridTile> {
     }
 
     return AspectRatio(
-      aspectRatio: item.aspectRatio,
+      aspectRatio: widget.square ? 1 : item.aspectRatio,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(widget.square ? 0 : 8),
         child: body,
       ),
     );

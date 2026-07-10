@@ -9,6 +9,8 @@ import 'package:quax/client/client.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/profile/media_grid/media_grid.dart';
+import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:quax/profile/profile.dart';
 import 'package:quax/saved/folder_picker.dart';
 import 'package:quax/saved/liked_tweet_model.dart';
@@ -33,6 +35,7 @@ class SavedScreen extends StatefulWidget {
 class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClientMixin<SavedScreen> {
   // Selected folder filter: savedTabAll, savedTabUnfiled, or a folder id.
   String _filter = savedTabAll;
+  bool _mediaOnly = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -99,6 +102,32 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
       padding: const EdgeInsets.only(top: 4),
       itemCount: itemCount,
       itemBuilder: (context, index) => tileAt(index),
+    );
+  }
+
+  /// Media entries of the given saved posts, for the media-only grid.
+  List<MediaGridItem> _mediaItemsOf(Iterable<String?> contents) {
+    var chains = <TweetChain>[];
+    for (var content in contents) {
+      if (content == null) {
+        continue;
+      }
+      var tweet = TweetWithCard.fromJson(jsonDecode(content));
+      if (tweet.idStr == null) {
+        continue;
+      }
+      chains.add(TweetChain(id: tweet.idStr!, tweets: [tweet], isPinned: false));
+    }
+    return mediaItemsFromChains(chains);
+  }
+
+  Widget _buildMediaGrid(Iterable<String?> contents) {
+    return RefreshIndicator(
+      onRefresh: _refresh,
+      child: StaticMediaGrid(
+        items: _mediaItemsOf(contents),
+        emptyMessage: L10n.of(context).could_not_find_any_posts_with_media,
+      ),
     );
   }
 
@@ -264,6 +293,10 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
       onState: (_, data) {
         var filtered = _applyFilter(data);
 
+        if (_mediaOnly && filtered.isNotEmpty) {
+          return _buildMediaGrid(filtered.map((e) => e.content));
+        }
+
         return RefreshIndicator(
           onRefresh: _refresh,
           child: filtered.isEmpty
@@ -288,14 +321,20 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
         onRetry: () => model.listLikedTweets(),
       ),
       onLoading: (_) => const Center(child: CircularProgressIndicator()),
-      onState: (_, data) => RefreshIndicator(
-        onRefresh: _refresh,
-        child: data.isEmpty
-            ? _buildEmptyState()
-            : _buildList(
-                itemCount: data.length,
-                tileAt: (i) => SavedTweetTile(id: data[i].id, content: data[i].content)),
-      ),
+      onState: (_, data) {
+        if (_mediaOnly && data.isNotEmpty) {
+          return _buildMediaGrid(data.map((e) => e.content));
+        }
+
+        return RefreshIndicator(
+          onRefresh: _refresh,
+          child: data.isEmpty
+              ? _buildEmptyState()
+              : _buildList(
+                  itemCount: data.length,
+                  tileAt: (i) => SavedTweetTile(id: data[i].id, content: data[i].content)),
+        );
+      },
     );
   }
 
@@ -317,6 +356,13 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
               floating: true,
               title: Text(L10n.current.saved),
               actions: [
+                IconButton(
+                  isSelected: _mediaOnly,
+                  icon: const Icon(Icons.photo_library_outlined),
+                  selectedIcon: const Icon(Icons.photo_library),
+                  tooltip: L10n.current.only_show_posts_with_media,
+                  onPressed: () => setState(() => _mediaOnly = !_mediaOnly),
+                ),
                 IconButton(
                     icon: const Icon(Icons.folder_copy_outlined),
                     tooltip: L10n.current.manage_folders,

@@ -125,12 +125,13 @@ List<Widget> defaultGroupActions(
   ScrollController? scrollToTopController,
   bool showMore = true,
   bool showRefresh = true,
+  bool showSettings = true,
   VoidCallback? onRefresh,
   List<Widget> extra = const [],
 }) {
   return [
     if (showMore)
-      IconButton(icon: const Icon(Icons.more_vert), onPressed: () => showFeedSettings(context, model)),
+      IconButton(icon: const Icon(Icons.build_outlined), onPressed: () => showFeedSettings(context, model)),
     if (scrollToTopController != null)
       IconButton(
           icon: const Icon(Icons.arrow_upward),
@@ -144,8 +145,9 @@ List<Widget> defaultGroupActions(
       IconButton(
           icon: const Icon(Icons.refresh),
           onPressed: onRefresh ?? () async => await context.read<FeedRefreshController>().refresh()),
-    IconButton(
-        icon: const Icon(Icons.settings), onPressed: () => Navigator.pushNamed(context, routeSettings)),
+    if (showSettings)
+      IconButton(
+          icon: const Icon(Icons.settings), onPressed: () => Navigator.pushNamed(context, routeSettings)),
     ...extra,
   ];
 }

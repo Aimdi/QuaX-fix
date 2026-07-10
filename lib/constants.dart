@@ -79,6 +79,11 @@ const optionUserTrendsLocations = 'trends.locations';
 const optionNonConfirmationBiasMode = 'other.improve_non_confirmation_bias';
 const optionTweetsShowSubscribeBadge = 'tweets.show_subscribe_badge';
 const optionZenMode = 'other.zen_mode';
+const optionMediaGridLayout = 'media.grid_layout';
+
+const mediaGridLayoutMasonry = 'masonry';
+const mediaGridLayoutSquare = 'square';
+const mediaGridLayoutTwoColumns = 'two_columns';
 
 // How many posts per author survive a feed page in zen mode
 const zenModeMaxTweetsPerAuthor = 4;

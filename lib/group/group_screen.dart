@@ -221,6 +221,7 @@ class _SubscriptionGroupScreenState extends State<SubscriptionGroupScreen> {
           context,
           model: context.read<GroupModel>(),
           scrollToTopController: widget.scrollController,
+          showSettings: false,
           extra: widget.actions ?? const [],
         ),
       ],
