@@ -17,6 +17,16 @@ class SettingsThemeFragment extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: ListView(children: [
+          PrefDropdown(
+              fullWidth: false,
+              title: Text(L10n.of(context).theme_preset),
+              subtitle: Text(L10n.of(context).theme_preset_description),
+              pref: optionThemePreset,
+              items: [
+                DropdownMenuItem(value: themePresetNone, child: Text(L10n.of(context).content_filter_default)),
+                const DropdownMenuItem(value: themePresetFairyForest, child: Text('Fairy Forest')),
+                const DropdownMenuItem(value: themePresetPitchBlack, child: Text('Pitch Black')),
+              ]),
           PrefDropdown(fullWidth: false, title: Text(L10n.of(context).theme_mode), pref: optionThemeMode, items: [
             DropdownMenuItem(
               value: 'system',

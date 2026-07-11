@@ -40,6 +40,7 @@ import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/trends/trends_model.dart';
 import 'package:quax/tweet/_video.dart';
 import 'package:quax/ui/errors.dart';
+import 'package:quax/ui/theme_presets.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
@@ -252,6 +253,7 @@ Future<void> main() async {
     optionSubscriptionOrderCustom: '',
     optionThemeMode: 'system',
     optionThemeColor: 'accent',
+    optionThemePreset: themePresetNone,
     optionThemeTrueBlack: true,
     optionThemeTrueBlackTweetCards: true,
     optionShowNavigationLabels: false,
@@ -344,6 +346,7 @@ class _FritterAppState extends State<FritterApp> {
 
   String _themeMode = 'system';
   String _themeColor = 'accent';
+  String _themePreset = themePresetNone;
   bool _disableAnimations = false;
   bool _trueBlack = true;
   bool _checkUpdates = false;
@@ -383,6 +386,7 @@ class _FritterAppState extends State<FritterApp> {
       setLocale(prefService.get<String>(optionLocale));
       _themeMode = prefService.get(optionThemeMode);
       _themeColor = prefService.get(optionThemeColor);
+      _themePreset = prefService.get(optionThemePreset);
       _trueBlack = prefService.get(optionThemeTrueBlack);
       _disableAnimations = prefService.get(optionDisableAnimations);
       _checkUpdates = prefService.get(optionShouldCheckForUpdates);
@@ -419,6 +423,12 @@ class _FritterAppState extends State<FritterApp> {
       });
     });
 
+    prefService.addKeyListener(optionThemePreset, () {
+      setState(() {
+        _themePreset = prefService.get(optionThemePreset);
+      });
+    });
+
     prefService.addKeyListener(optionDisableScreenshots, () {
       setState(() {
         _isSecure = prefService.get(optionDisableScreenshots);
@@ -451,6 +461,15 @@ class _FritterAppState extends State<FritterApp> {
         break;
     }
 
+    final PageTransitionsTheme? pageTransitions = _disableAnimations == true
+        ? PageTransitionsTheme(
+            builders: {
+              TargetPlatform.android: NoAnimationPageTransitionsBuilder(),
+              TargetPlatform.iOS: NoAnimationPageTransitionsBuilder(),
+            },
+          )
+        : null;
+
     final systemOverlayStyle = SystemUiOverlayStyle.dark.copyWith(systemNavigationBarColor: Colors.transparent);
     SystemChrome.setSystemUIOverlayStyle(systemOverlayStyle);
     final systemScaleFactor = MediaQuery.textScalerOf(context).scale(1.0);
@@ -474,7 +493,9 @@ class _FritterAppState extends State<FritterApp> {
                         supportedLocales: L10n.delegate.supportedLocales,
                         locale: _locale,
                         title: 'QuaX',
-                        theme: ThemeData(
+                        theme: _themePreset == themePresetFairyForest
+                            ? fairyForestTheme(pageTransitions)
+                            : ThemeData(
                           colorScheme: _themeColor == 'accent'
                               ? lightDynamic
                               : ColorScheme.fromSeed(
@@ -491,7 +512,9 @@ class _FritterAppState extends State<FritterApp> {
                               : null,
                           useMaterial3: true,
                         ),
-                        darkTheme: ThemeData(
+                        darkTheme: _themePreset == themePresetPitchBlack
+                            ? pitchBlackTheme(pageTransitions)
+                            : ThemeData(
                           colorScheme: (_trueBlack == true
                               ? (_themeColor == 'accent'
                                       ? darkDynamic
@@ -520,7 +543,11 @@ class _FritterAppState extends State<FritterApp> {
                               : null,
                           useMaterial3: true,
                         ),
-                        themeMode: themeMode,
+                        themeMode: _themePreset == themePresetFairyForest
+                            ? ThemeMode.light
+                            : _themePreset == themePresetPitchBlack
+                                ? ThemeMode.dark
+                                : themeMode,
                         initialRoute: '/',
                         routes: {
                           routeHome: (context) => const DefaultPage(),

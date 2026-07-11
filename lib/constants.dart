@@ -50,6 +50,11 @@ const optionDefaultProfileTab = 'subscription.default_tab';
 
 const optionThemeMode = 'theme.mode';
 const optionThemeColor = 'theme.color';
+const optionThemePreset = 'theme.preset';
+
+const themePresetNone = 'none';
+const themePresetFairyForest = 'fairy_forest';
+const themePresetPitchBlack = 'pitch_black';
 const optionThemeTrueBlack = 'theme.true_black';
 const optionThemeTrueBlackTweetCards = 'theme.true_black_tweet_cards';
 const optionShowNavigationLabels = 'theme.show_navigation_labels';
