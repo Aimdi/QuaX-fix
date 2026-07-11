@@ -14,6 +14,7 @@ import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:quax/profile/profile.dart';
 import 'package:quax/saved/folder_picker.dart';
 import 'package:quax/saved/liked_tweet_model.dart';
+import 'package:quax/saved/saved_cleanup.dart';
 import 'package:quax/saved/saved_tab_order.dart';
 import 'package:quax/saved/saved_tweet_folder_model.dart';
 import 'package:quax/saved/saved_tweet_model.dart';
@@ -372,6 +373,15 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
                         setState(() {});
                       }
                     }),
+                IconButton(
+                  icon: const Icon(Icons.delete_outline),
+                  tooltip: L10n.current.find_broken_bookmarks,
+                  onPressed: () => showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => const BrokenBookmarksDialog(),
+                  ),
+                ),
                 IconButton(
                     icon: const Icon(Icons.settings),
                     onPressed: () async {

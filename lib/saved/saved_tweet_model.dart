@@ -27,6 +27,19 @@ class SavedTweetModel extends Store<List<SavedTweet>> {
     update(state.map((e) => e.id == id ? e.copyWith(folderId: folderId) : e).toList(), force: true);
   }
 
+  Future<void> removeSavedTweets(List<String> ids) async {
+    var database = await Repository.writable();
+
+    var batch = database.batch();
+    for (final id in ids) {
+      batch.delete(tableSavedTweet, where: 'id = ?', whereArgs: [id]);
+    }
+    await batch.commit(noResult: true);
+
+    state.removeWhere((e) => ids.contains(e.id));
+    update(state, force: true);
+  }
+
   Future<void> deleteSavedTweet(String id) async {
     var database = await Repository.writable();
 
