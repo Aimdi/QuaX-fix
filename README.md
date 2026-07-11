@@ -87,7 +87,8 @@ This fork is based on upstream **v4.12.0**. Everything below is on top of that.
 
 ### Theming & identity
 
-- **New app icon** — blue instead of black, with a small serif *y* signature in the corner.
+- **New app icon** — a blue gradient with a soft drop shadow instead of flat black, and a small
+  serif *y* signature in the corner.
 - **Two theme presets** — *Fairy Forest* and *Pitch Black* (see below).
 
 ### Build & release
