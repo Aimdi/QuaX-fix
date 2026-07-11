@@ -129,6 +129,23 @@ class SubscriptionsModel extends Store<List<Subscription>> {
     await groupModel.reloadGroups();
   }
 
+  Future<void> removeSubscriptions(List<UserSubscription> users) async {
+    var database = await Repository.writable();
+
+    await execute(() async {
+      for (final user in users) {
+        await database.delete(tableSubscription, where: 'id = ?', whereArgs: [user.id]);
+        await database.delete(tableSubscriptionGroupMember, where: 'profile_id = ?', whereArgs: [user.id]);
+      }
+
+      await reloadSubscriptions();
+
+      return state;
+    });
+
+    await groupModel.reloadGroups();
+  }
+
   Future<void> toggleSubscribe(Subscription user, bool currentlyFollowed) async {
     if (user is UserSubscription) {
       await _toggleUserSubscribe(user, currentlyFollowed);

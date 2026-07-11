@@ -112,6 +112,7 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
   late String icon;
   Color? color;
   Set<String> members = <String>{};
+  List<Subscription> orderedSubscriptions = [];
 
   @override
   void initState() {
@@ -121,6 +122,8 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
       icon = widget.icon;
     });
 
+    final subscriptions = context.read<SubscriptionsModel>().state;
+
     context.read<GroupsModel>().loadGroupEdit(widget.id).then((group) => setState(() {
           _group = group;
 
@@ -129,6 +132,10 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
           icon = group.icon;
           color = group.color;
           members = group.members;
+          orderedSubscriptions = [
+            ...subscriptions.where((s) => group.members.contains(s.id)),
+            ...subscriptions.where((s) => !group.members.contains(s.id)),
+          ];
         }));
   }
 
@@ -305,9 +312,9 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
               Expanded(
                 child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: subscriptionsModel.state.length,
+                  itemCount: orderedSubscriptions.length,
                   itemBuilder: (context, index) {
-                    var subscription = subscriptionsModel.state[index];
+                    var subscription = orderedSubscriptions[index];
 
                     var subtitle =
                         subscription is SearchSubscription ? L10n.current.search_term : '@${subscription.screenName}';

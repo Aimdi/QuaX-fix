@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
+import 'package:quax/subscriptions/_cleanup.dart';
 import 'package:quax/subscriptions/_groups.dart';
 import 'package:quax/subscriptions/_import.dart';
 import 'package:quax/subscriptions/_list.dart';
@@ -27,9 +28,13 @@ class SubscriptionsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: CustomScrollView(
+      body: Scrollbar(
         controller: scrollController,
-        slivers: [
+        interactive: true,
+        thumbVisibility: true,
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: [
           SliverPadding(
             padding: const EdgeInsets.all(8.0),
             sliver: SliverToBoxAdapter(
@@ -120,6 +125,18 @@ class SubscriptionsScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete_outline,
+                            color: Theme.of(context).iconTheme.color,
+                          ),
+                          tooltip: L10n.of(context).find_broken_subscriptions,
+                          onPressed: () => showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => const BrokenSubscriptionsDialog(),
+                          ),
+                        ),
                         PopupMenuButton<String>(
                           icon: Icon(
                             Icons.sort,
@@ -160,9 +177,10 @@ class SubscriptionsScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SubscriptionUsers(),
-          SliverToBoxAdapter(child: SizedBox(height: MediaQuery.of(context).padding.bottom)),
-        ],
+            const SubscriptionUsers(),
+            SliverToBoxAdapter(child: SizedBox(height: MediaQuery.of(context).padding.bottom)),
+          ],
+        ),
       ),
     );
   }
