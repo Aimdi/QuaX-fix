@@ -7,18 +7,51 @@ import 'package:android_intent_plus/android_intent.dart';
 
 const _channel = MethodChannel('browser_resolver');
 
+const _trackingParams = {'fbclid', 'gclid', 'igshid', 'mc_eid', 'mkt_tok', 'twclid', 'yclid'};
+// Share identifiers X appends to copied links; only meaningful on X hosts,
+// where stripping them cannot change what the link points to.
+const _xTrackingParams = {'s', 't', 'ref_src', 'ref_url'};
+const _xHosts = {'x.com', 'www.x.com', 'twitter.com', 'www.twitter.com', 'mobile.twitter.com'};
+
+bool _isTrackingParam(String key, bool isXHost) =>
+    key.startsWith('utm_') || _trackingParams.contains(key) || (isXHost && _xTrackingParams.contains(key));
+
+/// Removes known tracking query parameters from a URL before it leaves the
+/// app (opened externally or shared).
+String cleanUrl(String url) {
+  final uri = Uri.tryParse(url);
+  if (uri == null || uri.query.isEmpty) {
+    return url;
+  }
+
+  final isXHost = _xHosts.contains(uri.host);
+  final kept = <String, List<String>>{};
+  uri.queryParametersAll.forEach((key, values) {
+    if (!_isTrackingParam(key, isXHost)) {
+      kept[key] = values;
+    }
+  });
+  if (kept.length == uri.queryParametersAll.length) {
+    return url;
+  }
+
+  final cleaned = uri.replace(queryParameters: kept).toString();
+  // An empty parameter map leaves a dangling '?' behind.
+  return kept.isEmpty ? cleaned.replaceFirst('?', '') : cleaned;
+}
+
 Future<void> openInDefaultBrowser(String url) async {
   final packageName = await _channel.invokeMethod<String>('getDefaultBrowser');
   final intent = AndroidIntent(
     action: 'android.intent.action.VIEW',
-    data: url,
+    data: cleanUrl(url),
     package: packageName,
   );
   await intent.launch();
 }
 
 Future<void> openUri(String uri) async {
-  await launchUrlString(uri, mode: LaunchMode.externalApplication);
+  await launchUrlString(cleanUrl(uri), mode: LaunchMode.externalApplication);
 }
 
 sealed class UriParseResult {}
