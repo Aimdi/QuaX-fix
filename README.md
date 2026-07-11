@@ -87,8 +87,8 @@ This fork is based on upstream **v4.12.0**. Everything below is on top of that.
 
 ### Theming & identity
 
-- **New app icon** — a white duck (a nod to the Quacker lineage) on a blue gradient with a soft
-  drop shadow, carrying a small stencilled serif *y* signature on its flank.
+- **New app icon** — a bold geometric Q monogram on a blue gradient with a soft drop shadow,
+  with a small serif *y* signature in the corner.
 - **Two theme presets** — *Fairy Forest* and *Pitch Black* (see below).
 
 ### Build & release
