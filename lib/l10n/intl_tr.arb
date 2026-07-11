@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Varsayılan",
   "@content_filter_default": {},
+  "content_filter_description": "Bu akışın ne göstereceğini seç: yalnızca güvenli gönderiler, her şey veya yalnızca hassas işaretli gönderiler.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Yalnızca NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Yalnızca SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "İpucu: bir klasöre eklemek için uzun basın",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Yanıtları göstermek için yorum düğmesini basılı tut",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Videoları döngüye al",
   "@loop_videos": {},
   "loop_videos_description": "Videoları otomatik olarak döngüye al",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Zen modu",
   "@zen_mode": {},
-  "zen_mode_description": "Akışlarda her kişinin yalnızca en popüler son tweetlerini göster",
+  "zen_mode_description": "Daha sakin bir akış: gönderi istatistiklerini gizler, yorum düğmesini basılı tutana kadar yanıtları gizler ve kişi başına yalnızca birkaç güncel gönderi gösterir.",
   "@zen_mode_description": {}
 }

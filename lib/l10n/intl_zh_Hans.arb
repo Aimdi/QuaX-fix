@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "默认",
   "@content_filter_default": {},
+  "content_filter_description": "选择此信息流显示的内容：仅安全帖子、全部，或仅标记为敏感的帖子。",
+  "@content_filter_description": {},
   "content_filter_nsfw": "仅NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "仅SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "提示：长按可归入文件夹",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "长按评论按钮以显示回复",
+  "@long_press_to_show_replies": {},
   "loop_videos": "循环播放视频",
   "@loop_videos": {},
   "loop_videos_description": "自动循环播放视频",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "禅模式",
   "@zen_mode": {},
-  "zen_mode_description": "在时间线中只显示每个人最热门的近期推文",
+  "zen_mode_description": "更安静的信息流：隐藏帖子统计数据，长按评论按钮前隐藏回复，每人只显示几条最新帖子。",
   "@zen_mode_description": {}
 }

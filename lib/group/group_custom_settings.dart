@@ -38,7 +38,7 @@ class ContentFilterBar extends StatefulWidget {
 
 class _ContentFilterBarState extends State<ContentFilterBar> {
   static const _positions = [contentFilterSfw, contentFilterDefault, contentFilterNsfw];
-  static const _thumbColors = [Colors.green, Colors.orange, Colors.red];
+  static const _colors = [Colors.green, Colors.orange, Colors.red];
 
   late int _position;
 
@@ -48,87 +48,125 @@ class _ContentFilterBarState extends State<ContentFilterBar> {
     _position = _positions.indexOf(widget.model.state.contentFilter).clamp(0, 2);
   }
 
-  Widget _positionLabel(String text, int position) {
+  void _setPosition(int position) {
+    if (position == _position) {
+      return;
+    }
+    setState(() {
+      _position = position;
+    });
+    widget.model.setSubscriptionGroupContentFilter(_positions[position]);
+  }
+
+  Widget _positionChip(String text, int position) {
     final selected = _position == position;
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 13,
-        fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-        color: selected ? _thumbColors[position] : Theme.of(context).hintColor,
+    final color = _colors[position];
+
+    return GestureDetector(
+      onTap: () => _setPosition(position),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: selected ? color.withAlpha(40) : Colors.transparent,
+          border: Border.all(color: selected ? color : Theme.of(context).dividerColor),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+            color: selected ? color : Theme.of(context).hintColor,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTrack(BuildContext context) {
+    return SizedBox(
+      height: 56,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Container(
+              height: 14,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                gradient: const LinearGradient(
+                  colors: [Colors.green, Colors.yellow, Colors.orange, Colors.red],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: _colors[_position].withAlpha(90),
+                    blurRadius: 12,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              trackHeight: 14,
+              activeTrackColor: Colors.transparent,
+              inactiveTrackColor: Colors.transparent,
+              activeTickMarkColor: Colors.white70,
+              inactiveTickMarkColor: Colors.white70,
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 14, elevation: 4),
+              thumbColor: Colors.white,
+              overlayColor: _colors[_position].withAlpha(50),
+            ),
+            child: Slider(
+              value: _position.toDouble(),
+              max: 2,
+              divisions: 2,
+              onChanged: (value) => _setPosition(value.round()),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Text(L10n.of(context).content_filter, style: Theme.of(context).textTheme.titleMedium),
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.filter_alt_outlined, size: 20, color: _colors[_position]),
+                const SizedBox(width: 8),
+                Text(L10n.of(context).content_filter, style: Theme.of(context).textTheme.titleMedium),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              L10n.of(context).content_filter_description,
+              style: TextStyle(color: Theme.of(context).hintColor, fontSize: 13),
+            ),
+            const SizedBox(height: 12),
+            _buildTrack(context),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _positionChip(L10n.of(context).content_filter_sfw, 0),
+                _positionChip(L10n.of(context).content_filter_default, 1),
+                _positionChip(L10n.of(context).content_filter_nsfw, 2),
+              ],
+            ),
+          ],
         ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 48,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Container(
-                  height: 10,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    gradient: const LinearGradient(
-                      colors: [Colors.green, Colors.yellow, Colors.orange, Colors.red],
-                    ),
-                  ),
-                ),
-              ),
-              SliderTheme(
-                data: SliderTheme.of(context).copyWith(
-                  trackHeight: 10,
-                  activeTrackColor: Colors.transparent,
-                  inactiveTrackColor: Colors.transparent,
-                  activeTickMarkColor: Colors.white70,
-                  inactiveTickMarkColor: Colors.white70,
-                  thumbColor: _thumbColors[_position],
-                  overlayColor: _thumbColors[_position].withAlpha(50),
-                ),
-                child: Slider(
-                  value: _position.toDouble(),
-                  max: 2,
-                  divisions: 2,
-                  onChanged: (value) {
-                    final position = value.round();
-                    if (position == _position) {
-                      return;
-                    }
-                    setState(() {
-                      _position = position;
-                    });
-                    widget.model.setSubscriptionGroupContentFilter(_positions[position]);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 4),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _positionLabel(L10n.of(context).content_filter_sfw, 0),
-              _positionLabel(L10n.of(context).content_filter_default, 1),
-              _positionLabel(L10n.of(context).content_filter_nsfw, 2),
-            ],
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Domyślnie",
   "@content_filter_default": {},
+  "content_filter_description": "Wybierz, co pokazuje ten kanał: tylko bezpieczne wpisy, wszystko albo tylko wpisy oznaczone jako wrażliwe.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Tylko NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Tylko SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Wskazówka: przytrzymaj, aby zapisać w folderze",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Przytrzymaj przycisk komentarzy, aby pokazać odpowiedzi",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Zapętlaj filmy",
   "@loop_videos": {},
   "loop_videos_description": "Automatycznie zapętlaj filmy",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Tryb zen",
   "@zen_mode": {},
-  "zen_mode_description": "Pokazuj w kanałach tylko najpopularniejsze ostatnie tweety każdej osoby",
+  "zen_mode_description": "Spokojniejszy kanał: ukrywa statystyki wpisów, ukrywa odpowiedzi, dopóki nie przytrzymasz przycisku komentarzy, i pokazuje tylko kilka ostatnich wpisów każdej osoby.",
   "@zen_mode_description": {}
 }

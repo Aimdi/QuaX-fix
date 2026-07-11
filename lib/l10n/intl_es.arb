@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Predeterminado",
   "@content_filter_default": {},
+  "content_filter_description": "Elige qué muestra este feed: solo publicaciones seguras, todo, o solo publicaciones marcadas como sensibles.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Solo NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Solo SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Consejo: mantén pulsado para guardarlo en una carpeta",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Mantén pulsado el botón de comentarios para mostrar las respuestas",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Repetir videos",
   "@loop_videos": {},
   "loop_videos_description": "Repetir videos automáticamente",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Modo zen",
   "@zen_mode": {},
-  "zen_mode_description": "Muestra solo los tweets recientes más populares de cada persona en tus feeds",
+  "zen_mode_description": "Un feed más tranquilo: oculta las estadísticas, oculta las respuestas hasta que mantengas pulsado el botón de comentarios y muestra solo unas pocas publicaciones recientes por persona.",
   "@zen_mode_description": {}
 }

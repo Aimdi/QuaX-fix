@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Default",
   "@content_filter_default": {},
+  "content_filter_description": "Choose what this feed shows: only safe posts, everything, or only posts marked as sensitive.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "NSFW only",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "SFW only",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Tip: long-press to file into a folder",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Hold the comment button to show the replies",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Loop videos",
   "@loop_videos": {},
   "loop_videos_description": "If enabled, videos will loop after completing",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Zen mode",
   "@zen_mode": {},
-  "zen_mode_description": "Only show each person's most popular recent posts in your feeds",
+  "zen_mode_description": "A calmer feed: hides post statistics, hides replies until you hold the comment button, and shows only a few recent posts per person.",
   "@zen_mode_description": {}
 }

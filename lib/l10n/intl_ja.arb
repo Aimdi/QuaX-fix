@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "デフォルト",
   "@content_filter_default": {},
+  "content_filter_description": "このフィードに表示する内容を選択：安全な投稿のみ、すべて、またはセンシティブ指定の投稿のみ。",
+  "@content_filter_description": {},
   "content_filter_nsfw": "NSFWのみ",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "SFWのみ",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "ヒント: 長押しでフォルダーに保存できます",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "返信を表示するにはコメントボタンを長押ししてください",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Loop videos",
   "@loop_videos": {},
   "loop_videos_description": "If enabled, videos will loop after completing",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "禅モード",
   "@zen_mode": {},
-  "zen_mode_description": "フィードに各ユーザーの人気の最近のツイートだけを表示します",
+  "zen_mode_description": "より穏やかなフィード：投稿の統計を隠し、コメントボタンを長押しするまで返信を隠し、各ユーザーの最近の投稿を数件だけ表示します。",
   "@zen_mode_description": {}
 }

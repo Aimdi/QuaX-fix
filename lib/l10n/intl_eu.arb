@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Lehenetsia",
   "@content_filter_default": {},
+  "content_filter_description": "Aukeratu jario honek zer erakusten duen: argitalpen seguruak soilik, dena, edo sentikor gisa markatutakoak soilik.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "NSFW soilik",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "SFW soilik",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Aholkua: eduki sakatuta karpeta batean gordetzeko",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Eduki sakatuta iruzkinen botoia erantzunak erakusteko",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Errepikatu bideoak",
   "@loop_videos": {},
   "loop_videos_description": "Errepikatu bideoak automatikoki",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Zen modua",
   "@zen_mode": {},
-  "zen_mode_description": "Erakutsi jarioetan pertsona bakoitzaren azken txio ezagunenak soilik",
+  "zen_mode_description": "Jario lasaiagoa: estatistikak ezkutatzen ditu, erantzunak ezkutatzen ditu iruzkinen botoia sakatuta eduki arte, eta pertsona bakoitzeko azken argitalpen gutxi batzuk soilik erakusten ditu.",
   "@zen_mode_description": {}
 }

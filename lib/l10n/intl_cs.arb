@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Výchozí",
   "@content_filter_default": {},
+  "content_filter_description": "Zvolte, co tento kanál zobrazuje: jen bezpečné příspěvky, vše, nebo jen příspěvky označené jako citlivé.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Pouze NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Pouze SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Tip: podržením zařadíte příspěvek do složky",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Podržením tlačítka komentářů zobrazíte odpovědi",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Opakovat videa",
   "@loop_videos": {},
   "loop_videos_description": "Automaticky opakovat videa",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Zen režim",
   "@zen_mode": {},
-  "zen_mode_description": "Zobrazit v kanálech jen nejpopulárnější nedávné tweety každé osoby",
+  "zen_mode_description": "Klidnější kanál: skryje statistiky příspěvků, skryje odpovědi, dokud nepodržíte tlačítko komentářů, a zobrazí jen několik nedávných příspěvků od každého.",
   "@zen_mode_description": {}
 }

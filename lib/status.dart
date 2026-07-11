@@ -12,6 +12,17 @@ import 'package:quax/utils/paging.dart';
 import 'package:quax/utils/translation.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
+/// Zen mode hides the replies under an opened post until the reader
+/// deliberately reveals them by holding the comment button.
+class ZenRepliesState extends ChangeNotifier {
+  bool revealed = false;
+
+  void reveal() {
+    revealed = true;
+    notifyListeners();
+  }
+}
+
 class StatusScreenArguments {
   final String id;
   final String? username;
@@ -166,6 +177,7 @@ class _StatusScreenState extends State<_StatusScreen> {
                   TweetContextState(PrefService.of(context, listen: false).get(optionTweetsHideSensitive))),
           // Long-pressing any translate button translates the whole conversation
           ChangeNotifierProvider<TranslationBroadcast>(create: (_) => TranslationBroadcast()),
+          ChangeNotifierProvider<ZenRepliesState>(create: (_) => ZenRepliesState()),
         ],
         child: _showingPreview ? _buildPreview(context) : _buildConversation(context),
       ),
@@ -194,7 +206,55 @@ class _StatusScreenState extends State<_StatusScreen> {
     );
   }
 
+  // Zen mode: only the opened post (and the posts above it in the thread) are
+  // shown; the replies below stay hidden until deliberately revealed.
+  Widget _buildZenConversation(BuildContext context, List<TweetChain> chains) {
+    if (chains.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final focal = chains.indexWhere((c) => c.tweets.any((t) => t.idStr == widget.id));
+    final visible = chains.take((focal < 0 ? 0 : focal) + 1).toList();
+
+    return ListView(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+      children: [
+        for (final chain in visible)
+          TweetConversation(
+              id: chain.id,
+              tweets: chain.tweets,
+              username: null,
+              isPinned: chain.isPinned,
+              tweetOpened: widget.tweetOpened,
+              initialMediaIndex: chain.id == widget.id ? widget.initialMediaIndex : 0),
+        InkWell(
+          onTap: () => context.read<ZenRepliesState>().reveal(),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Center(
+              child: Text(
+                L10n.of(context).long_press_to_show_replies,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Theme.of(context).hintColor),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildConversation(BuildContext context) {
+    final zen = PrefService.of(context, listen: false).get(optionZenMode) == true;
+    final zenReplies = context.watch<ZenRepliesState>();
+
+    if (zen && !zenReplies.revealed) {
+      // The paged list normally triggers the first fetch; with replies hidden
+      // it is not built, so start the first page load here.
+      _maybeStartFirstLoad();
+      return _buildZenConversation(context, _pagingController.value.items ?? const <TweetChain>[]);
+    }
+
     return PagingListener<int, TweetChain>(
       controller: _pagingController,
       builder: (context, state, fetchNextPage) => PagedListView<int, TweetChain>(

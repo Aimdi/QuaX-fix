@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "기본",
   "@content_filter_default": {},
+  "content_filter_description": "이 피드에 표시할 내용 선택: 안전한 게시물만, 전체, 또는 민감으로 표시된 게시물만.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "NSFW만",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "SFW만",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "팁: 길게 눌러 폴더에 저장하세요",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "답글을 보려면 댓글 버튼을 길게 누르세요",
+  "@long_press_to_show_replies": {},
   "loop_videos": "동영상 반복",
   "@loop_videos": {},
   "loop_videos_description": "자동으로 동영상 반복",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "젠 모드",
   "@zen_mode": {},
-  "zen_mode_description": "피드에 각 사람의 가장 인기 있는 최근 트윗만 표시합니다",
+  "zen_mode_description": "더 차분한 피드: 게시물 통계를 숨기고, 댓글 버튼을 길게 누를 때까지 답글을 숨기며, 사람마다 최근 게시물 몇 개만 표시합니다.",
   "@zen_mode_description": {}
 }

@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Standaard",
   "@content_filter_default": {},
+  "content_filter_description": "Kies wat deze feed toont: alleen veilige berichten, alles, of alleen berichten die als gevoelig zijn gemarkeerd.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Alleen NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Alleen SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Tip: houd ingedrukt om in een map te plaatsen",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Houd de reactieknop ingedrukt om de reacties te tonen",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Video's herhalen",
   "@loop_videos": {},
   "loop_videos_description": "Video's automatisch herhalen",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Zen-modus",
   "@zen_mode": {},
-  "zen_mode_description": "Toon in je feeds alleen de populairste recente tweets van elke persoon",
+  "zen_mode_description": "Een rustigere feed: verbergt statistieken, verbergt reacties totdat je de reactieknop ingedrukt houdt en toont slechts enkele recente berichten per persoon.",
   "@zen_mode_description": {}
 }

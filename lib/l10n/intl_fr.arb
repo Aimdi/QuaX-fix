@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Par défaut",
   "@content_filter_default": {},
+  "content_filter_description": "Choisissez ce que ce fil affiche : uniquement les publications sûres, tout, ou uniquement les publications marquées comme sensibles.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "NSFW uniquement",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "SFW uniquement",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Astuce : appui long pour classer dans un dossier",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Maintenez le bouton des commentaires pour afficher les réponses",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Lire les vidéos en boucle",
   "@loop_videos": {},
   "loop_videos_description": "Si activé, les vidéos redémarrent automatiquement une fois terminées",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Mode zen",
   "@zen_mode": {},
-  "zen_mode_description": "N'affiche que les tweets récents les plus populaires de chaque personne dans vos fils",
+  "zen_mode_description": "Un fil plus apaisé : masque les statistiques, masque les réponses jusqu'à ce que vous mainteniez le bouton des commentaires, et ne montre que quelques publications récentes par personne.",
   "@zen_mode_description": {}
 }

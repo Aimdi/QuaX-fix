@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "افتراضي",
   "@content_filter_default": {},
+  "content_filter_description": "اختر ما يعرضه هذا الموجز: المنشورات الآمنة فقط، أو كل شيء، أو المنشورات المصنفة كحساسة فقط.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "غير الآمن فقط (NSFW)",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "الآمن فقط (SFW)",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "نصيحة: اضغط مطولاً لحفظه في مجلد",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "اضغط مطولًا على زر التعليقات لعرض الردود",
+  "@long_press_to_show_replies": {},
   "loop_videos": "تكرار الفيديوهات",
   "@loop_videos": {},
   "loop_videos_description": "تكرار الفيديوهات تلقائياً",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "وضع الهدوء",
   "@zen_mode": {},
-  "zen_mode_description": "عرض التغريدات الحديثة الأكثر شيوعًا فقط لكل شخص في مواجزك",
+  "zen_mode_description": "موجز أهدأ: يخفي إحصاءات المنشورات، ويخفي الردود حتى تضغط مطولًا على زر التعليقات، ويعرض فقط بضعة منشورات حديثة لكل شخص.",
   "@zen_mode_description": {}
 }

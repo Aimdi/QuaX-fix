@@ -350,6 +350,10 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   }
 
   Widget _buildFooterBar(TweetWithCard tweet, String tweetText, String shareBaseUrl, Locale locale, NumberFormat numberFormat, {bool isArticle = false}) {
+    // Zen mode: no engagement numbers anywhere; holding the comment button
+    // reveals the hidden replies when a conversation is open.
+    final zen = PrefService.of(context, listen: false).get(optionZenMode) == true;
+
     return Container(
       alignment: Alignment.center,
       margin: isArticle ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 8),
@@ -357,12 +361,21 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         scrollDirection: Axis.horizontal,
         child: Row(
             children: [
-              _createFooterTextButton(
-                  Icons.mode_comment_outlined,
-                  tweet.replyCount != null ? numberFormat.format(tweet.replyCount) : '',
-                  buttonsColor(context),
-                  () => onClickOpenTweet(tweet)),
-              if (tweet.retweetCount != null && tweet.quoteCount != null)
+              GestureDetector(
+                onLongPress: () {
+                  try {
+                    context.read<ZenRepliesState>().reveal();
+                  } catch (_) {
+                    onClickOpenTweet(tweet);
+                  }
+                },
+                child: _createFooterTextButton(
+                    Icons.mode_comment_outlined,
+                    zen || tweet.replyCount == null ? '' : numberFormat.format(tweet.replyCount),
+                    buttonsColor(context),
+                    () => onClickOpenTweet(tweet)),
+              ),
+              if (!zen && tweet.retweetCount != null && tweet.quoteCount != null)
                 _createFooterTextButton(
                     Icons.repeat,
                     numberFormat.format((tweet.retweetCount! + tweet.quoteCount!)),
@@ -376,7 +389,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                             arguments: QuotesScreenArguments(id: tweet.idStr!))),
               Consumer<LikedTweetModel>(builder: (context, likedModel, child) {
                 var isLiked = likedModel.isLiked(tweet.idStr!);
-                var label = tweet.favoriteCount != null ? numberFormat.format(tweet.favoriteCount) : '';
+                var label = zen || tweet.favoriteCount == null ? '' : numberFormat.format(tweet.favoriteCount);
 
                 return LikeButton(
                   isLiked: isLiked,
@@ -398,7 +411,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                   },
                 );
               }),
-              if (tweet.viewCount != null)
+              if (!zen && tweet.viewCount != null)
                 _createFooterTextButton(
                     Icons.bar_chart,
                     numberFormat.format(tweet.viewCount),

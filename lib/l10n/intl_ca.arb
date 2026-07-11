@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Per defecte",
   "@content_filter_default": {},
+  "content_filter_description": "Tria què mostra aquest canal: només publicacions segures, tot, o només publicacions marcades com a sensibles.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Només NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Només SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Consell: mantén premut per desar-lo en una carpeta",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Mantén premut el botó de comentaris per mostrar les respostes",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Repeteix els vídeos",
   "@loop_videos": {},
   "loop_videos_description": "Repeteix els vídeos automàticament",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Mode zen",
   "@zen_mode": {},
-  "zen_mode_description": "Mostra només els tuits recents més populars de cada persona als teus canals",
+  "zen_mode_description": "Un canal més tranquil: amaga les estadístiques, amaga les respostes fins que mantinguis premut el botó de comentaris i mostra només unes quantes publicacions recents per persona.",
   "@zen_mode_description": {}
 }

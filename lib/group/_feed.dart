@@ -428,28 +428,27 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     return chains.sorted((a, b) => _likesOf(b).compareTo(_likesOf(a))).toList();
   }
 
-  /// Zen mode: keep only each author's few most popular posts of the page,
-  /// preserving the page's ordering.
+  /// Zen mode: a calm feed with no engagement-based ranking — strictly
+  /// newest-first, keeping only each author's few most recent posts so no
+  /// account can flood the page.
   List<TweetChain> _applyZenMode(List<TweetChain> chains) {
-    final byAuthor = <String, List<TweetChain>>{};
-    for (final chain in chains) {
+    final byAuthorCount = <String, int>{};
+    final kept = <TweetChain>[];
+
+    for (final chain in sortChainsNewestFirst(chains)) {
       final author = chain.tweets.firstOrNull?.user?.idStr;
-      if (author != null) {
-        byAuthor.putIfAbsent(author, () => []).add(chain);
+      if (author == null) {
+        kept.add(chain);
+        continue;
+      }
+      final count = byAuthorCount[author] ?? 0;
+      if (count < zenModeMaxTweetsPerAuthor) {
+        byAuthorCount[author] = count + 1;
+        kept.add(chain);
       }
     }
 
-    final keep = <String>{};
-    for (final authored in byAuthor.values) {
-      keep.addAll(authored
-          .sorted((a, b) => _likesOf(b).compareTo(_likesOf(a)))
-          .take(zenModeMaxTweetsPerAuthor)
-          .map((c) => c.id));
-    }
-
-    return chains
-        .where((chain) => chain.tweets.firstOrNull?.user?.idStr == null || keep.contains(chain.id))
-        .toList();
+    return kept;
   }
 
   /// Loads a page for the media grid: same pages as the tweet list, mapped to

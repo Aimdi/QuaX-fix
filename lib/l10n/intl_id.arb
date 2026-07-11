@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Bawaan",
   "@content_filter_default": {},
+  "content_filter_description": "Pilih apa yang ditampilkan feed ini: hanya postingan aman, semuanya, atau hanya postingan yang ditandai sensitif.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Hanya NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Hanya SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Tips: tekan lama untuk menyimpannya ke folder",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Tahan tombol komentar untuk menampilkan balasan",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Ulangi video",
   "@loop_videos": {},
   "loop_videos_description": "Ulangi video secara otomatis",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Mode zen",
   "@zen_mode": {},
-  "zen_mode_description": "Hanya tampilkan cuitan terbaru terpopuler dari setiap orang di feed Anda",
+  "zen_mode_description": "Feed yang lebih tenang: menyembunyikan statistik postingan, menyembunyikan balasan sampai Anda menahan tombol komentar, dan hanya menampilkan beberapa postingan terbaru per orang.",
   "@zen_mode_description": {}
 }

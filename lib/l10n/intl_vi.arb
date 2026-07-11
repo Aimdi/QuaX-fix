@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Mặc định",
   "@content_filter_default": {},
+  "content_filter_description": "Chọn nội dung hiển thị: chỉ bài đăng an toàn, tất cả, hoặc chỉ bài đăng bị đánh dấu nhạy cảm.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Chỉ NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Chỉ SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Mẹo: nhấn giữ để lưu vào thư mục",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Giữ nút bình luận để hiển thị các trả lời",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Lặp video",
   "@loop_videos": {},
   "loop_videos_description": "Video sẽ được lặp lại khi hoàn tất",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Chế độ zen",
   "@zen_mode": {},
-  "zen_mode_description": "Chỉ hiển thị những bài viết gần đây phổ biến nhất của mỗi người trong bảng tin",
+  "zen_mode_description": "Bảng tin yên tĩnh hơn: ẩn số liệu bài đăng, ẩn trả lời cho đến khi bạn giữ nút bình luận, và chỉ hiển thị vài bài đăng gần đây của mỗi người.",
   "@zen_mode_description": {}
 }

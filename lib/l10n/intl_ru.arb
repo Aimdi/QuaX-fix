@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "По умолчанию",
   "@content_filter_default": {},
+  "content_filter_description": "Выберите, что показывает эта лента: только безопасные посты, всё или только посты, помеченные как деликатные.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Только NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Только SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Совет: удерживайте, чтобы поместить в папку",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Удерживайте кнопку комментариев, чтобы показать ответы",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Зацикливать видео",
   "@loop_videos": {},
   "loop_videos_description": "Автоматически зацикливать видео",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Дзен-режим",
   "@zen_mode": {},
-  "zen_mode_description": "Показывать в лентах только самые популярные недавние твиты каждого человека",
+  "zen_mode_description": "Более спокойная лента: скрывает статистику постов, скрывает ответы, пока вы не удержите кнопку комментариев, и показывает лишь несколько недавних постов от каждого.",
   "@zen_mode_description": {}
 }

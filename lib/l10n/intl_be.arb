@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Стандартна",
   "@content_filter_default": {},
+  "content_filter_description": "Абярыце, што паказвае гэтая стужка: толькі бяспечныя пасты, усё або толькі пасты, пазначаныя як далікатныя.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Толькі NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Толькі SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Парада: доўгі націск, каб змясціць у тэчку",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Утрымлівайце кнопку каментарыяў, каб паказаць адказы",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Паўтараць відэа",
   "@loop_videos": {},
   "loop_videos_description": "Аўтаматычна паўтараць відэа",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Дзэн-рэжым",
   "@zen_mode": {},
-  "zen_mode_description": "Паказваць у стужках толькі самыя папулярныя нядаўнія твіты кожнага чалавека",
+  "zen_mode_description": "Спакайнейшая стужка: хавае статыстыку пастоў, хавае адказы, пакуль вы не ўтрымаеце кнопку каментарыяў, і паказвае толькі некалькі нядаўніх пастоў ад кожнага.",
   "@zen_mode_description": {}
 }

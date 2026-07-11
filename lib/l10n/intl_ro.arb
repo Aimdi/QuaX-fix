@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Implicit",
   "@content_filter_default": {},
+  "content_filter_description": "Alege ce afișează acest flux: doar postări sigure, totul, sau doar postări marcate ca sensibile.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Doar NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Doar SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Sfat: ține apăsat pentru a-l adăuga într-un dosar",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Ține apăsat butonul de comentarii pentru a afișa răspunsurile",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Repetați videoclipurile",
   "@loop_videos": {},
   "loop_videos_description": "Repetați automat videoclipurile",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Modul zen",
   "@zen_mode": {},
-  "zen_mode_description": "Afișează în fluxuri doar cele mai populare tweeturi recente ale fiecărei persoane",
+  "zen_mode_description": "Un flux mai calm: ascunde statisticile, ascunde răspunsurile până ții apăsat butonul de comentarii și arată doar câteva postări recente de persoană.",
   "@zen_mode_description": {}
 }

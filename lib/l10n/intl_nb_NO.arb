@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Standard",
   "@content_filter_default": {},
+  "content_filter_description": "Velg hva denne feeden viser: bare trygge innlegg, alt, eller bare innlegg merket som sensitive.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Kun NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Kun SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Tips: trykk og hold for å legge i en mappe",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Hold inne kommentarknappen for å vise svarene",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Gjenta videoer",
   "@loop_videos": {},
   "loop_videos_description": "Gjenta videoer automatisk",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Zen-modus",
   "@zen_mode": {},
-  "zen_mode_description": "Vis bare de mest populære nylige tweetene fra hver person i feedene dine",
+  "zen_mode_description": "En roligere feed: skjuler innleggsstatistikk, skjuler svar til du holder inne kommentarknappen, og viser bare noen få nylige innlegg per person.",
   "@zen_mode_description": {}
 }

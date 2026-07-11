@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Standard",
   "@content_filter_default": {},
+  "content_filter_description": "Wähle, was dieser Feed zeigt: nur unbedenkliche Beiträge, alles oder nur als sensibel markierte Beiträge.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Nur NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Nur SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Tipp: Lange drücken, um in einen Ordner einzusortieren",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Halte die Kommentar-Schaltfläche gedrückt, um die Antworten anzuzeigen",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Videos wiederholen",
   "@loop_videos": {},
   "loop_videos_description": "Videos automatisch wiederholen",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Zen-Modus",
   "@zen_mode": {},
-  "zen_mode_description": "Zeigt in deinen Feeds nur die beliebtesten aktuellen Tweets jeder Person",
+  "zen_mode_description": "Ein ruhigerer Feed: blendet Beitragsstatistiken aus, verbirgt Antworten, bis du die Kommentar-Schaltfläche gedrückt hältst, und zeigt nur wenige aktuelle Beiträge pro Person.",
   "@zen_mode_description": {}
 }

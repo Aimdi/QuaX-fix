@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "預設",
   "@content_filter_default": {},
+  "content_filter_description": "選擇此動態顯示的內容：僅安全貼文、全部，或僅標記為敏感的貼文。",
+  "@content_filter_description": {},
   "content_filter_nsfw": "僅NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "僅SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "提示：長按可歸入資料夾",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "長按留言按鈕以顯示回覆",
+  "@long_press_to_show_replies": {},
   "loop_videos": "循環播放影片",
   "@loop_videos": {},
   "loop_videos_description": "若啟用，影片播放完畢後將會循環播放",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "禪模式",
   "@zen_mode": {},
-  "zen_mode_description": "在時間軸中只顯示每個人最熱門的近期推文",
+  "zen_mode_description": "更平靜的動態：隱藏貼文統計數據，長按留言按鈕前隱藏回覆，每人只顯示幾則最新貼文。",
   "@zen_mode_description": {}
 }

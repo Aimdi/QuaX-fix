@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Defaŭlta",
   "@content_filter_default": {},
+  "content_filter_description": "Elektu, kion montras ĉi tiu fluo: nur sendanĝerajn afiŝojn, ĉion, aŭ nur afiŝojn markitajn kiel sentemajn.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Nur NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Nur SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Konsileto: longe premu por meti en dosierujon",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Longpremu la komentan butonon por montri la respondojn",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Ripeti videojn",
   "@loop_videos": {},
   "loop_videos_description": "Aŭtomate ripeti videojn",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Zena reĝimo",
   "@zen_mode": {},
-  "zen_mode_description": "Montri en viaj fluoj nur la plej popularajn lastatempajn pepojn de ĉiu persono",
+  "zen_mode_description": "Pli trankvila fluo: kaŝas statistikojn de afiŝoj, kaŝas respondojn ĝis vi longpremas la komentan butonon, kaj montras nur kelkajn lastatempajn afiŝojn po persono.",
   "@zen_mode_description": {}
 }

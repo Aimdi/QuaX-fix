@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "डिफ़ॉल्ट",
   "@content_filter_default": {},
+  "content_filter_description": "चुनें कि यह फ़ीड क्या दिखाए: केवल सुरक्षित पोस्ट, सब कुछ, या केवल संवेदनशील चिह्नित पोस्ट।",
+  "@content_filter_description": {},
   "content_filter_nsfw": "केवल NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "केवल SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "सुझाव: फ़ोल्डर में सहेजने के लिए देर तक दबाएँ",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "जवाब देखने के लिए टिप्पणी बटन को दबाकर रखें",
+  "@long_press_to_show_replies": {},
   "loop_videos": "वीडियो लूप करें",
   "@loop_videos": {},
   "loop_videos_description": "वीडियो स्वचालित रूप से लूप करें",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "ज़ेन मोड",
   "@zen_mode": {},
-  "zen_mode_description": "फ़ीड में हर व्यक्ति की केवल सबसे लोकप्रिय हालिया पोस्ट दिखाएँ",
+  "zen_mode_description": "एक शांत फ़ीड: पोस्ट के आँकड़े छिपाता है, टिप्पणी बटन दबाकर रखने तक जवाब छिपाता है, और प्रति व्यक्ति केवल कुछ हालिया पोस्ट दिखाता है।",
   "@zen_mode_description": {}
 }

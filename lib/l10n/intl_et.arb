@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Vaikimisi",
   "@content_filter_default": {},
+  "content_filter_description": "Vali, mida see voog näitab: ainult ohutuid postitusi, kõike või ainult tundlikuks märgitud postitusi.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Ainult NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Ainult SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Näpunäide: hoia all, et lisada kausta",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Vastuste kuvamiseks hoia kommentaarinuppu all",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Korda videoid",
   "@loop_videos": {},
   "loop_videos_description": "Korda videoid automaatselt",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Zen-režiim",
   "@zen_mode": {},
-  "zen_mode_description": "Kuva voogudes ainult iga inimese populaarseimad hiljutised säutsud",
+  "zen_mode_description": "Rahulikum voog: peidab postituste statistika, peidab vastused, kuni hoiad kommentaarinuppu all, ja näitab igalt inimeselt vaid mõnda hiljutist postitust.",
   "@zen_mode_description": {}
 }

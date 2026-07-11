@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Типово",
   "@content_filter_default": {},
+  "content_filter_description": "Виберіть, що показує ця стрічка: лише безпечні дописи, все або лише дописи, позначені як делікатні.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Лише NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Лише SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Порада: утримуйте, щоб додати до теки",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Утримуйте кнопку коментарів, щоб показати відповіді",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Зациклити відео",
   "@loop_videos": {},
   "loop_videos_description": "Автоматично зациклювати відео",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Дзен-режим",
   "@zen_mode": {},
-  "zen_mode_description": "Показувати у стрічках лише найпопулярніші нещодавні твіти кожної людини",
+  "zen_mode_description": "Спокійніша стрічка: приховує статистику дописів, приховує відповіді, доки ви не утримаєте кнопку коментарів, і показує лише кілька нещодавніх дописів від кожного.",
   "@zen_mode_description": {}
 }

@@ -79,6 +79,8 @@
   "@content_filter": {},
   "content_filter_default": "Standartna",
   "@content_filter_default": {},
+  "content_filter_description": "Abiarycie, što pakazvaje hetaja stužka: tolki biaspiečnyja pasty, usio abo tolki pasty, paznačanyja jak dalikatnyja.",
+  "@content_filter_description": {},
   "content_filter_nsfw": "Tolki NSFW",
   "@content_filter_nsfw": {},
   "content_filter_sfw": "Tolki SFW",
@@ -301,6 +303,8 @@
   "@login": {},
   "long_press_folder_hint": "Parada: doŭhi nacisk, kab zmiascić u tečku",
   "@long_press_folder_hint": {},
+  "long_press_to_show_replies": "Utrymlivajcie knopku kamientaryjaŭ, kab pakazać adkazy",
+  "@long_press_to_show_replies": {},
   "loop_videos": "Zaciaklivać vidėa",
   "@loop_videos": {},
   "loop_videos_description": "Aŭtamatychna zaciaklivać vidėa",
@@ -681,6 +685,6 @@
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
   "zen_mode": "Dzen-režym",
   "@zen_mode": {},
-  "zen_mode_description": "Pakazvać u stužkach toĺki samyja papularnyja niadaŭnija tvity kožnaha čałavieka",
+  "zen_mode_description": "Spakajniejšaja stužka: chavaje statystyku pastoŭ, chavaje adkazy, pakul vy nie ŭtrymajecie knopku kamientaryjaŭ, i pakazvaje tolki niekalki niadaŭnich pastoŭ ad kožnaha.",
   "@zen_mode_description": {}
 }
