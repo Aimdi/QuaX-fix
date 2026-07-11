@@ -179,7 +179,11 @@ class _StatusScreenState extends State<_StatusScreen> {
           ChangeNotifierProvider<TranslationBroadcast>(create: (_) => TranslationBroadcast()),
           ChangeNotifierProvider<ZenRepliesState>(create: (_) => ZenRepliesState()),
         ],
-        child: _showingPreview ? _buildPreview(context) : _buildConversation(context),
+        // The providers above are looked up from inside these builders, so they
+        // need a context below the MultiProvider — not this method's context.
+        child: Builder(
+          builder: (context) => _showingPreview ? _buildPreview(context) : _buildConversation(context),
+        ),
       ),
     );
   }
