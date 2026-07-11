@@ -5,6 +5,7 @@ import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/database/repository.dart';
 import 'package:quax/group/group_model.dart';
+import 'package:quax/user.dart';
 import 'package:quax/utils/iterables.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
@@ -127,6 +128,23 @@ class SubscriptionsModel extends Store<List<Subscription>> {
     });
 
     await groupModel.reloadGroups();
+  }
+
+  /// Refreshes a stored subscription whose account was renamed, using the
+  /// fresh profile data. The caller reloads the list when it is done.
+  Future<void> repairSubscription(UserSubscription user, UserWithExtra fresh) async {
+    var database = await Repository.writable();
+
+    await database.update(
+        tableSubscription,
+        {
+          'screen_name': fresh.screenName,
+          'name': fresh.name,
+          'profile_image_url_https': fresh.profileImageUrlHttps,
+          'verified': (fresh.verified ?? false) ? 1 : 0,
+        },
+        where: 'id = ?',
+        whereArgs: [user.id]);
   }
 
   Future<void> removeSubscriptions(List<UserSubscription> users) async {

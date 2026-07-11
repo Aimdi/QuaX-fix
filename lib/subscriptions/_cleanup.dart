@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quax/catcher/exceptions.dart';
 import 'package:quax/client/client.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/profile/profile_model.dart';
 import 'package:quax/subscriptions/users_model.dart';
+import 'package:quax/user.dart';
 
 typedef BrokenSubscription = ({UserSubscription user, bool suspended});
+typedef RenamedSubscription = ({UserSubscription user, UserWithExtra fresh});
+
+// Error codes X uses for accounts that definitively no longer exist:
+// 34/50 = not found, 63 = suspended, -1 = unavailable for another reason.
+const _goneCodes = {34, 50, 63, -1};
+
+enum _CheckResult { exists, gone, suspended, unreachable, rateLimited }
 
 class BrokenSubscriptionsDialog extends StatefulWidget {
   const BrokenSubscriptionsDialog({super.key});
@@ -16,7 +26,9 @@ class BrokenSubscriptionsDialog extends StatefulWidget {
 
 class _BrokenSubscriptionsDialogState extends State<BrokenSubscriptionsDialog> {
   late final List<UserSubscription> _toCheck;
+  late final SubscriptionsModel _model;
   final List<BrokenSubscription> _broken = [];
+  final List<RenamedSubscription> _renamed = [];
   int _checked = 0;
   int _unreachable = 0;
   bool _done = false;
@@ -25,7 +37,8 @@ class _BrokenSubscriptionsDialogState extends State<BrokenSubscriptionsDialog> {
   void initState() {
     super.initState();
 
-    _toCheck = context.read<SubscriptionsModel>().state.whereType<UserSubscription>().toList();
+    _model = context.read<SubscriptionsModel>();
+    _toCheck = _model.state.whereType<UserSubscription>().toList();
     _scan();
   }
 
@@ -35,14 +48,11 @@ class _BrokenSubscriptionsDialogState extends State<BrokenSubscriptionsDialog> {
         return;
       }
 
-      final broken = await _checkSubscription(user);
-      if (broken != null) {
-        _broken.add(broken);
+      final aborted = await _checkSubscription(user);
+      if (aborted || !mounted) {
+        break;
       }
 
-      if (!mounted) {
-        return;
-      }
       setState(() {
         _checked++;
       });
@@ -51,39 +61,80 @@ class _BrokenSubscriptionsDialogState extends State<BrokenSubscriptionsDialog> {
     }
 
     if (mounted) {
-      setState(() {
-        _done = true;
-      });
+      if (_renamed.isNotEmpty) {
+        await _model.reloadSubscriptions();
+      }
+      if (mounted) {
+        setState(() {
+          _unreachable += _toCheck.length - _checked;
+          _done = true;
+        });
+      }
     }
   }
 
-  // Only a definitive answer from X (deleted or suspended) marks a
-  // subscription as broken; transient failures leave it untouched.
-  Future<BrokenSubscription?> _checkSubscription(UserSubscription user) async {
+  /// Returns true when the scan must stop early (rate limited).
+  Future<bool> _checkSubscription(UserSubscription user) async {
+    // The app opens profiles by screen name, so that lookup is the reference
+    // for whether a subscription still works.
+    final byName = await _lookup(() => Twitter.getProfileByScreenName(user.screenName));
+    switch (byName) {
+      case _CheckResult.exists:
+        return false;
+      case _CheckResult.suspended:
+        _broken.add((user: user, suspended: true));
+        return false;
+      case _CheckResult.unreachable:
+        _unreachable++;
+        return false;
+      case _CheckResult.rateLimited:
+        return true;
+      case _CheckResult.gone:
+        break;
+    }
+
+    // The screen name is gone; the id tells a rename (repairable) apart from a
+    // genuinely deleted account.
     try {
-      await Twitter.getProfileById(user.id);
-      return null;
+      final profile = await Twitter.getProfileById(user.id);
+      await _model.repairSubscription(user, profile.user);
+      _renamed.add((user: user, fresh: profile.user));
+      return false;
     } on TwitterError catch (e) {
-      switch (e.code) {
-        case 50:
-          return (user: user, suspended: false);
-        case 63:
-          return (user: user, suspended: true);
-        default:
-          _unreachable++;
-          return null;
+      if (_goneCodes.contains(e.code)) {
+        _broken.add((user: user, suspended: e.code == 63));
+      } else {
+        _unreachable++;
       }
+      return false;
+    } on RateLimitedException {
+      return true;
     } catch (_) {
-      _unreachable++;
-      return null;
+      _broken.add((user: user, suspended: false));
+      return false;
+    }
+  }
+
+  Future<_CheckResult> _lookup(Future<Profile> Function() fetch) async {
+    try {
+      await fetch();
+      return _CheckResult.exists;
+    } on TwitterError catch (e) {
+      if (e.code == 63) {
+        return _CheckResult.suspended;
+      }
+      return _goneCodes.contains(e.code) ? _CheckResult.gone : _CheckResult.unreachable;
+    } on RateLimitedException {
+      return _CheckResult.rateLimited;
+    } catch (_) {
+      return _CheckResult.unreachable;
     }
   }
 
   Future<void> _deleteBroken() async {
-    final model = context.read<SubscriptionsModel>();
     final navigator = Navigator.of(context);
 
-    await model.removeSubscriptions(_broken.map((e) => e.user).toList());
+    await _model.removeSubscriptions(_broken.map((e) => e.user).toList());
 
     if (mounted) {
       navigator.pop();
@@ -104,55 +155,54 @@ class _BrokenSubscriptionsDialogState extends State<BrokenSubscriptionsDialog> {
     );
   }
 
-  Widget _buildUnreachableNote(BuildContext context) {
+  Widget _buildHint(BuildContext context, String text) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Text(
-        L10n.of(context).some_subscriptions_could_not_be_checked,
+        text,
         style: TextStyle(color: Theme.of(context).hintColor, fontSize: 13),
       ),
     );
   }
 
-  Widget _buildResults(BuildContext context) {
-    if (_broken.isEmpty) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(L10n.of(context).no_broken_subscriptions_found),
-          if (_unreachable > 0) _buildUnreachableNote(context),
-        ],
-      );
-    }
+  Widget _buildBrokenList(BuildContext context) {
+    return Flexible(
+      child: SizedBox(
+        width: double.maxFinite,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: _broken.length,
+          itemBuilder: (context, index) {
+            final broken = _broken[index];
+            return ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text('@${broken.user.screenName}', maxLines: 1, overflow: TextOverflow.ellipsis),
+              subtitle: Text(
+                broken.suspended ? L10n.of(context).account_suspended : L10n.of(context).user_not_found,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
 
+  Widget _buildResults(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(L10n.of(context).broken_subscriptions_found),
-        const SizedBox(height: 8),
-        Flexible(
-          child: SizedBox(
-            width: double.maxFinite,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _broken.length,
-              itemBuilder: (context, index) {
-                final broken = _broken[index];
-                return ListTile(
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  title: Text('@${broken.user.screenName}', maxLines: 1, overflow: TextOverflow.ellipsis),
-                  subtitle: Text(
-                    broken.suspended ? L10n.of(context).account_suspended : L10n.of(context).user_not_found,
-                  ),
-                );
-              },
-            ),
+        if (_broken.isEmpty) Text(L10n.of(context).no_broken_subscriptions_found),
+        if (_broken.isNotEmpty) Text(L10n.of(context).broken_subscriptions_found),
+        if (_broken.isNotEmpty) const SizedBox(height: 8),
+        if (_broken.isNotEmpty) _buildBrokenList(context),
+        if (_renamed.isNotEmpty)
+          _buildHint(
+            context,
+            '${L10n.of(context).renamed_subscriptions_updated}\n${_renamed.map((e) => '@${e.user.screenName} → @${e.fresh.screenName}').join('\n')}',
           ),
-        ),
-        if (_unreachable > 0) _buildUnreachableNote(context),
+        if (_unreachable > 0) _buildHint(context, L10n.of(context).some_subscriptions_could_not_be_checked),
       ],
     );
   }

@@ -85,6 +85,11 @@ const mediaGridLayoutMasonry = 'masonry';
 const mediaGridLayoutFeed = 'feed';
 const mediaGridLayoutTwoColumns = 'two_columns';
 
+// Per-group content filter (custom feed mode)
+const contentFilterSfw = 'sfw';
+const contentFilterDefault = 'default';
+const contentFilterNsfw = 'nsfw';
+
 // How many posts per author survive a feed page in zen mode
 const zenModeMaxTweetsPerAuthor = 4;
 

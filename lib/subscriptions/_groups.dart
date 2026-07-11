@@ -68,7 +68,7 @@ class _SubscriptionGroupsState extends State<SubscriptionGroups> {
       onState: (_, state) {
         return GridView.builder(
           shrinkWrap: true,
-          controller: widget.scrollController,
+          physics: const NeverScrollableScrollPhysics(),
           padding: const EdgeInsets.only(top: 4),
           gridDelegate:
               const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 100, childAspectRatio: 20 / 15),

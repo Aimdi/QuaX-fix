@@ -1,8 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
+import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
+
+int _sortModeOf(SubscriptionGroupGet group) => group.custom ? 2 : (group.popular ? 1 : 0);
+
+String _sortModeLabel(BuildContext context, SubscriptionGroupGet group) {
+  switch (_sortModeOf(group)) {
+    case 1:
+      return L10n.of(context).popular;
+    case 2:
+      return L10n.of(context).custom;
+    default:
+      return L10n.of(context).recent;
+  }
+}
+
+// Three-position content bar for custom mode: SFW only / default / NSFW only.
+class _ContentFilterBar extends StatelessWidget {
+  final GroupModel model;
+
+  const _ContentFilterBar({required this.model});
+
+  static const _positions = [contentFilterSfw, contentFilterDefault, contentFilterNsfw];
+
+  @override
+  Widget build(BuildContext context) {
+    final position = _positions.indexOf(model.state.contentFilter).clamp(0, 2);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+      child: Column(
+        children: [
+          Slider(
+            value: position.toDouble(),
+            min: 0,
+            max: 2,
+            divisions: 2,
+            onChanged: (value) async =>
+                await model.setSubscriptionGroupContentFilter(_positions[value.round()]),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(L10n.of(context).content_filter_sfw,
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: position == 0 ? FontWeight.bold : FontWeight.normal)),
+              Text(L10n.of(context).content_filter_default,
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: position == 1 ? FontWeight.bold : FontWeight.normal)),
+              Text(L10n.of(context).content_filter_nsfw,
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: position == 2 ? FontWeight.bold : FontWeight.normal)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 void showFeedSettings(BuildContext context, GroupModel model) {
   showModalBottomSheet(
@@ -55,28 +116,28 @@ void showFeedSettings(BuildContext context, GroupModel model) {
                         }),
                     ExpansionTile(
                       leading: const Icon(Icons.sort),
-                      title: Text(model.state.popular ? L10n.of(context).popular : L10n.of(context).recent),
+                      title: Text(_sortModeLabel(context, model.state)),
                       subtitle: Text(L10n.of(context).popular_feed_description),
                       children: [
                         RadioListTile<int>(
                           title: Text(L10n.of(context).recent),
                           value: 0,
-                          groupValue: model.state.popular ? 1 : 0,
+                          groupValue: _sortModeOf(model.state),
                           onChanged: (_) async => await model.toggleSubscriptionGroupPopular(false),
                         ),
                         RadioListTile<int>(
                           title: Text(L10n.of(context).popular),
                           value: 1,
-                          groupValue: model.state.popular ? 1 : 0,
+                          groupValue: _sortModeOf(model.state),
                           onChanged: (_) async => await model.toggleSubscriptionGroupPopular(true),
                         ),
                         RadioListTile<int>(
                           title: Text(L10n.of(context).custom),
                           value: 2,
-                          groupValue: model.state.popular ? 1 : 0,
-                          // Not selectable yet
-                          onChanged: null,
+                          groupValue: _sortModeOf(model.state),
+                          onChanged: (_) async => await model.toggleSubscriptionGroupCustom(true),
                         ),
+                        if (model.state.custom) _ContentFilterBar(model: model),
                       ],
                     ),
                   ],

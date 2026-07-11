@@ -281,11 +281,18 @@ class Repository {
       30: [
         // The new-post notification feature was removed; drop its table.
         SqlMigration('DROP TABLE IF EXISTS $tablePostNotification'),
+      ],
+      31: [
+        // Custom feed mode with a per-group content filter (sfw/default/nsfw).
+        SqlMigration('ALTER TABLE $tableSubscriptionGroup ADD COLUMN custom BOOLEAN DEFAULT 0',
+            reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN custom'),
+        SqlMigration("ALTER TABLE $tableSubscriptionGroup ADD COLUMN content_filter VARCHAR DEFAULT 'default'",
+            reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN content_filter'),
       ]
     });
     await openDatabase(
       databaseName,
-      version: 30,
+      version: 31,
       onUpgrade: myMigrationPlan.call,
       onCreate: myMigrationPlan.call,
       onDowngrade: myMigrationPlan.call,

@@ -37,7 +37,9 @@ class GroupModel extends Store<SubscriptionGroupGet> {
             subscriptions: [],
             includeRetweets: false,
             includeReplies: false,
-            popular: false));
+            popular: false,
+            custom: false,
+            contentFilter: contentFilterDefault));
 
   Future<void> loadGroup() async {
     await execute(() async {
@@ -56,7 +58,9 @@ class GroupModel extends Store<SubscriptionGroupGet> {
             subscriptions: subscriptions,
             includeReplies: group['include_replies'] == 1,
             includeRetweets: group['include_retweets'] == 1,
-            popular: group['popular'] == 1);
+            popular: group['popular'] == 1,
+            custom: group['custom'] == 1,
+            contentFilter: group['content_filter'] as String? ?? contentFilterDefault);
       }
 
       var searchSubscriptions = (await database.rawQuery(
@@ -79,7 +83,9 @@ class GroupModel extends Store<SubscriptionGroupGet> {
           subscriptions: [...userSubscriptions, ...searchSubscriptions],
           includeReplies: group['include_replies'] == 1,
           includeRetweets: group['include_retweets'] == 1,
-          popular: group['popular'] == 1);
+          popular: group['popular'] == 1,
+          custom: group['custom'] == 1,
+          contentFilter: group['content_filter'] as String? ?? contentFilterDefault);
     });
   }
 
@@ -104,8 +110,28 @@ class GroupModel extends Store<SubscriptionGroupGet> {
   Future<void> toggleSubscriptionGroupPopular(bool value) async {
     await execute(() async {
       (await Repository.writable())
-          .rawUpdate('UPDATE $tableSubscriptionGroup SET popular = ? WHERE id = ?', [value, state.id]);
+          .rawUpdate('UPDATE $tableSubscriptionGroup SET popular = ?, custom = 0 WHERE id = ?', [value, state.id]);
       state.popular = value;
+      state.custom = false;
+      return state;
+    });
+  }
+
+  Future<void> toggleSubscriptionGroupCustom(bool value) async {
+    await execute(() async {
+      (await Repository.writable())
+          .rawUpdate('UPDATE $tableSubscriptionGroup SET custom = ?, popular = 0 WHERE id = ?', [value, state.id]);
+      state.custom = value;
+      state.popular = false;
+      return state;
+    });
+  }
+
+  Future<void> setSubscriptionGroupContentFilter(String value) async {
+    await execute(() async {
+      (await Repository.writable())
+          .rawUpdate('UPDATE $tableSubscriptionGroup SET content_filter = ? WHERE id = ?', [value, state.id]);
+      state.contentFilter = value;
       return state;
     });
   }

@@ -168,6 +168,8 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     if (oldWidget.includeReplies != widget.includeReplies ||
         oldWidget.includeRetweets != widget.includeRetweets ||
         oldWidget.group.popular != widget.group.popular ||
+        oldWidget.group.custom != widget.group.custom ||
+        oldWidget.group.contentFilter != widget.group.contentFilter ||
         !_chunksMatch(oldWidget.chunks, widget.chunks)) {
       _feedController.controller.refresh();
       _mediaPaging?.pagingController.refresh();
@@ -378,6 +380,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     var result = (await Future.wait(futures));
     var threads = _sortChains(dedupeChainsById(result.expand((element) => element).toList()));
     threads = filterHiddenRetweets(threads, await hiddenRetweetScreenNames());
+    threads = _applyContentFilter(threads);
 
     if (!mounted) {
       return (chains: <TweetChain>[], nextCursor: null);
@@ -396,6 +399,25 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   }
 
   static int _likesOf(TweetChain chain) => chain.tweets.firstOrNull?.favoriteCount ?? 0;
+
+  static bool _isSensitive(TweetChain chain) =>
+      chain.tweets.any((tweet) => tweet.possiblySensitive == true);
+
+  /// Custom groups can restrict the feed to SFW-only or NSFW-only posts,
+  /// based on X's own sensitive-content flag.
+  List<TweetChain> _applyContentFilter(List<TweetChain> chains) {
+    if (!widget.group.custom) {
+      return chains;
+    }
+    switch (widget.group.contentFilter) {
+      case contentFilterSfw:
+        return chains.where((chain) => !_isSensitive(chain)).toList();
+      case contentFilterNsfw:
+        return chains.where(_isSensitive).toList();
+      default:
+        return chains;
+    }
+  }
 
   /// Popular groups order the same recent window by likes; recent ones (the
   /// default) by date.

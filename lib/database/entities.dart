@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quax/constants.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/user.dart';
 import 'package:intl/intl.dart';
@@ -248,6 +249,8 @@ class SubscriptionGroupGet {
   bool includeReplies;
   bool includeRetweets;
   bool popular;
+  bool custom;
+  String contentFilter;
 
   SubscriptionGroupGet(
       {required this.id,
@@ -256,7 +259,9 @@ class SubscriptionGroupGet {
       required this.subscriptions,
       required this.includeReplies,
       required this.includeRetweets,
-      required this.popular});
+      required this.popular,
+      this.custom = false,
+      this.contentFilter = contentFilterDefault});
 }
 
 class SubscriptionGroupEdit {
