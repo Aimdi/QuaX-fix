@@ -353,10 +353,9 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     return Container(
       alignment: Alignment.center,
       margin: isArticle ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 8),
-      child: Scrollbar(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
             children: [
               _createFooterTextButton(
                   Icons.mode_comment_outlined,
@@ -511,8 +510,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                   },
                   child: _buildTranslateButton(locale),
                 ),
-            ],
-          ),
+          ],
         ),
       ),
     );

@@ -75,6 +75,8 @@
   "@community_notes_header": {},
   "confirm_close_fritter": "Êtes-vous sûr de vouloir fermer QuaX ?",
   "@confirm_close_fritter": {},
+  "content_filter": "Filtre de contenu",
+  "@content_filter": {},
   "content_filter_default": "Par défaut",
   "@content_filter_default": {},
   "content_filter_nsfw": "NSFW uniquement",

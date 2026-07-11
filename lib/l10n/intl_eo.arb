@@ -75,6 +75,8 @@
   "@community_notes_header": {},
   "confirm_close_fritter": "Ĉu vi certas, vi volas fermi QuaX-on?",
   "@confirm_close_fritter": {},
+  "content_filter": "Enhava filtrilo",
+  "@content_filter": {},
   "content_filter_default": "Defaŭlta",
   "@content_filter_default": {},
   "content_filter_nsfw": "Nur NSFW",

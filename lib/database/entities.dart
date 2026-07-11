@@ -262,6 +262,22 @@ class SubscriptionGroupGet {
       required this.popular,
       this.custom = false,
       this.contentFilter = contentFilterDefault});
+
+  // Store updates must emit a new instance, otherwise listeners never see the
+  // change (the store skips identical states) and dependent widgets go stale.
+  SubscriptionGroupGet copyWith(
+      {bool? includeReplies, bool? includeRetweets, bool? popular, bool? custom, String? contentFilter}) {
+    return SubscriptionGroupGet(
+        id: id,
+        name: name,
+        icon: icon,
+        subscriptions: subscriptions,
+        includeReplies: includeReplies ?? this.includeReplies,
+        includeRetweets: includeRetweets ?? this.includeRetweets,
+        popular: popular ?? this.popular,
+        custom: custom ?? this.custom,
+        contentFilter: contentFilter ?? this.contentFilter);
+  }
 }
 
 class SubscriptionGroupEdit {

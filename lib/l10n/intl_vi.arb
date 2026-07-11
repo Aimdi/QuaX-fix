@@ -75,6 +75,8 @@
   "@community_notes_header": {},
   "confirm_close_fritter": "Bạn có muốn đóng QuaX ",
   "@confirm_close_fritter": {},
+  "content_filter": "Bộ lọc nội dung",
+  "@content_filter": {},
   "content_filter_default": "Mặc định",
   "@content_filter_default": {},
   "content_filter_nsfw": "Chỉ NSFW",

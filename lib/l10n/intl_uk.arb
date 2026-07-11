@@ -75,6 +75,8 @@
   "@community_notes_header": {},
   "confirm_close_fritter": "Ви впевнені, що хочете закрити QuaX?",
   "@confirm_close_fritter": {},
+  "content_filter": "Фільтр вмісту",
+  "@content_filter": {},
   "content_filter_default": "Типово",
   "@content_filter_default": {},
   "content_filter_nsfw": "Лише NSFW",

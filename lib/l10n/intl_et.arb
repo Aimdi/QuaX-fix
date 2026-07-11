@@ -75,6 +75,8 @@
   "@community_notes_header": {},
   "confirm_close_fritter": "Kas sa oled kindel, et soovid panna QuaX'i kinni?",
   "@confirm_close_fritter": {},
+  "content_filter": "Sisufilter",
+  "@content_filter": {},
   "content_filter_default": "Vaikimisi",
   "@content_filter_default": {},
   "content_filter_nsfw": "Ainult NSFW",

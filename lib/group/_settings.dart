@@ -19,45 +19,109 @@ String _sortModeLabel(BuildContext context, SubscriptionGroupGet group) {
 }
 
 // Three-position content bar for custom mode: SFW only / default / NSFW only.
-class _ContentFilterBar extends StatelessWidget {
+// Keeps its position locally so dragging responds instantly, and persists the
+// choice through the group model.
+class _ContentFilterBar extends StatefulWidget {
   final GroupModel model;
 
   const _ContentFilterBar({required this.model});
 
+  @override
+  State<_ContentFilterBar> createState() => _ContentFilterBarState();
+}
+
+class _ContentFilterBarState extends State<_ContentFilterBar> {
   static const _positions = [contentFilterSfw, contentFilterDefault, contentFilterNsfw];
+  static const _thumbColors = [Colors.green, Colors.orange, Colors.red];
+
+  late int _position;
+
+  @override
+  void initState() {
+    super.initState();
+    _position = _positions.indexOf(widget.model.state.contentFilter).clamp(0, 2);
+  }
+
+  Widget _positionLabel(String text, int position) {
+    final selected = _position == position;
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 13,
+        fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+        color: selected ? _thumbColors[position] : Theme.of(context).hintColor,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final position = _positions.indexOf(model.state.contentFilter).clamp(0, 2);
-
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Slider(
-            value: position.toDouble(),
-            min: 0,
-            max: 2,
-            divisions: 2,
-            onChanged: (value) async =>
-                await model.setSubscriptionGroupContentFilter(_positions[value.round()]),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Text(L10n.of(context).content_filter, style: Theme.of(context).textTheme.titleSmall),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(L10n.of(context).content_filter_sfw,
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: position == 0 ? FontWeight.bold : FontWeight.normal)),
-              Text(L10n.of(context).content_filter_default,
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: position == 1 ? FontWeight.bold : FontWeight.normal)),
-              Text(L10n.of(context).content_filter_nsfw,
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: position == 2 ? FontWeight.bold : FontWeight.normal)),
-            ],
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 40,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Container(
+                    height: 8,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      gradient: const LinearGradient(
+                        colors: [Colors.green, Colors.yellow, Colors.orange, Colors.red],
+                      ),
+                    ),
+                  ),
+                ),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight: 8,
+                    activeTrackColor: Colors.transparent,
+                    inactiveTrackColor: Colors.transparent,
+                    activeTickMarkColor: Colors.white70,
+                    inactiveTickMarkColor: Colors.white70,
+                    thumbColor: _thumbColors[_position],
+                    overlayColor: _thumbColors[_position].withAlpha(50),
+                  ),
+                  child: Slider(
+                    value: _position.toDouble(),
+                    max: 2,
+                    divisions: 2,
+                    onChanged: (value) {
+                      final position = value.round();
+                      if (position == _position) {
+                        return;
+                      }
+                      setState(() {
+                        _position = position;
+                      });
+                      widget.model.setSubscriptionGroupContentFilter(_positions[position]);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _positionLabel(L10n.of(context).content_filter_sfw, 0),
+                _positionLabel(L10n.of(context).content_filter_default, 1),
+                _positionLabel(L10n.of(context).content_filter_nsfw, 2),
+              ],
+            ),
           ),
         ],
       ),

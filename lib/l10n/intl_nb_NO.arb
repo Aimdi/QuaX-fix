@@ -75,6 +75,8 @@
   "@community_notes_header": {},
   "confirm_close_fritter": "Lukk QuaX?",
   "@confirm_close_fritter": {},
+  "content_filter": "Innholdsfilter",
+  "@content_filter": {},
   "content_filter_default": "Standard",
   "@content_filter_default": {},
   "content_filter_nsfw": "Kun NSFW",

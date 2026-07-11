@@ -75,6 +75,8 @@
   "@community_notes_header": {},
   "confirm_close_fritter": "Apakah Anda yakin ingin menutup QuaX?",
   "@confirm_close_fritter": {},
+  "content_filter": "Filter konten",
+  "@content_filter": {},
   "content_filter_default": "Bawaan",
   "@content_filter_default": {},
   "content_filter_nsfw": "Hanya NSFW",

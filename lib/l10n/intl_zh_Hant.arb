@@ -75,6 +75,8 @@
   "@community_notes_header": {},
   "confirm_close_fritter": "您確定要關閉 QuaX 嗎？",
   "@confirm_close_fritter": {},
+  "content_filter": "內容過濾",
+  "@content_filter": {},
   "content_filter_default": "預設",
   "@content_filter_default": {},
   "content_filter_nsfw": "僅NSFW",

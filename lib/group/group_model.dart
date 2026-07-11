@@ -93,8 +93,7 @@ class GroupModel extends Store<SubscriptionGroupGet> {
     await execute(() async {
       (await Repository.writable())
           .rawUpdate('UPDATE $tableSubscriptionGroup SET include_replies = ? WHERE id = ?', [value, state.id]);
-      state.includeReplies = value;
-      return state;
+      return state.copyWith(includeReplies: value);
     });
   }
 
@@ -102,8 +101,7 @@ class GroupModel extends Store<SubscriptionGroupGet> {
     await execute(() async {
       (await Repository.writable())
           .rawUpdate('UPDATE $tableSubscriptionGroup SET include_retweets = ? WHERE id = ?', [value, state.id]);
-      state.includeRetweets = value;
-      return state;
+      return state.copyWith(includeRetweets: value);
     });
   }
 
@@ -111,9 +109,7 @@ class GroupModel extends Store<SubscriptionGroupGet> {
     await execute(() async {
       (await Repository.writable())
           .rawUpdate('UPDATE $tableSubscriptionGroup SET popular = ?, custom = 0 WHERE id = ?', [value, state.id]);
-      state.popular = value;
-      state.custom = false;
-      return state;
+      return state.copyWith(popular: value, custom: false);
     });
   }
 
@@ -121,9 +117,7 @@ class GroupModel extends Store<SubscriptionGroupGet> {
     await execute(() async {
       (await Repository.writable())
           .rawUpdate('UPDATE $tableSubscriptionGroup SET custom = ?, popular = 0 WHERE id = ?', [value, state.id]);
-      state.custom = value;
-      state.popular = false;
-      return state;
+      return state.copyWith(custom: value, popular: false);
     });
   }
 
@@ -131,8 +125,7 @@ class GroupModel extends Store<SubscriptionGroupGet> {
     await execute(() async {
       (await Repository.writable())
           .rawUpdate('UPDATE $tableSubscriptionGroup SET content_filter = ? WHERE id = ?', [value, state.id]);
-      state.contentFilter = value;
-      return state;
+      return state.copyWith(contentFilter: value);
     });
   }
 }

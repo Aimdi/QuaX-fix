@@ -75,6 +75,8 @@
   "@community_notes_header": {},
   "confirm_close_fritter": "Vy ŭpevnieny, što chočacie zachynić QuaX?",
   "@confirm_close_fritter": {},
+  "content_filter": "Filtr zmiesciva",
+  "@content_filter": {},
   "content_filter_default": "Standartna",
   "@content_filter_default": {},
   "content_filter_nsfw": "Tolki NSFW",
