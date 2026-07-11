@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from PIL import Image
 
-BACKGROUND_COLOR = "#080808"
+BACKGROUND_COLOR = "#1565C0"
 
 def generate_icon_png(svg_file):
     output_file = svg_file.replace('.svg', '.png')
