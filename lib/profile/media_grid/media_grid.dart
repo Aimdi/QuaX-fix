@@ -106,8 +106,11 @@ class _MediaGridState extends State<MediaGrid> with AutomaticKeepAliveClientMixi
 class StaticMediaGrid extends StatefulWidget {
   final List<MediaGridItem> items;
   final String emptyMessage;
+  // When set, long-pressing a tile invokes this with its item (used by the
+  // saved gallery to remove a bookmark, e.g. a dead "not available" one).
+  final void Function(MediaGridItem item)? onLongPressItem;
 
-  const StaticMediaGrid({super.key, required this.items, required this.emptyMessage});
+  const StaticMediaGrid({super.key, required this.items, required this.emptyMessage, this.onLongPressItem});
 
   @override
   State<StaticMediaGrid> createState() => _StaticMediaGridState();
@@ -149,7 +152,8 @@ class _StaticMediaGridState extends State<StaticMediaGrid> {
           item: widget.items[index],
           gifGate: _gifGate,
           radius: config.radius,
-          onTap: () => openMediaLightbox(context, staticItems: widget.items, initialIndex: index)),
+          onTap: () => openMediaLightbox(context, staticItems: widget.items, initialIndex: index),
+          onLongPress: widget.onLongPressItem == null ? null : () => widget.onLongPressItem!(widget.items[index])),
     );
   }
 }
@@ -159,8 +163,10 @@ class _MediaGridTile extends StatefulWidget {
   final GifPlaybackGate gifGate;
   final double radius;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
 
-  const _MediaGridTile({required this.item, required this.gifGate, this.radius = 8, required this.onTap});
+  const _MediaGridTile(
+      {required this.item, required this.gifGate, this.radius = 8, required this.onTap, this.onLongPress});
 
   @override
   State<_MediaGridTile> createState() => _MediaGridTileState();
@@ -204,6 +210,7 @@ class _MediaGridTileState extends State<_MediaGridTile> {
       body = GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: widget.onTap,
+        onLongPress: widget.onLongPress,
         child: item is GifGridItem
             ? _GifGridCell(item: item, gate: widget.gifGate)
             : item.toWidget(context),
