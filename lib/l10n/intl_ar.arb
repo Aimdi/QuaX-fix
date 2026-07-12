@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "لم تُعجب بأي منشور بعد!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "لا توجد منشورات مطابقة لبحثك",
+  "@no_posts_match_your_search": {},
   "no_results": "لا نتائج",
   "@no_results": {},
   "no_results_for": "لا توجد نتائج لـ:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "فتح في المتصفح",
   "@open_in_browser": {},
+  "open_post": "فتح المنشور",
   "option_confirm_close_description": "طلب التأكيد قبل إغلاق التطبيق",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "تأكيد الإغلاق",
@@ -475,6 +477,7 @@
   "search": "البحث",
   "@search": {},
   "search_saved_posts": "البحث في المنشورات المحفوظة",
+  "@search_saved_posts": {},
   "search_term": "مصطلح البحث",
   "@search_term": {},
   "select": "اختيار",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Vi ankoraŭ ne ŝatis iun ajn afiŝon!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Neniu afiŝo kongruas kun via serĉo",
+  "@no_posts_match_your_search": {},
   "no_results": "Ne rezultoj",
   "@no_results": {},
   "no_results_for": "Ne rezultoj por:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Malfermi en retumilo",
   "@open_in_browser": {},
+  "open_post": "Malfermi la afiŝon",
   "option_confirm_close_description": "Peti konfirmon antaŭ ol fermi la aplikaĵon",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Konfirmi fermon",
@@ -475,6 +477,7 @@
   "search": "Serĉi",
   "@search": {},
   "search_saved_posts": "Serĉi en konservitaj afiŝoj",
+  "@search_saved_posts": {},
   "search_term": "Termino de serĉo",
   "@search_term": {},
   "select": "Elekti",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kiom da paĝoj la fluo ŝargas en zena reĝimo antaŭ ol paŭzi.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

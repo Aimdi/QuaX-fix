@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Вы яшчэ не ўпадабалі ніводнага паста!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Няма пастоў, якія адпавядаюць вашаму запыту",
+  "@no_posts_match_your_search": {},
   "no_results": "Нічога не знойдзена",
   "@no_results": {},
   "no_results_for": "Вынікі адсутнічаюць:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Адкрыць у браўзеры",
   "@open_in_browser": {},
+  "open_post": "Адкрыць пост",
   "option_confirm_close_description": "Запытваць пацвярджэнне перад закрыццём праграмы",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Пацвердзіць закрыццё",
@@ -475,6 +477,7 @@
   "search": "Пошук",
   "@search": {},
   "search_saved_posts": "Пошук у захаваных пастах",
+  "@search_saved_posts": {},
   "search_term": "Пошукавы запыт",
   "@search_term": {},
   "select": "Выбраць",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Колькі старонак загружае стужка ў дзэн-рэжыме перад паўзай.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

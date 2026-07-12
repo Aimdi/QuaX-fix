@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "¡Todavía no le has dado me gusta a ninguna publicación!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Ninguna publicación coincide con tu búsqueda",
+  "@no_posts_match_your_search": {},
   "no_results": "No hay resultados",
   "@no_results": {},
   "no_results_for": "Sin resultados para:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Abrir en el navegador",
   "@open_in_browser": {},
+  "open_post": "Abrir publicación",
   "option_confirm_close_description": "Pedir confirmación antes de cerrar la app",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Confirmar cierre",
@@ -475,6 +477,7 @@
   "search": "Buscar",
   "@search": {},
   "search_saved_posts": "Buscar en las publicaciones guardadas",
+  "@search_saved_posts": {},
   "search_term": "Término de búsqueda",
   "@search_term": {},
   "select": "Seleccionar",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Cuántas páginas carga el feed en modo zen antes de hacer una pausa.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

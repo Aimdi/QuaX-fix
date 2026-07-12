@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Je hebt nog geen berichten geliket!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Geen berichten komen overeen met je zoekopdracht",
+  "@no_posts_match_your_search": {},
   "no_results": "Geen resultaten",
   "@no_results": {},
   "no_results_for": "Geen resultaten voor:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Openen in browser",
   "@open_in_browser": {},
+  "open_post": "Bericht openen",
   "option_confirm_close_description": "Bevestiging vragen voordat de app wordt gesloten",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Sluiten bevestigen",
@@ -475,6 +477,7 @@
   "search": "Zoeken",
   "@search": {},
   "search_saved_posts": "Zoeken in opgeslagen berichten",
+  "@search_saved_posts": {},
   "search_term": "Zoekterm",
   "@search_term": {},
   "select": "Selecteer",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hoeveel pagina's een feed in zen-modus laadt voordat deze pauzeert.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "您還沒有喜歡任何貼文！",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "沒有符合搜尋的貼文",
+  "@no_posts_match_your_search": {},
   "no_results": "沒有結果",
   "@no_results": {},
   "no_results_for": "沒有關於此的結果：",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "在瀏覽器中開啟",
   "@open_in_browser": {},
+  "open_post": "開啟貼文",
   "option_confirm_close_description": "關閉應用程式前請求確認",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "確認關閉",
@@ -475,6 +477,7 @@
   "search": "搜尋",
   "@search": {},
   "search_saved_posts": "搜尋已儲存的貼文",
+  "@search_saved_posts": {},
   "search_term": "搜尋字詞",
   "@search_term": {},
   "select": "選取",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禪模式下時間軸暫停前載入的頁數。",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

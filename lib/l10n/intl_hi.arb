@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "आपने अभी तक किसी पोस्ट को लाइक नहीं किया है!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "आपकी खोज से मेल खाती कोई पोस्ट नहीं है",
+  "@no_posts_match_your_search": {},
   "no_results": "कोई परिणाम नहीं",
   "@no_results": {},
   "no_results_for": "कोई परिणाम नहीं:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "ब्राउज़र में खोलें",
   "@open_in_browser": {},
+  "open_post": "पोस्ट खोलें",
   "option_confirm_close_description": "ऐप बंद करने से पहले पुष्टि माँगें",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "बंद करने की पुष्टि करें",
@@ -475,6 +477,7 @@
   "search": "खोजें",
   "@search": {},
   "search_saved_posts": "सहेजी गई पोस्ट में खोजें",
+  "@search_saved_posts": {},
   "search_term": "खोज शब्द",
   "@search_term": {},
   "select": "चुनें",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "ज़ेन मोड में रुकने से पहले फ़ीड कितने पेज लोड करेगी।",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

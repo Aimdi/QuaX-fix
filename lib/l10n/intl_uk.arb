@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Ви ще не вподобали жодного допису!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Немає дописів, що відповідають вашому запиту",
+  "@no_posts_match_your_search": {},
   "no_results": "Немає результатів",
   "@no_results": {},
   "no_results_for": "Нічого не знайдено для:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Відкрити у браузері",
   "@open_in_browser": {},
+  "open_post": "Відкрити допис",
   "option_confirm_close_description": "Запитувати підтвердження перед закриттям застосунку",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Підтвердити закриття",
@@ -475,6 +477,7 @@
   "search": "Пошук",
   "@search": {},
   "search_saved_posts": "Пошук у збережених дописах",
+  "@search_saved_posts": {},
   "search_term": "Пошуковий запит",
   "@search_term": {},
   "select": "Вибрати",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Скільки сторінок завантажує стрічка в дзен-режимі перед паузою.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

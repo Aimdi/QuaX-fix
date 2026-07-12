@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Zatím jste nelajkovali žádný příspěvek!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Vašemu hledání neodpovídají žádné příspěvky",
+  "@no_posts_match_your_search": {},
   "no_results": "Žádné výsledky",
   "@no_results": {},
   "no_results_for": "Žádné výsledky pro:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Otevřít v prohlížeči",
   "@open_in_browser": {},
+  "open_post": "Otevřít příspěvek",
   "option_confirm_close_description": "Požádat o potvrzení před zavřením aplikace",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Potvrdit zavření",
@@ -475,6 +477,7 @@
   "search": "Hledat",
   "@search": {},
   "search_saved_posts": "Hledat v uložených příspěvcích",
+  "@search_saved_posts": {},
   "search_term": "Hledaný výraz",
   "@search_term": {},
   "select": "Vybrat",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolik stránek kanál v zen režimu načte, než se pozastaví.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

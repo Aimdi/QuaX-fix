@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Henüz hiçbir gönderiyi beğenmediniz!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Aramanızla eşleşen gönderi yok",
+  "@no_posts_match_your_search": {},
   "no_results": "Sonuç yok",
   "@no_results": {},
   "no_results_for": "Sonuç bulunamadı:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Tarayıcıda aç",
   "@open_in_browser": {},
+  "open_post": "Gönderiyi aç",
   "option_confirm_close_description": "Uygulamayı kapatmadan önce onay iste",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Kapatmayı onayla",
@@ -475,6 +477,7 @@
   "search": "Ara",
   "@search": {},
   "search_saved_posts": "Kaydedilen gönderilerde ara",
+  "@search_saved_posts": {},
   "search_term": "Arama terimi",
   "@search_term": {},
   "select": "Seç",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zen modunda akışın duraklamadan önce kaç sayfa yükleyeceği.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

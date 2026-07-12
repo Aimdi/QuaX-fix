@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "您还没有喜欢任何帖子！",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "没有与搜索匹配的帖子",
+  "@no_posts_match_your_search": {},
   "no_results": "没有结果",
   "@no_results": {},
   "no_results_for": "搜索词无结果：",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "在浏览器中打开",
   "@open_in_browser": {},
+  "open_post": "打开帖子",
   "option_confirm_close_description": "关闭应用前请求确认",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "确认关闭",
@@ -475,6 +477,7 @@
   "search": "搜索",
   "@search": {},
   "search_saved_posts": "搜索已保存的帖子",
+  "@search_saved_posts": {},
   "search_term": "搜索词",
   "@search_term": {},
   "select": "选择",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

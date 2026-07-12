@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Anda belum menyukai postingan apa pun!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Tidak ada postingan yang cocok dengan pencarian Anda",
+  "@no_posts_match_your_search": {},
   "no_results": "Tidak ada hasil",
   "@no_results": {},
   "no_results_for": "Tidak ada hasil untuk:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Buka di browser",
   "@open_in_browser": {},
+  "open_post": "Buka postingan",
   "option_confirm_close_description": "Minta konfirmasi sebelum menutup aplikasi",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Konfirmasi penutupan",
@@ -475,6 +477,7 @@
   "search": "Cari",
   "@search": {},
   "search_saved_posts": "Cari di postingan tersimpan",
+  "@search_saved_posts": {},
   "search_term": "Kata pencarian",
   "@search_term": {},
   "select": "Pilih",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

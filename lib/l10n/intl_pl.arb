@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Nie polubiłeś(-aś) jeszcze żadnego wpisu!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Żadne wpisy nie pasują do wyszukiwania",
+  "@no_posts_match_your_search": {},
   "no_results": "Brak wyników",
   "@no_results": {},
   "no_results_for": "Brak wyników dla:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Otwórz w przeglądarce",
   "@open_in_browser": {},
+  "open_post": "Otwórz wpis",
   "option_confirm_close_description": "Pytaj o potwierdzenie przed zamknięciem aplikacji",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Potwierdź zamknięcie",
@@ -475,6 +477,7 @@
   "search": "Szukaj",
   "@search": {},
   "search_saved_posts": "Szukaj w zapisanych wpisach",
+  "@search_saved_posts": {},
   "search_term": "Fraza wyszukiwania",
   "@search_term": {},
   "select": "Wybierz",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Ile stron kanał wczytuje w trybie zen, zanim się zatrzyma.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Вы ещё не поставили лайк ни одной записи!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Нет постов, соответствующих вашему запросу",
+  "@no_posts_match_your_search": {},
   "no_results": "Ничего не найдено",
   "@no_results": {},
   "no_results_for": "Результаты отсутствуют:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Открыть в браузере",
   "@open_in_browser": {},
+  "open_post": "Открыть пост",
   "option_confirm_close_description": "Запрашивать подтверждение перед закрытием приложения",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Подтвердить закрытие",
@@ -475,6 +477,7 @@
   "search": "Поиск",
   "@search": {},
   "search_saved_posts": "Поиск по сохранённым постам",
+  "@search_saved_posts": {},
   "search_term": "Поисковый запрос",
   "@search_term": {},
   "select": "Выбрать",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Сколько страниц загружает лента в дзен-режиме перед паузой.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

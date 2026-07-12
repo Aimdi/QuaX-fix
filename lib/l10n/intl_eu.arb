@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Oraindik ez duzu argitalpenik gogoko egin!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Ez dago zure bilaketarekin bat datorren argitalpenik",
+  "@no_posts_match_your_search": {},
   "no_results": "Ez dago emaitzarik",
   "@no_results": {},
   "no_results_for": "Ez dago emaitzarik:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Ireki nabigatzailean",
   "@open_in_browser": {},
+  "open_post": "Ireki argitalpena",
   "option_confirm_close_description": "Eskatu berrespena aplikazioa itxi aurretik",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Berretsi ixtea",
@@ -475,6 +477,7 @@
   "search": "Bilatu",
   "@search": {},
   "search_saved_posts": "Bilatu gordetako argitalpenetan",
+  "@search_saved_posts": {},
   "search_term": "Bilatu",
   "@search_term": {},
   "select": "Hautatu",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zenbat orrialde kargatzen dituen jarioak zen moduan gelditu aurretik.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Sa pole veel ühtegi postitust meeldivaks märkinud!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Ükski postitus ei vasta otsingule",
+  "@no_posts_match_your_search": {},
   "no_results": "Tulemusi pole",
   "@no_results": {},
   "no_results_for": "Otsingutulemused puuduvad:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Ava brauseris",
   "@open_in_browser": {},
+  "open_post": "Ava postitus",
   "option_confirm_close_description": "Küsi kinnitust enne rakenduse sulgemist",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Kinnita sulgemine",
@@ -475,6 +477,7 @@
   "search": "Otsi",
   "@search": {},
   "search_saved_posts": "Otsi salvestatud postitustest",
+  "@search_saved_posts": {},
   "search_term": "Otsingusõna",
   "@search_term": {},
   "select": "Vali",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Mitu lehte voog Zen-režiimis enne pausi laadib.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

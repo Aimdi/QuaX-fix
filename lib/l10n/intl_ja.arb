@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "まだ投稿にいいねしていません！",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "検索に一致する投稿はありません",
+  "@no_posts_match_your_search": {},
   "no_results": "結果なし",
   "@no_results": {},
   "no_results_for": "結果なし:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "ブラウザで開く",
   "@open_in_browser": {},
+  "open_post": "投稿を開く",
   "option_confirm_close_description": "アプリを閉じる時に確認する",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "確認して閉じる",
@@ -475,6 +477,7 @@
   "search": "検索",
   "@search": {},
   "search_saved_posts": "保存済みの投稿を検索",
+  "@search_saved_posts": {},
   "search_term": "Search term",
   "@search_term": {},
   "select": "選択",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅モードでフィードが一時停止するまでに読み込むページ数。",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

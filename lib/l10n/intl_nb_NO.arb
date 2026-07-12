@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Du har ikke likt noen innlegg ennå!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Ingen innlegg samsvarer med søket ditt",
+  "@no_posts_match_your_search": {},
   "no_results": "Ingen resultater",
   "@no_results": {},
   "no_results_for": "Ingen resultater for",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Åpne i nettleser",
   "@open_in_browser": {},
+  "open_post": "Åpne innlegg",
   "option_confirm_close_description": "Be om bekreftelse før du lukker appen",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Bekreft lukking",
@@ -475,6 +477,7 @@
   "search": "Søk",
   "@search": {},
   "search_saved_posts": "Søk i lagrede innlegg",
+  "@search_saved_posts": {},
   "search_term": "Søkeord",
   "@search_term": {},
   "select": "Velg",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hvor mange sider en feed laster i zen-modus før den tar en pause.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }

@@ -360,6 +360,7 @@
   "no_liked_posts_yet": "Encara no has fet m'agrada a cap publicació!",
   "@no_liked_posts_yet": {},
   "no_posts_match_your_search": "Cap publicació coincideix amb la cerca",
+  "@no_posts_match_your_search": {},
   "no_results": "Sense resultats",
   "@no_results": {},
   "no_results_for": "Cap resultat per:",
@@ -388,6 +389,7 @@
   "@oops_something_went_wrong": {},
   "open_in_browser": "Obre al navegador",
   "@open_in_browser": {},
+  "open_post": "Obre la publicació",
   "option_confirm_close_description": "Sol·licita confirmació abans de tancar l'app",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Confirma el tancament",
@@ -475,6 +477,7 @@
   "search": "Cerca",
   "@search": {},
   "search_saved_posts": "Cerca a les publicacions desades",
+  "@search_saved_posts": {},
   "search_term": "Terme de cerca",
   "@search_term": {},
   "select": "Selecciona",
@@ -701,6 +704,5 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quantes pàgines carrega el feed en mode zen abans de fer una pausa.",
   "@zen_mode_page_cap_description": {},
-  "@no_posts_match_your_search": {},
-  "@search_saved_posts": {}
+  "@open_post": {}
 }
