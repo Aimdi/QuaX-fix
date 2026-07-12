@@ -390,6 +390,7 @@
   "open_in_browser": "Im Browser öffnen",
   "@open_in_browser": {},
   "open_post": "Beitrag öffnen",
+  "@open_post": {},
   "option_confirm_close_description": "Beim Schließen der App um Bestätigung bitten",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Schließen bestätigen",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Unter der MIT-Lizenz herausgegeben",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Leseposition merken",
+  "remember_reading_position_description": "Öffnet jeden Feed dort, wo du aufgehört hast, mit einer „Du bist auf dem Laufenden“-Trennlinie zwischen neuen und bereits gesehenen Beiträgen. Nur für chronologische Feeds.",
   "rename": "Umbenennen",
   "@rename": {},
   "renamed_subscriptions_updated": "Diese Konten wurden umbenannt und aktualisiert:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Ein öffentliches Profil ist erforderlich, sonst funktioniert der Import nicht",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Du bist auf dem Laufenden",
   "zen_mode": "Zen-Modus",
   "@zen_mode": {},
   "zen_mode_description": "Ein ruhigerer Feed: blendet Beitragsstatistiken aus, verbirgt Antworten, bis du die Kommentar-Schaltfläche gedrückt hältst, und zeigt nur wenige aktuelle Beiträge pro Person.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Wie viele Seiten ein Feed im Zen-Modus lädt, bevor er pausiert.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

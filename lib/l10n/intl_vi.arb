@@ -390,6 +390,7 @@
   "open_in_browser": "Mở trong trình duyệt",
   "@open_in_browser": {},
   "open_post": "Mở bài đăng",
+  "@open_post": {},
   "option_confirm_close_description": "Xác minh khi bạn muốn đóng ứng dụng",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Đóng ứng dụng",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Xây dựng với giấy phép MIT",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Ghi nhớ vị trí đọc",
+  "remember_reading_position_description": "Mở lại mỗi bảng tin tại nơi bạn dừng, với vạch phân cách \"Bạn đã xem hết\" giữa bài mới và bài đã xem. Chỉ áp dụng cho bảng tin theo thứ tự thời gian.",
   "rename": "Đổi tên",
   "@rename": {},
   "renamed_subscriptions_updated": "Những tài khoản này đã đổi tên và đã được cập nhật:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Bạn phải để tài khoản của bạn ở chế độ công khai, nếu không thì sẽ không hoạt động",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Bạn đã xem hết",
   "zen_mode": "Chế độ zen",
   "@zen_mode": {},
   "zen_mode_description": "Bảng tin yên tĩnh hơn: ẩn số liệu bài đăng, ẩn trả lời cho đến khi bạn giữ nút bình luận, và chỉ hiển thị vài bài đăng gần đây của mỗi người.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Số trang bảng tin tải ở chế độ zen trước khi tạm dừng.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

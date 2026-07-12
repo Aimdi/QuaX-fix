@@ -390,6 +390,7 @@
   "open_in_browser": "在瀏覽器中開啟",
   "@open_in_browser": {},
   "open_post": "開啟貼文",
+  "@open_post": {},
   "option_confirm_close_description": "關閉應用程式前請求確認",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "確認關閉",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "依 MIT 授權條款釋出",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "記住閱讀位置",
+  "remember_reading_position_description": "從上次離開的位置重新開啟每個時間軸，並在新貼文與已看過的貼文之間顯示「你已看完」分隔線。僅適用於時間順序時間軸。",
   "rename": "重新命名",
   "@rename": {},
   "renamed_subscriptions_updated": "以下帳號已改名並已更新：",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "您的個人資料必須為公開，否則匯入將無法運作",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "你已看完",
   "zen_mode": "禪模式",
   "@zen_mode": {},
   "zen_mode_description": "更平靜的動態：隱藏貼文統計數據，長按留言按鈕前隱藏回覆，每人只顯示幾則最新貼文。",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禪模式下時間軸暫停前載入的頁數。",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

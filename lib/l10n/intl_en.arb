@@ -390,6 +390,7 @@
   "open_in_browser": "Open in browser",
   "@open_in_browser": {},
   "open_post": "Open post",
+  "@open_post": {},
   "option_confirm_close_description": "Confirm when closing the app",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Confirm close",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Released under the MIT License",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Remember reading position",
+  "remember_reading_position_description": "Reopens each feed where you left off, with a \"You're caught up\" divider between new posts and ones you have already seen. Chronological feeds only.",
   "rename": "Rename",
   "@rename": {},
   "renamed_subscriptions_updated": "These accounts were renamed and have been updated:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Your profile must be public, otherwise the import will not work",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "You're caught up",
   "zen_mode": "Zen mode",
   "@zen_mode": {},
   "zen_mode_description": "A calmer feed: hides post statistics, hides replies until you hold the comment button, and shows only a few recent posts per person.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "How many pages a feed loads in zen mode before pausing.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

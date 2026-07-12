@@ -390,6 +390,7 @@
   "open_in_browser": "Открыть в браузере",
   "@open_in_browser": {},
   "open_post": "Открыть пост",
+  "@open_post": {},
   "option_confirm_close_description": "Запрашивать подтверждение перед закрытием приложения",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Подтвердить закрытие",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Опубликовано под лицензией MIT",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Запоминать место чтения",
+  "remember_reading_position_description": "Открывает каждую ленту там, где вы остановились, с разделителем «Вы всё посмотрели» между новыми и уже просмотренными постами. Только для хронологических лент.",
   "rename": "Переименовать",
   "@rename": {},
   "renamed_subscriptions_updated": "Эти учётные записи были переименованы и обновлены:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Ваш профиль должен быть открытым, иначе импортирование не будет работать",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Вы всё посмотрели",
   "zen_mode": "Дзен-режим",
   "@zen_mode": {},
   "zen_mode_description": "Более спокойная лента: скрывает статистику постов, скрывает ответы, пока вы не удержите кнопку комментариев, и показывает лишь несколько недавних постов от каждого.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Сколько страниц загружает лента в дзен-режиме перед паузой.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

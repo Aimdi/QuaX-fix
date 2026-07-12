@@ -390,6 +390,7 @@
   "open_in_browser": "Otwórz w przeglądarce",
   "@open_in_browser": {},
   "open_post": "Otwórz wpis",
+  "@open_post": {},
   "option_confirm_close_description": "Pytaj o potwierdzenie przed zamknięciem aplikacji",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Potwierdź zamknięcie",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Wydany na licencji MIT",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Zapamiętuj pozycję czytania",
+  "remember_reading_position_description": "Otwiera każdy kanał w miejscu, w którym skończyłeś, z separatorem „Jesteś na bieżąco“ między nowymi a już widzianymi wpisami. Tylko dla kanałów chronologicznych.",
   "rename": "Zmień nazwę",
   "@rename": {},
   "renamed_subscriptions_updated": "Te konta zmieniły nazwę i zostały zaktualizowane:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Profil musi być publiczny, inaczej import nie zadziała",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Jesteś na bieżąco",
   "zen_mode": "Tryb zen",
   "@zen_mode": {},
   "zen_mode_description": "Spokojniejszy kanał: ukrywa statystyki wpisów, ukrywa odpowiedzi, dopóki nie przytrzymasz przycisku komentarzy, i pokazuje tylko kilka ostatnich wpisów każdej osoby.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Ile stron kanał wczytuje w trybie zen, zanim się zatrzyma.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

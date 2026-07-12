@@ -243,6 +243,7 @@ Future<void> main() async {
     optionTweetsShowSubscribeBadge: true,
     optionZenMode: false,
     optionZenModePageCap: 5,
+    optionFeedReadingPosition: false,
     optionMediaGridLayout: mediaGridLayoutMasonry,
     optionShouldCheckForUpdates: true,
     optionSubscriptionGroupsOrderByAscending: true,

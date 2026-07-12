@@ -390,6 +390,7 @@
   "open_in_browser": "Tarayıcıda aç",
   "@open_in_browser": {},
   "open_post": "Gönderiyi aç",
+  "@open_post": {},
   "option_confirm_close_description": "Uygulamayı kapatmadan önce onay iste",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Kapatmayı onayla",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "MIT Lisansı altında yayınlandı",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Okuma konumunu hatırla",
+  "remember_reading_position_description": "Her akışı kaldığınız yerden açar; yeni gönderiler ile daha önce gördükleriniz arasına \"Her şeyi gördünüz\" ayracı ekler. Yalnızca kronolojik akışlar için.",
   "rename": "Yeniden adlandır",
   "@rename": {},
   "renamed_subscriptions_updated": "Bu hesaplar yeniden adlandırıldı ve güncellendi:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Profiliniz herkese açık olmalıdır, aksi takdirde alma işlemi çalışmaz",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Her şeyi gördünüz",
   "zen_mode": "Zen modu",
   "@zen_mode": {},
   "zen_mode_description": "Daha sakin bir akış: gönderi istatistiklerini gizler, yorum düğmesini basılı tutana kadar yanıtları gizler ve kişi başına yalnızca birkaç güncel gönderi gösterir.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zen modunda akışın duraklamadan önce kaç sayfa yükleyeceği.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

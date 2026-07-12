@@ -390,6 +390,7 @@
   "open_in_browser": "Openen in browser",
   "@open_in_browser": {},
   "open_post": "Bericht openen",
+  "@open_post": {},
   "option_confirm_close_description": "Bevestiging vragen voordat de app wordt gesloten",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Sluiten bevestigen",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Uitgebracht onder de MIT-licentie",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Leespositie onthouden",
+  "remember_reading_position_description": "Opent elke feed waar je was gebleven, met een 'Je bent bij'-scheiding tussen nieuwe en al bekeken berichten. Alleen voor chronologische feeds.",
   "rename": "Naam wijzigen",
   "@rename": {},
   "renamed_subscriptions_updated": "Deze accounts zijn hernoemd en bijgewerkt:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Uw profiel moet openbaar zijn, anders werkt het importeren niet",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Je bent bij",
   "zen_mode": "Zen-modus",
   "@zen_mode": {},
   "zen_mode_description": "Een rustigere feed: verbergt statistieken, verbergt reacties totdat je de reactieknop ingedrukt houdt en toont slechts enkele recente berichten per persoon.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hoeveel pagina's een feed in zen-modus laadt voordat deze pauzeert.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

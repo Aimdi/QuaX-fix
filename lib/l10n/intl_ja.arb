@@ -390,6 +390,7 @@
   "open_in_browser": "ブラウザで開く",
   "@open_in_browser": {},
   "open_post": "投稿を開く",
+  "@open_post": {},
   "option_confirm_close_description": "アプリを閉じる時に確認する",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "確認して閉じる",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "MITライセンスで公開",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "読書位置を記憶",
+  "remember_reading_position_description": "各フィードを前回の位置から再開し、新しい投稿と既読の投稿の間に「すべて確認済み」の区切りを表示します。時系列フィードのみ。",
   "rename": "名前を変更",
   "@rename": {},
   "renamed_subscriptions_updated": "以下のアカウントは名前が変更されたため、更新されました：",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "公開アカウントである必要があります",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "すべて確認済み",
   "zen_mode": "禅モード",
   "@zen_mode": {},
   "zen_mode_description": "より穏やかなフィード：投稿の統計を隠し、コメントボタンを長押しするまで返信を隠し、各ユーザーの最近の投稿を数件だけ表示します。",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅モードでフィードが一時停止するまでに読み込むページ数。",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

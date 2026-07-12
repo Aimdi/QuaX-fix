@@ -390,6 +390,7 @@
   "open_in_browser": "Ireki nabigatzailean",
   "@open_in_browser": {},
   "open_post": "Ireki argitalpena",
+  "@open_post": {},
   "option_confirm_close_description": "Eskatu berrespena aplikazioa itxi aurretik",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Berretsi ixtea",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "MIT lizentziapean argitaratua",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Gogoratu irakurketa-posizioa",
+  "remember_reading_position_description": "Jario bakoitza utzitako tokian irekitzen du berriro, «Egunean zaude» bereizle batekin argitalpen berrien eta dagoeneko ikusitakoen artean. Jario kronologikoetarako soilik.",
   "rename": "Aldatu izena",
   "@rename": {},
   "renamed_subscriptions_updated": "Kontu hauek izena aldatu dute eta eguneratu egin dira:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Zure profilak publikoa izan behar du, bestela inportazioak ez du funtzionatuko",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Egunean zaude",
   "zen_mode": "Zen modua",
   "@zen_mode": {},
   "zen_mode_description": "Jario lasaiagoa: estatistikak ezkutatzen ditu, erantzunak ezkutatzen ditu iruzkinen botoia sakatuta eduki arte, eta pertsona bakoitzeko azken argitalpen gutxi batzuk soilik erakusten ditu.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zenbat orrialde kargatzen dituen jarioak zen moduan gelditu aurretik.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

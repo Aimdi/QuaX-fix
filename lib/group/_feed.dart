@@ -8,6 +8,7 @@ import 'package:quax/database/entities.dart';
 import 'package:quax/database/repository.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/feed_cache.dart';
+import 'package:quax/group/feed_read_position.dart';
 import 'package:quax/group/feed_session_cache.dart';
 import 'package:quax/group/group_screen.dart';
 import 'package:quax/profile/media_grid/media_grid.dart';
@@ -76,7 +77,24 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   // its previously-loaded content instead of a full-screen spinner.
   List<TweetChain>? _cachedPreview;
 
+  // Reading position: the boundary is loaded once per mount and stays frozen,
+  // so the "You're caught up" divider never moves mid-session.
+  FeedReadPosition? _lastSeen;
+  bool _readPositionLoadStarted = false;
+  bool _caughtUpRestoreEvaluated = false;
+  String? _lastRecordedChainId;
+  final GlobalKey _caughtUpKey = GlobalKey();
+
   bool get _usesCache => widget.cacheKey != null;
+
+  // Chronological feeds only: in popular order a "seen up to" boundary is
+  // meaningless, and the media grid shares this loader but shows no divider.
+  bool get _tracksReadPosition =>
+      !widget.group.popular &&
+      !widget.mediaOnly &&
+      PrefService.of(context, listen: false).get(optionFeedReadingPosition) == true;
+
+  bool _isSeen(TweetChain chain) => _lastSeen != null && isChainSeen(chain, _lastSeen!);
 
   CursorPagingController<String, MediaGridItem> get _mediaController =>
       _mediaPaging ??= CursorPagingController(_loadMediaPage);
@@ -110,21 +128,104 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!_usesCache) return;
     // Inside NestedScrollView's body, PrimaryScrollController is the inner
     // controller PagedListView attaches to, and the one we need for jumpTo().
     _innerScrollController = PrimaryScrollController.maybeOf(context);
+    _maybeLoadReadPosition();
+    if (!_usesCache) return;
     _maybeRestoreScrollOffset();
   }
 
+  void _maybeLoadReadPosition() {
+    if (_readPositionLoadStarted || !_tracksReadPosition) {
+      return;
+    }
+    _readPositionLoadStarted = true;
+    readFeedReadPosition(widget.group.id).then((position) {
+      if (mounted && position != null) {
+        setState(() => _lastSeen = position);
+      }
+    });
+  }
+
   bool _onScrollNotification(ScrollNotification notification) {
-    if (_usesCache && notification is ScrollEndNotification) {
-      final metrics = notification.metrics;
-      if (metrics.hasPixels) {
-        _cache!.saveOffset(widget.cacheKey!, metrics.pixels);
+    if (notification is! ScrollEndNotification) {
+      return false;
+    }
+    final metrics = notification.metrics;
+    if (_usesCache && metrics.hasPixels) {
+      _cache!.saveOffset(widget.cacheKey!, metrics.pixels);
+    }
+    // Scrolled back up to the top: everything currently loaded counts as read.
+    if (_tracksReadPosition && metrics.hasPixels && metrics.pixels <= feedReadPositionTopThresholdPx) {
+      final items = _feedController.items;
+      if (items != null && items.isNotEmpty) {
+        _recordReadPosition(items);
       }
     }
     return false;
+  }
+
+  bool get _atTop {
+    final controller = _innerScrollController;
+    return controller == null ||
+        !controller.hasClients ||
+        controller.position.pixels <= feedReadPositionTopThresholdPx;
+  }
+
+  void _recordReadPosition(List<TweetChain> threads) {
+    final newest = threads.where((c) => c.tweets.firstOrNull?.createdAt != null).firstOrNull;
+    if (newest == null || newest.id == _lastRecordedChainId) {
+      return;
+    }
+    _lastRecordedChainId = newest.id;
+    writeFeedReadPosition(widget.group.id, newest);
+  }
+
+  // Called with each finalized first page. The first one decides between
+  // restoring the caught-up position (there are unread posts above it) and
+  // recording; later ones (soft refreshes) record only while at the top, so
+  // an app-bar refresh fired mid-scroll can't mark unseen posts as read.
+  void _onFirstPageLoaded(List<TweetChain> threads) {
+    if (!_caughtUpRestoreEvaluated) {
+      _caughtUpRestoreEvaluated = true;
+      final sessionOffset = _usesCache ? _cache!.readOffset(widget.cacheKey!) : null;
+      final boundary = _lastSeen == null ? null : caughtUpBoundaryIndex(threads, _lastSeen!);
+      if (boundary != null && (sessionOffset == null || sessionOffset <= 0)) {
+        _scheduleCaughtUpRestore(boundary, threads.length);
+        return; // The newer posts haven't been seen yet — don't record.
+      }
+    }
+    if (_atTop) {
+      _recordReadPosition(threads);
+    }
+  }
+
+  // Lazy list: the divider only gets built once its offset is laid out. Jump
+  // to a proportional estimate first, then sweep a viewport per frame until
+  // the divider's key resolves, and align it just under the app bar. Bounded
+  // by maxCaughtUpRestoreFrames so a miss degrades to "near the estimate".
+  void _scheduleCaughtUpRestore(int index, int itemCount, [int attempts = 0]) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || attempts >= maxCaughtUpRestoreFrames) return;
+      final controller = _innerScrollController;
+      // Wait until the real list (not the preview) is mounted and laid out.
+      if (controller == null || !controller.hasClients || !controller.position.haveDimensions || !_feedController.hasItems) {
+        _scheduleCaughtUpRestore(index, itemCount, attempts + 1);
+        return;
+      }
+      final divider = _caughtUpKey.currentContext;
+      if (divider != null) {
+        Scrollable.ensureVisible(divider, alignment: 0.02);
+        return;
+      }
+      final position = controller.position;
+      final estimated = (position.maxScrollExtent * index / itemCount).clamp(0.0, position.maxScrollExtent);
+      final sweep =
+          attempts == 0 ? 0.0 : (attempts.isOdd ? -1.0 : 1.0) * ((attempts + 1) ~/ 2) * position.viewportDimension;
+      controller.jumpTo((estimated + sweep).clamp(0.0, position.maxScrollExtent));
+      _scheduleCaughtUpRestore(index, itemCount, attempts + 1);
+    });
   }
 
   void _maybeRestoreScrollOffset() {
@@ -396,6 +497,10 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       await showUnrelatedPostsInFeedWarning();
     }
 
+    if (cursorKey == null && _tracksReadPosition) {
+      _onFirstPageLoaded(threads);
+    }
+
     return (chains: threads, nextCursor: nextCursor);
   }
 
@@ -537,6 +642,8 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
             firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets_for_the_feed,
             newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
             emptyMessage: L10n.of(context).could_not_find_any_tweets_from_the_last_7_days,
+            isSeen: _tracksReadPosition && _lastSeen != null ? _isSeen : null,
+            caughtUpDividerKey: _caughtUpKey,
           ),
         ),
       ),

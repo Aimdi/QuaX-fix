@@ -390,6 +390,7 @@
   "open_in_browser": "Malfermi en retumilo",
   "@open_in_browser": {},
   "open_post": "Malfermi la afiŝon",
+  "@open_post": {},
   "option_confirm_close_description": "Peti konfirmon antaŭ ol fermi la aplikaĵon",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Konfirmi fermon",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Eldonis per la licenco MIT-a",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Memori la legpozicion",
+  "remember_reading_position_description": "Remalfermas ĉiun fluon kie vi ĉesis, kun apartigilo «Vi estas ĝisdata» inter novaj kaj jam viditaj afiŝoj. Nur por kronologiaj fluoj.",
   "rename": "Renomi",
   "@rename": {},
   "renamed_subscriptions_updated": "Ĉi tiuj kontoj estis renomitaj kaj ĝisdatigitaj:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Via profilo devas esti publika, alie la importo ne funkcios",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Vi estas ĝisdata",
   "zen_mode": "Zena reĝimo",
   "@zen_mode": {},
   "zen_mode_description": "Pli trankvila fluo: kaŝas statistikojn de afiŝoj, kaŝas respondojn ĝis vi longpremas la komentan butonon, kaj montras nur kelkajn lastatempajn afiŝojn po persono.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kiom da paĝoj la fluo ŝargas en zena reĝimo antaŭ ol paŭzi.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

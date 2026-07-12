@@ -390,6 +390,7 @@
   "open_in_browser": "Åpne i nettleser",
   "@open_in_browser": {},
   "open_post": "Åpne innlegg",
+  "@open_post": {},
   "option_confirm_close_description": "Be om bekreftelse før du lukker appen",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Bekreft lukking",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Utgitt under MIT-lisensen",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Husk leseposisjon",
+  "remember_reading_position_description": "Åpner hver feed der du slapp, med en «Du er à jour»-deler mellom nye innlegg og de du alt har sett. Kun for kronologiske feeder.",
   "rename": "Gi nytt navn",
   "@rename": {},
   "renamed_subscriptions_updated": "Disse kontoene har byttet navn og ble oppdatert:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Profilen din må være offentlig, ellers vil ikke importen fungere",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Du er à jour",
   "zen_mode": "Zen-modus",
   "@zen_mode": {},
   "zen_mode_description": "En roligere feed: skjuler innleggsstatistikk, skjuler svar til du holder inne kommentarknappen, og viser bare noen få nylige innlegg per person.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hvor mange sider en feed laster i zen-modus før den tar en pause.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

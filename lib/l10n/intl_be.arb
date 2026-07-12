@@ -390,6 +390,7 @@
   "open_in_browser": "Адкрыць у браўзеры",
   "@open_in_browser": {},
   "open_post": "Адкрыць пост",
+  "@open_post": {},
   "option_confirm_close_description": "Запытваць пацвярджэнне перад закрыццём праграмы",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Пацвердзіць закрыццё",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Апублікавана пад ліцэнзіяй MIT",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Запамінаць месца чытання",
+  "remember_reading_position_description": "Адкрывае кожную стужку там, дзе вы спыніліся, з раздзяляльнікам «Вы ўсё прачыталі» паміж новымі і ўжо прагледжанымі пастамі. Толькі для храналагічных стужак.",
   "rename": "Перайменаваць",
   "@rename": {},
   "renamed_subscriptions_updated": "Гэтыя ўліковыя запісы былі пераназваны і абноўлены:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Ваш профіль павінен быць адкрытым, інакш імпарт ня будзе працаваць",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Вы ўсё прачыталі",
   "zen_mode": "Дзэн-рэжым",
   "@zen_mode": {},
   "zen_mode_description": "Спакайнейшая стужка: хавае статыстыку пастоў, хавае адказы, пакуль вы не ўтрымаеце кнопку каментарыяў, і паказвае толькі некалькі нядаўніх пастоў ад кожнага.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Колькі старонак загружае стужка ў дзэн-рэжыме перад паўзай.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

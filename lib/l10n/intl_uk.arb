@@ -390,6 +390,7 @@
   "open_in_browser": "Відкрити у браузері",
   "@open_in_browser": {},
   "open_post": "Відкрити допис",
+  "@open_post": {},
   "option_confirm_close_description": "Запитувати підтвердження перед закриттям застосунку",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Підтвердити закриття",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Випущено за ліцензією MIT",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Запам'ятовувати місце читання",
+  "remember_reading_position_description": "Відкриває кожну стрічку там, де ви зупинилися, з розділювачем «Ви все переглянули» між новими та вже переглянутими дописами. Лише для хронологічних стрічок.",
   "rename": "Перейменувати",
   "@rename": {},
   "renamed_subscriptions_updated": "Ці облікові записи було перейменовано та оновлено:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Ваш профіль має бути публічним, інакше імпорт не спрацює",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Ви все переглянули",
   "zen_mode": "Дзен-режим",
   "@zen_mode": {},
   "zen_mode_description": "Спокійніша стрічка: приховує статистику дописів, приховує відповіді, доки ви не утримаєте кнопку коментарів, і показує лише кілька нещодавніх дописів від кожного.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Скільки сторінок завантажує стрічка в дзен-режимі перед паузою.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

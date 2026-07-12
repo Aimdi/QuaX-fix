@@ -390,6 +390,7 @@
   "open_in_browser": "Ouvrir dans le navigateur",
   "@open_in_browser": {},
   "open_post": "Ouvrir la publication",
+  "@open_post": {},
   "option_confirm_close_description": "Demander confirmation lors de la fermeture de l'application",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Confirmation de fermeture",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Publié sous la licence MIT",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Mémoriser la position de lecture",
+  "remember_reading_position_description": "Rouvre chaque fil là où vous vous étiez arrêté, avec un séparateur « Vous êtes à jour » entre les nouvelles publications et celles déjà vues. Fils chronologiques uniquement.",
   "rename": "Renommer",
   "@rename": {},
   "renamed_subscriptions_updated": "Ces comptes ont été renommés et mis à jour :",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Votre profil doit être public, sinon l'importation ne fonctionnera pas",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Vous êtes à jour",
   "zen_mode": "Mode zen",
   "@zen_mode": {},
   "zen_mode_description": "Un fil plus apaisé : masque les statistiques, masque les réponses jusqu'à ce que vous mainteniez le bouton des commentaires, et ne montre que quelques publications récentes par personne.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Nombre de pages chargées par le fil en mode zen avant de faire une pause.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

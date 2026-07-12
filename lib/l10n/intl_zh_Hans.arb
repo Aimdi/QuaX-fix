@@ -390,6 +390,7 @@
   "open_in_browser": "在浏览器中打开",
   "@open_in_browser": {},
   "open_post": "打开帖子",
+  "@open_post": {},
   "option_confirm_close_description": "关闭应用前请求确认",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "确认关闭",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "以 MIT 许可证发布",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "记住阅读位置",
+  "remember_reading_position_description": "从上次离开的位置重新打开每个信息流，并在新帖子与已看过的帖子之间显示“你已看完”分隔线。仅适用于时间顺序信息流。",
   "rename": "重命名",
   "@rename": {},
   "renamed_subscriptions_updated": "以下账号已改名并已更新：",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "你的个人资料必须是公开的，否则无法导入",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "你已看完",
   "zen_mode": "禅模式",
   "@zen_mode": {},
   "zen_mode_description": "更安静的信息流：隐藏帖子统计数据，长按评论按钮前隐藏回复，每人只显示几条最新帖子。",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

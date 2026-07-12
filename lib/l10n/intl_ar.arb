@@ -390,6 +390,7 @@
   "open_in_browser": "فتح في المتصفح",
   "@open_in_browser": {},
   "open_post": "فتح المنشور",
+  "@open_post": {},
   "option_confirm_close_description": "طلب التأكيد قبل إغلاق التطبيق",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "تأكيد الإغلاق",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "منشور تحت رخصة الإم أي تي (MIT License)",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "تذكر موضع القراءة",
+  "remember_reading_position_description": "يعيد فتح كل خلاصة من حيث توقفت، مع فاصل «أنت على اطلاع» بين المنشورات الجديدة والتي رأيتها من قبل. للخلاصات الزمنية فقط.",
   "rename": "إعادة تسمية",
   "@rename": {},
   "renamed_subscriptions_updated": "تمت إعادة تسمية هذه الحسابات وتم تحديثها:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "يجب أن يكون ملف التعريف الخاص بك عاما، وإلا لن يعمل الاستيراد",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "أنت على اطلاع",
   "zen_mode": "وضع الهدوء",
   "@zen_mode": {},
   "zen_mode_description": "موجز أهدأ: يخفي إحصاءات المنشورات، ويخفي الردود حتى تضغط مطولًا على زر التعليقات، ويعرض فقط بضعة منشورات حديثة لكل شخص.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

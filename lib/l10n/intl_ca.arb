@@ -390,6 +390,7 @@
   "open_in_browser": "Obre al navegador",
   "@open_in_browser": {},
   "open_post": "Obre la publicació",
+  "@open_post": {},
   "option_confirm_close_description": "Sol·licita confirmació abans de tancar l'app",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Confirma el tancament",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Llançat sota la llicència MIT",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Recorda la posició de lectura",
+  "remember_reading_position_description": "Reobre cada feed on ho havies deixat, amb un separador «Estàs al dia» entre les publicacions noves i les ja vistes. Només per a feeds cronològics.",
   "rename": "Canvia el nom",
   "@rename": {},
   "renamed_subscriptions_updated": "Aquests comptes han canviat de nom i s'han actualitzat:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "El teu perfil ha de ser públic, en cas contrari la importació no funcionarà",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Estàs al dia",
   "zen_mode": "Mode zen",
   "@zen_mode": {},
   "zen_mode_description": "Un canal més tranquil: amaga les estadístiques, amaga les respostes fins que mantinguis premut el botó de comentaris i mostra només unes quantes publicacions recents per persona.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quantes pàgines carrega el feed en mode zen abans de fer una pausa.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

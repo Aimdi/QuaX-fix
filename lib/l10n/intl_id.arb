@@ -390,6 +390,7 @@
   "open_in_browser": "Buka di browser",
   "@open_in_browser": {},
   "open_post": "Buka postingan",
+  "@open_post": {},
   "option_confirm_close_description": "Minta konfirmasi sebelum menutup aplikasi",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Konfirmasi penutupan",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Dirilis di bawah Lisensi MIT",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Ingat posisi membaca",
+  "remember_reading_position_description": "Membuka kembali setiap beranda di tempat Anda berhenti, dengan pembatas \"Anda sudah update\" antara postingan baru dan yang sudah dilihat. Hanya untuk beranda kronologis.",
   "rename": "Ganti nama",
   "@rename": {},
   "renamed_subscriptions_updated": "Akun-akun ini berganti nama dan telah diperbarui:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Profil Anda harus publik, jika tidak impor tidak akan bekerja",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Anda sudah update",
   "zen_mode": "Mode zen",
   "@zen_mode": {},
   "zen_mode_description": "Feed yang lebih tenang: menyembunyikan statistik postingan, menyembunyikan balasan sampai Anda menahan tombol komentar, dan hanya menampilkan beberapa postingan terbaru per orang.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

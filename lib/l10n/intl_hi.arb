@@ -390,6 +390,7 @@
   "open_in_browser": "ब्राउज़र में खोलें",
   "@open_in_browser": {},
   "open_post": "पोस्ट खोलें",
+  "@open_post": {},
   "option_confirm_close_description": "ऐप बंद करने से पहले पुष्टि माँगें",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "बंद करने की पुष्टि करें",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "MIT लाइसेंस के तहत जारी",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "पढ़ने की स्थिति याद रखें",
+  "remember_reading_position_description": "हर फ़ीड वहीं से खोलती है जहाँ आपने छोड़ा था, नई और पहले देखी गई पोस्ट के बीच \"आप अप-टू-डेट हैं\" विभाजक के साथ। केवल कालानुक्रमिक फ़ीड के लिए।",
   "rename": "नाम बदलें",
   "@rename": {},
   "renamed_subscriptions_updated": "इन खातों का नाम बदला गया था, इन्हें अपडेट कर दिया गया है:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "आपकी प्रोफ़ाइल सार्वजनिक होनी चाहिए, अन्यथा आयात काम नहीं करेगा",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "आप अप-टू-डेट हैं",
   "zen_mode": "ज़ेन मोड",
   "@zen_mode": {},
   "zen_mode_description": "एक शांत फ़ीड: पोस्ट के आँकड़े छिपाता है, टिप्पणी बटन दबाकर रखने तक जवाब छिपाता है, और प्रति व्यक्ति केवल कुछ हालिया पोस्ट दिखाता है।",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "ज़ेन मोड में रुकने से पहले फ़ीड कितने पेज लोड करेगी।",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }

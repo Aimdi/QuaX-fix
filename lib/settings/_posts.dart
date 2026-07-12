@@ -58,6 +58,11 @@ class SettingsPostsFragment extends StatelessWidget {
                 DropdownMenuItem(value: pages, child: Text('$pages')),
             ],
           ),
+          PrefSwitch(
+            title: Text(L10n.of(context).remember_reading_position),
+            subtitle: Text(L10n.of(context).remember_reading_position_description),
+            pref: optionFeedReadingPosition,
+          ),
         ]),
       ),
     );

@@ -390,6 +390,7 @@
   "open_in_browser": "Abrir no navegador",
   "@open_in_browser": {},
   "open_post": "Abrir publicação",
+  "@open_post": {},
   "option_confirm_close_description": "Solicitar confirmação antes de fechar o app",
   "@option_confirm_close_description": {},
   "option_confirm_close_label": "Confirmar encerramento",
@@ -446,6 +447,8 @@
   "@recent": {},
   "released_under_the_mit_license": "Lançado sob a licença MIT",
   "@released_under_the_mit_license": {},
+  "remember_reading_position": "Lembrar a posição de leitura",
+  "remember_reading_position_description": "Reabre cada feed onde você parou, com um separador \"Você está em dia\" entre as publicações novas e as já vistas. Apenas para feeds cronológicos.",
   "rename": "Renomear",
   "@rename": {},
   "renamed_subscriptions_updated": "Estas contas mudaram de nome e foram atualizadas:",
@@ -692,6 +695,7 @@
   "@you_must_have_at_least_2_home_screen_pages": {},
   "your_profile_must_be_public_otherwise_the_import_will_not_work": "Seu perfil deve ser público, caso contrário a importação não funcionará",
   "@your_profile_must_be_public_otherwise_the_import_will_not_work": {},
+  "youre_caught_up": "Você está em dia",
   "zen_mode": "Modo zen",
   "@zen_mode": {},
   "zen_mode_description": "Um feed mais calmo: oculta as estatísticas, oculta as respostas até você segurar o botão de comentários e mostra apenas algumas publicações recentes por pessoa.",
@@ -704,5 +708,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quantas páginas o feed carrega no modo zen antes de fazer uma pausa.",
   "@zen_mode_page_cap_description": {},
-  "@open_post": {}
+  "@remember_reading_position": {},
+  "@remember_reading_position_description": {},
+  "@youre_caught_up": {}
 }
