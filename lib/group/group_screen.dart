@@ -1,7 +1,9 @@
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
+import 'package:pref/pref.dart';
 import 'package:quax/client/client.dart';
+import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/database/repository.dart';
 import 'package:quax/generated/l10n.dart';
@@ -121,19 +123,24 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
         if (group.id.isEmpty) {
           return _loadingView();
         }
+        // A group leaves each filter unset (null) to follow the global default.
+        final prefs = PrefService.of(context);
+        final includeReplies = group.includeReplies ?? prefs.get<bool>(optionGlobalIncludeReplies) ?? true;
+        final includeRetweets = group.includeRetweets ?? prefs.get<bool>(optionGlobalIncludeRetweets) ?? true;
+
         // Split the users into chunks, oldest first, to prevent thrashing of all groups when a new user is added
         final filteredUsers = group.id == '-1' ? group.subscriptions.where((elm) => elm.inFeed) : group.subscriptions;
         final users = filteredUsers.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).toList();
 
         var chunks = partition(users, 16)
-            .map((e) => SubscriptionGroupFeedChunk(e, group.includeReplies, group.includeRetweets))
+            .map((e) => SubscriptionGroupFeedChunk(e, includeReplies, includeRetweets))
             .toList();
 
         return SubscriptionGroupFeed(
           group: group,
           chunks: chunks,
-          includeReplies: group.includeReplies,
-          includeRetweets: group.includeRetweets,
+          includeReplies: includeReplies,
+          includeRetweets: includeRetweets,
           mediaOnly: widget.mediaOnly,
           cacheKey: widget.cacheKey,
           initialPreview: _preview,

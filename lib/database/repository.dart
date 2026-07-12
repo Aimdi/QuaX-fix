@@ -296,11 +296,16 @@ class Repository {
         SqlMigration(
             'CREATE TABLE IF NOT EXISTS $tableFeedReadPosition (group_id VARCHAR PRIMARY KEY, chain_id VARCHAR NOT NULL, chain_created_at TEXT, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
             reverseSql: 'DROP TABLE $tableFeedReadPosition'),
+      ],
+      33: [
+        // Per-folder toggle: download a post's images when it's filed here.
+        SqlMigration('ALTER TABLE $tableSavedTweetFolder ADD COLUMN auto_download BOOLEAN DEFAULT 0',
+            reverseSql: 'ALTER TABLE $tableSavedTweetFolder DROP COLUMN auto_download'),
       ]
     });
     await openDatabase(
       databaseName,
-      version: 32,
+      version: 33,
       onUpgrade: myMigrationPlan.call,
       onCreate: myMigrationPlan.call,
       onDowngrade: myMigrationPlan.call,

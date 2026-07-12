@@ -171,14 +171,33 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
     return mediaItemsFromChains(chains);
   }
 
-  Widget _buildMediaGrid(Iterable<String?> contents) {
+  Widget _buildMediaGrid(Iterable<String?> contents, {required Future<void> Function(String id) onDelete}) {
     return RefreshIndicator(
       onRefresh: _refresh,
       child: StaticMediaGrid(
         items: _mediaItemsOf(contents),
         emptyMessage: L10n.of(context).could_not_find_any_posts_with_media,
+        onLongPressItem: (item) => _confirmRemoveFromGallery(item.tweetId, onDelete),
       ),
     );
+  }
+
+  // Long-pressing a tile in the saved gallery removes that post — handy for
+  // clearing the dead "not available" ones without leaving gallery mode.
+  Future<void> _confirmRemoveFromGallery(String id, Future<void> Function(String id) onDelete) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(L10n.of(context).are_you_sure),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(L10n.of(context).cancel)),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: Text(L10n.of(context).delete)),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await onDelete(id);
+    }
   }
 
   List<SavedTweet> _applyFilter(List<SavedTweet> tweets) {
@@ -344,7 +363,8 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
         var filtered = _applySearch(_applyFilter(data), (SavedTweet e) => e.content);
 
         if (_mediaOnly && filtered.isNotEmpty) {
-          return _buildMediaGrid(filtered.map((e) => e.content));
+          return _buildMediaGrid(filtered.map((e) => e.content),
+              onDelete: (id) => context.read<SavedTweetModel>().deleteSavedTweet(id));
         }
 
         return RefreshIndicator(
@@ -375,7 +395,8 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
         var filtered = _applySearch(data, (LikedTweet e) => e.content);
 
         if (_mediaOnly && filtered.isNotEmpty) {
-          return _buildMediaGrid(filtered.map((e) => e.content));
+          return _buildMediaGrid(filtered.map((e) => e.content),
+              onDelete: (id) => context.read<LikedTweetModel>().unlikeTweet(id));
         }
 
         return RefreshIndicator(
