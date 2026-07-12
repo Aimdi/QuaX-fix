@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:io' show Platform;
 import 'package:auto_direction/auto_direction.dart';
-import 'package:dart_twitter_api/twitter_api.dart' show User;
+import 'package:dart_twitter_api/twitter_api.dart' show Media, Url, User;
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -29,6 +29,7 @@ import 'package:quax/ui/errors.dart';
 import 'package:quax/user.dart';
 import 'package:quax/utils/rich_text.dart';
 import 'package:quax/utils/translation.dart';
+import 'package:quax/utils/urls.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
@@ -349,6 +350,28 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     }
   }
 
+  /// Tweet text carries t.co redirector links; replace them with their
+  /// cleaned destination so shares don't route recipients through X's
+  /// click tracking.
+  String _shareableText(TweetWithCard tweet, String text) {
+    var result = text;
+    for (Url url in tweet.entities?.urls ?? []) {
+      final short = url.url;
+      final expanded = url.expandedUrl;
+      if (short != null && expanded != null) {
+        result = result.replaceAll(short, cleanUrl(expanded));
+      }
+    }
+    for (Media media in tweet.extendedEntities?.media ?? tweet.entities?.media ?? []) {
+      final short = media.url;
+      final expanded = media.expandedUrl;
+      if (short != null && expanded != null) {
+        result = result.replaceAll(short, cleanUrl(expanded));
+      }
+    }
+    return result;
+  }
+
   Widget _buildFooterBar(TweetWithCard tweet, String tweetText, String shareBaseUrl, Locale locale, NumberFormat numberFormat, {bool isArticle = false}) {
     // Zen mode: no engagement numbers anywhere; holding the comment button
     // reveals the hidden replies when a conversation is open.
@@ -468,7 +491,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                                 L10n.of(context).share_tweet_content,
                                 Icons.text_snippet,
                                       () async {
-                                    Share.share(tweetText);
+                                    Share.share(_shareableText(tweet, tweetText));
                                     Navigator.pop(context);
                                   },
                               ),
@@ -483,7 +506,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                                   L10n.of(context).share_tweet_content_and_link, Icons.add_link,
                                       () async {
                                         Share.share(
-                                            '$tweetText\n\n$shareBaseUrl/${tweet.user!.screenName}/status/${tweet.idStr}');
+                                            '${_shareableText(tweet, tweetText)}\n\n$shareBaseUrl/${tweet.user!.screenName}/status/${tweet.idStr}');
                                         Navigator.pop(context);
                                       }),
                             createSheetButton(isArticle ? L10n.of(context).share_article_as_image : L10n.of(context).share_tweet_as_image, Icons.screenshot, () async {

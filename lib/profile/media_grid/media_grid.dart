@@ -7,7 +7,7 @@ import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/profile/media_grid/gif_playback_gate.dart';
 import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
-import 'package:quax/status.dart';
+import 'package:quax/profile/media_grid/media_grid_lightbox.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/utils/paging.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -76,8 +76,11 @@ class _MediaGridState extends State<MediaGrid> with AutomaticKeepAliveClientMixi
           crossAxisSpacing: config.spacing,
           addAutomaticKeepAlives: false,
           builderDelegate: PagedChildBuilderDelegate<MediaGridItem>(
-            itemBuilder: (context, item, index) =>
-                _MediaGridTile(item: item, gifGate: _gifGate, radius: config.radius),
+            itemBuilder: (context, item, index) => _MediaGridTile(
+                item: item,
+                gifGate: _gifGate,
+                radius: config.radius,
+                onTap: () => openMediaLightbox(context, controller: widget.controller, initialIndex: index)),
             firstPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
               error: pagingErrorOf(state)?.error,
               stackTrace: pagingErrorOf(state)?.stackTrace,
@@ -142,8 +145,11 @@ class _StaticMediaGridState extends State<StaticMediaGrid> {
       mainAxisSpacing: config.spacing,
       crossAxisSpacing: config.spacing,
       itemCount: widget.items.length,
-      itemBuilder: (context, index) =>
-          _MediaGridTile(item: widget.items[index], gifGate: _gifGate, radius: config.radius),
+      itemBuilder: (context, index) => _MediaGridTile(
+          item: widget.items[index],
+          gifGate: _gifGate,
+          radius: config.radius,
+          onTap: () => openMediaLightbox(context, staticItems: widget.items, initialIndex: index)),
     );
   }
 }
@@ -152,8 +158,9 @@ class _MediaGridTile extends StatefulWidget {
   final MediaGridItem item;
   final GifPlaybackGate gifGate;
   final double radius;
+  final VoidCallback onTap;
 
-  const _MediaGridTile({required this.item, required this.gifGate, this.radius = 8});
+  const _MediaGridTile({required this.item, required this.gifGate, this.radius = 8, required this.onTap});
 
   @override
   State<_MediaGridTile> createState() => _MediaGridTileState();
@@ -188,19 +195,6 @@ class _MediaGridTileState extends State<_MediaGridTile> {
     };
   }
 
-  void _openTweet() {
-    Navigator.pushNamed(
-      context,
-      routeStatus,
-      arguments: StatusScreenArguments(
-        id: widget.item.tweetId,
-        username: widget.item.username,
-        tweetOpened: true,
-        initialMediaIndex: widget.item.mediaIndex,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
@@ -209,7 +203,7 @@ class _MediaGridTileState extends State<_MediaGridTile> {
     if (_showMedia) {
       body = GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: _openTweet,
+        onTap: widget.onTap,
         child: item is GifGridItem
             ? _GifGridCell(item: item, gate: widget.gifGate)
             : item.toWidget(context),

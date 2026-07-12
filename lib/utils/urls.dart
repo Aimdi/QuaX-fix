@@ -7,18 +7,51 @@ import 'package:android_intent_plus/android_intent.dart';
 
 const _channel = MethodChannel('browser_resolver');
 
+const _trackingParams = {'fbclid', 'gclid', 'igshid', 'mc_eid', 'mkt_tok', 'twclid', 'yclid'};
+// Share identifiers X appends to copied links; only meaningful on X hosts,
+// where stripping them cannot change what the link points to.
+const _xTrackingParams = {'s', 't', 'ref_src', 'ref_url'};
+const _xHosts = {'x.com', 'www.x.com', 'twitter.com', 'www.twitter.com', 'mobile.twitter.com'};
+
+bool _isTrackingParam(String key, bool isXHost) =>
+    key.startsWith('utm_') || _trackingParams.contains(key) || (isXHost && _xTrackingParams.contains(key));
+
+/// Removes known tracking query parameters from a URL before it leaves the
+/// app (opened externally or shared).
+String cleanUrl(String url) {
+  final uri = Uri.tryParse(url);
+  if (uri == null || uri.query.isEmpty) {
+    return url;
+  }
+
+  final isXHost = _xHosts.contains(uri.host);
+  final kept = <String, List<String>>{};
+  uri.queryParametersAll.forEach((key, values) {
+    if (!_isTrackingParam(key, isXHost)) {
+      kept[key] = values;
+    }
+  });
+  if (kept.length == uri.queryParametersAll.length) {
+    return url;
+  }
+
+  final cleaned = uri.replace(queryParameters: kept).toString();
+  // An empty parameter map leaves a dangling '?' behind.
+  return kept.isEmpty ? cleaned.replaceFirst('?', '') : cleaned;
+}
+
 Future<void> openInDefaultBrowser(String url) async {
   final packageName = await _channel.invokeMethod<String>('getDefaultBrowser');
   final intent = AndroidIntent(
     action: 'android.intent.action.VIEW',
-    data: url,
+    data: cleanUrl(url),
     package: packageName,
   );
   await intent.launch();
 }
 
 Future<void> openUri(String uri) async {
-  await launchUrlString(uri, mode: LaunchMode.externalApplication);
+  await launchUrlString(cleanUrl(uri), mode: LaunchMode.externalApplication);
 }
 
 sealed class UriParseResult {}
@@ -38,6 +71,10 @@ class ProfileUriInfo extends UriParseResult {
 
 ProfileUriInfo? _parseAsProfileLink(List<String> parts) {
   if (parts.isEmpty) return null;
+
+  // "i" is X's reserved path segment (/i/lists/…, /i/topics/…), never a
+  // screen name — without this guard those links parse as a profile "i".
+  if (parts.first == 'i') return null;
 
   // https://x.com/DogsTrust
   if (parts.length == 1) {
@@ -61,6 +98,34 @@ ProfileUriInfo? _parseAsProfileLink(List<String> parts) {
 
   // The URI is not an account link
   return null;
+}
+
+class ListUriInfo extends UriParseResult {
+  final String id;
+
+  ListUriInfo(this.id);
+}
+
+ListUriInfo? _parseAsListLink(List<String> parts) {
+  // https://x.com/i/lists/1234567890123456789
+  if (parts.length == 3 && parts[0] == 'i' && parts[1] == 'lists' && RegExp(r'^\d+$').hasMatch(parts[2])) {
+    return ListUriInfo(parts[2]);
+  }
+  return null;
+}
+
+/// Extracts an X list id from user input: either a bare numeric id or a
+/// list URL. Returns null when the input is neither.
+String? extractListId(String input) {
+  final trimmed = input.trim();
+  if (RegExp(r'^\d+$').hasMatch(trimmed)) {
+    return trimmed;
+  }
+  final uri = Uri.tryParse(trimmed);
+  if (uri == null) {
+    return null;
+  }
+  return _parseAsListLink(uri.pathSegments.where((e) => e.isNotEmpty).toList())?.id;
 }
 
 class PostUriInfo extends UriParseResult {
@@ -126,6 +191,10 @@ Future<UriParseResult> parseUri(Uri link) async {
   link = link.replace(path: link.path.replaceAll(RegExp(r'/$'), ''));
   final parts = link.pathSegments;
 
+  final listInfo = _parseAsListLink(parts);
+  if (listInfo != null) {
+    return listInfo;
+  }
   final profileInfo = _parseAsProfileLink(parts);
   if (profileInfo != null) {
     return profileInfo;

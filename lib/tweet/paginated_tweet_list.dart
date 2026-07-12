@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/client/client.dart';
+import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/feed_refresh_controller.dart';
 import 'package:quax/tweet/cached_tweet_list.dart';
 import 'package:quax/tweet/conversation.dart';
+import 'package:quax/ui/caught_up_divider.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/utils/paging.dart';
 
@@ -22,6 +24,15 @@ class TweetFeedController {
   late final CursorPagingController<String, TweetChain> _paging;
   TweetPageLoader? _loader;
 
+  /// When set, pagination pauses after this many pages per session instead of
+  /// scrolling forever (`null` result → no cap). Feeds bind this to the
+  /// zen-mode preference; search and quotes leave it unset.
+  int? Function()? pageCapProvider;
+  int _pagesFetched = 0;
+  // The real next cursor stashed when the page cap paused pagination, so
+  // "load more anyway" can resume where the feed stopped.
+  String? _cappedCursor;
+
   TweetFeedController() {
     _paging = CursorPagingController<String, TweetChain>(_fetch);
   }
@@ -32,6 +43,33 @@ class TweetFeedController {
 
   bool get hasItems => _paging.items != null;
 
+  /// The chains loaded so far, or `null` before the first page.
+  List<TweetChain>? get items => _paging.items;
+
+  bool get pausedByPageCap => _cappedCursor != null;
+
+  /// Resumes pagination past the page cap, granting another cap's worth of
+  /// pages before pausing again.
+  void continuePastCap() {
+    final cursor = _cappedCursor;
+    if (cursor == null) {
+      return;
+    }
+    _cappedCursor = null;
+    _pagesFetched = 0;
+    _paging.resume(cursor);
+  }
+
+  String? _applyPageCap(String? next) {
+    final cap = pageCapProvider?.call();
+    if (next == null || cap == null || _pagesFetched < cap) {
+      _cappedCursor = null;
+      return next;
+    }
+    _cappedCursor = next;
+    return null;
+  }
+
   Future<CursorPage<String, TweetChain>> _fetch(String? cursor) async {
     final result = await _loader!(cursor);
     final next = result.nextCursor;
@@ -41,7 +79,12 @@ class TweetFeedController {
     // carries a cursor worth following.
     final seen = cursor == null ? <String>{} : (_paging.items ?? const <TweetChain>[]).map((e) => e.id).toSet();
     final items = result.chains.where((c) => seen.add(c.id)).toList();
-    return (items: items, nextCursor: _isLastPage(result.chains, next, cursor) ? null : next);
+    if (cursor == null) {
+      _pagesFetched = 0;
+    }
+    _pagesFetched++;
+    final naturalNext = _isLastPage(result.chains, next, cursor) ? null : next;
+    return (items: items, nextCursor: _applyPageCap(naturalNext));
   }
 
   // Pagination ends on an empty page, a missing/blank cursor, or a cursor that
@@ -85,6 +128,11 @@ class PaginatedTweetList extends StatefulWidget {
   // load is in flight, so a feed reveals its cached content instead of a
   // full-screen progress indicator.
   final List<TweetChain>? firstPagePreview;
+  // Reading-position support: when set, a "You're caught up" divider is drawn
+  // above the first chain this predicate marks as already seen. The predicate
+  // must stay frozen for the mount so the divider doesn't move mid-session.
+  final bool Function(TweetChain chain)? isSeen;
+  final Key? caughtUpDividerKey;
 
   const PaginatedTweetList({
     super.key,
@@ -96,6 +144,8 @@ class PaginatedTweetList extends StatefulWidget {
     required this.emptyMessage,
     this.onRefresh,
     this.firstPagePreview,
+    this.isSeen,
+    this.caughtUpDividerKey,
   });
 
   @override
@@ -168,12 +218,8 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
     await _refreshKey.currentState?.show();
   }
 
-  Widget _buildChain(BuildContext context, TweetChain chain) => TweetConversation(
-        id: chain.id,
-        tweets: chain.tweets,
-        username: widget.username,
-        isPinned: chain.isPinned,
-      );
+  Widget _buildChain(BuildContext context, TweetChain chain) =>
+      TweetConversation(id: chain.id, tweets: chain.tweets, username: widget.username, isPinned: chain.isPinned);
 
   /// Soft refresh used by the pull-to-refresh gesture. Runs the caller's
   /// [onRefresh] side effects, then reloads the first page while keeping the
@@ -241,31 +287,89 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
 
     final list = PagingListener<int, TweetChain>(
       controller: _controller,
-      builder: (context, state, fetchNextPage) => PagedListView<int, TweetChain>(
-        padding: EdgeInsets.only(top: 4, bottom: MediaQuery.of(context).padding.bottom),
-        state: state,
-        fetchNextPage: fetchNextPage,
-        addAutomaticKeepAlives: false,
-        builderDelegate: PagedChildBuilderDelegate(
-          itemBuilder: (context, chain, index) => _buildChain(context, chain),
-          firstPageProgressIndicatorBuilder: (context) => const Center(child: CircularProgressIndicator()),
-          firstPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
-            error: pagingErrorOf(state)?.error,
-            stackTrace: pagingErrorOf(state)?.stackTrace,
-            prefix: widget.firstPageErrorPrefix,
-            onRetry: fetchNextPage,
+      builder: (context, state, fetchNextPage) {
+        // Recomputed per build from the loaded items, so the boundary shows
+        // up even when the first seen chain only arrives on a later page.
+        final seen = widget.isSeen;
+        final boundary = seen == null ? null : _caughtUpBoundaryOf(state.items ?? const <TweetChain>[], seen);
+        return PagedListView<int, TweetChain>(
+          padding: EdgeInsets.only(top: 4, bottom: MediaQuery.of(context).padding.bottom),
+          state: state,
+          fetchNextPage: fetchNextPage,
+          addAutomaticKeepAlives: false,
+          builderDelegate: PagedChildBuilderDelegate(
+            itemBuilder: (context, chain, index) {
+              final conversation = _buildChain(context, chain);
+              if (boundary == null || index != boundary) {
+                return conversation;
+              }
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  CaughtUpDivider(key: widget.caughtUpDividerKey),
+                  conversation,
+                ],
+              );
+            },
+            firstPageProgressIndicatorBuilder: (context) => const Center(child: CircularProgressIndicator()),
+            firstPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
+              error: pagingErrorOf(state)?.error,
+              stackTrace: pagingErrorOf(state)?.stackTrace,
+              prefix: widget.firstPageErrorPrefix,
+              onRetry: fetchNextPage,
+            ),
+            newPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
+              error: pagingErrorOf(state)?.error,
+              stackTrace: pagingErrorOf(state)?.stackTrace,
+              prefix: widget.newPageErrorPrefix,
+              onRetry: fetchNextPage,
+            ),
+            noItemsFoundIndicatorBuilder: (context) => Center(child: Text(widget.emptyMessage)),
+            noMoreItemsIndicatorBuilder: (context) => widget.feed.pausedByPageCap
+                ? _ZenFeedEndCard(onLoadMore: widget.feed.continuePastCap)
+                : const SizedBox.shrink(),
           ),
-          newPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
-            error: pagingErrorOf(state)?.error,
-            stackTrace: pagingErrorOf(state)?.stackTrace,
-            prefix: widget.newPageErrorPrefix,
-            onRetry: fetchNextPage,
-          ),
-          noItemsFoundIndicatorBuilder: (context) => Center(child: Text(widget.emptyMessage)),
-        ),
-      ),
+        );
+      },
     );
 
     return _wrapWithRefresh(list);
+  }
+
+  // Index of the first already-seen chain, when at least one new chain sits
+  // above it. Index 0 means nothing is new; no boundary yet means the seen
+  // chains haven't been loaded — both draw no divider.
+  static int? _caughtUpBoundaryOf(List<TweetChain> chains, bool Function(TweetChain) isSeen) {
+    final index = chains.indexWhere(isSeen);
+    return index <= 0 ? null : index;
+  }
+}
+
+/// Calm end-of-feed card shown when the zen-mode page cap paused pagination,
+/// offering a deliberate way to keep reading instead of an infinite scroll.
+class _ZenFeedEndCard extends StatelessWidget {
+  final VoidCallback onLoadMore;
+
+  const _ZenFeedEndCard({required this.onLoadMore});
+
+  @override
+  Widget build(BuildContext context) {
+    final hintColor = Theme.of(context).hintColor;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+      child: Column(
+        children: [
+          Icon(Icons.self_improvement, size: 36, color: hintColor),
+          const SizedBox(height: 12),
+          Text(
+            L10n.of(context).zen_mode_feed_end,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: hintColor),
+          ),
+          const SizedBox(height: 4),
+          TextButton(onPressed: onLoadMore, child: Text(L10n.of(context).zen_mode_load_more)),
+        ],
+      ),
+    );
   }
 }

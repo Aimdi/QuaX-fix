@@ -84,6 +84,8 @@ const optionUserTrendsLocations = 'trends.locations';
 const optionNonConfirmationBiasMode = 'other.improve_non_confirmation_bias';
 const optionTweetsShowSubscribeBadge = 'tweets.show_subscribe_badge';
 const optionZenMode = 'other.zen_mode';
+const optionZenModePageCap = 'other.zen_mode_page_cap';
+const optionFeedReadingPosition = 'feed.reading_position';
 const optionMediaGridLayout = 'media.grid_layout';
 
 const mediaGridLayoutMasonry = 'masonry';
@@ -98,9 +100,17 @@ const contentFilterNsfw = 'nsfw';
 // How many posts per author survive a feed page in zen mode
 const zenModeMaxTweetsPerAuthor = 4;
 
+// Selectable values for the zen-mode page cap (pages per feed session)
+const zenModePageCapChoices = [3, 5, 10, 20];
+
 // How many extra pages an initial feed load may fetch per chunk to close the
 // gap between freshly fetched posts and the previously stored ones
 const maxFeedGapFillPages = 4;
+
+// Reading position ("You're caught up"): how close to the top counts as
+// having read everything, and how many frames the divider restore may take.
+const feedReadPositionTopThresholdPx = 8.0;
+const maxCaughtUpRestoreFrames = 30;
 
 
 final Map<String, String> userAgentHeader = {

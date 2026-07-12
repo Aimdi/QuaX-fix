@@ -24,6 +24,7 @@ const String tableSubscriptionGroupMember = 'subscription_group_member';
 const String tableAccounts = 'accounts';
 const String tablePostNotification = 'post_notification';
 const String tableRetweetFilter = 'retweet_filter';
+const String tableFeedReadPosition = 'feed_read_position';
 
 class Repository {
   static final log = Logger('Repository');
@@ -288,11 +289,18 @@ class Repository {
             reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN custom'),
         SqlMigration("ALTER TABLE $tableSubscriptionGroup ADD COLUMN content_filter VARCHAR DEFAULT 'default'",
             reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN content_filter'),
+      ],
+      32: [
+        // Last-read chain per group feed, for the "You're caught up" divider.
+        // chain_created_at is ISO-8601 TEXT, like the account-health columns.
+        SqlMigration(
+            'CREATE TABLE IF NOT EXISTS $tableFeedReadPosition (group_id VARCHAR PRIMARY KEY, chain_id VARCHAR NOT NULL, chain_created_at TEXT, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+            reverseSql: 'DROP TABLE $tableFeedReadPosition'),
       ]
     });
     await openDatabase(
       databaseName,
-      version: 31,
+      version: 32,
       onUpgrade: myMigrationPlan.call,
       onCreate: myMigrationPlan.call,
       onDowngrade: myMigrationPlan.call,

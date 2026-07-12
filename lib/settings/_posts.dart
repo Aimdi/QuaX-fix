@@ -48,6 +48,21 @@ class SettingsPostsFragment extends StatelessWidget {
             subtitle: Text(L10n.of(context).zen_mode_description),
             pref: optionZenMode,
           ),
+          PrefDropdown(
+            fullWidth: false,
+            title: Text(L10n.of(context).zen_mode_page_cap),
+            subtitle: Text(L10n.of(context).zen_mode_page_cap_description),
+            pref: optionZenModePageCap,
+            items: [
+              for (final pages in zenModePageCapChoices)
+                DropdownMenuItem(value: pages, child: Text('$pages')),
+            ],
+          ),
+          PrefSwitch(
+            title: Text(L10n.of(context).remember_reading_position),
+            subtitle: Text(L10n.of(context).remember_reading_position_description),
+            pref: optionFeedReadingPosition,
+          ),
         ]),
       ),
     );

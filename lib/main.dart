@@ -36,6 +36,7 @@ import 'package:quax/settings/settings.dart';
 import 'package:quax/settings/settings_export_screen.dart';
 import 'package:quax/status.dart';
 import 'package:quax/tweet/quotes_screen.dart';
+import 'package:quax/subscriptions/_import_list.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/trends/trends_model.dart';
 import 'package:quax/tweet/_video.dart';
@@ -242,6 +243,8 @@ Future<void> main() async {
     optionNonConfirmationBiasMode: false,
     optionTweetsShowSubscribeBadge: true,
     optionZenMode: false,
+    optionZenModePageCap: 5,
+    optionFeedReadingPosition: false,
     optionMediaGridLayout: mediaGridLayoutMasonry,
     optionShouldCheckForUpdates: true,
     optionSubscriptionGroupsOrderByAscending: true,
@@ -605,6 +608,9 @@ class _DefaultPageState extends State<DefaultPage> {
 
   void handleInitialLink(Uri link) async {
     final parsed = await parseUri(link);
+    if (!mounted) {
+      return;
+    }
     switch (parsed) {
       case ProfileUriInfo(screenName: final screenName, profileTabIndex: final tab):
         Navigator.pushNamed(context, routeProfile,
@@ -616,6 +622,9 @@ class _DefaultPageState extends State<DefaultPage> {
               id: id,
               username: screenName,
             ));
+        return;
+      case ListUriInfo(id: final id):
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ListImportScreen(initialListId: id)));
         return;
       case UnknownResult():
         showDialog(

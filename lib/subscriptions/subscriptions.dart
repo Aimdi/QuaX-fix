@@ -5,6 +5,7 @@ import 'package:quax/group/group_model.dart';
 import 'package:quax/subscriptions/_cleanup.dart';
 import 'package:quax/subscriptions/_groups.dart';
 import 'package:quax/subscriptions/_import.dart';
+import 'package:quax/subscriptions/_import_list.dart';
 import 'package:quax/subscriptions/_list.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:provider/provider.dart';
@@ -63,6 +64,19 @@ class SubscriptionsScreen extends StatelessWidget {
                             null,
                             '',
                             defaultGroupIcon,
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.playlist_add,
+                            color: Theme.of(context).iconTheme.color,
+                          ),
+                          tooltip: L10n.of(context).import_list_as_group,
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ListImportScreen(),
+                            ),
                           ),
                         ),
                         PopupMenuButton<String>(

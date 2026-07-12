@@ -338,31 +338,80 @@ class Twitter {
       "features": jsonEncode(features),
     });
 
-    return _twitterApi.client.get(uri).then((response) {
-      var users = PaginatedUsers()..users = [];
-      dynamic instructions = jsonDecode(
-        response.body,
-      )?["data"]?["user"]?["result"]?["timeline"]?["timeline"]?["instructions"];
-      for (final instruction in instructions) {
-        if (instruction["type"] != "TimelineAddEntries" || instruction["entries"] == null) continue;
-        var entries = List.from(instruction["entries"]);
-        users.nextCursorStr = getCursor(entries, [], 'cursor-bottom', 'Bottom');
-        users.previousCursorStr = getCursor(entries, [], 'cursor-top', 'Top');
-        for (final entry in entries) {
-          final userResult = entry["content"]?["itemContent"]?["user_results"]?["result"];
-          if (userResult == null) continue;
-          var user = UserWithExtra()
-            ..screenName = userResult["core"]?["screen_name"]
-            ..name = userResult["core"]?["name"]
-            ..profileImageUrlHttps = userResult["avatar"]?["image_url"]
-            ..verified = userResult["is_blue_verified"]
-            ..createdAt = convertTwitterDateTime(userResult["core"]?["created_at"])
-            ..idStr = userResult["rest_id"];
-          users.users!.add(user);
-        }
-      }
+    return _twitterApi.client.get(uri).then((response) =>
+        _parseUsersTimeline(jsonDecode(response.body)?["data"]?["user"]?["result"]?["timeline"]?["timeline"]?["instructions"]));
+  }
+
+  // Shared parser for user-timeline instructions (Following, Followers and
+  // ListMembers all use the same TimelineAddEntries shape; only the JSON root
+  // differs).
+  static PaginatedUsers _parseUsersTimeline(dynamic instructions) {
+    var users = PaginatedUsers()..users = [];
+    if (instructions == null) {
       return users;
+    }
+    for (final instruction in instructions) {
+      if (instruction["type"] != "TimelineAddEntries" || instruction["entries"] == null) continue;
+      var entries = List.from(instruction["entries"]);
+      users.nextCursorStr = getCursor(entries, [], 'cursor-bottom', 'Bottom');
+      users.previousCursorStr = getCursor(entries, [], 'cursor-top', 'Top');
+      for (final entry in entries) {
+        final userResult = entry["content"]?["itemContent"]?["user_results"]?["result"];
+        if (userResult == null) continue;
+        var user = UserWithExtra()
+          ..screenName = userResult["core"]?["screen_name"]
+          ..name = userResult["core"]?["name"]
+          ..profileImageUrlHttps = userResult["avatar"]?["image_url"]
+          ..verified = userResult["is_blue_verified"]
+          ..createdAt = convertTwitterDateTime(userResult["core"]?["created_at"])
+          ..idStr = userResult["rest_id"];
+        users.users!.add(user);
+      }
+    }
+    return users;
+  }
+
+  static const Map<String, dynamic> _listByRestIdFeatures = {
+    "profile_label_improvements_pcf_label_in_post_enabled": true,
+    "responsive_web_profile_redirect_enabled": false,
+    "rweb_tipjar_consumption_enabled": false,
+    "verified_phone_label_enabled": false,
+    "responsive_web_graphql_skip_user_profile_image_extensions_enabled": false,
+    "responsive_web_graphql_timeline_navigation_enabled": true,
+  };
+
+  // GraphQL "ListByRestId" — metadata of an X list. The name is null when the
+  // list is deleted or private (data.list absent from the response).
+  static Future<TwitterListInfo> getListDetails(String listId) async {
+    final uri = Uri.https('x.com', '/i/api/graphql/I1h1FzuuiD__nNvG466mKQ/ListByRestId', {
+      'variables': jsonEncode({'listId': listId}),
+      'features': jsonEncode(_listByRestIdFeatures),
     });
+    final response = await _twitterApi.client.get(uri);
+    final list = (jsonDecode(response.body) as Map<String, dynamic>?)?['data']?['list'];
+    return TwitterListInfo(
+      id: listId,
+      name: list?['name'] as String?,
+      memberCount: list?['member_count'] as int?,
+    );
+  }
+
+  // GraphQL "ListMembers" — one page of an X list's members. The response
+  // nests under data.list.members_timeline, not data.user.result.timeline.
+  // The web client pages with count=20; larger values are unverified here.
+  static Future<Follows> getListMembers(String listId, {String? cursor, int count = 20}) async {
+    final uri = Uri.https('x.com', '/i/api/graphql/kcsJubZ1BIwpdKrYfiNRtg/ListMembers', {
+      'variables': jsonEncode({'listId': listId, 'count': count, 'cursor': ?cursor}),
+      'features': jsonEncode(_followersFeatures),
+    });
+    final response = await _twitterApi.client.get(uri);
+    final users = _parseUsersTimeline(
+        jsonDecode(response.body)?['data']?['list']?['members_timeline']?['timeline']?['instructions']);
+    return Follows(
+      cursorBottom: users.nextCursorStr,
+      cursorTop: users.previousCursorStr,
+      users: users.users?.map((e) => UserWithExtra.fromJson(e.toJson())).toList() ?? [],
+    );
   }
 
   static const Map<String, dynamic> _followingFeatures = {
@@ -1718,6 +1767,14 @@ class TweetChain {
   Map<String, dynamic> toJson() {
     return {'id': id, 'tweets': tweets.map((e) => e.toJson()).toList(), 'isPinned': isPinned};
   }
+}
+
+class TwitterListInfo {
+  final String id;
+  final String? name;
+  final int? memberCount;
+
+  TwitterListInfo({required this.id, this.name, this.memberCount});
 }
 
 class Follows {

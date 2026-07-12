@@ -254,20 +254,42 @@ class _TweetMediaState extends State<TweetMedia> {
   }
 }
 
+/// One page of the fullscreen viewer, carrying the tweet context its media
+/// belongs to — pages can span different tweets in the grid lightbox.
+typedef MediaViewEntry = ({Media media, String username, String? tweetId, int mediaIndex});
+
 class TweetMediaView extends StatefulWidget {
   final int initialIndex;
-  final List<Media> media;
-  final String username;
-  final bool tweetMedia;  // True if the media comes from a tweet
-  final String? tweetId;
+  final List<MediaViewEntry> entries;
+  final bool tweetMedia; // True if the media comes from a tweet
+  // Shown as an app-bar action when set; used by the grid lightbox to jump
+  // to the post the current page belongs to.
+  final void Function(MediaViewEntry entry)? onOpenPost;
+  // Called when swiping close to the end of [entries], so a paginated caller
+  // can fetch more items.
+  final VoidCallback? onNearEnd;
 
-  const TweetMediaView(
+  /// Single-tweet viewer: all pages share one username/tweetId.
+  TweetMediaView(
       {super.key,
       required this.initialIndex,
-      required this.media,
-      required this.username,
+      required List<Media> media,
+      required String username,
       this.tweetMedia = true,
-      this.tweetId});
+      String? tweetId})
+      : entries = [
+          for (var i = 0; i < media.length; i++) (media: media[i], username: username, tweetId: tweetId, mediaIndex: i)
+        ],
+        onOpenPost = null,
+        onNearEnd = null;
+
+  const TweetMediaView.entries(
+      {super.key,
+      required this.initialIndex,
+      required this.entries,
+      this.tweetMedia = true,
+      this.onOpenPost,
+      this.onNearEnd});
 
   @override
   State<TweetMediaView> createState() => _TweetMediaViewState();
@@ -287,17 +309,38 @@ Media createMediaFromUrl(String? url, double? height) {
 }
 
 class _TweetMediaViewState extends State<TweetMediaView> {
-  late Media _media;
+  // How many pages from the end of the loaded entries [onNearEnd] fires.
+  static const _fetchAhead = 3;
+
+  late int _currentIndex;
+  late final ExtendedPageController _pageController = ExtendedPageController(initialPage: widget.initialIndex);
+
+  MediaViewEntry get _current => widget.entries[_currentIndex];
 
   @override
   void initState() {
     super.initState();
 
-    _media = widget.media[widget.initialIndex];
+    _currentIndex = widget.initialIndex;
+  }
+
+  @override
+  void didUpdateWidget(TweetMediaView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.entries.isNotEmpty) {
+      _currentIndex = math.min(_currentIndex, widget.entries.length - 1);
+    }
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   String originalMediaUrl() {
-    return (widget.tweetMedia ? '${_media.mediaUrlHttps}:orig' : _media.mediaUrlHttps) ?? "";
+    final media = _current.media;
+    return (widget.tweetMedia ? '${media.mediaUrlHttps}:orig' : media.mediaUrlHttps) ?? "";
   }
 
   @override
@@ -314,14 +357,20 @@ class _TweetMediaViewState extends State<TweetMediaView> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          if (widget.onOpenPost != null)
+            IconButton(
+              icon: const Icon(Icons.open_in_new),
+              tooltip: L10n.of(context).open_post,
+              onPressed: () => widget.onOpenPost!(_current),
+            ),
           AsyncButtonBuilder(
             child: const Icon(Icons.download),
             builder: (context, child, callback, buttonState) {
               return IconButton(onPressed: callback, icon: child);
             },
             onPressed: () async {
-              var url = path.basename(_media.mediaUrlHttps!);
-              var fileName = '${widget.username}-$url';
+              var url = path.basename(_current.media.mediaUrlHttps!);
+              var fileName = '${_current.username}-$url';
               var uri = Uri.parse(originalMediaUrl());
 
               await downloadUriToPickedFile(
@@ -376,25 +425,28 @@ class _TweetMediaViewState extends State<TweetMediaView> {
       ),
       body: ExtendedImageGesturePageView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: widget.media.length,
+        itemCount: widget.entries.length,
         itemBuilder: (BuildContext context, int index) {
-          var item = widget.media[index];
+          var entry = widget.entries[index];
 
+          // mediaIndex is the index *within the entry's tweet* (it keys the
+          // pooled video controllers), not the page index.
           return _TweetMediaThing(
-              item: item,
-              username: widget.username,
+              item: entry.media,
+              username: entry.username,
               size: size,
               pullToClose: true,
               inPageView: true,
-              tweetId: widget.tweetId,
-              mediaIndex: index);
+              tweetId: entry.tweetId,
+              mediaIndex: entry.mediaIndex);
         },
-        controller: ExtendedPageController(
-          initialPage: widget.initialIndex,
-        ),
-        onPageChanged: (index) => setState(() {
-          _media = widget.media[index];
-        }),
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() => _currentIndex = index);
+          if (widget.onNearEnd != null && index >= widget.entries.length - _fetchAhead) {
+            widget.onNearEnd!();
+          }
+        },
       ),
     );
   }
