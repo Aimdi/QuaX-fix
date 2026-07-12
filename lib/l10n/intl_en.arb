@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Are you sure you want to delete the subscription group {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Auto-download images",
+  "auto_download_images_description": "Save the images of any post filed into this folder to your download folder.",
   "autoplay_videos": "Autoplay videos",
   "@autoplay_videos": {},
   "autoplay_videos_description": "If enabled, videos will start playing without user interaction",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Send",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Set a download folder in Settings > Media to auto-download.",
   "settings": "Settings",
   "@settings": {},
   "share_article_as_image": "Share article as image",
@@ -592,7 +595,9 @@
   "thread": "Thread",
   "@thread": {},
   "threaded_replies": "Threaded replies",
+  "@threaded_replies": {},
   "threaded_replies_description": "Show replies under an opened post as an indented tree, with each reply nested under the one it answers.",
+  "@threaded_replies_description": {},
   "thumbnail": "Thumbnail",
   "@thumbnail": {},
   "timed_out": "Timed out",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "How many pages a feed loads in zen mode before pausing.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

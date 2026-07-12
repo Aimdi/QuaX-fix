@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Ziur {name} harpidetza taldea ezabatu nahi duzula?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Deskargatu irudiak automatikoki",
+  "auto_download_images_description": "Gorde karpeta honetan artxibatutako edozein argitalpenen irudiak zure deskarga-karpetan.",
   "autoplay_videos": "Bideoen erreprodukzio automatikoa",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Gaituta badago, bideoak automatikoki erreproduzituko dira",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Bidali",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Automatikoki deskargatzeko, ezarri deskarga-karpeta bat Ezarpenak > Multimedia atalean.",
   "settings": "Ezarpenak",
   "@settings": {},
   "share_article_as_image": "Partekatu artikulua irudi gisa",
@@ -592,7 +595,9 @@
   "thread": "Haria",
   "@thread": {},
   "threaded_replies": "Erantzun kateatuak",
+  "@threaded_replies": {},
   "threaded_replies_description": "Erakutsi irekitako argitalpen baten erantzunak koska duen zuhaitz gisa, erantzun bakoitza erantzuten dionaren azpian kateatuta.",
+  "@threaded_replies_description": {},
   "thumbnail": "Miniatura",
   "@thumbnail": {},
   "timed_out": "Denbora agortuta",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zenbat orrialde kargatzen dituen jarioak zen moduan gelditu aurretik.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

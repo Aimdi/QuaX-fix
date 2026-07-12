@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Czy na pewno chcesz usunąć grupę subskrypcji {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Automatycznie pobieraj obrazy",
+  "auto_download_images_description": "Zapisuj obrazy każdego wpisu dodanego do tego folderu w folderze pobierania.",
   "autoplay_videos": "Automatyczne odtwarzanie filmów",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Jeśli włączone, filmy będą odtwarzane automatycznie",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Wyślij",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Aby pobierać automatycznie, ustaw folder pobierania w Ustawienia > Multimedia.",
   "settings": "Ustawienia",
   "@settings": {},
   "share_article_as_image": "Udostępnij artykuł jako obraz",
@@ -592,7 +595,9 @@
   "thread": "Wątek",
   "@thread": {},
   "threaded_replies": "Odpowiedzi w wątkach",
+  "@threaded_replies": {},
   "threaded_replies_description": "Pokazuj odpowiedzi pod otwartym wpisem jako wcięte drzewo, z każdą odpowiedzią zagnieżdżoną pod tą, na którą odpowiada.",
+  "@threaded_replies_description": {},
   "thumbnail": "Miniatury",
   "@thumbnail": {},
   "timed_out": "Przekroczono limit czasu",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Ile stron kanał wczytuje w trybie zen, zanim się zatrzyma.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Kas sa oled kindel, et soovid kustutada tellimuste grupi {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Laadi pildid automaatselt alla",
+  "auto_download_images_description": "Salvesta iga sellesse kausta pandud postituse pildid oma allalaadimiskausta.",
   "autoplay_videos": "Videote automaatesitus",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Kui lubatud, esitatakse videod automaatselt",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Saada",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Automaatseks allalaadimiseks määra allalaadimiskaust menüüs Seaded > Meedia.",
   "settings": "Seaded",
   "@settings": {},
   "share_article_as_image": "Jaga artiklit pildina",
@@ -592,7 +595,9 @@
   "thread": "Jutulõng",
   "@thread": {},
   "threaded_replies": "Hargnevad vastused",
+  "@threaded_replies": {},
   "threaded_replies_description": "Kuva avatud postituse vastused taandega puuna, kus iga vastus on pesastatud selle alla, millele see vastab.",
+  "@threaded_replies_description": {},
   "thumbnail": "Pisipildid",
   "@thumbnail": {},
   "timed_out": "Päring aegus",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Mitu lehte voog Zen-režiimis enne pausi laadib.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

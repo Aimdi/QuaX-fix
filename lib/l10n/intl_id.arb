@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Apakah Anda yakin Anda ingin menghapus grup langganan {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Unduh gambar otomatis",
+  "auto_download_images_description": "Simpan gambar dari setiap postingan yang dimasukkan ke folder ini ke folder unduhan Anda.",
   "autoplay_videos": "Putar otomatis video",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Jika diaktifkan, video akan diputar secara otomatis",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Kirim",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Atur folder unduhan di Pengaturan > Media untuk mengunduh otomatis.",
   "settings": "Pengaturan",
   "@settings": {},
   "share_article_as_image": "Bagikan artikel sebagai gambar",
@@ -592,7 +595,9 @@
   "thread": "Utas",
   "@thread": {},
   "threaded_replies": "Balasan berutas",
+  "@threaded_replies": {},
   "threaded_replies_description": "Tampilkan balasan di bawah postingan yang dibuka sebagai pohon berindentasi, tiap balasan bersarang di bawah yang dijawabnya.",
+  "@threaded_replies_description": {},
   "thumbnail": "Keluku",
   "@thumbnail": {},
   "timed_out": "Waktu habis",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

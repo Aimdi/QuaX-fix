@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Bist du dir sicher, dass du die Gruppe {name} löschen willst?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Bilder automatisch herunterladen",
+  "auto_download_images_description": "Die Bilder jedes in diesem Ordner abgelegten Beitrags im Download-Ordner speichern.",
   "autoplay_videos": "Videos automatisch abspielen",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Videos automatisch abspielen, wenn aktiviert",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Senden",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Lege für den automatischen Download einen Download-Ordner unter Einstellungen > Medien fest.",
   "settings": "Einstellungen",
   "@settings": {},
   "share_article_as_image": "Artikel als Bild teilen",
@@ -592,7 +595,9 @@
   "thread": "Diskussionsfaden",
   "@thread": {},
   "threaded_replies": "Verschachtelte Antworten",
+  "@threaded_replies": {},
   "threaded_replies_description": "Antworten unter einem geöffneten Beitrag als eingerückten Baum anzeigen, jede Antwort verschachtelt unter der, auf die sie antwortet.",
+  "@threaded_replies_description": {},
   "thumbnail": "Vorschaubild",
   "@thumbnail": {},
   "timed_out": "Zeit abgelaufen",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Wie viele Seiten ein Feed im Zen-Modus lädt, bevor er pausiert.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

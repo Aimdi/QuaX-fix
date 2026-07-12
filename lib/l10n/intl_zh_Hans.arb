@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "您确定要删除订阅组 {name} 吗？",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "自动下载图片",
+  "auto_download_images_description": "将归入此文件夹的任何帖子的图片保存到你的下载文件夹。",
   "autoplay_videos": "自动播放视频",
   "@autoplay_videos": {},
   "autoplay_videos_description": "启用后，视频将自动播放",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "发送",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "在设置 > 媒体中设置下载文件夹以自动下载。",
   "settings": "设置",
   "@settings": {},
   "share_article_as_image": "将文章分享为图片",
@@ -592,7 +595,9 @@
   "thread": "时间线",
   "@thread": {},
   "threaded_replies": "嵌套回复",
+  "@threaded_replies": {},
   "threaded_replies_description": "在打开的帖子下以缩进树状显示回复，每条回复嵌套在其所回复的内容下方。",
+  "@threaded_replies_description": {},
   "thumbnail": "缩略图",
   "@thumbnail": {},
   "timed_out": "超时",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

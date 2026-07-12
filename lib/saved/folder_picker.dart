@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_triple/flutter_triple.dart';
+import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/saved/saved_tweet_folder_model.dart';
 import 'package:quax/saved/saved_tweet_model.dart';
+import 'package:quax/utils/downloads.dart';
+import 'package:quax/utils/iterables.dart';
 
 /// Opens the "save to folder" bottom sheet for a post, saving it first if needed.
 Future<void> showSaveToFolderSheet(BuildContext context,
@@ -51,6 +54,13 @@ class _SaveToFolderSheet extends StatelessWidget {
       required this.messenger});
 
   Future<void> _file(BuildContext context, String? folderId, String label) async {
+    final autoDownload =
+        folderId != null && (folderModel.state.firstWhereOrNull((f) => f.id == folderId)?.autoDownload ?? false);
+    final prefs = PrefService.of(context, listen: false);
+    final downloadingLabel = L10n.of(context).downloading_media;
+    final doneLabel = L10n.of(context).successfully_saved_the_media;
+    final needFolderLabel = L10n.of(context).set_a_download_folder_to_auto_download;
+
     Navigator.pop(context);
 
     if (savedModel.isSaved(tweetId)) {
@@ -63,6 +73,17 @@ class _SaveToFolderSheet extends StatelessWidget {
       content: Text(L10n.current.saved_to_folder(label)),
       duration: const Duration(seconds: 3),
     ));
+
+    if (autoDownload) {
+      await autoDownloadTweetPhotos(
+        content: content,
+        prefs: prefs,
+        messenger: messenger,
+        downloadingLabel: downloadingLabel,
+        doneLabel: doneLabel,
+        needFolderLabel: needFolderLabel,
+      );
+    }
   }
 
   Future<void> _createAndFile(BuildContext context) async {
@@ -180,11 +201,13 @@ class _EditFolderDialog extends StatefulWidget {
 
 class _EditFolderDialogState extends State<_EditFolderDialog> {
   late final TextEditingController _controller;
+  late bool _autoDownload;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.existing?.name ?? '');
+    _autoDownload = widget.existing?.autoDownload ?? false;
   }
 
   @override
@@ -201,12 +224,12 @@ class _EditFolderDialogState extends State<_EditFolderDialog> {
 
     var existing = widget.existing;
     if (existing == null) {
-      var folder = await widget.folderModel.createFolder(name);
+      var folder = await widget.folderModel.createFolder(name, autoDownload: _autoDownload);
       if (mounted) Navigator.pop(context, folder);
     } else {
-      await widget.folderModel.updateFolder(existing.id, name);
+      await widget.folderModel.updateFolder(existing.id, name, autoDownload: _autoDownload);
       if (mounted) {
-        Navigator.pop(context, existing.copyWith(name: name));
+        Navigator.pop(context, existing.copyWith(name: name, autoDownload: _autoDownload));
       }
     }
   }
@@ -215,12 +238,24 @@ class _EditFolderDialogState extends State<_EditFolderDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.existing == null ? L10n.of(context).create_new_folder : L10n.of(context).edit_folder),
-      content: TextField(
-        controller: _controller,
-        autofocus: true,
-        textCapitalization: TextCapitalization.sentences,
-        decoration: InputDecoration(hintText: L10n.of(context).folder_name),
-        onSubmitted: (_) => _submit(),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _controller,
+            autofocus: true,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(hintText: L10n.of(context).folder_name),
+            onSubmitted: (_) => _submit(),
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(L10n.of(context).auto_download_images),
+            subtitle: Text(L10n.of(context).auto_download_images_description),
+            value: _autoDownload,
+            onChanged: (value) => setState(() => _autoDownload = value),
+          ),
+        ],
       ),
       actions: [
         TextButton(onPressed: () => Navigator.pop(context), child: Text(L10n.of(context).cancel)),

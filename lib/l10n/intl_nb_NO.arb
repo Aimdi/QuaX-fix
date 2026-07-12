@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Slett {name}-abonnementsgruppen?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Last ned bilder automatisk",
+  "auto_download_images_description": "Lagre bildene fra alle innlegg som legges i denne mappen i nedlastingsmappen din.",
   "autoplay_videos": "Autoavspilling av videoer",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Hvis aktivert vil videoer spilles av automatisk",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Send",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Angi en nedlastingsmappe i Innstillinger > Medier for automatisk nedlasting.",
   "settings": "Innstillinger",
   "@settings": {},
   "share_article_as_image": "Del artikkel som bilde",
@@ -592,7 +595,9 @@
   "thread": "Tråd",
   "@thread": {},
   "threaded_replies": "Trådede svar",
+  "@threaded_replies": {},
   "threaded_replies_description": "Vis svar under et åpnet innlegg som et innrykket tre, der hvert svar ligger nøstet under det det svarer på.",
+  "@threaded_replies_description": {},
   "thumbnail": "Miniatyrbilde",
   "@thumbnail": {},
   "timed_out": "Tidsavbrudd",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hvor mange sider en feed laster i zen-modus før den tar en pause.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "登録グループ{name}を削除してもよろしいですか？",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "画像を自動ダウンロード",
+  "auto_download_images_description": "このフォルダーに保存した投稿の画像を、ダウンロードフォルダーに保存します。",
   "autoplay_videos": "Autoplay videos",
   "@autoplay_videos": {},
   "autoplay_videos_description": "If enabled, videos will start playing without user interaction",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "送信",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "自動ダウンロードするには、設定 > メディアでダウンロードフォルダーを設定してください。",
   "settings": "設定",
   "@settings": {},
   "share_article_as_image": "記事を画像として共有",
@@ -592,7 +595,9 @@
   "thread": "スレッド",
   "@thread": {},
   "threaded_replies": "スレッド形式の返信",
+  "@threaded_replies": {},
   "threaded_replies_description": "開いた投稿の返信を、返信先の下に入れ子にしたインデント付きのツリーで表示します。",
+  "@threaded_replies_description": {},
   "thumbnail": "サムネイル",
   "@thumbnail": {},
   "timed_out": "タイムアウト",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅モードでフィードが一時停止するまでに読み込むページ数。",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

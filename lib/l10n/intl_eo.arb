@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Ĉu vi certas, vi volas forigi la grupon de abonoj {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Aŭtomate elŝuti bildojn",
+  "auto_download_images_description": "Konservi la bildojn de ĉiu afiŝo metita en ĉi tiun dosierujon en vian elŝut-dosierujon.",
   "autoplay_videos": "Aŭtomate ludi videojn",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Se ŝaltita, videoj ludiĝos aŭtomate",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Sendi",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Agordu elŝut-dosierujon en Agordoj > Aŭdvidaĵoj por aŭtomata elŝuto.",
   "settings": "Agordoj",
   "@settings": {},
   "share_article_as_image": "Kunhavigi artikolon kiel bildon",
@@ -592,7 +595,9 @@
   "thread": "Diskutfadeno",
   "@thread": {},
   "threaded_replies": "Fadenaj respondoj",
+  "@threaded_replies": {},
   "threaded_replies_description": "Montri respondojn sub malfermita afiŝo kiel deŝovitan arbon, kie ĉiu respondo estas ingita sub tiu, al kiu ĝi respondas.",
+  "@threaded_replies_description": {},
   "thumbnail": "Miniaturo",
   "@thumbnail": {},
   "timed_out": "Tempolimiĝis",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kiom da paĝoj la fluo ŝargas en zena reĝimo antaŭ ol paŭzi.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

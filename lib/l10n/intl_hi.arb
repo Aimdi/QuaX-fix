@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "क्या आप सदस्यता समूह {name} हटाना चाहते हैं?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "छवियाँ स्वतः डाउनलोड करें",
+  "auto_download_images_description": "इस फ़ोल्डर में सहेजी गई किसी भी पोस्ट की छवियाँ आपके डाउनलोड फ़ोल्डर में सहेजें।",
   "autoplay_videos": "वीडियो ऑटोप्ले",
   "@autoplay_videos": {},
   "autoplay_videos_description": "सक्षम होने पर, वीडियो स्वचालित रूप से चलेंगे",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "भेजें",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "स्वतः डाउनलोड के लिए सेटिंग्स > मीडिया में डाउनलोड फ़ोल्डर सेट करें।",
   "settings": "सेटिंग",
   "@settings": {},
   "share_article_as_image": "लेख को छवि के रूप में साझा करें",
@@ -592,7 +595,9 @@
   "thread": "थ्रेड",
   "@thread": {},
   "threaded_replies": "थ्रेडेड जवाब",
+  "@threaded_replies": {},
   "threaded_replies_description": "खुली हुई पोस्ट के जवाब एक इंडेंटेड ट्री के रूप में दिखाएँ, जहाँ हर जवाब उसी के नीचे नेस्ट हो जिसका वह उत्तर है।",
+  "@threaded_replies_description": {},
   "thumbnail": "थंबनेल",
   "@thumbnail": {},
   "timed_out": "समय समाप्त",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "ज़ेन मोड में रुकने से पहले फ़ीड कितने पेज लोड करेगी।",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

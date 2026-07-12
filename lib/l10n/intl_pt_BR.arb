@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Tem certeza de que deseja excluir o grupo de inscrições {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Baixar imagens automaticamente",
+  "auto_download_images_description": "Salva as imagens de qualquer publicação colocada nesta pasta na sua pasta de downloads.",
   "autoplay_videos": "Reprodução automática de vídeos",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Se ativado, os vídeos serão reproduzidos automaticamente",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Enviar",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Defina uma pasta de downloads em Configurações > Mídia para baixar automaticamente.",
   "settings": "Configurações",
   "@settings": {},
   "share_article_as_image": "Compartilhar artigo como imagem",
@@ -592,7 +595,9 @@
   "thread": "Thread",
   "@thread": {},
   "threaded_replies": "Respostas aninhadas",
+  "@threaded_replies": {},
   "threaded_replies_description": "Mostra as respostas de uma publicação aberta como uma árvore indentada, com cada resposta aninhada sob a que ela responde.",
+  "@threaded_replies_description": {},
   "thumbnail": "Miniatura",
   "@thumbnail": {},
   "timed_out": "Tempo esgotado",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quantas páginas o feed carrega no modo zen antes de fazer uma pausa.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

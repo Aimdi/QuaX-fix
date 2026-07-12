@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Vy ŭpevnieny, što chočacie vydalić hrupu padpiski {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Aŭtaspampoŭka vyjaŭ",
+  "auto_download_images_description": "Zachoŭvać vyjavy kožnaha dopisu, dadadzienaha ŭ hetuju tečku, u tečku spampovak.",
   "autoplay_videos": "Aŭtamatychnaje uznaŭleńnie vidėa",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Pry ŭkliučeńni vidėa buduć uznaŭliaccа aŭtamatychna",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Adpravić",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Zadajcie tečku spampovak u Nalady > Medyja dlia aŭtaspampoŭki.",
   "settings": "Naładki",
   "@settings": {},
   "share_article_as_image": "Padzialicca artykułam jak vyjavam",
@@ -592,7 +595,9 @@
   "thread": "Nić",
   "@thread": {},
   "threaded_replies": "Lancužkovyja adkazy",
+  "@threaded_replies": {},
   "threaded_replies_description": "Pakazvać adkazy pad adkrytym dopisam u vyhliadzie dreva z vodstupami, dzie kožny adkaz ukladzieny pad tym, na jaki jon adkazvaje.",
+  "@threaded_replies_description": {},
   "thumbnail": "Minjatjura",
   "@thumbnail": {},
   "timed_out": "Čas čakańnia vypraciu",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolki staronak zahružaje stužka ŭ dzen-režymie pierad paŭzaj.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Bạn có muốn xóa nhóm {name} đăng kí không ",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Tự động tải ảnh",
+  "auto_download_images_description": "Lưu ảnh của mọi bài đăng được xếp vào thư mục này vào thư mục tải xuống của bạn.",
   "autoplay_videos": "Tự động phát video",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Video sẽ được kích hoạt tự động",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Gửi",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Đặt thư mục tải xuống trong Cài đặt > Đa phương tiện để tự động tải.",
   "settings": "Cài đặt",
   "@settings": {},
   "share_article_as_image": "Chia sẻ bài viết dưới dạng hình ảnh",
@@ -592,7 +595,9 @@
   "thread": "Chuỗi",
   "@thread": {},
   "threaded_replies": "Trả lời phân luồng",
+  "@threaded_replies": {},
   "threaded_replies_description": "Hiển thị các trả lời dưới bài đăng đang mở dưới dạng cây thụt lề, mỗi trả lời lồng dưới bài mà nó trả lời.",
+  "@threaded_replies_description": {},
   "thumbnail": "Cực nhỏ",
   "@thumbnail": {},
   "timed_out": "Hết thời gian",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Số trang bảng tin tải ở chế độ zen trước khi tạm dừng.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

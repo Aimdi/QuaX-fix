@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Voulez-vous vraiment supprimer le groupe d'abonnement {name} ?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Télécharger les images automatiquement",
+  "auto_download_images_description": "Enregistre les images de toute publication classée dans ce dossier dans votre dossier de téléchargement.",
   "autoplay_videos": "Lire les vidéos automatiquement",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Si activé, les vidéos se lancent automatiquement",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Envoyer",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Définissez un dossier de téléchargement dans Paramètres > Médias pour le téléchargement automatique.",
   "settings": "Paramètres",
   "@settings": {},
   "share_article_as_image": "Partager l'article en tant qu'image",
@@ -592,7 +595,9 @@
   "thread": "Fil de discussion",
   "@thread": {},
   "threaded_replies": "Réponses imbriquées",
+  "@threaded_replies": {},
   "threaded_replies_description": "Afficher les réponses sous une publication ouverte comme un arbre en retrait, chaque réponse imbriquée sous celle à laquelle elle répond.",
+  "@threaded_replies_description": {},
   "thumbnail": "Miniature",
   "@thumbnail": {},
   "timed_out": "Délai expiré",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Nombre de pages chargées par le fil en mode zen avant de faire une pause.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

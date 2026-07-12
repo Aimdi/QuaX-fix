@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "{name} abonelik grubunu silmek istediğinizden emin misiniz?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Görselleri otomatik indir",
+  "auto_download_images_description": "Bu klasöre eklenen her gönderinin görsellerini indirme klasörüne kaydet.",
   "autoplay_videos": "Videoları otomatik oynat",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Etkinleştirildiğinde videolar otomatik olarak oynatılacak",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Gönder",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Otomatik indirmek için Ayarlar > Medya bölümünde bir indirme klasörü belirleyin.",
   "settings": "Ayarlar",
   "@settings": {},
   "share_article_as_image": "Makaleyi resim olarak paylaş",
@@ -592,7 +595,9 @@
   "thread": "Başlık",
   "@thread": {},
   "threaded_replies": "İç içe yanıtlar",
+  "@threaded_replies": {},
   "threaded_replies_description": "Açılan bir gönderinin yanıtlarını, her yanıt cevapladığı yanıtın altına yerleşecek şekilde girintili bir ağaç olarak göster.",
+  "@threaded_replies_description": {},
   "thumbnail": "Küçük resim",
   "@thumbnail": {},
   "timed_out": "Zaman aşımına uğradı",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zen modunda akışın duraklamadan önce kaç sayfa yükleyeceği.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

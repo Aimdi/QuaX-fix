@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Estàs segur que vols suprimir el grup de subscripcions {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Baixa les imatges automàticament",
+  "auto_download_images_description": "Desa les imatges de qualsevol publicació desada en aquesta carpeta a la carpeta de baixades.",
   "autoplay_videos": "Reproducció automàtica de vídeos",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Si s'activa, els vídeos es reproduiran automàticament",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Enviar",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Defineix una carpeta de baixades a Configuració > Multimèdia per baixar automàticament.",
   "settings": "Configuració",
   "@settings": {},
   "share_article_as_image": "Comparteix l'article com a imatge",
@@ -592,7 +595,9 @@
   "thread": "Fil",
   "@thread": {},
   "threaded_replies": "Respostes en fil",
+  "@threaded_replies": {},
   "threaded_replies_description": "Mostra les respostes d'una publicació oberta com un arbre amb sagnat, amb cada resposta imbricada sota la que respon.",
+  "@threaded_replies_description": {},
   "thumbnail": "Miniatura",
   "@thumbnail": {},
   "timed_out": "Temps excedit",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quantes pàgines carrega el feed en mode zen abans de fer una pausa.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

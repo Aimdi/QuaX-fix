@@ -21,11 +21,15 @@ class SavedTweetFolderModel extends Store<List<SavedTweetFolder>> {
     });
   }
 
-  Future<SavedTweetFolder> createFolder(String name) async {
+  Future<SavedTweetFolder> createFolder(String name, {bool autoDownload = false}) async {
     var database = await Repository.writable();
 
-    var folder =
-        SavedTweetFolder(id: const Uuid().v4(), name: name, position: state.length, createdAt: DateTime.now());
+    var folder = SavedTweetFolder(
+        id: const Uuid().v4(),
+        name: name,
+        position: state.length,
+        createdAt: DateTime.now(),
+        autoDownload: autoDownload);
 
     await database.insert(tableSavedTweetFolder, folder.toMap());
     update([...state, folder], force: true);
@@ -33,12 +37,17 @@ class SavedTweetFolderModel extends Store<List<SavedTweetFolder>> {
     return folder;
   }
 
-  Future<void> updateFolder(String id, String name) async {
+  Future<void> updateFolder(String id, String name, {bool? autoDownload}) async {
     var database = await Repository.writable();
 
-    await database.update(tableSavedTweetFolder, {'name': name}, where: 'id = ?', whereArgs: [id]);
+    await database.update(
+        tableSavedTweetFolder,
+        {'name': name, if (autoDownload != null) 'auto_download': autoDownload ? 1 : 0},
+        where: 'id = ?',
+        whereArgs: [id]);
 
-    update(state.map((e) => e.id == id ? e.copyWith(name: name) : e).toList(), force: true);
+    update(
+        state.map((e) => e.id == id ? e.copyWith(name: name, autoDownload: autoDownload) : e).toList(), force: true);
   }
 
   /// Deletes a folder and moves its posts back to "unfiled" (folder_id = NULL).

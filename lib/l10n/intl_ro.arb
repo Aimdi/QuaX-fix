@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Ești sigur că vrei să ștergi grupul de abonamente {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Descarcă imaginile automat",
+  "auto_download_images_description": "Salvează imaginile oricărei postări adăugate în acest dosar în dosarul tău de descărcări.",
   "autoplay_videos": "Redare automată videoclipuri",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Dacă este activat, videoclipurile vor fi redate automat",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Trimite",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Setează un dosar de descărcări în Setări > Media pentru descărcare automată.",
   "settings": "Setări",
   "@settings": {},
   "share_article_as_image": "Distribuiți articolul ca imagine",
@@ -592,7 +595,9 @@
   "thread": "Fir",
   "@thread": {},
   "threaded_replies": "Răspunsuri imbricate",
+  "@threaded_replies": {},
   "threaded_replies_description": "Afișează răspunsurile la o postare deschisă ca un arbore indentat, fiecare răspuns imbricat sub cel la care răspunde.",
+  "@threaded_replies_description": {},
   "thumbnail": "Miniatură",
   "@thumbnail": {},
   "timed_out": "Timp de așteptare depășit",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Câte pagini încarcă fluxul în modul zen înainte de a se opri.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

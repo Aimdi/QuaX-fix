@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "هل أنت متأكد من حذف اسم مجموعة الاشتراك {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "تنزيل الصور تلقائيًا",
+  "auto_download_images_description": "احفظ صور أي منشور يُصنّف في هذا المجلد إلى مجلد التنزيلات.",
   "autoplay_videos": "تشغيل الفيديوهات تلقائياً",
   "@autoplay_videos": {},
   "autoplay_videos_description": "إذا تم التفعيل، سيتم تشغيل الفيديوهات تلقائياً",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "إرسال",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "عيّن مجلد تنزيل في الإعدادات > الوسائط للتنزيل التلقائي.",
   "settings": "الإعدادات",
   "@settings": {},
   "share_article_as_image": "مشاركة المقال كصورة",
@@ -592,7 +595,9 @@
   "thread": "سلسلة",
   "@thread": {},
   "threaded_replies": "الردود المتفرعة",
+  "@threaded_replies": {},
   "threaded_replies_description": "عرض الردود تحت المنشور المفتوح كشجرة متدرجة، مع تداخل كل رد تحت الرد الذي يجيب عنه.",
+  "@threaded_replies_description": {},
   "thumbnail": "الصورة المصغرة",
   "@thumbnail": {},
   "timed_out": "انتهت المهلة",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }

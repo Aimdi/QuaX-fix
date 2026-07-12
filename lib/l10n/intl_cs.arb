@@ -43,6 +43,8 @@
   "@are_you_sure": {},
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Opravdu chcete odstranit skupinu {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
+  "auto_download_images": "Automaticky stahovat obrázky",
+  "auto_download_images_description": "Uložit obrázky každého příspěvku zařazeného do této složky do složky stahování.",
   "autoplay_videos": "Automatické přehrávání videí",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Pokud je povoleno, videa se budou přehrávat automaticky",
@@ -503,6 +505,7 @@
   "@select": {},
   "send": "Odeslat",
   "@send": {},
+  "set_a_download_folder_to_auto_download": "Nastavte složku stahování v Nastavení > Média pro automatické stahování.",
   "settings": "Nastavení",
   "@settings": {},
   "share_article_as_image": "Sdílet článek jako obrázek",
@@ -592,7 +595,9 @@
   "thread": "Vlákno",
   "@thread": {},
   "threaded_replies": "Vnořené odpovědi",
+  "@threaded_replies": {},
   "threaded_replies_description": "Zobrazovat odpovědi u otevřeného příspěvku jako odsazený strom, kde je každá odpověď vnořena pod tu, na kterou reaguje.",
+  "@threaded_replies_description": {},
   "thumbnail": "Náhled",
   "@thumbnail": {},
   "timed_out": "Vypršel čas",
@@ -729,6 +734,7 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolik stránek kanál v zen režimu načte, než se pozastaví.",
   "@zen_mode_page_cap_description": {},
-  "@threaded_replies": {},
-  "@threaded_replies_description": {}
+  "@auto_download_images": {},
+  "@auto_download_images_description": {},
+  "@set_a_download_folder_to_auto_download": {}
 }
