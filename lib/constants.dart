@@ -86,6 +86,10 @@ const optionTweetsShowSubscribeBadge = 'tweets.show_subscribe_badge';
 const optionZenMode = 'other.zen_mode';
 const optionZenModePageCap = 'other.zen_mode_page_cap';
 const optionFeedReadingPosition = 'feed.reading_position';
+// Global defaults for feeds; a group can override each per-feed (null override
+// = follow these).
+const optionGlobalIncludeReplies = 'feed.global_include_replies';
+const optionGlobalIncludeRetweets = 'feed.global_include_retweets';
 const optionMediaGridLayout = 'media.grid_layout';
 
 const mediaGridLayoutMasonry = 'masonry';

@@ -56,8 +56,8 @@ class GroupModel extends Store<SubscriptionGroupGet> {
             name: 'All',
             icon: group['icon'] as String,
             subscriptions: subscriptions,
-            includeReplies: group['include_replies'] == 1,
-            includeRetweets: group['include_retweets'] == 1,
+            includeReplies: _includeOverride(group['include_replies']),
+            includeRetweets: _includeOverride(group['include_retweets']),
             popular: group['popular'] == 1,
             custom: group['custom'] == 1,
             contentFilter: group['content_filter'] as String? ?? contentFilterDefault);
@@ -89,7 +89,11 @@ class GroupModel extends Store<SubscriptionGroupGet> {
     });
   }
 
-  Future<void> toggleSubscriptionGroupIncludeReplies(bool value) async {
+  // Reads the stored per-group override: null (unset) means "follow the global
+  // default", otherwise the explicit on/off the user chose for this feed.
+  static bool? _includeOverride(Object? value) => value == null ? null : value == 1;
+
+  Future<void> toggleSubscriptionGroupIncludeReplies(bool? value) async {
     await execute(() async {
       (await Repository.writable())
           .rawUpdate('UPDATE $tableSubscriptionGroup SET include_replies = ? WHERE id = ?', [value, state.id]);
@@ -97,7 +101,7 @@ class GroupModel extends Store<SubscriptionGroupGet> {
     });
   }
 
-  Future<void> toggleSubscriptionGroupIncludeRetweets(bool value) async {
+  Future<void> toggleSubscriptionGroupIncludeRetweets(bool? value) async {
     await execute(() async {
       (await Repository.writable())
           .rawUpdate('UPDATE $tableSubscriptionGroup SET include_retweets = ? WHERE id = ?', [value, state.id]);
@@ -259,7 +263,16 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
       if (id == null) {
         id = const Uuid().v4();
 
-        await database.insert(tableSubscriptionGroup, {'id': id, 'name': name, 'color': color?.toARGB32(), 'icon': icon});
+        // Leave the reply/retweet filters null so a new group follows the
+        // global default instead of the column's own "on" default.
+        await database.insert(tableSubscriptionGroup, {
+          'id': id,
+          'name': name,
+          'color': color?.toARGB32(),
+          'icon': icon,
+          'include_replies': null,
+          'include_retweets': null,
+        });
       } else {
         await database.update(
             tableSubscriptionGroup,

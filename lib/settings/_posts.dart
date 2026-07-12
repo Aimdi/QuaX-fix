@@ -44,6 +44,16 @@ class SettingsPostsFragment extends StatelessWidget {
             pref: optionTweetsShowSubscribeBadge,
           ),
           PrefSwitch(
+            title: Text(L10n.of(context).include_replies),
+            subtitle: Text(L10n.of(context).feed_default_filter_description),
+            pref: optionGlobalIncludeReplies,
+          ),
+          PrefSwitch(
+            title: Text(L10n.of(context).include_retweets),
+            subtitle: Text(L10n.of(context).feed_default_filter_description),
+            pref: optionGlobalIncludeRetweets,
+          ),
+          PrefSwitch(
             title: Text(L10n.of(context).zen_mode),
             subtitle: Text(L10n.of(context).zen_mode_description),
             pref: optionZenMode,

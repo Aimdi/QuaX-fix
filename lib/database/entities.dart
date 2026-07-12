@@ -241,13 +241,20 @@ class SubscriptionGroup with ToMappable {
   }
 }
 
+// Sentinel distinguishing "argument omitted" from "explicitly set to null" in
+// copyWith, needed for the nullable include-replies/retweets overrides.
+const Object _unset = Object();
+
 class SubscriptionGroupGet {
   final String id;
   final String name;
   final String icon;
   final List<Subscription> subscriptions;
-  bool includeReplies;
-  bool includeRetweets;
+  // null means "follow the global default" (optionGlobalIncludeReplies /
+  // optionGlobalIncludeRetweets); resolved to a concrete bool where the feed
+  // is built.
+  bool? includeReplies;
+  bool? includeRetweets;
   bool popular;
   bool custom;
   String contentFilter;
@@ -266,14 +273,18 @@ class SubscriptionGroupGet {
   // Store updates must emit a new instance, otherwise listeners never see the
   // change (the store skips identical states) and dependent widgets go stale.
   SubscriptionGroupGet copyWith(
-      {bool? includeReplies, bool? includeRetweets, bool? popular, bool? custom, String? contentFilter}) {
+      {Object? includeReplies = _unset,
+      Object? includeRetweets = _unset,
+      bool? popular,
+      bool? custom,
+      String? contentFilter}) {
     return SubscriptionGroupGet(
         id: id,
         name: name,
         icon: icon,
         subscriptions: subscriptions,
-        includeReplies: includeReplies ?? this.includeReplies,
-        includeRetweets: includeRetweets ?? this.includeRetweets,
+        includeReplies: identical(includeReplies, _unset) ? this.includeReplies : includeReplies as bool?,
+        includeRetweets: identical(includeRetweets, _unset) ? this.includeRetweets : includeRetweets as bool?,
         popular: popular ?? this.popular,
         custom: custom ?? this.custom,
         contentFilter: contentFilter ?? this.contentFilter);

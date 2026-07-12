@@ -5,6 +5,24 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_custom_settings.dart';
 import 'package:quax/group/group_model.dart';
 
+// A per-feed override that can defer to the global default: null → "Default"
+// (follow the global setting), true → "Show", false → "Hide".
+Widget _inheritTile(BuildContext context, String title, bool? value, Future<void> Function(bool?) onChanged) {
+  return ListTile(
+    title: Text(title),
+    trailing: DropdownButton<int>(
+      value: value == null ? 0 : (value ? 1 : 2),
+      underline: const SizedBox.shrink(),
+      onChanged: (choice) async => await onChanged(choice == 0 ? null : choice == 1),
+      items: [
+        DropdownMenuItem(value: 0, child: Text(L10n.of(context).content_filter_default)),
+        DropdownMenuItem(value: 1, child: Text(L10n.of(context).show)),
+        DropdownMenuItem(value: 2, child: Text(L10n.of(context).hide)),
+      ],
+    ),
+  );
+}
+
 int _sortModeOf(SubscriptionGroupGet group) => group.custom ? 2 : (group.popular ? 1 : 0);
 
 String _sortModeLabel(BuildContext context, SubscriptionGroupGet group) {
@@ -52,22 +70,18 @@ void showFeedSettings(BuildContext context, GroupModel model) {
               onState: (_, state) {
                 return Column(
                   children: [
-                    SwitchListTile(
-                        title: Text(
-                          L10n.of(context).include_replies,
-                        ),
-                        value: model.state.includeReplies,
-                        onChanged: (value) async {
-                          await model.toggleSubscriptionGroupIncludeReplies(value);
-                        }),
-                    SwitchListTile(
-                        title: Text(
-                          L10n.of(context).include_retweets,
-                        ),
-                        value: model.state.includeRetweets,
-                        onChanged: (value) async {
-                          await model.toggleSubscriptionGroupIncludeRetweets(value);
-                        }),
+                    _inheritTile(
+                      context,
+                      L10n.of(context).include_replies,
+                      model.state.includeReplies,
+                      (value) => model.toggleSubscriptionGroupIncludeReplies(value),
+                    ),
+                    _inheritTile(
+                      context,
+                      L10n.of(context).include_retweets,
+                      model.state.includeRetweets,
+                      (value) => model.toggleSubscriptionGroupIncludeRetweets(value),
+                    ),
                     ExpansionTile(
                       leading: const Icon(Icons.sort),
                       title: Text(_sortModeLabel(context, model.state)),

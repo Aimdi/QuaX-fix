@@ -245,6 +245,8 @@ Future<void> main() async {
     optionZenMode: false,
     optionZenModePageCap: 5,
     optionFeedReadingPosition: false,
+    optionGlobalIncludeReplies: true,
+    optionGlobalIncludeRetweets: true,
     optionMediaGridLayout: mediaGridLayoutMasonry,
     optionShouldCheckForUpdates: true,
     optionSubscriptionGroupsOrderByAscending: true,
