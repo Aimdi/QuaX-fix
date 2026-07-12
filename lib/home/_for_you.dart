@@ -30,6 +30,21 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
   @override
   bool get wantKeepAlive => true;
 
+  @override
+  void initState() {
+    super.initState();
+    widget.feed.pageCapProvider = _zenPageCap;
+  }
+
+  // In zen mode the feed is finite: pagination pauses after this many pages
+  // per session. `null` disables the cap when zen mode is off.
+  int? _zenPageCap() {
+    if (widget.pref.get(optionZenMode) != true) {
+      return null;
+    }
+    return widget.pref.get<int>(optionZenModePageCap);
+  }
+
   void incrementLoadTweetsCounter() {
     ++loadTweetsCounter;
   }

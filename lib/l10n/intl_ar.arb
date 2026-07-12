@@ -690,5 +690,13 @@
   "zen_mode": "وضع الهدوء",
   "@zen_mode": {},
   "zen_mode_description": "موجز أهدأ: يخفي إحصاءات المنشورات، ويخفي الردود حتى تضغط مطولًا على زر التعليقات، ويعرض فقط بضعة منشورات حديثة لكل شخص.",
-  "@zen_mode_description": {}
+  "@zen_mode_description": {},
+  "zen_mode_feed_end": "هذا كل شيء حتى الآن",
+  "zen_mode_load_more": "تحميل المزيد على أي حال",
+  "zen_mode_page_cap": "طول الخلاصة في وضع الهدوء",
+  "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
+  "@zen_mode_feed_end": {},
+  "@zen_mode_load_more": {},
+  "@zen_mode_page_cap": {},
+  "@zen_mode_page_cap_description": {}
 }

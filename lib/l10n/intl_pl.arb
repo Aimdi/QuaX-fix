@@ -690,5 +690,13 @@
   "zen_mode": "Tryb zen",
   "@zen_mode": {},
   "zen_mode_description": "Spokojniejszy kanał: ukrywa statystyki wpisów, ukrywa odpowiedzi, dopóki nie przytrzymasz przycisku komentarzy, i pokazuje tylko kilka ostatnich wpisów każdej osoby.",
-  "@zen_mode_description": {}
+  "@zen_mode_description": {},
+  "zen_mode_feed_end": "To na razie wszystko",
+  "zen_mode_load_more": "Mimo to wczytaj więcej",
+  "zen_mode_page_cap": "Długość kanału w trybie zen",
+  "zen_mode_page_cap_description": "Ile stron kanał wczytuje w trybie zen, zanim się zatrzyma.",
+  "@zen_mode_feed_end": {},
+  "@zen_mode_load_more": {},
+  "@zen_mode_page_cap": {},
+  "@zen_mode_page_cap_description": {}
 }

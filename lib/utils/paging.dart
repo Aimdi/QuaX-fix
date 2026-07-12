@@ -95,5 +95,14 @@ class CursorPagingController<C, T> {
     pagingController.value = pagingController.value.copyWith(error: PagingError(error, stackTrace));
   }
 
+  /// Re-opens pagination after it ended, seeding [cursor] for the next page,
+  /// and fetches that page. Used when the end was imposed (e.g. the zen-mode
+  /// page cap) rather than reached naturally.
+  void resume(C cursor) {
+    _setNextCursor(cursor);
+    pagingController.value = pagingController.value.copyWith(hasNextPage: true);
+    pagingController.fetchNextPage();
+  }
+
   void dispose() => pagingController.dispose();
 }

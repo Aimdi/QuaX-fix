@@ -690,5 +690,13 @@
   "zen_mode": "Zen modua",
   "@zen_mode": {},
   "zen_mode_description": "Jario lasaiagoa: estatistikak ezkutatzen ditu, erantzunak ezkutatzen ditu iruzkinen botoia sakatuta eduki arte, eta pertsona bakoitzeko azken argitalpen gutxi batzuk soilik erakusten ditu.",
-  "@zen_mode_description": {}
+  "@zen_mode_description": {},
+  "zen_mode_feed_end": "Hori da dena oraingoz",
+  "zen_mode_load_more": "Kargatu gehiago hala ere",
+  "zen_mode_page_cap": "Jarioaren luzera zen moduan",
+  "zen_mode_page_cap_description": "Zenbat orrialde kargatzen dituen jarioak zen moduan gelditu aurretik.",
+  "@zen_mode_feed_end": {},
+  "@zen_mode_load_more": {},
+  "@zen_mode_page_cap": {},
+  "@zen_mode_page_cap_description": {}
 }

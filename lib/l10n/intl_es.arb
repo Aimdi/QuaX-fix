@@ -690,5 +690,13 @@
   "zen_mode": "Modo zen",
   "@zen_mode": {},
   "zen_mode_description": "Un feed más tranquilo: oculta las estadísticas, oculta las respuestas hasta que mantengas pulsado el botón de comentarios y muestra solo unas pocas publicaciones recientes por persona.",
-  "@zen_mode_description": {}
+  "@zen_mode_description": {},
+  "zen_mode_feed_end": "Eso es todo por ahora",
+  "zen_mode_load_more": "Cargar más de todos modos",
+  "zen_mode_page_cap": "Longitud del feed en modo zen",
+  "zen_mode_page_cap_description": "Cuántas páginas carga el feed en modo zen antes de hacer una pausa.",
+  "@zen_mode_feed_end": {},
+  "@zen_mode_load_more": {},
+  "@zen_mode_page_cap": {},
+  "@zen_mode_page_cap_description": {}
 }

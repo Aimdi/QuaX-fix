@@ -690,5 +690,13 @@
   "zen_mode": "Mode zen",
   "@zen_mode": {},
   "zen_mode_description": "Feed yang lebih tenang: menyembunyikan statistik postingan, menyembunyikan balasan sampai Anda menahan tombol komentar, dan hanya menampilkan beberapa postingan terbaru per orang.",
-  "@zen_mode_description": {}
+  "@zen_mode_description": {},
+  "zen_mode_feed_end": "Itu saja untuk saat ini",
+  "zen_mode_load_more": "Tetap muat lebih banyak",
+  "zen_mode_page_cap": "Panjang beranda di mode zen",
+  "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
+  "@zen_mode_feed_end": {},
+  "@zen_mode_load_more": {},
+  "@zen_mode_page_cap": {},
+  "@zen_mode_page_cap_description": {}
 }

@@ -90,6 +90,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     } else {
       _feedController = TweetFeedController();
     }
+    _feedController.pageCapProvider = _zenPageCap;
     // Cached (pop/push-restored) controllers already hold their tweets; only a
     // fresh controller needs the preview while it loads the first page.
     _cachedPreview = widget.initialPreview;
@@ -426,6 +427,19 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       return sortChainsNewestFirst(chains);
     }
     return chains.sorted((a, b) => _likesOf(b).compareTo(_likesOf(a))).toList();
+  }
+
+  // In zen mode the feed is finite: pagination pauses after this many pages
+  // per session. `null` disables the cap when zen mode is off.
+  int? _zenPageCap() {
+    if (!mounted) {
+      return null;
+    }
+    final prefs = PrefService.of(context, listen: false);
+    if (prefs.get(optionZenMode) != true) {
+      return null;
+    }
+    return prefs.get<int>(optionZenModePageCap);
   }
 
   /// Zen mode: a calm feed with no engagement-based ranking — strictly

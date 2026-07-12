@@ -690,5 +690,13 @@
   "zen_mode": "Zen modu",
   "@zen_mode": {},
   "zen_mode_description": "Daha sakin bir akış: gönderi istatistiklerini gizler, yorum düğmesini basılı tutana kadar yanıtları gizler ve kişi başına yalnızca birkaç güncel gönderi gösterir.",
-  "@zen_mode_description": {}
+  "@zen_mode_description": {},
+  "zen_mode_feed_end": "Şimdilik hepsi bu",
+  "zen_mode_load_more": "Yine de daha fazla yükle",
+  "zen_mode_page_cap": "Zen modunda akış uzunluğu",
+  "zen_mode_page_cap_description": "Zen modunda akışın duraklamadan önce kaç sayfa yükleyeceği.",
+  "@zen_mode_feed_end": {},
+  "@zen_mode_load_more": {},
+  "@zen_mode_page_cap": {},
+  "@zen_mode_page_cap_description": {}
 }

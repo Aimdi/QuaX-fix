@@ -690,5 +690,13 @@
   "zen_mode": "Zena reĝimo",
   "@zen_mode": {},
   "zen_mode_description": "Pli trankvila fluo: kaŝas statistikojn de afiŝoj, kaŝas respondojn ĝis vi longpremas la komentan butonon, kaj montras nur kelkajn lastatempajn afiŝojn po persono.",
-  "@zen_mode_description": {}
+  "@zen_mode_description": {},
+  "zen_mode_feed_end": "Jen ĉio nuntempe",
+  "zen_mode_load_more": "Tamen ŝargi pli",
+  "zen_mode_page_cap": "Longo de la fluo en zena reĝimo",
+  "zen_mode_page_cap_description": "Kiom da paĝoj la fluo ŝargas en zena reĝimo antaŭ ol paŭzi.",
+  "@zen_mode_feed_end": {},
+  "@zen_mode_load_more": {},
+  "@zen_mode_page_cap": {},
+  "@zen_mode_page_cap_description": {}
 }

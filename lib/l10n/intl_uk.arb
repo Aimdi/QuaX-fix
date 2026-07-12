@@ -690,5 +690,13 @@
   "zen_mode": "Дзен-режим",
   "@zen_mode": {},
   "zen_mode_description": "Спокійніша стрічка: приховує статистику дописів, приховує відповіді, доки ви не утримаєте кнопку коментарів, і показує лише кілька нещодавніх дописів від кожного.",
-  "@zen_mode_description": {}
+  "@zen_mode_description": {},
+  "zen_mode_feed_end": "Поки що це все",
+  "zen_mode_load_more": "Все одно завантажити ще",
+  "zen_mode_page_cap": "Довжина стрічки в дзен-режимі",
+  "zen_mode_page_cap_description": "Скільки сторінок завантажує стрічка в дзен-режимі перед паузою.",
+  "@zen_mode_feed_end": {},
+  "@zen_mode_load_more": {},
+  "@zen_mode_page_cap": {},
+  "@zen_mode_page_cap_description": {}
 }

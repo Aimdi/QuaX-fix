@@ -690,5 +690,13 @@
   "zen_mode": "Mode zen",
   "@zen_mode": {},
   "zen_mode_description": "Un canal més tranquil: amaga les estadístiques, amaga les respostes fins que mantinguis premut el botó de comentaris i mostra només unes quantes publicacions recents per persona.",
-  "@zen_mode_description": {}
+  "@zen_mode_description": {},
+  "zen_mode_feed_end": "Això és tot per ara",
+  "zen_mode_load_more": "Carrega'n més igualment",
+  "zen_mode_page_cap": "Longitud del feed en mode zen",
+  "zen_mode_page_cap_description": "Quantes pàgines carrega el feed en mode zen abans de fer una pausa.",
+  "@zen_mode_feed_end": {},
+  "@zen_mode_load_more": {},
+  "@zen_mode_page_cap": {},
+  "@zen_mode_page_cap_description": {}
 }

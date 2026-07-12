@@ -690,5 +690,13 @@
   "zen_mode": "Дзен-режим",
   "@zen_mode": {},
   "zen_mode_description": "Более спокойная лента: скрывает статистику постов, скрывает ответы, пока вы не удержите кнопку комментариев, и показывает лишь несколько недавних постов от каждого.",
-  "@zen_mode_description": {}
+  "@zen_mode_description": {},
+  "zen_mode_feed_end": "Пока это всё",
+  "zen_mode_load_more": "Всё равно загрузить ещё",
+  "zen_mode_page_cap": "Длина ленты в дзен-режиме",
+  "zen_mode_page_cap_description": "Сколько страниц загружает лента в дзен-режиме перед паузой.",
+  "@zen_mode_feed_end": {},
+  "@zen_mode_load_more": {},
+  "@zen_mode_page_cap": {},
+  "@zen_mode_page_cap_description": {}
 }

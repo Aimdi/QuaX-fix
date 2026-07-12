@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/client/client.dart';
+import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/feed_refresh_controller.dart';
 import 'package:quax/tweet/cached_tweet_list.dart';
 import 'package:quax/tweet/conversation.dart';
@@ -22,6 +23,15 @@ class TweetFeedController {
   late final CursorPagingController<String, TweetChain> _paging;
   TweetPageLoader? _loader;
 
+  /// When set, pagination pauses after this many pages per session instead of
+  /// scrolling forever (`null` result → no cap). Feeds bind this to the
+  /// zen-mode preference; search and quotes leave it unset.
+  int? Function()? pageCapProvider;
+  int _pagesFetched = 0;
+  // The real next cursor stashed when the page cap paused pagination, so
+  // "load more anyway" can resume where the feed stopped.
+  String? _cappedCursor;
+
   TweetFeedController() {
     _paging = CursorPagingController<String, TweetChain>(_fetch);
   }
@@ -32,6 +42,30 @@ class TweetFeedController {
 
   bool get hasItems => _paging.items != null;
 
+  bool get pausedByPageCap => _cappedCursor != null;
+
+  /// Resumes pagination past the page cap, granting another cap's worth of
+  /// pages before pausing again.
+  void continuePastCap() {
+    final cursor = _cappedCursor;
+    if (cursor == null) {
+      return;
+    }
+    _cappedCursor = null;
+    _pagesFetched = 0;
+    _paging.resume(cursor);
+  }
+
+  String? _applyPageCap(String? next) {
+    final cap = pageCapProvider?.call();
+    if (next == null || cap == null || _pagesFetched < cap) {
+      _cappedCursor = null;
+      return next;
+    }
+    _cappedCursor = next;
+    return null;
+  }
+
   Future<CursorPage<String, TweetChain>> _fetch(String? cursor) async {
     final result = await _loader!(cursor);
     final next = result.nextCursor;
@@ -41,7 +75,12 @@ class TweetFeedController {
     // carries a cursor worth following.
     final seen = cursor == null ? <String>{} : (_paging.items ?? const <TweetChain>[]).map((e) => e.id).toSet();
     final items = result.chains.where((c) => seen.add(c.id)).toList();
-    return (items: items, nextCursor: _isLastPage(result.chains, next, cursor) ? null : next);
+    if (cursor == null) {
+      _pagesFetched = 0;
+    }
+    _pagesFetched++;
+    final naturalNext = _isLastPage(result.chains, next, cursor) ? null : next;
+    return (items: items, nextCursor: _applyPageCap(naturalNext));
   }
 
   // Pagination ends on an empty page, a missing/blank cursor, or a cursor that
@@ -262,10 +301,45 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
             onRetry: fetchNextPage,
           ),
           noItemsFoundIndicatorBuilder: (context) => Center(child: Text(widget.emptyMessage)),
+          noMoreItemsIndicatorBuilder: (context) => widget.feed.pausedByPageCap
+              ? _ZenFeedEndCard(onLoadMore: widget.feed.continuePastCap)
+              : const SizedBox.shrink(),
         ),
       ),
     );
 
     return _wrapWithRefresh(list);
+  }
+}
+
+/// Calm end-of-feed card shown when the zen-mode page cap paused pagination,
+/// offering a deliberate way to keep reading instead of an infinite scroll.
+class _ZenFeedEndCard extends StatelessWidget {
+  final VoidCallback onLoadMore;
+
+  const _ZenFeedEndCard({required this.onLoadMore});
+
+  @override
+  Widget build(BuildContext context) {
+    final hintColor = Theme.of(context).hintColor;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+      child: Column(
+        children: [
+          Icon(Icons.self_improvement, size: 36, color: hintColor),
+          const SizedBox(height: 12),
+          Text(
+            L10n.of(context).zen_mode_feed_end,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: hintColor),
+          ),
+          const SizedBox(height: 4),
+          TextButton(
+            onPressed: onLoadMore,
+            child: Text(L10n.of(context).zen_mode_load_more),
+          ),
+        ],
+      ),
+    );
   }
 }
