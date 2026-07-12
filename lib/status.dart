@@ -4,6 +4,7 @@ import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/profile/profile.dart';
 import 'package:quax/tweet/conversation.dart';
+import 'package:quax/tweet/threaded_conversation.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pref/pref.dart';
@@ -125,6 +126,11 @@ class _StatusScreenState extends State<_StatusScreen> {
   }
 
   void _scrollToFocalTweet(List<TweetChain> chains) {
+    // In threaded mode the opened tweet (with its ancestors) is the first item,
+    // so there is nothing to scroll to.
+    if (mounted && PrefService.of(context, listen: false).get(optionThreadedReplies) == true) {
+      return;
+    }
     // Find the chain holding the opened tweet. Ancestors arrive as earlier
     // chains, so index 0 means there's nothing above it (a top-level tweet,
     // already at the top) — leave the view and highlight alone.
@@ -259,52 +265,122 @@ class _StatusScreenState extends State<_StatusScreen> {
       return _buildZenConversation(context, _pagingController.value.items ?? const <TweetChain>[]);
     }
 
+    final threaded = PrefService.of(context, listen: false).get(optionThreadedReplies) == true;
+
     return PagingListener<int, TweetChain>(
       controller: _pagingController,
-      builder: (context, state, fetchNextPage) => PagedListView<int, TweetChain>(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-        state: state,
-        fetchNextPage: fetchNextPage,
-        scrollController: _scrollController,
-        addAutomaticKeepAlives: false,
-        shrinkWrap: true,
-        builderDelegate: PagedChildBuilderDelegate(
-          itemBuilder: (context, chain, index) {
-            return AutoScrollTag(
-              key: ValueKey(chain.id),
-              controller: _scrollController,
-              index: index,
-              highlightColor: Theme.of(context).colorScheme.primary,
-              child: TweetConversation(
-                  id: chain.id,
-                  tweets: chain.tweets,
-                  username: null,
-                  isPinned: chain.isPinned,
-                  tweetOpened: widget.tweetOpened,
-                  initialMediaIndex: chain.id == widget.id ? widget.initialMediaIndex : 0),
-            );
-          },
-          firstPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
-            error: pagingErrorOf(state)?.error,
-            stackTrace: pagingErrorOf(state)?.stackTrace,
-            prefix: L10n.of(context).unable_to_load_the_tweet,
-            onRetry: fetchNextPage,
-          ),
-          newPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
-            error: pagingErrorOf(state)?.error,
-            stackTrace: pagingErrorOf(state)?.stackTrace,
-            prefix: L10n.of(context).unable_to_load_the_next_page_of_replies,
-            onRetry: fetchNextPage,
-          ),
-          noItemsFoundIndicatorBuilder: (context) {
-            return Center(
-              child: Text(
-                L10n.of(context).could_not_find_any_tweets_by_this_user,
-              ),
-            );
-          },
+      builder: (context, state, fetchNextPage) =>
+          threaded ? _buildThreadedList(context, state, fetchNextPage) : _buildFlatList(context, state, fetchNextPage),
+    );
+  }
+
+  Widget _conversationTile(BuildContext context, TweetChain chain, int index) {
+    return AutoScrollTag(
+      key: ValueKey(chain.id),
+      controller: _scrollController,
+      index: index,
+      highlightColor: Theme.of(context).colorScheme.primary,
+      child: TweetConversation(
+          id: chain.id,
+          tweets: chain.tweets,
+          username: null,
+          isPinned: chain.isPinned,
+          tweetOpened: widget.tweetOpened,
+          initialMediaIndex: chain.id == widget.id ? widget.initialMediaIndex : 0),
+    );
+  }
+
+  Widget _buildFlatList(BuildContext context, PagingState<int, TweetChain> state, NextPageCallback fetchNextPage) {
+    return PagedListView<int, TweetChain>(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+      state: state,
+      fetchNextPage: fetchNextPage,
+      scrollController: _scrollController,
+      addAutomaticKeepAlives: false,
+      shrinkWrap: true,
+      builderDelegate: PagedChildBuilderDelegate(
+        itemBuilder: (context, chain, index) => _conversationTile(context, chain, index),
+        firstPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
+          error: pagingErrorOf(state)?.error,
+          stackTrace: pagingErrorOf(state)?.stackTrace,
+          prefix: L10n.of(context).unable_to_load_the_tweet,
+          onRetry: fetchNextPage,
         ),
+        newPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
+          error: pagingErrorOf(state)?.error,
+          stackTrace: pagingErrorOf(state)?.stackTrace,
+          prefix: L10n.of(context).unable_to_load_the_next_page_of_replies,
+          onRetry: fetchNextPage,
+        ),
+        noItemsFoundIndicatorBuilder: (context) {
+          return Center(
+            child: Text(
+              L10n.of(context).could_not_find_any_tweets_by_this_user,
+            ),
+          );
+        },
       ),
     );
+  }
+
+  // Reddit-style nested replies: the opened tweet on top, replies indented
+  // under their parent. Renders the flattened tree in a lazy list, keeping the
+  // paging controller for loading more.
+  Widget _buildThreadedList(BuildContext context, PagingState<int, TweetChain> state, NextPageCallback fetchNextPage) {
+    final items = state.items ?? const <TweetChain>[];
+    if (items.isEmpty) {
+      final error = pagingErrorOf(state);
+      if (error != null) {
+        return FullPageErrorWidget(
+          error: error.error,
+          stackTrace: error.stackTrace,
+          prefix: L10n.of(context).unable_to_load_the_tweet,
+          onRetry: fetchNextPage,
+        );
+      }
+      if (state.status == PagingStatus.noItemsFound) {
+        return Center(child: Text(L10n.of(context).could_not_find_any_tweets_by_this_user));
+      }
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final nodes = buildThreadTree(items, widget.id);
+    return ListView.builder(
+      controller: _scrollController,
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+      shrinkWrap: true,
+      itemCount: nodes.length + 1,
+      itemBuilder: (context, index) {
+        if (index == nodes.length) {
+          return _buildThreadFooter(context, state, fetchNextPage);
+        }
+        final node = nodes[index];
+        return ThreadIndent(
+          depth: node.depth,
+          child: _conversationTile(context, node.chain, index),
+        );
+      },
+    );
+  }
+
+  Widget _buildThreadFooter(BuildContext context, PagingState<int, TweetChain> state, NextPageCallback fetchNextPage) {
+    final error = pagingErrorOf(state);
+    if (error != null && state.status == PagingStatus.subsequentPageError) {
+      return FullPageErrorWidget(
+        error: error.error,
+        stackTrace: error.stackTrace,
+        prefix: L10n.of(context).unable_to_load_the_next_page_of_replies,
+        onRetry: fetchNextPage,
+      );
+    }
+    if (state.hasNextPage) {
+      // The controller ignores overlapping calls, so requesting each frame the
+      // footer is visible is safe.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) fetchNextPage();
+      });
+      return const Padding(padding: EdgeInsets.all(16), child: Center(child: CircularProgressIndicator()));
+    }
+    return const SizedBox.shrink();
   }
 }

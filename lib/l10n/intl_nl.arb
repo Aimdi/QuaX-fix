@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "Uw feed lijkt berichten te bevatten van mensen die u niet volgt",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "De standaard voor alle feeds. Elke feed kan deze nog individueel overschrijven.",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "Feed-probleem gedetecteerd",
   "@feed_issue_detected": {},
   "filters": "Filters",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "Draad",
   "@thread": {},
+  "threaded_replies": "Geneste reacties",
+  "threaded_replies_description": "Toon reacties onder een geopend bericht als een ingesprongen boom, met elke reactie genest onder de reactie waarop deze antwoordt.",
   "thumbnail": "Miniatuur",
   "@thumbnail": {},
   "timed_out": "Wachttijd versterken",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hoeveel pagina's een feed in zen-modus laadt voordat deze pauzeert.",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }

@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "您的動態消息似乎包含您未追蹤的人的貼文",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "所有時間軸的預設值。每個時間軸仍可單獨覆寫。",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "偵測到動態消息問題",
   "@feed_issue_detected": {},
   "filters": "篩選器",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "討論串",
   "@thread": {},
+  "threaded_replies": "巢狀回覆",
+  "threaded_replies_description": "在開啟的貼文下以縮排樹狀顯示回覆，每則回覆巢狀於其所回覆的內容下方。",
   "thumbnail": "縮圖",
   "@thumbnail": {},
   "timed_out": "已逾時",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禪模式下時間軸暫停前載入的頁數。",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }

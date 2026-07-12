@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "Akışınız takip etmediğiniz kişilerin gönderilerini içeriyor gibi görünüyor",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "Tüm akışlar için varsayılan. Her akış bunu ayrı ayrı geçersiz kılabilir.",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "Akış sorunu tespit edildi",
   "@feed_issue_detected": {},
   "filters": "Filtreler",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "Başlık",
   "@thread": {},
+  "threaded_replies": "İç içe yanıtlar",
+  "threaded_replies_description": "Açılan bir gönderinin yanıtlarını, her yanıt cevapladığı yanıtın altına yerleşecek şekilde girintili bir ağaç olarak göster.",
   "thumbnail": "Küçük resim",
   "@thumbnail": {},
   "timed_out": "Zaman aşımına uğradı",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zen modunda akışın duraklamadan önce kaç sayfa yükleyeceği.",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }

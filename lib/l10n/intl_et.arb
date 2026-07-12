@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "Teie voog näib sisaldavat postitusi inimestelt, keda te ei jälgi",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "Kõigi voogude vaikeväärtus. Iga voog saab selle eraldi tühistada.",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "Voo probleem tuvastatud",
   "@feed_issue_detected": {},
   "filters": "Filtrid",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "Jutulõng",
   "@thread": {},
+  "threaded_replies": "Hargnevad vastused",
+  "threaded_replies_description": "Kuva avatud postituse vastused taandega puuna, kus iga vastus on pesastatud selle alla, millele see vastab.",
   "thumbnail": "Pisipildid",
   "@thumbnail": {},
   "timed_out": "Päring aegus",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Mitu lehte voog Zen-režiimis enne pausi laadib.",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }

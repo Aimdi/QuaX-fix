@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "El teu canal sembla contenir publicacions de persones que no segueixes",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "El valor per defecte per a tots els feeds. Cada feed encara el pot substituir individualment.",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "S'ha detectat un problema al canal",
   "@feed_issue_detected": {},
   "filters": "Filtres",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "Fil",
   "@thread": {},
+  "threaded_replies": "Respostes en fil",
+  "threaded_replies_description": "Mostra les respostes d'una publicació oberta com un arbre amb sagnat, amb cada resposta imbricada sota la que respon.",
   "thumbnail": "Miniatura",
   "@thumbnail": {},
   "timed_out": "Temps excedit",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quantes pàgines carrega el feed en mode zen abans de fer una pausa.",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }

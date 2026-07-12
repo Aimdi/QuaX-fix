@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "आपके फ़ीड में ऐसे लोगों की पोस्ट हैं जिन्हें आप फ़ॉलो नहीं करते",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "सभी फ़ीड के लिए डिफ़ॉल्ट। कोई भी फ़ीड इसे अलग से बदल सकती है।",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "फ़ीड समस्या का पता चला",
   "@feed_issue_detected": {},
   "filters": "फ़िल्टर",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "थ्रेड",
   "@thread": {},
+  "threaded_replies": "थ्रेडेड जवाब",
+  "threaded_replies_description": "खुली हुई पोस्ट के जवाब एक इंडेंटेड ट्री के रूप में दिखाएँ, जहाँ हर जवाब उसी के नीचे नेस्ट हो जिसका वह उत्तर है।",
   "thumbnail": "थंबनेल",
   "@thumbnail": {},
   "timed_out": "समय समाप्त",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "ज़ेन मोड में रुकने से पहले फ़ीड कितने पेज लोड करेगी।",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }

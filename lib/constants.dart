@@ -90,6 +90,8 @@ const optionFeedReadingPosition = 'feed.reading_position';
 // = follow these).
 const optionGlobalIncludeReplies = 'feed.global_include_replies';
 const optionGlobalIncludeRetweets = 'feed.global_include_retweets';
+// Show replies under an opened post as a nested, indented tree.
+const optionThreadedReplies = 'tweets.threaded_replies';
 const optionMediaGridLayout = 'media.grid_layout';
 
 const mediaGridLayoutMasonry = 'masonry';

@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "يبدو أن خلاصتك تحتوي على منشورات من أشخاص لا تتابعهم",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "الإعداد الافتراضي لكل الخلاصات. يمكن لأي خلاصة تجاوزه بشكل فردي.",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "تم اكتشاف مشكلة في الخلاصة",
   "@feed_issue_detected": {},
   "filters": "المرشحات",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "سلسلة",
   "@thread": {},
+  "threaded_replies": "الردود المتفرعة",
+  "threaded_replies_description": "عرض الردود تحت المنشور المفتوح كشجرة متدرجة، مع تداخل كل رد تحت الرد الذي يجيب عنه.",
   "thumbnail": "الصورة المصغرة",
   "@thumbnail": {},
   "timed_out": "انتهت المهلة",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }

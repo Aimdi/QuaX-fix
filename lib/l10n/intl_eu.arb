@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "Zure jarioak jarraitutako ez diren pertsonen argitalpenak ditu dirudienez",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "Jario guztien lehenetsia. Jario bakoitzak banaka gainidatz dezake.",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "Jarioko arazoa hauteman da",
   "@feed_issue_detected": {},
   "filters": "Filtroak",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "Haria",
   "@thread": {},
+  "threaded_replies": "Erantzun kateatuak",
+  "threaded_replies_description": "Erakutsi irekitako argitalpen baten erantzunak koska duen zuhaitz gisa, erantzun bakoitza erantzuten dionaren azpian kateatuta.",
   "thumbnail": "Miniatura",
   "@thumbnail": {},
   "timed_out": "Denbora agortuta",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zenbat orrialde kargatzen dituen jarioak zen moduan gelditu aurretik.",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }

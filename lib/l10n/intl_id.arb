@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "Feed Anda tampaknya berisi postingan dari orang yang tidak Anda ikuti",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "Default untuk semua beranda. Setiap beranda tetap bisa menggantinya secara individual.",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "Masalah feed terdeteksi",
   "@feed_issue_detected": {},
   "filters": "Filter",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "Utas",
   "@thread": {},
+  "threaded_replies": "Balasan berutas",
+  "threaded_replies_description": "Tampilkan balasan di bawah postingan yang dibuka sebagai pohon berindentasi, tiap balasan bersarang di bawah yang dijawabnya.",
   "thumbnail": "Keluku",
   "@thumbnail": {},
   "timed_out": "Waktu habis",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }

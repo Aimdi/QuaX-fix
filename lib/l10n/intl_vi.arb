@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "Trang chủ của bạn có lẽ toàn bài viết của người lạ.\n\nĐây là sự cố đã biết từ X.\n\nĐể xử lý, vui lòng đăng nhập vào tài khoản khác.",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "Giá trị mặc định cho mọi bảng tin. Mỗi bảng tin vẫn có thể ghi đè riêng.",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "Đã phát hiện sự cố trang chủ",
   "@feed_issue_detected": {},
   "filters": "Bộ lọc",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "Chuỗi",
   "@thread": {},
+  "threaded_replies": "Trả lời phân luồng",
+  "threaded_replies_description": "Hiển thị các trả lời dưới bài đăng đang mở dưới dạng cây thụt lề, mỗi trả lời lồng dưới bài mà nó trả lời.",
   "thumbnail": "Cực nhỏ",
   "@thumbnail": {},
   "timed_out": "Hết thời gian",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Số trang bảng tin tải ở chế độ zen trước khi tạm dừng.",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }

@@ -247,6 +247,7 @@ Future<void> main() async {
     optionFeedReadingPosition: false,
     optionGlobalIncludeReplies: true,
     optionGlobalIncludeRetweets: true,
+    optionThreadedReplies: true,
     optionMediaGridLayout: mediaGridLayoutMasonry,
     optionShouldCheckForUpdates: true,
     optionSubscriptionGroupsOrderByAscending: true,

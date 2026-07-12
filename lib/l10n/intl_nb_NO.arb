@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "Feeden din ser ut til å inneholde innlegg fra folk du ikke følger",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "Standarden for alle feeder. Hver feed kan fortsatt overstyre den individuelt.",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "Feedproblem oppdaget",
   "@feed_issue_detected": {},
   "filters": "Filtre",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "Tråd",
   "@thread": {},
+  "threaded_replies": "Trådede svar",
+  "threaded_replies_description": "Vis svar under et åpnet innlegg som et innrykket tre, der hvert svar ligger nøstet under det det svarer på.",
   "thumbnail": "Miniatyrbilde",
   "@thumbnail": {},
   "timed_out": "Tidsavbrudd",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hvor mange sider en feed laster i zen-modus før den tar en pause.",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }

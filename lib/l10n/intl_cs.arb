@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "Váš kanál zřejmě obsahuje příspěvky od lidí, které nesledujete",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "Výchozí nastavení pro všechny kanály. Každý kanál jej může individuálně přepsat.",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "Zjištěn problém s kanálem",
   "@feed_issue_detected": {},
   "filters": "Filtry",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "Vlákno",
   "@thread": {},
+  "threaded_replies": "Vnořené odpovědi",
+  "threaded_replies_description": "Zobrazovat odpovědi u otevřeného příspěvku jako odsazený strom, kde je každá odpověď vnořena pod tu, na kterou reaguje.",
   "thumbnail": "Náhled",
   "@thumbnail": {},
   "timed_out": "Vypršel čas",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolik stránek kanál v zen režimu načte, než se pozastaví.",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }

@@ -54,6 +54,11 @@ class SettingsPostsFragment extends StatelessWidget {
             pref: optionGlobalIncludeRetweets,
           ),
           PrefSwitch(
+            title: Text(L10n.of(context).threaded_replies),
+            subtitle: Text(L10n.of(context).threaded_replies_description),
+            pref: optionThreadedReplies,
+          ),
+          PrefSwitch(
             title: Text(L10n.of(context).zen_mode),
             subtitle: Text(L10n.of(context).zen_mode_description),
             pref: optionZenMode,

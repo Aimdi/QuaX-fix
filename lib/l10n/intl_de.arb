@@ -208,6 +208,7 @@
   "feed_contains_unrelated_tweets": "Der Feed enthält nicht verwandte Beiträge",
   "@feed_contains_unrelated_tweets": {},
   "feed_default_filter_description": "Die Vorgabe für alle Feeds. Jeder Feed kann sie einzeln überschreiben.",
+  "@feed_default_filter_description": {},
   "feed_issue_detected": "Feed-Problem erkannt",
   "@feed_issue_detected": {},
   "filters": "Filter",
@@ -590,6 +591,8 @@
   "@this_user_does_not_have_anyone_following_them": {},
   "thread": "Diskussionsfaden",
   "@thread": {},
+  "threaded_replies": "Verschachtelte Antworten",
+  "threaded_replies_description": "Antworten unter einem geöffneten Beitrag als eingerückten Baum anzeigen, jede Antwort verschachtelt unter der, auf die sie antwortet.",
   "thumbnail": "Vorschaubild",
   "@thumbnail": {},
   "timed_out": "Zeit abgelaufen",
@@ -726,5 +729,6 @@
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Wie viele Seiten ein Feed im Zen-Modus lädt, bevor er pausiert.",
   "@zen_mode_page_cap_description": {},
-  "@feed_default_filter_description": {}
+  "@threaded_replies": {},
+  "@threaded_replies_description": {}
 }
