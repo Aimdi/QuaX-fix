@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollDirection;
 
 import 'package:quax/client/client.dart';
 import 'package:quax/constants.dart';
@@ -82,6 +83,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   FeedReadPosition? _lastSeen;
   bool _readPositionLoadStarted = false;
   bool _caughtUpRestoreEvaluated = false;
+  bool _userHasScrolled = false;
   String? _lastRecordedChainId;
   final GlobalKey _caughtUpKey = GlobalKey();
 
@@ -149,6 +151,11 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   }
 
   bool _onScrollNotification(ScrollNotification notification) {
+    // Any user-driven scroll cancels an in-flight caught-up restore, so it
+    // never yanks the list out from under the reader.
+    if (notification is UserScrollNotification && notification.direction != ScrollDirection.idle) {
+      _userHasScrolled = true;
+    }
     if (notification is! ScrollEndNotification) {
       return false;
     }
@@ -166,11 +173,21 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     return false;
   }
 
-  bool get _atTop {
+  // The single attached scroll position, or null when the controller has none
+  // or — inside a NestedScrollView during reload/tab transitions — more than
+  // one. Reading `controller.position` with several attached asserts and would
+  // crash, so every position access goes through here.
+  ScrollPosition? get _scrollPosition {
     final controller = _innerScrollController;
-    return controller == null ||
-        !controller.hasClients ||
-        controller.position.pixels <= feedReadPositionTopThresholdPx;
+    if (controller == null || controller.positions.length != 1) {
+      return null;
+    }
+    return controller.positions.first;
+  }
+
+  bool get _atTop {
+    final position = _scrollPosition;
+    return position == null || position.pixels <= feedReadPositionTopThresholdPx;
   }
 
   void _recordReadPosition(List<TweetChain> threads) {
@@ -179,7 +196,9 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       return;
     }
     _lastRecordedChainId = newest.id;
-    writeFeedReadPosition(widget.group.id, newest);
+    // Fire-and-forget: a failed position save must never surface as an
+    // unhandled async error.
+    writeFeedReadPosition(widget.group.id, newest).catchError((_) {});
   }
 
   // Called with each finalized first page. The first one decides between
@@ -201,16 +220,20 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     }
   }
 
-  // Lazy list: the divider only gets built once its offset is laid out. Jump
-  // to a proportional estimate first, then sweep a viewport per frame until
-  // the divider's key resolves, and align it just under the app bar. Bounded
-  // by maxCaughtUpRestoreFrames so a miss degrades to "near the estimate".
+  // Restore near the last-read chain once its row is laid out. Waits (bounded)
+  // for the divider's key to resolve, then brings it just under the app bar in
+  // a single scroll. If it never builds within the frame budget it does one
+  // proportional jump and stops — deliberately gentle, so it never jump-fights
+  // the user's own scrolling and never touches a multi-position controller.
   void _scheduleCaughtUpRestore(int index, int itemCount, [int attempts = 0]) {
+    if (_userHasScrolled) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || attempts >= maxCaughtUpRestoreFrames) return;
-      final controller = _innerScrollController;
+      if (!mounted || _userHasScrolled || attempts >= maxCaughtUpRestoreFrames) {
+        return;
+      }
+      final position = _scrollPosition;
       // Wait until the real list (not the preview) is mounted and laid out.
-      if (controller == null || !controller.hasClients || !controller.position.haveDimensions || !_feedController.hasItems) {
+      if (position == null || !position.haveDimensions || !_feedController.hasItems) {
         _scheduleCaughtUpRestore(index, itemCount, attempts + 1);
         return;
       }
@@ -219,12 +242,14 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
         Scrollable.ensureVisible(divider, alignment: 0.02);
         return;
       }
-      final position = controller.position;
+      // Divider not built yet: keep waiting a few frames, then settle for a
+      // one-shot proportional estimate rather than jumping every frame.
+      if (attempts + 1 < maxCaughtUpRestoreFrames) {
+        _scheduleCaughtUpRestore(index, itemCount, attempts + 1);
+        return;
+      }
       final estimated = (position.maxScrollExtent * index / itemCount).clamp(0.0, position.maxScrollExtent);
-      final sweep =
-          attempts == 0 ? 0.0 : (attempts.isOdd ? -1.0 : 1.0) * ((attempts + 1) ~/ 2) * position.viewportDimension;
-      controller.jumpTo((estimated + sweep).clamp(0.0, position.maxScrollExtent));
-      _scheduleCaughtUpRestore(index, itemCount, attempts + 1);
+      position.jumpTo(estimated);
     });
   }
 
@@ -243,12 +268,12 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   void _scheduleRestore(double offset) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      final c = _innerScrollController;
-      if (c == null || !c.hasClients || !c.position.haveDimensions) {
+      final position = _scrollPosition;
+      if (position == null || !position.haveDimensions) {
         _scheduleRestore(offset);
         return;
       }
-      c.jumpTo(offset.clamp(0.0, c.position.maxScrollExtent));
+      position.jumpTo(offset.clamp(0.0, position.maxScrollExtent));
     });
   }
 
