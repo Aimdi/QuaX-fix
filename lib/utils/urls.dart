@@ -72,6 +72,10 @@ class ProfileUriInfo extends UriParseResult {
 ProfileUriInfo? _parseAsProfileLink(List<String> parts) {
   if (parts.isEmpty) return null;
 
+  // "i" is X's reserved path segment (/i/lists/…, /i/topics/…), never a
+  // screen name — without this guard those links parse as a profile "i".
+  if (parts.first == 'i') return null;
+
   // https://x.com/DogsTrust
   if (parts.length == 1) {
     return ProfileUriInfo(parts.first, null);
@@ -94,6 +98,34 @@ ProfileUriInfo? _parseAsProfileLink(List<String> parts) {
 
   // The URI is not an account link
   return null;
+}
+
+class ListUriInfo extends UriParseResult {
+  final String id;
+
+  ListUriInfo(this.id);
+}
+
+ListUriInfo? _parseAsListLink(List<String> parts) {
+  // https://x.com/i/lists/1234567890123456789
+  if (parts.length == 3 && parts[0] == 'i' && parts[1] == 'lists' && RegExp(r'^\d+$').hasMatch(parts[2])) {
+    return ListUriInfo(parts[2]);
+  }
+  return null;
+}
+
+/// Extracts an X list id from user input: either a bare numeric id or a
+/// list URL. Returns null when the input is neither.
+String? extractListId(String input) {
+  final trimmed = input.trim();
+  if (RegExp(r'^\d+$').hasMatch(trimmed)) {
+    return trimmed;
+  }
+  final uri = Uri.tryParse(trimmed);
+  if (uri == null) {
+    return null;
+  }
+  return _parseAsListLink(uri.pathSegments.where((e) => e.isNotEmpty).toList())?.id;
 }
 
 class PostUriInfo extends UriParseResult {
@@ -159,6 +191,10 @@ Future<UriParseResult> parseUri(Uri link) async {
   link = link.replace(path: link.path.replaceAll(RegExp(r'/$'), ''));
   final parts = link.pathSegments;
 
+  final listInfo = _parseAsListLink(parts);
+  if (listInfo != null) {
+    return listInfo;
+  }
   final profileInfo = _parseAsProfileLink(parts);
   if (profileInfo != null) {
     return profileInfo;
