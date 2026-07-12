@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "لم تُعجب بأي منشور بعد!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "لا توجد منشورات مطابقة لبحثك",
   "no_results": "لا نتائج",
   "@no_results": {},
   "no_results_for": "لا توجد نتائج لـ:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "البحث",
   "@search": {},
+  "search_saved_posts": "البحث في المنشورات المحفوظة",
   "search_term": "مصطلح البحث",
   "@search_term": {},
   "select": "اختيار",
@@ -692,11 +694,13 @@
   "zen_mode_description": "موجز أهدأ: يخفي إحصاءات المنشورات، ويخفي الردود حتى تضغط مطولًا على زر التعليقات، ويعرض فقط بضعة منشورات حديثة لكل شخص.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "هذا كل شيء حتى الآن",
-  "zen_mode_load_more": "تحميل المزيد على أي حال",
-  "zen_mode_page_cap": "طول الخلاصة في وضع الهدوء",
-  "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "تحميل المزيد على أي حال",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "طول الخلاصة في وضع الهدوء",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

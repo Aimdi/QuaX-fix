@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "您还没有喜欢任何帖子！",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "没有与搜索匹配的帖子",
   "no_results": "没有结果",
   "@no_results": {},
   "no_results_for": "搜索词无结果：",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "搜索",
   "@search": {},
+  "search_saved_posts": "搜索已保存的帖子",
   "search_term": "搜索词",
   "@search_term": {},
   "select": "选择",
@@ -692,11 +694,13 @@
   "zen_mode_description": "更安静的信息流：隐藏帖子统计数据，长按评论按钮前隐藏回复，每人只显示几条最新帖子。",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "暂时就这些了",
-  "zen_mode_load_more": "仍然加载更多",
-  "zen_mode_page_cap": "禅模式信息流长度",
-  "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "仍然加载更多",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "禅模式信息流长度",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

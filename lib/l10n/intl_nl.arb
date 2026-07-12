@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Je hebt nog geen berichten geliket!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Geen berichten komen overeen met je zoekopdracht",
   "no_results": "Geen resultaten",
   "@no_results": {},
   "no_results_for": "Geen resultaten voor:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Zoeken",
   "@search": {},
+  "search_saved_posts": "Zoeken in opgeslagen berichten",
   "search_term": "Zoekterm",
   "@search_term": {},
   "select": "Selecteer",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Een rustigere feed: verbergt statistieken, verbergt reacties totdat je de reactieknop ingedrukt houdt en toont slechts enkele recente berichten per persoon.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Dat is alles voor nu",
-  "zen_mode_load_more": "Toch meer laden",
-  "zen_mode_page_cap": "Feedlengte in zen-modus",
-  "zen_mode_page_cap_description": "Hoeveel pagina's een feed in zen-modus laadt voordat deze pauzeert.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Toch meer laden",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Feedlengte in zen-modus",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Hoeveel pagina's een feed in zen-modus laadt voordat deze pauzeert.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

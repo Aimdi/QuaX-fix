@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Sa pole veel ühtegi postitust meeldivaks märkinud!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Ükski postitus ei vasta otsingule",
   "no_results": "Tulemusi pole",
   "@no_results": {},
   "no_results_for": "Otsingutulemused puuduvad:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Otsi",
   "@search": {},
+  "search_saved_posts": "Otsi salvestatud postitustest",
   "search_term": "Otsingusõna",
   "@search_term": {},
   "select": "Vali",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Rahulikum voog: peidab postituste statistika, peidab vastused, kuni hoiad kommentaarinuppu all, ja näitab igalt inimeselt vaid mõnda hiljutist postitust.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Praegu on see kõik",
-  "zen_mode_load_more": "Laadi ikkagi rohkem",
-  "zen_mode_page_cap": "Voo pikkus Zen-režiimis",
-  "zen_mode_page_cap_description": "Mitu lehte voog Zen-režiimis enne pausi laadib.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Laadi ikkagi rohkem",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Voo pikkus Zen-režiimis",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Mitu lehte voog Zen-režiimis enne pausi laadib.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

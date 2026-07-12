@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Nu ați apreciat încă nicio postare!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Nicio postare nu corespunde căutării tale",
   "no_results": "Niciun rezultat",
   "@no_results": {},
   "no_results_for": "Niciun rezultat pentru:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Căutare",
   "@search": {},
+  "search_saved_posts": "Caută în postările salvate",
   "search_term": "Termen de căutare",
   "@search_term": {},
   "select": "Selectați",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Un flux mai calm: ascunde statisticile, ascunde răspunsurile până ții apăsat butonul de comentarii și arată doar câteva postări recente de persoană.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Asta e tot deocamdată",
-  "zen_mode_load_more": "Încarcă mai mult oricum",
-  "zen_mode_page_cap": "Lungimea fluxului în modul zen",
-  "zen_mode_page_cap_description": "Câte pagini încarcă fluxul în modul zen înainte de a se opri.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Încarcă mai mult oricum",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Lungimea fluxului în modul zen",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Câte pagini încarcă fluxul în modul zen înainte de a se opri.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

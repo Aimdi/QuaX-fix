@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Anda belum menyukai postingan apa pun!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Tidak ada postingan yang cocok dengan pencarian Anda",
   "no_results": "Tidak ada hasil",
   "@no_results": {},
   "no_results_for": "Tidak ada hasil untuk:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Cari",
   "@search": {},
+  "search_saved_posts": "Cari di postingan tersimpan",
   "search_term": "Kata pencarian",
   "@search_term": {},
   "select": "Pilih",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Feed yang lebih tenang: menyembunyikan statistik postingan, menyembunyikan balasan sampai Anda menahan tombol komentar, dan hanya menampilkan beberapa postingan terbaru per orang.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Itu saja untuk saat ini",
-  "zen_mode_load_more": "Tetap muat lebih banyak",
-  "zen_mode_page_cap": "Panjang beranda di mode zen",
-  "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Tetap muat lebih banyak",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Panjang beranda di mode zen",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

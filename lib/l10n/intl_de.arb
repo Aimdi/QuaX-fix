@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Du hast noch keine Beiträge mit „Gefällt mir“ markiert!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Keine Beiträge entsprechen deiner Suche",
   "no_results": "Keine Ergebnisse",
   "@no_results": {},
   "no_results_for": "Keine Ergebnisse für:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Suche",
   "@search": {},
+  "search_saved_posts": "Gespeicherte Beiträge durchsuchen",
   "search_term": "Suchbegriff",
   "@search_term": {},
   "select": "Auswählen",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Ein ruhigerer Feed: blendet Beitragsstatistiken aus, verbirgt Antworten, bis du die Kommentar-Schaltfläche gedrückt hältst, und zeigt nur wenige aktuelle Beiträge pro Person.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Das ist erstmal alles",
-  "zen_mode_load_more": "Trotzdem mehr laden",
-  "zen_mode_page_cap": "Feed-Länge im Zen-Modus",
-  "zen_mode_page_cap_description": "Wie viele Seiten ein Feed im Zen-Modus lädt, bevor er pausiert.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Trotzdem mehr laden",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Feed-Länge im Zen-Modus",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Wie viele Seiten ein Feed im Zen-Modus lädt, bevor er pausiert.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

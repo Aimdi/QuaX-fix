@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Vy jašče nie ŭpadabali nivodnaha posta!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Niama pastoŭ, jakija adpaviadajuć vašamu zapytu",
   "no_results": "Niama vyniku",
   "@no_results": {},
   "no_results_for": "Niama vynikikaŭ dlia:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Pošuk",
   "@search": {},
+  "search_saved_posts": "Pošuk u zachavanych pastach",
   "search_term": "Pošukavyja termin",
   "@search_term": {},
   "select": "Vybrać",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Spakajniejšaja stužka: chavaje statystyku pastoŭ, chavaje adkazy, pakul vy nie ŭtrymajecie knopku kamientaryjaŭ, i pakazvaje tolki niekalki niadaŭnich pastoŭ ad kožnaha.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Pakul heta ŭsio",
-  "zen_mode_load_more": "Usio roŭna zahruzić jašče",
-  "zen_mode_page_cap": "Daŭžynia stužki ŭ dzen-režymie",
-  "zen_mode_page_cap_description": "Kolki staronak zahružaje stužka ŭ dzen-režymie pierad paŭzaj.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Usio roŭna zahruzić jašče",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Daŭžynia stužki ŭ dzen-režymie",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Kolki staronak zahružaje stužka ŭ dzen-režymie pierad paŭzaj.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

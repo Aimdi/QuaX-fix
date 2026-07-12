@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "¡Todavía no le has dado me gusta a ninguna publicación!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Ninguna publicación coincide con tu búsqueda",
   "no_results": "No hay resultados",
   "@no_results": {},
   "no_results_for": "Sin resultados para:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Buscar",
   "@search": {},
+  "search_saved_posts": "Buscar en las publicaciones guardadas",
   "search_term": "Término de búsqueda",
   "@search_term": {},
   "select": "Seleccionar",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Un feed más tranquilo: oculta las estadísticas, oculta las respuestas hasta que mantengas pulsado el botón de comentarios y muestra solo unas pocas publicaciones recientes por persona.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Eso es todo por ahora",
-  "zen_mode_load_more": "Cargar más de todos modos",
-  "zen_mode_page_cap": "Longitud del feed en modo zen",
-  "zen_mode_page_cap_description": "Cuántas páginas carga el feed en modo zen antes de hacer una pausa.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Cargar más de todos modos",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Longitud del feed en modo zen",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Cuántas páginas carga el feed en modo zen antes de hacer una pausa.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

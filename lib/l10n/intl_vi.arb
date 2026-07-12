@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Bạn chưa thích bài viết nào cả!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Không có bài đăng nào khớp với tìm kiếm của bạn",
   "no_results": "Không có kết quả",
   "@no_results": {},
   "no_results_for": "Không có kết quả cho:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Tìm kiếm",
   "@search": {},
+  "search_saved_posts": "Tìm trong bài đăng đã lưu",
   "search_term": "Lọc tìm kiếm",
   "@search_term": {},
   "select": "Chọn",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Bảng tin yên tĩnh hơn: ẩn số liệu bài đăng, ẩn trả lời cho đến khi bạn giữ nút bình luận, và chỉ hiển thị vài bài đăng gần đây của mỗi người.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Tạm thời chỉ có vậy",
-  "zen_mode_load_more": "Vẫn tải thêm",
-  "zen_mode_page_cap": "Độ dài bảng tin ở chế độ zen",
-  "zen_mode_page_cap_description": "Số trang bảng tin tải ở chế độ zen trước khi tạm dừng.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Vẫn tải thêm",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Độ dài bảng tin ở chế độ zen",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Số trang bảng tin tải ở chế độ zen trước khi tạm dừng.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

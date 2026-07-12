@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Henüz hiçbir gönderiyi beğenmediniz!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Aramanızla eşleşen gönderi yok",
   "no_results": "Sonuç yok",
   "@no_results": {},
   "no_results_for": "Sonuç bulunamadı:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Ara",
   "@search": {},
+  "search_saved_posts": "Kaydedilen gönderilerde ara",
   "search_term": "Arama terimi",
   "@search_term": {},
   "select": "Seç",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Daha sakin bir akış: gönderi istatistiklerini gizler, yorum düğmesini basılı tutana kadar yanıtları gizler ve kişi başına yalnızca birkaç güncel gönderi gösterir.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Şimdilik hepsi bu",
-  "zen_mode_load_more": "Yine de daha fazla yükle",
-  "zen_mode_page_cap": "Zen modunda akış uzunluğu",
-  "zen_mode_page_cap_description": "Zen modunda akışın duraklamadan önce kaç sayfa yükleyeceği.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Yine de daha fazla yükle",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Zen modunda akış uzunluğu",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Zen modunda akışın duraklamadan önce kaç sayfa yükleyeceği.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

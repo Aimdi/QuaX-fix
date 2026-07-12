@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "まだ投稿にいいねしていません！",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "検索に一致する投稿はありません",
   "no_results": "結果なし",
   "@no_results": {},
   "no_results_for": "結果なし:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "検索",
   "@search": {},
+  "search_saved_posts": "保存済みの投稿を検索",
   "search_term": "Search term",
   "@search_term": {},
   "select": "選択",
@@ -692,11 +694,13 @@
   "zen_mode_description": "より穏やかなフィード：投稿の統計を隠し、コメントボタンを長押しするまで返信を隠し、各ユーザーの最近の投稿を数件だけ表示します。",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "今はここまでです",
-  "zen_mode_load_more": "それでももっと読み込む",
-  "zen_mode_page_cap": "禅モードのフィードの長さ",
-  "zen_mode_page_cap_description": "禅モードでフィードが一時停止するまでに読み込むページ数。",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "それでももっと読み込む",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "禅モードのフィードの長さ",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "禅モードでフィードが一時停止するまでに読み込むページ数。",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Zatím jste nelajkovali žádný příspěvek!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Vašemu hledání neodpovídají žádné příspěvky",
   "no_results": "Žádné výsledky",
   "@no_results": {},
   "no_results_for": "Žádné výsledky pro:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Hledat",
   "@search": {},
+  "search_saved_posts": "Hledat v uložených příspěvcích",
   "search_term": "Hledaný výraz",
   "@search_term": {},
   "select": "Vybrat",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Klidnější kanál: skryje statistiky příspěvků, skryje odpovědi, dokud nepodržíte tlačítko komentářů, a zobrazí jen několik nedávných příspěvků od každého.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "To je prozatím vše",
-  "zen_mode_load_more": "Přesto načíst další",
-  "zen_mode_page_cap": "Délka kanálu v zen režimu",
-  "zen_mode_page_cap_description": "Kolik stránek kanál v zen režimu načte, než se pozastaví.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Přesto načíst další",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Délka kanálu v zen režimu",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Kolik stránek kanál v zen režimu načte, než se pozastaví.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

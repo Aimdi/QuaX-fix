@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "아직 좋아요를 누른 게시물이 없습니다!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "검색과 일치하는 게시물이 없습니다",
   "no_results": "결과 없음",
   "@no_results": {},
   "no_results_for": "검색 결과 없음:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "검색",
   "@search": {},
+  "search_saved_posts": "저장된 게시물 검색",
   "search_term": "검색어",
   "@search_term": {},
   "select": "선택",
@@ -692,11 +694,13 @@
   "zen_mode_description": "더 차분한 피드: 게시물 통계를 숨기고, 댓글 버튼을 길게 누를 때까지 답글을 숨기며, 사람마다 최근 게시물 몇 개만 표시합니다.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "지금은 여기까지입니다",
-  "zen_mode_load_more": "그래도 더 불러오기",
-  "zen_mode_page_cap": "젠 모드 피드 길이",
-  "zen_mode_page_cap_description": "젠 모드에서 피드가 일시 중지되기 전에 불러올 페이지 수입니다.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "그래도 더 불러오기",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "젠 모드 피드 길이",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "젠 모드에서 피드가 일시 중지되기 전에 불러올 페이지 수입니다.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

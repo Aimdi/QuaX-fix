@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Вы яшчэ не ўпадабалі ніводнага паста!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Няма пастоў, якія адпавядаюць вашаму запыту",
   "no_results": "Нічога не знойдзена",
   "@no_results": {},
   "no_results_for": "Вынікі адсутнічаюць:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Пошук",
   "@search": {},
+  "search_saved_posts": "Пошук у захаваных пастах",
   "search_term": "Пошукавы запыт",
   "@search_term": {},
   "select": "Выбраць",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Спакайнейшая стужка: хавае статыстыку пастоў, хавае адказы, пакуль вы не ўтрымаеце кнопку каментарыяў, і паказвае толькі некалькі нядаўніх пастоў ад кожнага.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Пакуль гэта ўсё",
-  "zen_mode_load_more": "Усё роўна загрузіць яшчэ",
-  "zen_mode_page_cap": "Даўжыня стужкі ў дзэн-рэжыме",
-  "zen_mode_page_cap_description": "Колькі старонак загружае стужка ў дзэн-рэжыме перад паўзай.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Усё роўна загрузіць яшчэ",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Даўжыня стужкі ў дзэн-рэжыме",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Колькі старонак загружае стужка ў дзэн-рэжыме перад паўзай.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

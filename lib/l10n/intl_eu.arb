@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Oraindik ez duzu argitalpenik gogoko egin!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Ez dago zure bilaketarekin bat datorren argitalpenik",
   "no_results": "Ez dago emaitzarik",
   "@no_results": {},
   "no_results_for": "Ez dago emaitzarik:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Bilatu",
   "@search": {},
+  "search_saved_posts": "Bilatu gordetako argitalpenetan",
   "search_term": "Bilatu",
   "@search_term": {},
   "select": "Hautatu",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Jario lasaiagoa: estatistikak ezkutatzen ditu, erantzunak ezkutatzen ditu iruzkinen botoia sakatuta eduki arte, eta pertsona bakoitzeko azken argitalpen gutxi batzuk soilik erakusten ditu.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Hori da dena oraingoz",
-  "zen_mode_load_more": "Kargatu gehiago hala ere",
-  "zen_mode_page_cap": "Jarioaren luzera zen moduan",
-  "zen_mode_page_cap_description": "Zenbat orrialde kargatzen dituen jarioak zen moduan gelditu aurretik.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Kargatu gehiago hala ere",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Jarioaren luzera zen moduan",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Zenbat orrialde kargatzen dituen jarioak zen moduan gelditu aurretik.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

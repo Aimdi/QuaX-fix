@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Вы ещё не поставили лайк ни одной записи!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Нет постов, соответствующих вашему запросу",
   "no_results": "Ничего не найдено",
   "@no_results": {},
   "no_results_for": "Результаты отсутствуют:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Поиск",
   "@search": {},
+  "search_saved_posts": "Поиск по сохранённым постам",
   "search_term": "Поисковый запрос",
   "@search_term": {},
   "select": "Выбрать",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Более спокойная лента: скрывает статистику постов, скрывает ответы, пока вы не удержите кнопку комментариев, и показывает лишь несколько недавних постов от каждого.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Пока это всё",
-  "zen_mode_load_more": "Всё равно загрузить ещё",
-  "zen_mode_page_cap": "Длина ленты в дзен-режиме",
-  "zen_mode_page_cap_description": "Сколько страниц загружает лента в дзен-режиме перед паузой.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Всё равно загрузить ещё",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Длина ленты в дзен-режиме",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Сколько страниц загружает лента в дзен-режиме перед паузой.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

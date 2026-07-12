@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "您還沒有喜歡任何貼文！",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "沒有符合搜尋的貼文",
   "no_results": "沒有結果",
   "@no_results": {},
   "no_results_for": "沒有關於此的結果：",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "搜尋",
   "@search": {},
+  "search_saved_posts": "搜尋已儲存的貼文",
   "search_term": "搜尋字詞",
   "@search_term": {},
   "select": "選取",
@@ -692,11 +694,13 @@
   "zen_mode_description": "更平靜的動態：隱藏貼文統計數據，長按留言按鈕前隱藏回覆，每人只顯示幾則最新貼文。",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "目前就這些了",
-  "zen_mode_load_more": "仍要載入更多",
-  "zen_mode_page_cap": "禪模式時間軸長度",
-  "zen_mode_page_cap_description": "禪模式下時間軸暫停前載入的頁數。",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "仍要載入更多",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "禪模式時間軸長度",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "禪模式下時間軸暫停前載入的頁數。",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

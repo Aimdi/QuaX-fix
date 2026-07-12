@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "आपने अभी तक किसी पोस्ट को लाइक नहीं किया है!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "आपकी खोज से मेल खाती कोई पोस्ट नहीं है",
   "no_results": "कोई परिणाम नहीं",
   "@no_results": {},
   "no_results_for": "कोई परिणाम नहीं:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "खोजें",
   "@search": {},
+  "search_saved_posts": "सहेजी गई पोस्ट में खोजें",
   "search_term": "खोज शब्द",
   "@search_term": {},
   "select": "चुनें",
@@ -692,11 +694,13 @@
   "zen_mode_description": "एक शांत फ़ीड: पोस्ट के आँकड़े छिपाता है, टिप्पणी बटन दबाकर रखने तक जवाब छिपाता है, और प्रति व्यक्ति केवल कुछ हालिया पोस्ट दिखाता है।",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "अभी के लिए बस इतना ही",
-  "zen_mode_load_more": "फिर भी और लोड करें",
-  "zen_mode_page_cap": "ज़ेन मोड में फ़ीड की लंबाई",
-  "zen_mode_page_cap_description": "ज़ेन मोड में रुकने से पहले फ़ीड कितने पेज लोड करेगी।",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "फिर भी और लोड करें",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "ज़ेन मोड में फ़ीड की लंबाई",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "ज़ेन मोड में रुकने से पहले फ़ीड कितने पेज लोड करेगी।",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

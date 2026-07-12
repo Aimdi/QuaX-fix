@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Vous n'avez encore aimé aucune publication !",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Aucune publication ne correspond à votre recherche",
   "no_results": "Aucun résultat",
   "@no_results": {},
   "no_results_for": "Aucun résultat pour :",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Rechercher",
   "@search": {},
+  "search_saved_posts": "Rechercher dans les publications enregistrées",
   "search_term": "Terme de recherche",
   "@search_term": {},
   "select": "Sélectionner",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Un fil plus apaisé : masque les statistiques, masque les réponses jusqu'à ce que vous mainteniez le bouton des commentaires, et ne montre que quelques publications récentes par personne.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "C'est tout pour le moment",
-  "zen_mode_load_more": "Charger plus quand même",
-  "zen_mode_page_cap": "Longueur du fil en mode zen",
-  "zen_mode_page_cap_description": "Nombre de pages chargées par le fil en mode zen avant de faire une pause.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Charger plus quand même",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Longueur du fil en mode zen",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Nombre de pages chargées par le fil en mode zen avant de faire une pause.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

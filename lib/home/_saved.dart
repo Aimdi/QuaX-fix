@@ -37,6 +37,8 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
   // Selected folder filter: savedTabAll, savedTabUnfiled, or a folder id.
   String _filter = savedTabAll;
   bool _mediaOnly = false;
+  bool _searching = false;
+  String _query = '';
 
   @override
   bool get wantKeepAlive => true;
@@ -85,13 +87,60 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: constraints.maxHeight),
           child: Center(
-            child: Text(switch (_filter) {
-              savedTabAll => L10n.of(context).you_have_not_saved_any_tweets_yet,
-              savedTabFavorites => L10n.of(context).no_liked_posts_yet,
-              _ => L10n.of(context).folder_is_empty,
-            }),
+            child: Text(_query.isNotEmpty
+                ? L10n.of(context).no_posts_match_your_search
+                : switch (_filter) {
+                    savedTabAll => L10n.of(context).you_have_not_saved_any_tweets_yet,
+                    savedTabFavorites => L10n.of(context).no_liked_posts_yet,
+                    _ => L10n.of(context).folder_is_empty,
+                  }),
           ),
         ),
+      ),
+    );
+  }
+
+  /// Case-insensitive match of a stored tweet's JSON against the search query:
+  /// post text (including long-post note text) plus author name and handle.
+  bool _matchesQuery(String? content) {
+    if (content == null) {
+      return false;
+    }
+    final needle = _query.toLowerCase();
+    try {
+      final json = jsonDecode(content);
+      final haystacks = [
+        json['full_text'] as String?,
+        json['text'] as String?,
+        json['noteText'] as String?,
+        json['user']?['name'] as String?,
+        json['user']?['screen_name'] as String?,
+      ];
+      return haystacks.any((h) => h != null && h.toLowerCase().contains(needle));
+    } catch (_) {
+      return false;
+    }
+  }
+
+  List<T> _applySearch<T>(List<T> items, String? Function(T) contentOf) {
+    if (_query.isEmpty) {
+      return items;
+    }
+    return items.where((e) => _matchesQuery(contentOf(e))).toList();
+  }
+
+  Widget _buildSearchField() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: TextField(
+        autofocus: true,
+        decoration: InputDecoration(
+          hintText: L10n.of(context).search_saved_posts,
+          prefixIcon: const Icon(Icons.search),
+          isDense: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+        ),
+        onChanged: (value) => setState(() => _query = value.trim()),
       ),
     );
   }
@@ -292,7 +341,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
       ),
       onLoading: (_) => const Center(child: CircularProgressIndicator()),
       onState: (_, data) {
-        var filtered = _applyFilter(data);
+        var filtered = _applySearch(_applyFilter(data), (SavedTweet e) => e.content);
 
         if (_mediaOnly && filtered.isNotEmpty) {
           return _buildMediaGrid(filtered.map((e) => e.content));
@@ -323,17 +372,19 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
       ),
       onLoading: (_) => const Center(child: CircularProgressIndicator()),
       onState: (_, data) {
-        if (_mediaOnly && data.isNotEmpty) {
-          return _buildMediaGrid(data.map((e) => e.content));
+        var filtered = _applySearch(data, (LikedTweet e) => e.content);
+
+        if (_mediaOnly && filtered.isNotEmpty) {
+          return _buildMediaGrid(filtered.map((e) => e.content));
         }
 
         return RefreshIndicator(
           onRefresh: _refresh,
-          child: data.isEmpty
+          child: filtered.isEmpty
               ? _buildEmptyState()
               : _buildList(
-                  itemCount: data.length,
-                  tileAt: (i) => SavedTweetTile(id: data[i].id, content: data[i].content)),
+                  itemCount: filtered.length,
+                  tileAt: (i) => SavedTweetTile(id: filtered[i].id, content: filtered[i].content)),
         );
       },
     );
@@ -357,6 +408,17 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
               floating: true,
               title: Text(L10n.current.saved),
               actions: [
+                IconButton(
+                  isSelected: _searching,
+                  icon: const Icon(Icons.search),
+                  tooltip: L10n.current.search_saved_posts,
+                  onPressed: () => setState(() {
+                    _searching = !_searching;
+                    if (!_searching) {
+                      _query = '';
+                    }
+                  }),
+                ),
                 IconButton(
                   isSelected: _mediaOnly,
                   icon: const Icon(Icons.photo_library_outlined),
@@ -399,6 +461,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
         child: Column(
           children: [
             _buildFolderStrip(),
+            if (_searching) _buildSearchField(),
             Expanded(
               child: _filter == savedTabFavorites ? _buildFavoritesBody() : _buildSavedBody(model),
             ),

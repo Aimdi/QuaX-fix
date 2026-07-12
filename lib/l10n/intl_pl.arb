@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Nie polubiłeś(-aś) jeszcze żadnego wpisu!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Żadne wpisy nie pasują do wyszukiwania",
   "no_results": "Brak wyników",
   "@no_results": {},
   "no_results_for": "Brak wyników dla:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Szukaj",
   "@search": {},
+  "search_saved_posts": "Szukaj w zapisanych wpisach",
   "search_term": "Fraza wyszukiwania",
   "@search_term": {},
   "select": "Wybierz",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Spokojniejszy kanał: ukrywa statystyki wpisów, ukrywa odpowiedzi, dopóki nie przytrzymasz przycisku komentarzy, i pokazuje tylko kilka ostatnich wpisów każdej osoby.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "To na razie wszystko",
-  "zen_mode_load_more": "Mimo to wczytaj więcej",
-  "zen_mode_page_cap": "Długość kanału w trybie zen",
-  "zen_mode_page_cap_description": "Ile stron kanał wczytuje w trybie zen, zanim się zatrzyma.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Mimo to wczytaj więcej",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Długość kanału w trybie zen",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Ile stron kanał wczytuje w trybie zen, zanim się zatrzyma.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Du har ikke likt noen innlegg ennå!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Ingen innlegg samsvarer med søket ditt",
   "no_results": "Ingen resultater",
   "@no_results": {},
   "no_results_for": "Ingen resultater for",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Søk",
   "@search": {},
+  "search_saved_posts": "Søk i lagrede innlegg",
   "search_term": "Søkeord",
   "@search_term": {},
   "select": "Velg",
@@ -692,11 +694,13 @@
   "zen_mode_description": "En roligere feed: skjuler innleggsstatistikk, skjuler svar til du holder inne kommentarknappen, og viser bare noen få nylige innlegg per person.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Det var alt for nå",
-  "zen_mode_load_more": "Last inn mer likevel",
-  "zen_mode_page_cap": "Feed-lengde i zen-modus",
-  "zen_mode_page_cap_description": "Hvor mange sider en feed laster i zen-modus før den tar en pause.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Last inn mer likevel",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Feed-lengde i zen-modus",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Hvor mange sider en feed laster i zen-modus før den tar en pause.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }

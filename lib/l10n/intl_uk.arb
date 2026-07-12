@@ -359,6 +359,7 @@
   "@no_broken_subscriptions_found": {},
   "no_liked_posts_yet": "Ви ще не вподобали жодного допису!",
   "@no_liked_posts_yet": {},
+  "no_posts_match_your_search": "Немає дописів, що відповідають вашому запиту",
   "no_results": "Немає результатів",
   "@no_results": {},
   "no_results_for": "Нічого не знайдено для:",
@@ -473,6 +474,7 @@
   "@saved_tweet_too_large": {},
   "search": "Пошук",
   "@search": {},
+  "search_saved_posts": "Пошук у збережених дописах",
   "search_term": "Пошуковий запит",
   "@search_term": {},
   "select": "Вибрати",
@@ -692,11 +694,13 @@
   "zen_mode_description": "Спокійніша стрічка: приховує статистику дописів, приховує відповіді, доки ви не утримаєте кнопку коментарів, і показує лише кілька нещодавніх дописів від кожного.",
   "@zen_mode_description": {},
   "zen_mode_feed_end": "Поки що це все",
-  "zen_mode_load_more": "Все одно завантажити ще",
-  "zen_mode_page_cap": "Довжина стрічки в дзен-режимі",
-  "zen_mode_page_cap_description": "Скільки сторінок завантажує стрічка в дзен-режимі перед паузою.",
   "@zen_mode_feed_end": {},
+  "zen_mode_load_more": "Все одно завантажити ще",
   "@zen_mode_load_more": {},
+  "zen_mode_page_cap": "Довжина стрічки в дзен-режимі",
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "zen_mode_page_cap_description": "Скільки сторінок завантажує стрічка в дзен-режимі перед паузою.",
+  "@zen_mode_page_cap_description": {},
+  "@no_posts_match_your_search": {},
+  "@search_saved_posts": {}
 }
