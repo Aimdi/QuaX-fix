@@ -81,8 +81,8 @@ class GroupModel extends Store<SubscriptionGroupGet> {
           name: group['name'] as String,
           icon: group['icon'] as String,
           subscriptions: [...userSubscriptions, ...searchSubscriptions],
-          includeReplies: group['include_replies'] == 1,
-          includeRetweets: group['include_retweets'] == 1,
+          includeReplies: _includeOverride(group['include_replies']),
+          includeRetweets: _includeOverride(group['include_retweets']),
           popular: group['popular'] == 1,
           custom: group['custom'] == 1,
           contentFilter: group['content_filter'] as String? ?? contentFilterDefault);
