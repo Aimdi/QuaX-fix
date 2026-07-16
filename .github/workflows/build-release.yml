@@ -1,0 +1,91 @@
+name: Build and release
+
+# Builds the APKs and attaches them straight to a release, without the
+# intermediate Actions artifact — release assets do not count against the
+# account's artifact storage quota.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install and set up Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '21.x'
+
+      - name: Install and set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          cache: true
+
+      - name: Set up signing key
+        run: |
+          if [ -n "$SIGNING_KEY" ]; then
+            echo $SIGNING_KEY | base64 -d > android/app/key.jks
+          else
+            echo "No SIGNING_KEY secret configured; APKs will be signed with the debug key"
+          fi
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+
+      - name: Generate icons
+        run: |
+          python -mvenv .venv
+          source ./.venv/bin/activate
+          pip install -r requirements.txt
+          python generate_icons.py
+          deactivate
+
+      - name: Build
+        run: |
+          # Only use the release keystore if it was actually set up
+          if [ -s android/app/key.jks ]; then
+            export KEY_PATH=key.jks
+          fi
+
+          flutter clean
+          flutter config --no-analytics
+          flutter pub get
+          dart run flutter_launcher_icons
+          dart run dart_pubspec_licenses:generate
+          dart run intl_utils:generate
+          dart run flutter_iconpicker:generate_packs --packs material
+
+          # Create a directory for our release APKs
+          mkdir -pv build/app/outputs/release
+
+          # Build our big boy APK, and move it into the release APKs folder
+          flutter build apk --release --no-tree-shake-icons
+          mv build/app/outputs/apk/release/*.apk build/app/outputs/release
+
+          # Build our ABI-specific APKs and move them into the release APKs folder
+          flutter build apk --release --no-tree-shake-icons --split-per-abi --target-platform=android-x64,android-arm,android-arm64
+          mv build/app/outputs/apk/release/*.apk build/app/outputs/release
+        env:
+          KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+
+      - name: Create release with APKs
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: ${{ inputs.tag }}
+          files: build/app/outputs/release/*.apk
