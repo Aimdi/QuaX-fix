@@ -220,6 +220,15 @@ class _StatusScreenState extends State<_StatusScreen> {
   // shown; the replies below stay hidden until deliberately revealed.
   Widget _buildZenConversation(BuildContext context, List<TweetChain> chains) {
     if (chains.isEmpty) {
+      final error = pagingErrorOf(_pagingController.value);
+      if (error != null) {
+        return FullPageErrorWidget(
+          error: error.error,
+          stackTrace: error.stackTrace,
+          prefix: L10n.of(context).unable_to_load_the_tweet,
+          onRetry: _pagingController.fetchNextPage,
+        );
+      }
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -255,13 +264,15 @@ class _StatusScreenState extends State<_StatusScreen> {
   }
 
   Widget _buildConversation(BuildContext context) {
+    // Without an instant preview (e.g. opened from a media lightbox) nothing
+    // else starts the first page load: the zen and threaded views render a
+    // plain spinner, not the paged list that normally triggers the fetch.
+    _maybeStartFirstLoad();
+
     final zen = PrefService.of(context, listen: false).get(optionZenMode) == true;
     final zenReplies = context.watch<ZenRepliesState>();
 
     if (zen && !zenReplies.revealed) {
-      // The paged list normally triggers the first fetch; with replies hidden
-      // it is not built, so start the first page load here.
-      _maybeStartFirstLoad();
       return _buildZenConversation(context, _pagingController.value.items ?? const <TweetChain>[]);
     }
 
