@@ -90,6 +90,9 @@ jobs:
         with:
           name: apks
           path: build/app/outputs/release/*.apk
+          # The publish workflow downloads this within minutes; keeping
+          # artifacts around any longer just eats the account storage quota.
+          retention-days: 1
 
 #  ios:
 #    runs-on: macos-latest
