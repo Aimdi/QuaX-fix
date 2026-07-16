@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,11 @@ class GroupFeedShell extends StatefulWidget {
   final WidgetBuilder titleBuilder;
   final WidgetBuilder bodyBuilder;
   final List<Widget> Function(BuildContext) actionsBuilder;
+  // Whether the body's feed keeps its PagingController in the FeedSessionCache.
+  // Only then does a subscription change require remounting the body (to drop
+  // the just-invalidated cached controller); other feeds refresh on their own
+  // when their group state actually changes.
+  final bool usesFeedCache;
 
   const GroupFeedShell({
     super.key,
@@ -21,6 +28,7 @@ class GroupFeedShell extends StatefulWidget {
     required this.titleBuilder,
     required this.bodyBuilder,
     required this.actionsBuilder,
+    this.usesFeedCache = false,
   });
 
   @override
@@ -63,20 +71,29 @@ class _GroupFeedShellState extends State<GroupFeedShell> with AutomaticKeepAlive
     }
   }
 
-  // Triggered when subscriptions or group memberships change. Refresh the group
-  // state and bump the counter to remount the body — for pushed-route feeds
-  // this drops the stale (cached, just-invalidated) PagingController so the
-  // inner state re-fetches a fresh one from the cache.
+  // Triggered when subscriptions or group memberships change. A single user
+  // action can fire this several times in a row (subscriptions and groups both
+  // reload), so the reaction is debounced into one refresh. The body is only
+  // remounted for cache-backed feeds; everything else just reloads its group
+  // state and lets the feed decide whether its content actually changed.
   void _onReload() {
-    if (!mounted) return;
-    setState(() {
-      _groupModel.loadGroup();
-      _refreshCounter++;
+    _reloadDebounce?.cancel();
+    _reloadDebounce = Timer(const Duration(milliseconds: 150), () {
+      if (!mounted) return;
+      setState(() {
+        _groupModel.loadGroup();
+        if (widget.usesFeedCache) {
+          _refreshCounter++;
+        }
+      });
     });
   }
 
+  Timer? _reloadDebounce;
+
   @override
   void dispose() {
+    _reloadDebounce?.cancel();
     _subscriptionsModel?.removeReloadListener(_callbackKey);
     _groupsModel?.removeReloadListener(_callbackKey);
     super.dispose();

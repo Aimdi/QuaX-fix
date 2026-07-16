@@ -126,8 +126,6 @@ class SubscriptionsModel extends Store<List<Subscription>> {
 
       return state;
     });
-
-    await groupModel.reloadGroups();
   }
 
   /// Refreshes a stored subscription whose account was renamed, using the

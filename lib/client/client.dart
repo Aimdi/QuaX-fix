@@ -574,23 +574,35 @@ class Twitter {
   static List<TweetChain> createTweets(List<dynamic> addEntries, [bool isPinned = false]) {
     List<TweetChain> replies = [];
 
+    // Deleted or restricted posts come back without a usable result; they must
+    // be skipped so one bad entry cannot break the whole page.
+    Map<String, dynamic>? usableResult(dynamic container) {
+      Map<String, dynamic>? result = container?['itemContent']?['tweet_results']?['result'];
+      if (result == null) {
+        return null;
+      }
+      result = result['rest_id'] != null ? result : result['tweet'];
+      return result?['rest_id'] != null ? result : null;
+    }
+
     for (var entry in addEntries) {
       var entryId = entry['entryId'] as String;
       if (entryId.startsWith('tweet-')) {
-        var result = entry['content']['itemContent']['tweet_results']['result'];
-        TweetWithCard? tweet = TweetWithCard.fromGraphqlJson(result);
-
-        replies.add(
-          TweetChain(id: result['rest_id'] ?? result['tweet']['rest_id'], tweets: [tweet], isPinned: isPinned),
-        );
+        var result = usableResult(entry['content']);
+        if (result != null) {
+          replies.add(
+            TweetChain(id: result['rest_id'], tweets: [TweetWithCard.fromGraphqlJson(result)], isPinned: isPinned),
+          );
+        }
       } else if (entryId.startsWith('profile-grid-')) {
         // We got a tweet queried from the media tab
-        for (var mediaTweet in entry['content']['items']) {
-          var result = mediaTweet['item']['itemContent']['tweet_results']['result'];
-          TweetWithCard? tweet = TweetWithCard.fromGraphqlJson(result);
-          replies.add(
-            TweetChain(id: result['rest_id'] ?? result['tweet']['rest_id'], tweets: [tweet], isPinned: isPinned),
-          );
+        for (var mediaTweet in List.from(entry['content']?['items'] ?? [])) {
+          var result = usableResult(mediaTweet['item']);
+          if (result != null) {
+            replies.add(
+              TweetChain(id: result['rest_id'], tweets: [TweetWithCard.fromGraphqlJson(result)], isPinned: isPinned),
+            );
+          }
         }
       }
 
@@ -1289,8 +1301,9 @@ class Twitter {
     int Function() getTweetsCounter,
     void Function() increaseTweetCounter,
   ) {
-    final timeline = result["data"]["user"]["result"]["timeline_v2"] ?? result["data"]["user"]["result"]["timeline"];
-    var instructions = List.from(timeline['timeline']?['instructions'] ?? []);
+    final timeline =
+        result["data"]?["user"]?["result"]?["timeline_v2"] ?? result["data"]?["user"]?["result"]?["timeline"];
+    var instructions = List.from(timeline?['timeline']?['instructions'] ?? []);
     var addEntriesInstructions = instructions.firstWhereOrNull((e) => e['type'] == 'TimelineAddEntries');
     var addModEntriesInstructions = instructions.firstWhereOrNull((e) => e['type'] == 'TimelineAddToModule');
     List addModEntries = List.from(addModEntriesInstructions?['moduleItems'] ?? []);

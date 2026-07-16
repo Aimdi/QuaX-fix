@@ -219,6 +219,7 @@ class _SubscriptionGroupScreenState extends State<SubscriptionGroupScreen> {
     return GroupFeedShell(
       scrollController: widget.scrollController,
       groupId: widget.id,
+      usesFeedCache: widget.cacheKey != null,
       titleBuilder: (context) => Text(widget.name),
       bodyBuilder: (context) =>
           SubscriptionGroupScreenContent(id: widget.id, cacheKey: widget.cacheKey, mediaOnly: _mediaOnly),
