@@ -44,6 +44,17 @@ class _MediaGridLightboxState extends State<MediaGridLightbox> {
   }
 
   void _openPost(MediaViewEntry entry) {
+    // Hand the source tweet over as the instant preview, so the post shows
+    // immediately (same path as opening from a tweet card) instead of relying
+    // on the conversation fetch alone.
+    MediaGridItem? item;
+    for (final candidate in _items) {
+      if (candidate.tweetId == entry.tweetId && candidate.mediaIndex == entry.mediaIndex) {
+        item = candidate;
+        break;
+      }
+    }
+
     Navigator.pushNamed(
       context,
       routeStatus,
@@ -52,6 +63,7 @@ class _MediaGridLightboxState extends State<MediaGridLightbox> {
         username: entry.username,
         tweetOpened: true,
         initialMediaIndex: entry.mediaIndex,
+        initialTweet: item?.tweet,
       ),
     );
   }

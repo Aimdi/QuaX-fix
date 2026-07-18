@@ -11,6 +11,9 @@ part 'video_grid_item.dart';
 part 'photo_grid_item.dart';
 
 sealed class MediaGridItem {
+  // The source tweet when known, handed to the status screen as the instant
+  // preview so opening a post from the lightbox never waits on a fetch.
+  final TweetWithCard? tweet;
   final String tweetId;
   final String username;
   final String thumbnailUrl;
@@ -19,6 +22,7 @@ sealed class MediaGridItem {
   final Media media;
 
   const MediaGridItem({
+    this.tweet,
     required this.tweetId,
     required this.username,
     required this.thumbnailUrl,
@@ -47,13 +51,14 @@ double _aspectRatioFor(Media m) {
   }
 }
 
-MediaGridItem? _itemFor(Media m, String tweetId, String username, int mediaIndex) {
+MediaGridItem? _itemFor(Media m, String tweetId, String username, int mediaIndex, [TweetWithCard? tweet]) {
   final url = m.mediaUrlHttps;
   if (url == null) return null;
   final ar = _aspectRatioFor(m);
   switch (m.type) {
     case 'photo':
       return PhotoGridItem(
+        tweet: tweet,
         tweetId: tweetId,
         username: username,
         thumbnailUrl: url,
@@ -63,6 +68,7 @@ MediaGridItem? _itemFor(Media m, String tweetId, String username, int mediaIndex
       );
     case 'animated_gif':
       return GifGridItem(
+        tweet: tweet,
         tweetId: tweetId,
         username: username,
         thumbnailUrl: url,
@@ -72,6 +78,7 @@ MediaGridItem? _itemFor(Media m, String tweetId, String username, int mediaIndex
       );
     case 'video':
       return VideoGridItem(
+        tweet: tweet,
         tweetId: tweetId,
         username: username,
         thumbnailUrl: url,
@@ -102,7 +109,7 @@ List<MediaGridItem> mediaItemsFromChains(List<TweetChain> chains) {
       final username = tweet.user?.screenName;
       if (tweetId == null || username == null) continue;
       for (var i = 0; i < medias.length; i++) {
-        final item = _itemFor(medias[i], tweetId, username, i);
+        final item = _itemFor(medias[i], tweetId, username, i, tweet);
         if (item != null) out.add(item);
       }
     }

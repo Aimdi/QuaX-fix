@@ -2,6 +2,7 @@ part of 'media_grid_item.dart';
 
 class VideoGridItem extends MediaGridItem {
   const VideoGridItem({
+    super.tweet,
     required super.tweetId,
     required super.username,
     required super.thumbnailUrl,

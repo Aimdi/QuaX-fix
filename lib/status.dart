@@ -113,6 +113,17 @@ class _StatusScreenState extends State<_StatusScreen> {
     return widget.initialTweet != null && state.items == null && state.error == null;
   }
 
+  // X sometimes returns an empty conversation for a post that plainly exists
+  // (e.g. restricted content); with a preview in hand, keep showing the post
+  // rather than replacing it with a "not found" message.
+  bool get _conversationCameBackEmpty {
+    final state = _pagingController.value;
+    return widget.initialTweet != null &&
+        (state.items?.isEmpty ?? false) &&
+        state.error == null &&
+        !state.hasNextPage;
+  }
+
   void _maybeStartFirstLoad() {
     if (_firstLoadStarted) return;
     final state = _pagingController.value;
@@ -188,13 +199,21 @@ class _StatusScreenState extends State<_StatusScreen> {
         // The providers above are looked up from inside these builders, so they
         // need a context below the MultiProvider — not this method's context.
         child: Builder(
-          builder: (context) => _showingPreview ? _buildPreview(context) : _buildConversation(context),
+          builder: (context) {
+            if (_showingPreview) {
+              return _buildPreview(context);
+            }
+            if (_conversationCameBackEmpty) {
+              return _buildPreview(context, loading: false);
+            }
+            return _buildConversation(context);
+          },
         ),
       ),
     );
   }
 
-  Widget _buildPreview(BuildContext context) {
+  Widget _buildPreview(BuildContext context, {bool loading = true}) {
     _maybeStartFirstLoad();
     var tweet = widget.initialTweet!;
     return ListView(
@@ -208,10 +227,11 @@ class _StatusScreenState extends State<_StatusScreen> {
           tweetOpened: widget.tweetOpened,
           initialMediaIndex: widget.initialMediaIndex,
         ),
-        const Padding(
-          padding: EdgeInsets.all(16),
-          child: Center(child: CircularProgressIndicator()),
-        ),
+        if (loading)
+          const Padding(
+            padding: EdgeInsets.all(16),
+            child: Center(child: CircularProgressIndicator()),
+          ),
       ],
     );
   }
@@ -228,6 +248,9 @@ class _StatusScreenState extends State<_StatusScreen> {
           prefix: L10n.of(context).unable_to_load_the_tweet,
           onRetry: _pagingController.fetchNextPage,
         );
+      }
+      if (_pagingController.value.status == PagingStatus.noItemsFound) {
+        return Center(child: Text(L10n.of(context).could_not_find_any_tweets_by_this_user));
       }
       return const Center(child: CircularProgressIndicator());
     }

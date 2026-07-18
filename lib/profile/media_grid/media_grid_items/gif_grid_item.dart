@@ -2,6 +2,7 @@ part of 'media_grid_item.dart';
 
 class GifGridItem extends MediaGridItem {
   const GifGridItem({
+    super.tweet,
     required super.tweetId,
     required super.username,
     required super.thumbnailUrl,
