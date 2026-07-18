@@ -380,9 +380,14 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     return Container(
       alignment: Alignment.center,
       margin: isArticle ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 8),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
+      child: Row(
+        children: [
+          // The stats scroll in their own strip, so the bookmark, share and
+          // translate buttons on the right always stay visible.
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
             children: [
               GestureDetector(
                 onLongPress: () {
@@ -439,6 +444,10 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                     Icons.bar_chart,
                     numberFormat.format(tweet.viewCount),
                     buttonsColor(context)),
+            ],
+              ),
+            ),
+          ),
               const SizedBox(
                 width: 8.0,
               ),
@@ -546,8 +555,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                   },
                   child: _buildTranslateButton(locale),
                 ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -606,7 +614,9 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         currentUsername != null && tweet.user != null && currentUsername == tweet.user!.screenName;
     final hideAuthorInformation = !isTweetOnSameProfile && prefs.get(optionNonConfirmationBiasMode);
 
-    var numberFormat = NumberFormat.compact();
+    // Short K/M suffixes: locale-specific compact forms like "12 Tsd." or
+    // "1,2 Mio." eat the footer's width and push the trailing buttons away.
+    var numberFormat = NumberFormat.compact(locale: 'en_US');
     var theme = Theme.of(context);
 
     if (tweet.isTombstone ?? false) {
