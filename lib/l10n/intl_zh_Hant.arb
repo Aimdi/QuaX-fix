@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "您確定要刪除訂閱群組「{name}」嗎？",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "自動下載圖片",
+  "@auto_download_images": {},
   "auto_download_images_description": "將歸入此資料夾的任何貼文的圖片儲存到你的下載資料夾。",
+  "@auto_download_images_description": {},
   "autoplay_videos": "自動播放影片",
   "@autoplay_videos": {},
   "autoplay_videos_description": "若啟用，影片將無需使用者互動即可開始播放",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "您的動態消息似乎包含您未追蹤的人的貼文",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "所有時間軸的預設值。每個時間軸仍可單獨覆寫。",
+  "feed_default_filter_description": "適用於所有動態。變更後會重設每個動態各自的選擇。",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "偵測到動態消息問題",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "傳送",
   "@send": {},
   "set_a_download_folder_to_auto_download": "在設定 > 媒體中設定下載資料夾以自動下載。",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "設定",
   "@settings": {},
   "share_article_as_image": "以圖片分享文章",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "禪模式時間軸長度",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禪模式下時間軸暫停前載入的頁數。",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "您确定要删除订阅组 {name} 吗？",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "自动下载图片",
+  "@auto_download_images": {},
   "auto_download_images_description": "将归入此文件夹的任何帖子的图片保存到你的下载文件夹。",
+  "@auto_download_images_description": {},
   "autoplay_videos": "自动播放视频",
   "@autoplay_videos": {},
   "autoplay_videos_description": "启用后，视频将自动播放",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "您的信息流似乎包含您未关注的人的帖子",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "所有信息流的默认设置。每个信息流仍可单独覆盖。",
+  "feed_default_filter_description": "适用于所有信息流。更改后会重置每个信息流各自的选择。",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "检测到信息流问题",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "发送",
   "@send": {},
   "set_a_download_folder_to_auto_download": "在设置 > 媒体中设置下载文件夹以自动下载。",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "设置",
   "@settings": {},
   "share_article_as_image": "将文章分享为图片",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "禅模式信息流长度",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Voulez-vous vraiment supprimer le groupe d'abonnement {name} ?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Télécharger les images automatiquement",
+  "@auto_download_images": {},
   "auto_download_images_description": "Enregistre les images de toute publication classée dans ce dossier dans votre dossier de téléchargement.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Lire les vidéos automatiquement",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Si activé, les vidéos se lancent automatiquement",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Votre fil semble contenir des posts d'utilisateurs que vous ne suivez pas.\n\nIl s'agit d'un problème connu provenant de X directement.\n\nPour résoudre ce problème, essayez de vous déconnecter de votre compte X et de vous reconnecter avec un autre compte.",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "La valeur par défaut pour tous les fils. Chaque fil peut la remplacer individuellement.",
+  "feed_default_filter_description": "S'applique à tous les fils. Le modifier réinitialise le choix propre de chaque fil.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Problème détecté avec votre fil",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Envoyer",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Définissez un dossier de téléchargement dans Paramètres > Médias pour le téléchargement automatique.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Paramètres",
   "@settings": {},
   "share_article_as_image": "Partager l'article en tant qu'image",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Longueur du fil en mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Nombre de pages chargées par le fil en mode zen avant de faire une pause.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

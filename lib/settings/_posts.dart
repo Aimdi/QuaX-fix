@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/group/group_model.dart';
 import 'package:pref/pref.dart';
 
 class SettingsPostsFragment extends StatelessWidget {
@@ -47,11 +49,13 @@ class SettingsPostsFragment extends StatelessWidget {
             title: Text(L10n.of(context).include_replies),
             subtitle: Text(L10n.of(context).feed_default_filter_description),
             pref: optionGlobalIncludeReplies,
+            onChange: (_) async => await context.read<GroupsModel>().clearIncludeOverrides(replies: true),
           ),
           PrefSwitch(
             title: Text(L10n.of(context).include_retweets),
             subtitle: Text(L10n.of(context).feed_default_filter_description),
             pref: optionGlobalIncludeRetweets,
+            onChange: (_) async => await context.read<GroupsModel>().clearIncludeOverrides(replies: false),
           ),
           PrefSwitch(
             title: Text(L10n.of(context).threaded_replies),

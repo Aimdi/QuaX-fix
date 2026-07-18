@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "¿Estás seguro de que quieres eliminar el grupo de suscripción {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Descargar imágenes automáticamente",
+  "@auto_download_images": {},
   "auto_download_images_description": "Guarda las imágenes de cualquier publicación archivada en esta carpeta en tu carpeta de descargas.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Reproducción automática de videos",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Si está activado, los videos se reproducirán automáticamente",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Tu feed parece contener publicaciones de personas que no sigues",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "El valor predeterminado para todos los feeds. Cada feed puede anularlo individualmente.",
+  "feed_default_filter_description": "Se aplica a todos los feeds. Cambiarlo restablece la elección propia de cada feed.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Se detectó un problema en el feed",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Enviar",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Configura una carpeta de descargas en Ajustes > Multimedia para descargar automáticamente.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Configuración",
   "@settings": {},
   "share_article_as_image": "Compartir artículo como imagen",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Longitud del feed en modo zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Cuántas páginas carga el feed en modo zen antes de hacer una pausa.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

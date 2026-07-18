@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "क्या आप सदस्यता समूह {name} हटाना चाहते हैं?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "छवियाँ स्वतः डाउनलोड करें",
+  "@auto_download_images": {},
   "auto_download_images_description": "इस फ़ोल्डर में सहेजी गई किसी भी पोस्ट की छवियाँ आपके डाउनलोड फ़ोल्डर में सहेजें।",
+  "@auto_download_images_description": {},
   "autoplay_videos": "वीडियो ऑटोप्ले",
   "@autoplay_videos": {},
   "autoplay_videos_description": "सक्षम होने पर, वीडियो स्वचालित रूप से चलेंगे",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "आपके फ़ीड में ऐसे लोगों की पोस्ट हैं जिन्हें आप फ़ॉलो नहीं करते",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "सभी फ़ीड के लिए डिफ़ॉल्ट। कोई भी फ़ीड इसे अलग से बदल सकती है।",
+  "feed_default_filter_description": "हर फ़ीड पर लागू होता है। बदलने पर हर फ़ीड की अपनी पसंद रीसेट हो जाती है।",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "फ़ीड समस्या का पता चला",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "भेजें",
   "@send": {},
   "set_a_download_folder_to_auto_download": "स्वतः डाउनलोड के लिए सेटिंग्स > मीडिया में डाउनलोड फ़ोल्डर सेट करें।",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "सेटिंग",
   "@settings": {},
   "share_article_as_image": "लेख को छवि के रूप में साझा करें",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "ज़ेन मोड में फ़ीड की लंबाई",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "ज़ेन मोड में रुकने से पहले फ़ीड कितने पेज लोड करेगी।",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

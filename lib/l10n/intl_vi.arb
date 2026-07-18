@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Bạn có muốn xóa nhóm {name} đăng kí không ",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Tự động tải ảnh",
+  "@auto_download_images": {},
   "auto_download_images_description": "Lưu ảnh của mọi bài đăng được xếp vào thư mục này vào thư mục tải xuống của bạn.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Tự động phát video",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Video sẽ được kích hoạt tự động",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Trang chủ của bạn có lẽ toàn bài viết của người lạ.\n\nĐây là sự cố đã biết từ X.\n\nĐể xử lý, vui lòng đăng nhập vào tài khoản khác.",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "Giá trị mặc định cho mọi bảng tin. Mỗi bảng tin vẫn có thể ghi đè riêng.",
+  "feed_default_filter_description": "Áp dụng cho mọi bảng tin. Thay đổi sẽ đặt lại lựa chọn riêng của từng bảng tin.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Đã phát hiện sự cố trang chủ",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Gửi",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Đặt thư mục tải xuống trong Cài đặt > Đa phương tiện để tự động tải.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Cài đặt",
   "@settings": {},
   "share_article_as_image": "Chia sẻ bài viết dưới dạng hình ảnh",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Độ dài bảng tin ở chế độ zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Số trang bảng tin tải ở chế độ zen trước khi tạm dừng.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

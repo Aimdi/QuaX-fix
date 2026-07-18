@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Estàs segur que vols suprimir el grup de subscripcions {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Baixa les imatges automàticament",
+  "@auto_download_images": {},
   "auto_download_images_description": "Desa les imatges de qualsevol publicació desada en aquesta carpeta a la carpeta de baixades.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Reproducció automàtica de vídeos",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Si s'activa, els vídeos es reproduiran automàticament",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "El teu canal sembla contenir publicacions de persones que no segueixes",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "El valor per defecte per a tots els feeds. Cada feed encara el pot substituir individualment.",
+  "feed_default_filter_description": "S'aplica a tots els canals. Canviar-ho restableix la tria pròpia de cada canal.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "S'ha detectat un problema al canal",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Enviar",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Defineix una carpeta de baixades a Configuració > Multimèdia per baixar automàticament.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Configuració",
   "@settings": {},
   "share_article_as_image": "Comparteix l'article com a imatge",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Longitud del feed en mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quantes pàgines carrega el feed en mode zen abans de fer una pausa.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

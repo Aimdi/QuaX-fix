@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Вы уверены, что хотите удалить группу подписок {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Автозагрузка изображений",
+  "@auto_download_images": {},
   "auto_download_images_description": "Сохранять изображения каждого поста, добавленного в эту папку, в папку загрузок.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Автовоспроизведение видео",
   "@autoplay_videos": {},
   "autoplay_videos_description": "При включении видео будут воспроизводиться автоматически",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Ваша лента, похоже, содержит публикации от людей, на которых вы не подписаны",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "Значение по умолчанию для всех лент. Любая лента может переопределить его отдельно.",
+  "feed_default_filter_description": "Действует для всех лент. Изменение сбрасывает собственный выбор каждой ленты.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Обнаружена проблема с лентой",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Отправить",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Чтобы загружать автоматически, укажите папку загрузок в Настройки > Медиа.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Настройки",
   "@settings": {},
   "share_article_as_image": "Поделиться статьёй как изображением",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Длина ленты в дзен-режиме",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Сколько страниц загружает лента в дзен-режиме перед паузой.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

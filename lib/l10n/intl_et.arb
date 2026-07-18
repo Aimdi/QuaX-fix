@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Kas sa oled kindel, et soovid kustutada tellimuste grupi {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Laadi pildid automaatselt alla",
+  "@auto_download_images": {},
   "auto_download_images_description": "Salvesta iga sellesse kausta pandud postituse pildid oma allalaadimiskausta.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Videote automaatesitus",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Kui lubatud, esitatakse videod automaatselt",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Teie voog näib sisaldavat postitusi inimestelt, keda te ei jälgi",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "Kõigi voogude vaikeväärtus. Iga voog saab selle eraldi tühistada.",
+  "feed_default_filter_description": "Kehtib igale voole. Muutmine lähtestab iga voo enda valiku.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Voo probleem tuvastatud",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Saada",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Automaatseks allalaadimiseks määra allalaadimiskaust menüüs Seaded > Meedia.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Seaded",
   "@settings": {},
   "share_article_as_image": "Jaga artiklit pildina",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Voo pikkus Zen-režiimis",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Mitu lehte voog Zen-režiimis enne pausi laadib.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

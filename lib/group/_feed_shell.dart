@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/constants.dart';
+import 'package:quax/database/entities.dart';
 import 'package:quax/group/_settings.dart';
 import 'package:quax/group/feed_refresh_controller.dart';
 import 'package:quax/group/group_model.dart';
@@ -71,18 +72,28 @@ class _GroupFeedShellState extends State<GroupFeedShell> with AutomaticKeepAlive
     }
   }
 
+  // What the feed actually shows; a reload only warrants remounting the body
+  // when this changes, otherwise following someone unrelated would needlessly
+  // reload the open timeline.
+  String _fingerprint(SubscriptionGroupGet group) {
+    final members = group.subscriptions.map((s) => '${s.id}:${s.inFeed}').join(',');
+    return '$members|${group.includeReplies}|${group.includeRetweets}|${group.popular}|${group.custom}|${group.contentFilter}';
+  }
+
   // Triggered when subscriptions or group memberships change. A single user
   // action can fire this several times in a row (subscriptions and groups both
   // reload), so the reaction is debounced into one refresh. The body is only
-  // remounted for cache-backed feeds; everything else just reloads its group
-  // state and lets the feed decide whether its content actually changed.
+  // remounted for cache-backed feeds whose content actually changed; everything
+  // else just reloads its group state and the feed decides on its own.
   void _onReload() {
     _reloadDebounce?.cancel();
-    _reloadDebounce = Timer(const Duration(milliseconds: 150), () {
+    _reloadDebounce = Timer(const Duration(milliseconds: 150), () async {
+      if (!mounted) return;
+      final before = _fingerprint(_groupModel.state);
+      await _groupModel.loadGroup();
       if (!mounted) return;
       setState(() {
-        _groupModel.loadGroup();
-        if (widget.usesFeedCache) {
+        if (widget.usesFeedCache && _fingerprint(_groupModel.state) != before) {
           _refreshCounter++;
         }
       });

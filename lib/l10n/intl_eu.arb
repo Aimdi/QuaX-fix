@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Ziur {name} harpidetza taldea ezabatu nahi duzula?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Deskargatu irudiak automatikoki",
+  "@auto_download_images": {},
   "auto_download_images_description": "Gorde karpeta honetan artxibatutako edozein argitalpenen irudiak zure deskarga-karpetan.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Bideoen erreprodukzio automatikoa",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Gaituta badago, bideoak automatikoki erreproduzituko dira",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Zure jarioak jarraitutako ez diren pertsonen argitalpenak ditu dirudienez",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "Jario guztien lehenetsia. Jario bakoitzak banaka gainidatz dezake.",
+  "feed_default_filter_description": "Jario guztiei aplikatzen zaie. Aldatzeak jario bakoitzaren aukera berrezartzen du.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Jarioko arazoa hauteman da",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Bidali",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Automatikoki deskargatzeko, ezarri deskarga-karpeta bat Ezarpenak > Multimedia atalean.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Ezarpenak",
   "@settings": {},
   "share_article_as_image": "Partekatu artikulua irudi gisa",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Jarioaren luzera zen moduan",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zenbat orrialde kargatzen dituen jarioak zen moduan gelditu aurretik.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

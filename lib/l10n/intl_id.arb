@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Apakah Anda yakin Anda ingin menghapus grup langganan {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Unduh gambar otomatis",
+  "@auto_download_images": {},
   "auto_download_images_description": "Simpan gambar dari setiap postingan yang dimasukkan ke folder ini ke folder unduhan Anda.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Putar otomatis video",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Jika diaktifkan, video akan diputar secara otomatis",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Feed Anda tampaknya berisi postingan dari orang yang tidak Anda ikuti",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "Default untuk semua beranda. Setiap beranda tetap bisa menggantinya secara individual.",
+  "feed_default_filter_description": "Berlaku untuk semua feed. Mengubahnya mengatur ulang pilihan masing-masing feed.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Masalah feed terdeteksi",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Kirim",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Atur folder unduhan di Pengaturan > Media untuk mengunduh otomatis.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Pengaturan",
   "@settings": {},
   "share_article_as_image": "Bagikan artikel sebagai gambar",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Panjang beranda di mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Czy na pewno chcesz usunąć grupę subskrypcji {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Automatycznie pobieraj obrazy",
+  "@auto_download_images": {},
   "auto_download_images_description": "Zapisuj obrazy każdego wpisu dodanego do tego folderu w folderze pobierania.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Automatyczne odtwarzanie filmów",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Jeśli włączone, filmy będą odtwarzane automatycznie",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Twój kanał wydaje się zawierać posty od osób, których nie obserwujesz",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "Domyślne ustawienie dla wszystkich kanałów. Każdy kanał może je indywidualnie zmienić.",
+  "feed_default_filter_description": "Dotyczy każdego kanału. Zmiana resetuje własny wybór każdego kanału.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Wykryto problem z kanałem",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Wyślij",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Aby pobierać automatycznie, ustaw folder pobierania w Ustawienia > Multimedia.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Ustawienia",
   "@settings": {},
   "share_article_as_image": "Udostępnij artykuł jako obraz",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Długość kanału w trybie zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Ile stron kanał wczytuje w trybie zen, zanim się zatrzyma.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

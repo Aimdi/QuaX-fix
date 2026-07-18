@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Вы ўпэўненыя, што жадаеце выдаліць групу падпісак {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Аўтаспампоўка выяў",
+  "@auto_download_images": {},
   "auto_download_images_description": "Захоўваць выявы кожнага допісу, дададзенага ў гэтую тэчку, у тэчку спамповак.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Аўтаматычнае прайграванне відэа",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Пры ўключэнні відэа будуць прайгравацца аўтаматычна",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Ваша стужка, здаецца, змяшчае публікацыі людзей, на якіх вы не падпісаліся",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "Прадвызначэнне для ўсіх стужак. Любая стужка можа перавызначыць яго асобна.",
+  "feed_default_filter_description": "Дзейнічае для ўсіх стужак. Змена скідае ўласны выбар кожнай стужкі.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Выяўлена праблема са стужкай",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Даслаць",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Задайце тэчку спамповак у Налады > Медыя для аўтаспампоўкі.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Налады",
   "@settings": {},
   "share_article_as_image": "Падзяліцца артыкулам як відарысам",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Даўжыня стужкі ў дзэн-рэжыме",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Колькі старонак загружае стужка ў дзэн-рэжыме перад паўзай.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

@@ -1,27 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
+import 'package:pref/pref.dart';
+import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_custom_settings.dart';
 import 'package:quax/group/group_model.dart';
-
-// A per-feed override that can defer to the global default: null → "Default"
-// (follow the global setting), true → "Show", false → "Hide".
-Widget _inheritTile(BuildContext context, String title, bool? value, Future<void> Function(bool?) onChanged) {
-  return ListTile(
-    title: Text(title),
-    trailing: DropdownButton<int>(
-      value: value == null ? 0 : (value ? 1 : 2),
-      underline: const SizedBox.shrink(),
-      onChanged: (choice) async => await onChanged(choice == 0 ? null : choice == 1),
-      items: [
-        DropdownMenuItem(value: 0, child: Text(L10n.of(context).content_filter_default)),
-        DropdownMenuItem(value: 1, child: Text(L10n.of(context).show)),
-        DropdownMenuItem(value: 2, child: Text(L10n.of(context).hide)),
-      ],
-    ),
-  );
-}
 
 int _sortModeOf(SubscriptionGroupGet group) => group.custom ? 2 : (group.popular ? 1 : 0);
 
@@ -68,19 +52,25 @@ void showFeedSettings(BuildContext context, GroupModel model) {
             ScopedBuilder<GroupModel, SubscriptionGroupGet>(
               store: model,
               onState: (_, state) {
+                // The switches show the effective value (the group's own choice,
+                // else the global default); toggling records the group's own choice.
+                final prefs = PrefService.of(context);
+                final includeReplies =
+                    model.state.includeReplies ?? prefs.get<bool>(optionGlobalIncludeReplies) ?? true;
+                final includeRetweets =
+                    model.state.includeRetweets ?? prefs.get<bool>(optionGlobalIncludeRetweets) ?? true;
+
                 return Column(
                   children: [
-                    _inheritTile(
-                      context,
-                      L10n.of(context).include_replies,
-                      model.state.includeReplies,
-                      (value) => model.toggleSubscriptionGroupIncludeReplies(value),
+                    SwitchListTile(
+                      title: Text(L10n.of(context).include_replies),
+                      value: includeReplies,
+                      onChanged: (value) async => await model.toggleSubscriptionGroupIncludeReplies(value),
                     ),
-                    _inheritTile(
-                      context,
-                      L10n.of(context).include_retweets,
-                      model.state.includeRetweets,
-                      (value) => model.toggleSubscriptionGroupIncludeRetweets(value),
+                    SwitchListTile(
+                      title: Text(L10n.of(context).include_retweets),
+                      value: includeRetweets,
+                      onChanged: (value) async => await model.toggleSubscriptionGroupIncludeRetweets(value),
                     ),
                     ExpansionTile(
                       leading: const Icon(Icons.sort),

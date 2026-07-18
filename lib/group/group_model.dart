@@ -184,6 +184,16 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
     }
   }
 
+  /// Makes the global replies/reposts default apply to every group again by
+  /// clearing each group's own choice.
+  Future<void> clearIncludeOverrides({required bool replies}) async {
+    final database = await Repository.writable();
+    final column = replies ? 'include_replies' : 'include_retweets';
+
+    await database.rawUpdate('UPDATE $tableSubscriptionGroup SET $column = NULL');
+    await reloadGroups();
+  }
+
   Future<List<SubscriptionGroupMember>> listGroupMembers() async {
     var database = await Repository.readOnly();
 

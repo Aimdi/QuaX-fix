@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Opravdu chcete odstranit skupinu {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Automaticky stahovat obrázky",
+  "@auto_download_images": {},
   "auto_download_images_description": "Uložit obrázky každého příspěvku zařazeného do této složky do složky stahování.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Automatické přehrávání videí",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Pokud je povoleno, videa se budou přehrávat automaticky",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Váš kanál zřejmě obsahuje příspěvky od lidí, které nesledujete",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "Výchozí nastavení pro všechny kanály. Každý kanál jej může individuálně přepsat.",
+  "feed_default_filter_description": "Platí pro všechny kanály. Změna zruší vlastní volbu každého kanálu.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Zjištěn problém s kanálem",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Odeslat",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Nastavte složku stahování v Nastavení > Média pro automatické stahování.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Nastavení",
   "@settings": {},
   "share_article_as_image": "Sdílet článek jako obrázek",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Délka kanálu v zen režimu",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolik stránek kanál v zen režimu načte, než se pozastaví.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

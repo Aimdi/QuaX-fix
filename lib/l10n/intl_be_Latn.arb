@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Vy ŭpevnieny, što chočacie vydalić hrupu padpiski {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Aŭtaspampoŭka vyjaŭ",
+  "@auto_download_images": {},
   "auto_download_images_description": "Zachoŭvać vyjavy kožnaha dopisu, dadadzienaha ŭ hetuju tečku, u tečku spampovak.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Aŭtamatychnaje uznaŭleńnie vidėa",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Pry ŭkliučeńni vidėa buduć uznaŭliaccа aŭtamatychna",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Vašaj stryczka, padobna, ŭtрymlivaje posty liudziej, na jakich vy nie padpisaliś",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "Pradvyznačennie dlia ŭsich stužak. Liubaja stužka moža pieravyznačyć jaho asobna.",
+  "feed_default_filter_description": "Dziejničaje dlia ŭsich stužak. Zmiena skidaje ŭlasny vybar kožnaj stužki.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Vyjаŭlena prabliema z stryczkaj",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Adpravić",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Zadajcie tečku spampovak u Nalady > Medyja dlia aŭtaspampoŭki.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Naładki",
   "@settings": {},
   "share_article_as_image": "Padzialicca artykułam jak vyjavam",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Daŭžynia stužki ŭ dzen-režymie",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolki staronak zahružaje stužka ŭ dzen-režymie pierad paŭzaj.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

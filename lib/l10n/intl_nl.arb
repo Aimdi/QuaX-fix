@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Weet je zeker dat je de abonnementsgroep {name} wilt verwijderen?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Afbeeldingen automatisch downloaden",
+  "@auto_download_images": {},
   "auto_download_images_description": "Sla de afbeeldingen van elk bericht in deze map op in je downloadmap.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Automatisch afspelen van video's",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Als ingeschakeld, worden video's automatisch afgespeeld",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Uw feed lijkt berichten te bevatten van mensen die u niet volgt",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "De standaard voor alle feeds. Elke feed kan deze nog individueel overschrijven.",
+  "feed_default_filter_description": "Geldt voor elke feed. Wijzigen herstelt de eigen keuze van elke feed.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Feed-probleem gedetecteerd",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Verzenden",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Stel een downloadmap in bij Instellingen > Media om automatisch te downloaden.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Instellingen",
   "@settings": {},
   "share_article_as_image": "Artikel delen als afbeelding",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Feedlengte in zen-modus",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hoeveel pagina's een feed in zen-modus laadt voordat deze pauzeert.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

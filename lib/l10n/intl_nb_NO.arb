@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Slett {name}-abonnementsgruppen?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Last ned bilder automatisk",
+  "@auto_download_images": {},
   "auto_download_images_description": "Lagre bildene fra alle innlegg som legges i denne mappen i nedlastingsmappen din.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Autoavspilling av videoer",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Hvis aktivert vil videoer spilles av automatisk",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Feeden din ser ut til å inneholde innlegg fra folk du ikke følger",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "Standarden for alle feeder. Hver feed kan fortsatt overstyre den individuelt.",
+  "feed_default_filter_description": "Gjelder alle feeder. Endring tilbakestiller hver feeds eget valg.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Feedproblem oppdaget",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Send",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Angi en nedlastingsmappe i Innstillinger > Medier for automatisk nedlasting.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Innstillinger",
   "@settings": {},
   "share_article_as_image": "Del artikkel som bilde",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Feed-lengde i zen-modus",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hvor mange sider en feed laster i zen-modus før den tar en pause.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }

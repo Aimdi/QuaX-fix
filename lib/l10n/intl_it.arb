@@ -44,7 +44,9 @@
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Sei sicuro/a di voler eliminare il gruppo di iscrizioni {name}?",
   "@are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": {},
   "auto_download_images": "Scarica le immagini automaticamente",
+  "@auto_download_images": {},
   "auto_download_images_description": "Salva le immagini di ogni post archiviato in questa cartella nella tua cartella dei download.",
+  "@auto_download_images_description": {},
   "autoplay_videos": "Riproduzione automatica video",
   "@autoplay_videos": {},
   "autoplay_videos_description": "Se abilitato, i video verranno riprodotti automaticamente",
@@ -209,7 +211,7 @@
   "@feed": {},
   "feed_contains_unrelated_tweets": "Il tuo feed sembra contenere post di persone che non segui",
   "@feed_contains_unrelated_tweets": {},
-  "feed_default_filter_description": "Il valore predefinito per tutti i feed. Ogni feed può comunque sovrascriverlo singolarmente.",
+  "feed_default_filter_description": "Vale per tutti i feed. Modificarlo azzera la scelta propria di ogni feed.",
   "@feed_default_filter_description": {},
   "feed_issue_detected": "Problema nel feed rilevato",
   "@feed_issue_detected": {},
@@ -506,6 +508,7 @@
   "send": "Invia",
   "@send": {},
   "set_a_download_folder_to_auto_download": "Imposta una cartella di download in Impostazioni > Media per il download automatico.",
+  "@set_a_download_folder_to_auto_download": {},
   "settings": "Impostazioni",
   "@settings": {},
   "share_article_as_image": "Condividi articolo come immagine",
@@ -733,8 +736,5 @@
   "zen_mode_page_cap": "Lunghezza del feed in modalità zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quante pagine carica il feed in modalità zen prima di fermarsi.",
-  "@zen_mode_page_cap_description": {},
-  "@auto_download_images": {},
-  "@auto_download_images_description": {},
-  "@set_a_download_folder_to_auto_download": {}
+  "@zen_mode_page_cap_description": {}
 }
