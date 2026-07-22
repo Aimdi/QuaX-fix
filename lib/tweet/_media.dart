@@ -212,6 +212,8 @@ class _TweetMediaState extends State<TweetMedia> {
 
       return Container(
         margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
         child: AspectRatio(
           aspectRatio: largestAspectRatio,
           child: PageView.builder(

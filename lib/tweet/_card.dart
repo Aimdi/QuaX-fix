@@ -30,6 +30,8 @@ class TweetCard extends StatelessWidget {
         child: Card(
           clipBehavior: Clip.antiAlias,
           color: Theme.of(context).colorScheme.inversePrimary,
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: child,
         ));
   }

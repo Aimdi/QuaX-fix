@@ -775,7 +775,8 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       quotedTweet = Container(
         decoration: BoxDecoration(
         border: Border.all(color: theme.colorScheme.surfaceBright.withAlpha(180)),
-        borderRadius: BorderRadius.circular(8)),
+        borderRadius: BorderRadius.circular(16)),
+        clipBehavior: Clip.antiAlias,
         margin: const EdgeInsets.all(8),
         child: quotedContent,
       );
@@ -886,7 +887,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
               Flexible(
                   child: Text(tweet.user!.name!,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.w500))),
+                      style: const TextStyle(fontWeight: FontWeight.w700))),
               if (tweet.user!.verified ?? false) const SizedBox(width: 4),
               if (tweet.user!.verified ?? false)
                 Icon(Icons.verified, size: 18, color: Theme.of(context).colorScheme.primary)
@@ -982,6 +983,9 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
             child: Column(children: [
               Card(
                 color: tweetCardColor(context),
+                margin: EdgeInsets.zero,
+                elevation: 0,
+                shape: const RoundedRectangleBorder(),
                 child: Row(
                   children: [
                     retweetSidebar,
@@ -1002,7 +1006,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
               ),
               Divider(
                 height: 0,
-                thickness: 1,
+                thickness: 0.5,
                 color: addSeparator ? theme.colorScheme.surfaceBright.withAlpha(150) : Colors.transparent,
               ),
             ])));
