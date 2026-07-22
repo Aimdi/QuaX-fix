@@ -209,7 +209,10 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
   }
 
   void _onControllerChanged() {
-    if (mounted) setState(() {});
+    // PagingListener already rebuilds the list on controller changes; this
+    // extra rebuild only matters for swapping the cached preview out once the
+    // first page arrives, so skip it entirely when there is no preview.
+    if (mounted && widget.firstPagePreview != null) setState(() {});
   }
 
   // Drives the same RefreshIndicator the user pulls down, so the app-bar refresh
@@ -297,6 +300,9 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
           state: state,
           fetchNextPage: fetchNextPage,
           addAutomaticKeepAlives: false,
+          // Build tiles well ahead of the viewport so images and media are
+          // decoded before they scroll in, instead of janking at the edge.
+          cacheExtent: 800,
           builderDelegate: PagedChildBuilderDelegate(
             itemBuilder: (context, chain, index) {
               final conversation = _buildChain(context, chain);
