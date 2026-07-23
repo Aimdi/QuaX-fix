@@ -3,6 +3,23 @@
 Incremental UI/structure rewrite of `lib/tweet/`. Keep `flutter_triple` Stores
 for feature state; do **not** change `lib/client/` or `lib/database/`.
 
+## Product constraint (read-oriented frontend)
+
+QuaX-fix is **not** X. Tweet UI is for **viewing** posts and conversations.
+Do not add compose sheets, reply composers, quote/repost publishers, or any
+call that creates content on X.
+
+Existing footer controls stay as they are today:
+
+| Control | Actual behavior |
+|---|---|
+| Comment | Opens the conversation / status screen (read) |
+| Repeat | Opens the quotes screen when quotes exist (read) |
+| Heart | **Local-only** like stored on device |
+| Bookmark | Local saved post / folder |
+| Share | Share text/link/image via the OS share sheet |
+| Translate | Local translation of already-loaded text |
+
 ## Freeze (out of scope for early PRs)
 
 - Video stack: `_video.dart`, `_video_controls.dart`, `video_controller_pool.dart`,

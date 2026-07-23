@@ -4,7 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**QuaX** (formerly Quacker) is a privacy-focused Flutter/Dart client for X (formerly Twitter), forked from Quacker/Fritter. It has no external trackers, stores all data locally in SQLite, and uses reverse-engineered X API endpoints.
+**QuaX** (formerly Quacker) is a privacy-focused Flutter/Dart **read-oriented
+frontend** for X (formerly Twitter), forked from Quacker/Fritter. It is **not**
+X itself and does not implement posting: no compose, reply, quote, repost, or
+server-side like. Accounts are used to *fetch* content; subscriptions, saved
+posts, and device likes stay local in SQLite. There are no external trackers;
+the app talks to reverse-engineered X API endpoints.
 
 ## Build & Development Commands
 
