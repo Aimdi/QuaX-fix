@@ -50,8 +50,7 @@ fixtures can land later without blocking Phase 2.
 
 One feature folder per worktree / Grok session. Order:
 
-1. `tweet/` (most reused) — **PR-1 in progress** (`docs/specs/tweet.md`): chrome
-   tokens + conversation alignment + quote L10n
+1. `tweet/` (most reused) — PR-1 chrome/L10n + PR-2 footer extract (`docs/specs/tweet.md`)
 2. `home/`
 3. `profile/`
 4. `search/`
