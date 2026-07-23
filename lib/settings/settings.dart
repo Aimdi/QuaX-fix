@@ -51,7 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(L10n.of(context).general),
             leading: Icon(Icons.miscellaneous_services),
             subtitle: Text(
-              "${L10n.of(context).language}, ${L10n.of(context).should_check_for_updates_label}, ${L10n.of(context).disable_screenshots}, ${L10n.of(context).default_tab}, ${L10n.of(context).share_base_url}",
+              "${L10n.of(context).language}, ${L10n.of(context).should_check_for_updates_label}, ${L10n.of(context).disable_screenshots}, ${L10n.of(context).default_tab}, ${L10n.of(context).share_base_url}, ${L10n.of(context).crash_reports_enabled}",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontStyle: FontStyle.italic),

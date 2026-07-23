@@ -5,6 +5,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/home/_feed.dart';
 import 'package:quax/home/home_screen.dart';
 import 'package:quax/profile/profile.dart';
+import 'package:quax/settings/_crash_reports.dart';
 import 'package:quax/utils/iterables.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
@@ -133,6 +134,8 @@ class SettingsGeneralFragment extends StatelessWidget {
             subtitle: Text(L10n.of(context).share_base_url_description),
             dialog: _createShareBaseDialog(context, prefs),
           ),
+          const Divider(),
+          const SettingsCrashReportsSection(),
         ]),
       ),
     );
