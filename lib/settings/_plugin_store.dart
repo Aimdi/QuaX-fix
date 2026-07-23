@@ -23,7 +23,7 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
       body: ListView.separated(
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemCount: builtInPlugins.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
+        separatorBuilder: (_, _) => const Divider(height: 1),
         itemBuilder: (context, index) {
           final plugin = builtInPlugins[index];
           final enabled = plugin.isEnabled(prefs);
@@ -34,7 +34,7 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
             value: enabled,
             onChanged: (value) async {
               await plugin.setEnabled(prefs, value);
-              if (!mounted) return;
+              if (!context.mounted) return;
               await context.read<HomeModel>().loadPages();
               setState(() {});
             },

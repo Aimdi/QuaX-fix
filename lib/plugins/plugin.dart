@@ -14,7 +14,9 @@ abstract class QuaxPlugin {
 
   bool isEnabled(BasePrefService prefs) => prefs.get(enabledPrefKey) == true;
 
-  Future<void> setEnabled(BasePrefService prefs, bool enabled) => prefs.set(enabledPrefKey, enabled);
+  Future<void> setEnabled(BasePrefService prefs, bool enabled) async {
+    await prefs.set(enabledPrefKey, enabled);
+  }
 
   /// Optional home tab when the plugin is enabled.
   NavigationPage? homePage(BuildContext context) => null;

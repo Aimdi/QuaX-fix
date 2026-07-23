@@ -120,7 +120,7 @@ class _SubstackScreenState extends State<SubstackScreen> {
                   controller: widget.scrollController,
                   padding: const EdgeInsets.only(bottom: 24),
                   itemCount: posts.length + 1,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
+                  separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     if (index == 0) {
                       return _FollowedStrip(
@@ -158,7 +158,7 @@ class _FollowedStrip extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         itemCount: publications.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           final pub = publications[index];
           return InputChip(

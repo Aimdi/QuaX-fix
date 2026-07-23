@@ -6,7 +6,7 @@ import 'package:quax/plugins/plugin.dart';
 import 'package:quax/plugins/substack/substack_screen.dart';
 
 class SubstackPlugin extends QuaxPlugin {
-  const SubstackPlugin();
+  SubstackPlugin();
 
   @override
   String get id => pluginIdSubstack;

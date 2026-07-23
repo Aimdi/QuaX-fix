@@ -3,7 +3,7 @@ import 'package:quax/plugins/substack/substack_plugin.dart';
 
 /// Built-in plugins shipped with QuaX.
 final List<QuaxPlugin> builtInPlugins = [
-  const SubstackPlugin(),
+  SubstackPlugin(),
 ];
 
 QuaxPlugin? pluginById(String id) {
