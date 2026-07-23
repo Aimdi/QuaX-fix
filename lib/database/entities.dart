@@ -227,6 +227,10 @@ class SubscriptionGroup with ToMappable {
   final int numberOfMembers;
   final DateTime createdAt;
 
+  // Not persisted: a few member avatar URLs for the list row preview,
+  // populated by GroupsModel.reloadGroups.
+  final List<String> memberAvatarUrls;
+
   IconData get iconData => deserializeIconData(icon);
 
   SubscriptionGroup(
@@ -235,7 +239,17 @@ class SubscriptionGroup with ToMappable {
       required this.icon,
       required this.color,
       required this.numberOfMembers,
-      required this.createdAt});
+      required this.createdAt,
+      this.memberAvatarUrls = const []});
+
+  SubscriptionGroup withMemberAvatarUrls(List<String> urls) => SubscriptionGroup(
+      id: id,
+      name: name,
+      icon: icon,
+      color: color,
+      numberOfMembers: numberOfMembers,
+      createdAt: createdAt,
+      memberAvatarUrls: urls);
 
   factory SubscriptionGroup.fromMap(Map<String, Object?> json) {
     // This is here to handle imports of data from before v2.15.0

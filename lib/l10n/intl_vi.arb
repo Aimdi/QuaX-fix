@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "Chung",
   "@general": {},
+  "group_member_count": "{count, plural, other{{count} người đăng kí}}",
+  "@group_member_count": {},
   "group_name": "{name}",
   "@group_name": {},
   "groups": "Nhóm",

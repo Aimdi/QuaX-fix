@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "一般",
   "@general": {},
+  "group_member_count": "{count, plural, other{{count}件の登録アカウント}}",
+  "@group_member_count": {},
   "group_name": "グループ: {name}",
   "@group_name": {},
   "groups": "グループ",

@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "Orokorra",
   "@general": {},
+  "group_member_count": "{count, plural, other{{count} harpidetza}}",
+  "@group_member_count": {},
   "group_name": "Taldea: {name}",
   "@group_name": {},
   "groups": "Taldeak",

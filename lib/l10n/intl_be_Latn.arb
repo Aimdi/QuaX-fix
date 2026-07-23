@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "Ahulnaje",
   "@general": {},
+  "group_member_count": "{count, plural, one{{count} padpiska} few{{count} padpiski} many{{count} padpisak} other{{count} padpiski}}",
+  "@group_member_count": {},
   "group_name": "{name}",
   "@group_name": {},
   "groups": "Hrupy",

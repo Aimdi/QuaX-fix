@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "Асноўныя",
   "@general": {},
+  "group_member_count": "{count, plural, one{{count} падпіска} few{{count} падпіскі} many{{count} падпісак} other{{count} падпіскі}}",
+  "@group_member_count": {},
   "group_name": "Група: {name}",
   "@group_name": {},
   "groups": "Групы",

@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "Üldised seadistused",
   "@general": {},
+  "group_member_count": "{count, plural, one{1 tellimus} other{{count} tellimust}}",
+  "@group_member_count": {},
   "group_name": "Grupp: {name}",
   "@group_name": {},
   "groups": "Grupid",

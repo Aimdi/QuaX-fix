@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "Основные",
   "@general": {},
+  "group_member_count": "{count, plural, one{{count} подписка} few{{count} подписки} many{{count} подписок} other{{count} подписки}}",
+  "@group_member_count": {},
   "group_name": "Группа: {name}",
   "@group_name": {},
   "groups": "Группы",

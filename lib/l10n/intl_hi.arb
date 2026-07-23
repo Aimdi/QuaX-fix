@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "सामान्य",
   "@general": {},
+  "group_member_count": "{count, plural, one{{count} सदस्यता} other{{count} सदस्यताएँ}}",
+  "@group_member_count": {},
   "group_name": "{name}",
   "@group_name": {},
   "groups": "समूह",

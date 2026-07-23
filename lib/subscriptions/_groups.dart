@@ -1,15 +1,13 @@
 import 'dart:convert';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/Models/configuration.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
-import 'package:quax/group/group_screen.dart';
+import 'package:quax/subscriptions/_group_list_item.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/user.dart';
 import 'package:provider/provider.dart';
@@ -32,30 +30,37 @@ class SubscriptionGroups extends StatefulWidget {
 }
 
 class _SubscriptionGroupsState extends State<SubscriptionGroups> {
-  Widget _createGroupCard(
-      String id, String name, String icon, Color? color, int? numberOfMembers, void Function()? onLongPress) {
-    var title = numberOfMembers == null ? name : '$name ($numberOfMembers)';
+  final TextEditingController _searchController = TextEditingController();
 
-    return Card(
-      color: color?.harmonizeWith(Theme.of(context).colorScheme.primary),
-      child: InkWell(
-        onTap: () {
-          // Open page with the group's feed
-          Navigator.pushNamed(context, routeGroup, arguments: GroupScreenArguments(id: id, name: name));
-        },
-        onLongPress: onLongPress,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(deserializeIconData(icon), size: 24),
-            Text(title,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-          ],
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildSearchBar(BuildContext context) {
+    final hasQuery = _searchController.text.isNotEmpty;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      child: SearchBar(
+        controller: _searchController,
+        hintText: L10n.of(context).search,
+        leading: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: Icon(Icons.search),
         ),
+        trailing: hasQuery
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    _searchController.clear();
+                    setState(() {});
+                  },
+                ),
+              ]
+            : null,
+        onChanged: (_) => setState(() {}),
       ),
     );
   }
@@ -66,25 +71,28 @@ class _SubscriptionGroupsState extends State<SubscriptionGroups> {
       store: context.read<GroupsModel>(),
       // TODO: Error
       onState: (_, state) {
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.only(top: 4),
-          gridDelegate:
-              const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 100, childAspectRatio: 20 / 15),
-          itemCount: state.length + 1,
-          itemBuilder: (context, index) {
-            var actualIndex = index;
+        final query = _searchController.text.toLowerCase();
+        final groups = query.isEmpty
+            ? state
+            : state.where((g) => g.name.toLowerCase().contains(query)).toList(growable: false);
 
-            if (actualIndex < state.length) {
-              var e = state[actualIndex];
-
-              return _createGroupCard(e.id, e.name, e.icon, e.color, e.numberOfMembers,
-                  () => openSubscriptionGroupDialog(context, e.id, e.name, e.icon));
-            }
-
-            return null;
-          },
+        return Column(
+          children: [
+            if (state.length > 5) _buildSearchBar(context),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.only(top: 4),
+              itemCount: groups.length,
+              itemBuilder: (context, index) {
+                final group = groups[index];
+                return GroupListItem(
+                  group: group,
+                  onLongPress: () => openSubscriptionGroupDialog(context, group.id, group.name, group.icon),
+                );
+              },
+            ),
+          ],
         );
       },
     );

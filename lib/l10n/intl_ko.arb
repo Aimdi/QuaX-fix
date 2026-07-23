@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "일반",
   "@general": {},
+  "group_member_count": "{count, plural, other{구독 {count}개}}",
+  "@group_member_count": {},
   "group_name": "{name}",
   "@group_name": {},
   "groups": "그룹",

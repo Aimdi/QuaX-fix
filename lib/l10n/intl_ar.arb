@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "العامة",
   "@general": {},
+  "group_member_count": "{count, plural, zero{لا اشتراكات} one{اشتراك واحد} two{اشتراكان} few{{count} اشتراكات} many{{count} اشتراكًا} other{{count} اشتراك}}",
+  "@group_member_count": {},
   "group_name": "المجموعة: {name}",
   "@group_name": {},
   "groups": "المجموعات",

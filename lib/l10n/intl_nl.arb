@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "Algemeen",
   "@general": {},
+  "group_member_count": "{count, plural, one{1 abonnement} other{{count} abonnementen}}",
+  "@group_member_count": {},
   "group_name": "{name}",
   "@group_name": {},
   "groups": "Groepen",

@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "Umum",
   "@general": {},
+  "group_member_count": "{count, plural, other{{count} langganan}}",
+  "@group_member_count": {},
   "group_name": "Grup: {name}",
   "@group_name": {},
   "groups": "Grup",

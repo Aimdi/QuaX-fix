@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "Ĝenerala",
   "@general": {},
+  "group_member_count": "{count, plural, one{1 abono} other{{count} abonoj}}",
+  "@group_member_count": {},
   "group_name": "Grupo: {name}",
   "@group_name": {},
   "groups": "Grupoj",

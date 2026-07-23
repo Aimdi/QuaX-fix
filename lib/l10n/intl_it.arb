@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "Generale",
   "@general": {},
+  "group_member_count": "{count, plural, one{1 iscrizione} other{{count} iscrizioni}}",
+  "@group_member_count": {},
   "group_name": "Gruppo: {name}",
   "@group_name": {},
   "groups": "Gruppi",

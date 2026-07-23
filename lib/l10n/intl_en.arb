@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "General",
   "@general": {},
+  "group_member_count": "{count, plural, one{1 subscription} other{{count} subscriptions}}",
+  "@group_member_count": {},
   "group_name": "{name}",
   "@group_name": {},
   "groups": "Groups",

@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "通用",
   "@general": {},
+  "group_member_count": "{count, plural, other{{count} 个订阅}}",
+  "@group_member_count": {},
   "group_name": "组：{name}",
   "@group_name": {},
   "groups": "订阅组",

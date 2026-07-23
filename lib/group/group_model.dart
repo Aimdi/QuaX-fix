@@ -177,11 +177,35 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
       var query =
           "SELECT g.id, g.name, g.icon, g.color, g.created_at, COUNT(gm.profile_id) AS number_of_members FROM $tableSubscriptionGroup g LEFT JOIN $tableSubscriptionGroupMember gm ON gm.group_id = g.id WHERE g.id != '-1' GROUP BY g.id ORDER BY $orderGroupsBy $orderByDirection";
 
-      return (await database.rawQuery(query)).map((e) => SubscriptionGroup.fromMap(e)).toList(growable: false);
+      var groups = (await database.rawQuery(query)).map((e) => SubscriptionGroup.fromMap(e)).toList(growable: false);
+      var avatars = await _loadMemberAvatars(database);
+
+      return groups
+          .map((g) => g.withMemberAvatarUrls(avatars[g.id] ?? const []))
+          .toList(growable: false);
     });
     for (final callback in _onGroupsReloaded.values) {
       callback();
     }
+  }
+
+  /// A few member avatar URLs per group, for the list row preview cluster.
+  static const _avatarPreviewCount = 4;
+
+  Future<Map<String, List<String>>> _loadMemberAvatars(dynamic database) async {
+    var rows = await database.rawQuery(
+        'SELECT gm.group_id, s.profile_image_url_https FROM $tableSubscriptionGroupMember gm '
+        'JOIN $tableSubscription s ON s.id = gm.profile_id '
+        'WHERE s.profile_image_url_https IS NOT NULL '
+        'ORDER BY gm.group_id, s.screen_name COLLATE NOCASE');
+
+    return rows.fold<Map<String, List<String>>>({}, (acc, row) {
+      var urls = acc.putIfAbsent(row['group_id'] as String, () => []);
+      if (urls.length < _avatarPreviewCount) {
+        urls.add(row['profile_image_url_https'] as String);
+      }
+      return acc;
+    });
   }
 
   /// Makes the global replies/reposts default apply to every group again by

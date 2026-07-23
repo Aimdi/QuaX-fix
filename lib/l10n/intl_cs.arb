@@ -245,6 +245,8 @@
   "@from_these_accounts": {},
   "general": "Obecné",
   "@general": {},
+  "group_member_count": "{count, plural, one{1 odběr} few{{count} odběry} many{{count} odběru} other{{count} odběrů}}",
+  "@group_member_count": {},
   "group_name": "Skupina: {name}",
   "@group_name": {},
   "groups": "Skupiny",
