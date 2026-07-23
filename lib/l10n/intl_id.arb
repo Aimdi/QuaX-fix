@@ -104,6 +104,7 @@
   "could_not_find_any_tweets_from_the_last_7_days": "Tidak bisa menemukan cuitan apa pun dari 7 hari terakhir!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
   "could_not_retrieve_quoted_tweet": "Tidak dapat mengambil tweet yang dikutip",
+  "@could_not_retrieve_quoted_tweet": {},
   "country": "Negara",
   "@country": {},
   "create": "Buat",
@@ -578,6 +579,12 @@
   "@theme_preset": {},
   "theme_preset_description": "Tampilan lengkap yang menggantikan mode tema dan warna di bawah",
   "@theme_preset_description": {},
+  "theme_preset_x_look_dim": "Tampilan X (Redup)",
+  "@theme_preset_x_look_dim": {},
+  "theme_preset_x_look_light": "Tampilan X (Terang)",
+  "@theme_preset_x_look_light": {},
+  "theme_preset_x_look_lights_out": "Tampilan X (Hitam)",
+  "@theme_preset_x_look_lights_out": {},
   "there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": "Tidak ada tren yang dikembalikan. Ini tidak terduga! Mohon laporkan sebagai masalah, jika mungkin.",
   "@there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": {},
   "these_hashtags": "Tagar ini",
@@ -709,6 +716,7 @@
   "view_on_github": "Lihat di GitHub",
   "@view_on_github": {},
   "view_quoted_tweet": "Lihat tweet yang dikutip",
+  "@view_quoted_tweet": {},
   "view_version_on_github": "Lihat versi di GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Untuk menyembunyikan cuitan yang ditandai sebagai sensitif",
@@ -738,7 +746,5 @@
   "zen_mode_page_cap": "Panjang beranda di mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
-  "@zen_mode_page_cap_description": {},
-  "@could_not_retrieve_quoted_tweet": {},
-  "@view_quoted_tweet": {}
+  "@zen_mode_page_cap_description": {}
 }

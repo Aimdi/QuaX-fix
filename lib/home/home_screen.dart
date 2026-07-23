@@ -15,6 +15,7 @@ import 'package:quax/search/search.dart';
 import 'package:quax/subscriptions/subscriptions.dart';
 import 'package:quax/trends/trends_screen.dart';
 import 'package:quax/ui/errors.dart';
+import 'package:quax/ui/x_look_theme.dart';
 
 typedef NavigationTitleBuilder = String Function(BuildContext context);
 
@@ -248,13 +249,15 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
                 return NavigationDestination(
                   icon: AnimatedScale(
                     scale: scale,
-                    duration: const Duration(milliseconds: 0),
+                    duration: Duration(
+                        milliseconds: XLookTokens.maybeOf(context) != null ? 250 : 0),
                     curve: Curves.easeOut,
                     child: page.icon,
                   ),
                   selectedIcon: AnimatedScale(
                     scale: scale,
-                    duration: const Duration(milliseconds: 0),
+                    duration: Duration(
+                        milliseconds: XLookTokens.maybeOf(context) != null ? 250 : 0),
                     curve: Curves.easeOut,
                     child: page.selectedIcon,
                   ),

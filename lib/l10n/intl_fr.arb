@@ -104,6 +104,7 @@
   "could_not_find_any_tweets_from_the_last_7_days": "Impossible de trouver des tweets des 7 derniers jours !",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
   "could_not_retrieve_quoted_tweet": "Impossible de récupérer le post cité",
+  "@could_not_retrieve_quoted_tweet": {},
   "country": "Pays",
   "@country": {},
   "create": "Créer",
@@ -578,6 +579,12 @@
   "@theme_preset": {},
   "theme_preset_description": "Un habillage complet qui remplace le mode et la couleur du thème ci-dessous",
   "@theme_preset_description": {},
+  "theme_preset_x_look_dim": "Apparence X (atténuée)",
+  "@theme_preset_x_look_dim": {},
+  "theme_preset_x_look_light": "Apparence X (claire)",
+  "@theme_preset_x_look_light": {},
+  "theme_preset_x_look_lights_out": "Apparence X (noir)",
+  "@theme_preset_x_look_lights_out": {},
   "there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": "Aucune tendance n'a été retournée. C'est inattendu ! Veuillez le signaler comme un bug si possible.",
   "@there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": {},
   "these_hashtags": "Ces hashtags",
@@ -709,6 +716,7 @@
   "view_on_github": "Voir sur GitHub",
   "@view_on_github": {},
   "view_quoted_tweet": "Voir le post cité",
+  "@view_quoted_tweet": {},
   "view_version_on_github": "Téléchargez la version {version} sur GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Masquer ou non les tweets marqués comme sensibles",
@@ -738,7 +746,5 @@
   "zen_mode_page_cap": "Longueur du fil en mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Nombre de pages chargées par le fil en mode zen avant de faire une pause.",
-  "@zen_mode_page_cap_description": {},
-  "@could_not_retrieve_quoted_tweet": {},
-  "@view_quoted_tweet": {}
+  "@zen_mode_page_cap_description": {}
 }

@@ -67,6 +67,8 @@ PaginatedTweetList / CachedTweetList
 1. Extract header / `_TweetTileLeading` into `tweet_header.dart`.
 2. Move `TweetContextState` out of `lib/profile/profile.dart`.
 3. Null-safe `_card.dart` access (`/parse-api`).
+4. **Perf pass** — see `docs/specs/tweet-perf.md` (decode caps, RepaintBoundary,
+   skeleton first-page).
 
 ## Acceptance
 

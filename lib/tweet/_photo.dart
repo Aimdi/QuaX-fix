@@ -29,15 +29,38 @@ class _TweetPhotoState extends State<TweetPhoto> with SingleTickerProviderStateM
       AnimationController(duration: const Duration(milliseconds: 150), vsync: this);
 
   @override
+  void dispose() {
+    _doubleClickAnimationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final url = widget.size != null ? '${widget.uri}:${widget.size}' : widget.uri;
+
+    // Timeline tiles: decode at layout width × DPR. Fullscreen viewer keeps
+    // full-res so pinch-zoom stays sharp.
+    if (widget.inPageView) {
+      return _gestureImage(url, cacheWidth: null);
+    }
+
+    return LayoutBuilder(builder: (context, constraints) {
+      final maxW = constraints.maxWidth;
+      final cacheWidth = maxW.isFinite && maxW > 0
+          ? (maxW * MediaQuery.devicePixelRatioOf(context)).ceil()
+          : null;
+      return _gestureImage(url, cacheWidth: cacheWidth);
+    });
+  }
+
+  Widget _gestureImage(String url, {required int? cacheWidth}) {
     return ExtendedImageSlidePage(
       slideAxis: SlideAxis.vertical,
       child: ExtendedImage.network(
-        widget.size != null ? '${widget.uri}:${widget.size}' : widget.uri,
+        url,
         cache: true,
-        width: 5000,
-        height: 5000,
         fit: widget.fit,
+        cacheWidth: cacheWidth,
         mode: ExtendedImageMode.gesture,
         enableSlideOutPage: widget.pullToClose,
         initGestureConfigHandler: (state) {
@@ -58,7 +81,6 @@ class _TweetPhotoState extends State<TweetPhoto> with SingleTickerProviderStateM
           final double? begin = state.gestureDetails!.totalScale;
           double end;
 
-          // Remove and stop any old animation
           _doubleClickAnimation?.removeListener(_doubleClickAnimationListener);
           _doubleClickAnimationController.stop();
           _doubleClickAnimationController.reset();

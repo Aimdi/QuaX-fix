@@ -104,6 +104,7 @@
   "could_not_find_any_tweets_from_the_last_7_days": "Nie atrymlivajecca znajści jakija-niebudź tvity za apošnija 7 dzion!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
   "could_not_retrieve_quoted_tweet": "Nie ŭdalosia atrymac cytavany post",
+  "@could_not_retrieve_quoted_tweet": {},
   "country": "Kraina",
   "@country": {},
   "create": "Stvaryć",
@@ -578,6 +579,12 @@
   "@theme_preset": {},
   "theme_preset_description": "Poŭny vyhliad, jaki zamianiaje režym temy i kolier nižej",
   "@theme_preset_description": {},
+  "theme_preset_x_look_dim": "Vyhliad X (pryhlušany)",
+  "@theme_preset_x_look_dim": {},
+  "theme_preset_x_look_light": "Vyhliad X (svietly)",
+  "@theme_preset_x_look_light": {},
+  "theme_preset_x_look_lights_out": "Vyhliad X (čorny)",
+  "@theme_preset_x_look_lights_out": {},
   "there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": "Niama viernutych trendaŭ. Heta niaočykavana! Kali łaska, pavedamcie ab pamyłcy, kali maholima.",
   "@there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": {},
   "these_hashtags": "Hetyja cheštehi",
@@ -709,6 +716,7 @@
   "view_on_github": "Ahliadaĺ na GitHub",
   "@view_on_github": {},
   "view_quoted_tweet": "Prahladzieć cytavany post",
+  "@view_quoted_tweet": {},
   "view_version_on_github": "Ahliadaĺ viersiju na GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Ci skryvać posty, adznačanyja jak čulivyja",
@@ -738,7 +746,5 @@
   "zen_mode_page_cap": "Daŭžynia stužki ŭ dzen-režymie",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolki staronak zahružaje stužka ŭ dzen-režymie pierad paŭzaj.",
-  "@zen_mode_page_cap_description": {},
-  "@could_not_retrieve_quoted_tweet": {},
-  "@view_quoted_tweet": {}
+  "@zen_mode_page_cap_description": {}
 }

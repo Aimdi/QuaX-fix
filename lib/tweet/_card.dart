@@ -54,11 +54,18 @@ class TweetCard extends StatelessWidget {
     if (size == 'disabled') {
       child = Container();
     } else {
-      child = ExtendedImage.network(
-        image['url'],
-        cache: true,
-        fit: fit,
-      );
+      child = LayoutBuilder(builder: (context, constraints) {
+        final maxW = constraints.maxWidth;
+        final cacheWidth = maxW.isFinite && maxW > 0
+            ? (maxW * MediaQuery.devicePixelRatioOf(context)).ceil()
+            : null;
+        return ExtendedImage.network(
+          image['url'],
+          cache: true,
+          fit: fit,
+          cacheWidth: cacheWidth,
+        );
+      });
     }
 
     return AspectRatio(

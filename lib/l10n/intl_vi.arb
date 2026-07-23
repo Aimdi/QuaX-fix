@@ -104,6 +104,7 @@
   "could_not_find_any_tweets_from_the_last_7_days": "Không thể tìm bài viết nào trong 7 ngày vừa qua!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
   "could_not_retrieve_quoted_tweet": "Không thể lấy bài đăng được trích dẫn",
+  "@could_not_retrieve_quoted_tweet": {},
   "country": "Thành phố",
   "@country": {},
   "create": "Tạo",
@@ -578,6 +579,12 @@
   "@theme_preset": {},
   "theme_preset_description": "Giao diện hoàn chỉnh thay thế chế độ và màu chủ đề bên dưới",
   "@theme_preset_description": {},
+  "theme_preset_x_look_dim": "Giao diện X (mờ)",
+  "@theme_preset_x_look_dim": {},
+  "theme_preset_x_look_light": "Giao diện X (sáng)",
+  "@theme_preset_x_look_light": {},
+  "theme_preset_x_look_lights_out": "Giao diện X (đen)",
+  "@theme_preset_x_look_lights_out": {},
   "there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": "Không có xu hướng nào được tải, có thể đây là lỗi",
   "@there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": {},
   "these_hashtags": "Những hashtag này",
@@ -709,6 +716,7 @@
   "view_on_github": "Xem ở Github",
   "@view_on_github": {},
   "view_quoted_tweet": "Xem bài đăng được trích dẫn",
+  "@view_quoted_tweet": {},
   "view_version_on_github": "Xem bản {version} ở Github",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Ẩn những bài viết gắn mác nhạy cảm",
@@ -738,7 +746,5 @@
   "zen_mode_page_cap": "Độ dài bảng tin ở chế độ zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Số trang bảng tin tải ở chế độ zen trước khi tạm dừng.",
-  "@zen_mode_page_cap_description": {},
-  "@could_not_retrieve_quoted_tweet": {},
-  "@view_quoted_tweet": {}
+  "@zen_mode_page_cap_description": {}
 }

@@ -104,6 +104,7 @@
   "could_not_find_any_tweets_from_the_last_7_days": "Couldn't find any posts from the last 7 days!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
   "could_not_retrieve_quoted_tweet": "Could not retrieve quoted tweet",
+  "@could_not_retrieve_quoted_tweet": {},
   "country": "Country",
   "@country": {},
   "create": "Create",
@@ -578,6 +579,12 @@
   "@theme_preset": {},
   "theme_preset_description": "A complete look that overrides the theme mode and color below",
   "@theme_preset_description": {},
+  "theme_preset_x_look_dim": "X Look (Dim)",
+  "@theme_preset_x_look_dim": {},
+  "theme_preset_x_look_light": "X Look (Light)",
+  "@theme_preset_x_look_light": {},
+  "theme_preset_x_look_lights_out": "X Look (Lights Out)",
+  "@theme_preset_x_look_lights_out": {},
   "there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": "There were no trends returned. This is unexpected! Please report as a bug, if possible.",
   "@there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": {},
   "these_hashtags": "These hashtags",
@@ -709,6 +716,7 @@
   "view_on_github": "View on GitHub",
   "@view_on_github": {},
   "view_quoted_tweet": "View quoted tweet",
+  "@view_quoted_tweet": {},
   "view_version_on_github": "View version {version} on GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Whether to hide posts marked as sensitive",
@@ -738,7 +746,5 @@
   "zen_mode_page_cap": "Zen feed length",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "How many pages a feed loads in zen mode before pausing.",
-  "@zen_mode_page_cap_description": {},
-  "@could_not_retrieve_quoted_tweet": {},
-  "@view_quoted_tweet": {}
+  "@zen_mode_page_cap_description": {}
 }

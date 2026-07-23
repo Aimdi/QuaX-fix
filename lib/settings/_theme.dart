@@ -26,6 +26,10 @@ class SettingsThemeFragment extends StatelessWidget {
                 DropdownMenuItem(value: themePresetNone, child: Text(L10n.of(context).content_filter_default)),
                 const DropdownMenuItem(value: themePresetFairyForest, child: Text('Fairy Forest')),
                 const DropdownMenuItem(value: themePresetPitchBlack, child: Text('Pitch Black')),
+                DropdownMenuItem(value: themePresetXLookLight, child: Text(L10n.of(context).theme_preset_x_look_light)),
+                DropdownMenuItem(value: themePresetXLookDim, child: Text(L10n.of(context).theme_preset_x_look_dim)),
+                DropdownMenuItem(
+                    value: themePresetXLookLightsOut, child: Text(L10n.of(context).theme_preset_x_look_lights_out)),
               ]),
           PrefDropdown(fullWidth: false, title: Text(L10n.of(context).theme_mode), pref: optionThemeMode, items: [
             DropdownMenuItem(

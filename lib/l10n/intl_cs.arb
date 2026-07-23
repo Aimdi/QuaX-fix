@@ -104,6 +104,7 @@
   "could_not_find_any_tweets_from_the_last_7_days": "Nepodařilo se nalézt žádné tweety z posledních 7 dnů!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
   "could_not_retrieve_quoted_tweet": "Citovaný tweet se nepodařilo načíst",
+  "@could_not_retrieve_quoted_tweet": {},
   "country": "Země",
   "@country": {},
   "create": "Vytvořit",
@@ -578,6 +579,12 @@
   "@theme_preset": {},
   "theme_preset_description": "Kompletní vzhled, který nahrazuje režim motivu a barvu níže",
   "@theme_preset_description": {},
+  "theme_preset_x_look_dim": "Vzhled X (tlumený)",
+  "@theme_preset_x_look_dim": {},
+  "theme_preset_x_look_light": "Vzhled X (světlý)",
+  "@theme_preset_x_look_light": {},
+  "theme_preset_x_look_lights_out": "Vzhled X (černý)",
+  "@theme_preset_x_look_lights_out": {},
   "there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": "Nebyly vráceny žádné trendy. Toto je neočekávané! Pokud je to možné, nahlaste to prosím jako chybu.",
   "@there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": {},
   "these_hashtags": "Tyto hashtagy",
@@ -709,6 +716,7 @@
   "view_on_github": "Zobrazit na GitHubu",
   "@view_on_github": {},
   "view_quoted_tweet": "Zobrazit citovaný tweet",
+  "@view_quoted_tweet": {},
   "view_version_on_github": "Zobrazit verzi na GitHubu",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Zda skrývat tweety označené jako citlivé",
@@ -738,7 +746,5 @@
   "zen_mode_page_cap": "Délka kanálu v zen režimu",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolik stránek kanál v zen režimu načte, než se pozastaví.",
-  "@zen_mode_page_cap_description": {},
-  "@could_not_retrieve_quoted_tweet": {},
-  "@view_quoted_tweet": {}
+  "@zen_mode_page_cap_description": {}
 }

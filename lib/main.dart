@@ -42,6 +42,7 @@ import 'package:quax/trends/trends_model.dart';
 import 'package:quax/tweet/_video.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/ui/theme_presets.dart';
+import 'package:quax/ui/x_look_theme.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
@@ -501,7 +502,13 @@ class _FritterAppState extends State<FritterApp> {
                         title: 'QuaX',
                         theme: _themePreset == themePresetFairyForest
                             ? fairyForestTheme(pageTransitions)
-                            : ThemeData(
+                            : _themePreset == themePresetXLookLight
+                                ? xLookLightTheme(pageTransitions)
+                                : _themePreset == themePresetXLookDim
+                                    ? xLookDimTheme(pageTransitions)
+                                    : _themePreset == themePresetXLookLightsOut
+                                        ? xLookLightsOutTheme(pageTransitions)
+                                        : ThemeData(
                           colorScheme: _themeColor == 'accent'
                               ? lightDynamic
                               : ColorScheme.fromSeed(
@@ -520,7 +527,13 @@ class _FritterAppState extends State<FritterApp> {
                         ),
                         darkTheme: _themePreset == themePresetPitchBlack
                             ? pitchBlackTheme(pageTransitions)
-                            : ThemeData(
+                            : _themePreset == themePresetXLookDim
+                                ? xLookDimTheme(pageTransitions)
+                                : _themePreset == themePresetXLookLightsOut
+                                    ? xLookLightsOutTheme(pageTransitions)
+                                    : _themePreset == themePresetXLookLight
+                                        ? xLookLightTheme(pageTransitions)
+                                        : ThemeData(
                           colorScheme: (_trueBlack == true
                               ? (_themeColor == 'accent'
                                       ? darkDynamic
@@ -549,9 +562,12 @@ class _FritterAppState extends State<FritterApp> {
                               : null,
                           useMaterial3: true,
                         ),
-                        themeMode: _themePreset == themePresetFairyForest
+                        themeMode: _themePreset == themePresetFairyForest ||
+                                _themePreset == themePresetXLookLight
                             ? ThemeMode.light
-                            : _themePreset == themePresetPitchBlack
+                            : _themePreset == themePresetPitchBlack ||
+                                    _themePreset == themePresetXLookDim ||
+                                    _themePreset == themePresetXLookLightsOut
                                 ? ThemeMode.dark
                                 : themeMode,
                         initialRoute: '/',

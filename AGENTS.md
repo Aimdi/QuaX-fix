@@ -22,16 +22,21 @@ appear.
 - Footer icons that look like X actions are **navigation / local** affordances
   (e.g. comment opens the conversation; repeat opens the quotes screen; heart
   is local-only). Do not "fix" them into real posting.
-- **Do not big-bang rewrite.** Keep `lib/client/` and `lib/database/` intact
-  unless fixing a live API break. Rewrite UI/feature folders incrementally.
+- **`lib/client/` and `lib/database/` are frozen** — never rewrite them as part
+  of a UI/perf pass. Touch only to fix a live API break. DB schema changes only
+  via `sqflite_migration_plan` migrations.
+- **Do not big-bang rewrite.** Rewrite UI/feature folders incrementally
+  (`tweet/` → `home/` → `profile/` → `search/` → rest).
 - **Store pattern only.** Use `flutter_triple` `Store<T>` — never `setState` or
   `ChangeNotifier` for feature state.
 - **No raw UI strings.** Every user-visible string goes through ARB / `L10n`
-  (see `/translate`).
+  (see `/translate`). Never hand-edit `lib/generated/`.
 - **Null-safe API parsing.** Reverse-engineered X JSON is fragile — use `?[]`
-  and `as Type?` (see `/parse-api`).
+  and `as Type?` (see `/parse-api`). Prefer `?["field"] ?? default`.
+- **Never bump pinned deps** (`dart_twitter_api: 0.6.0`, the
+  `dependency_overrides` block, Flutter **3.44.4** in `.fvmrc` / `pubspec.yaml`).
+  They are load-bearing.
 - Prefer pure functions; keep functions under ~30 lines (widget builders excepted).
-- Schema changes only via `sqflite_migration_plan` migrations.
 
 ### Permission / worktree workflow
 

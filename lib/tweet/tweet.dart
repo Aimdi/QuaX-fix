@@ -21,6 +21,7 @@ import 'package:quax/tweet/tweet_footer.dart';
 import 'package:quax/article/article.dart';
 import 'package:quax/ui/dates.dart';
 import 'package:quax/ui/errors.dart';
+import 'package:quax/ui/x_look_theme.dart';
 import 'package:quax/user.dart';
 import 'package:quax/utils/rich_text.dart';
 import 'package:quax/utils/translation.dart';
@@ -787,6 +788,10 @@ Color? _cardColorSeed;
 Brightness? _cardColorBrightness;
 
 Color? tweetCardColor(BuildContext context) {
+  final tokens = XLookTokens.maybeOf(context);
+  if (tokens != null) {
+    return tokens.card;
+  }
   final theme = Theme.of(context);
   final prefs = PrefService.of(context, listen: false);
   final trueBlack = theme.brightness == Brightness.dark &&
