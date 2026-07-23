@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "No s'han trobat tuits dels últims 7 dies!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "No s'ha pogut recuperar el tuit citat",
   "country": "País",
   "@country": {},
   "create": "Crea",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "Visualitza a GitHub",
   "@view_on_github": {},
+  "view_quoted_tweet": "Veure el tuit citat",
   "view_version_on_github": "Visualitza la versió a GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Si s'han d'ocultar els tuits marcats com a sensibles",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Longitud del feed en mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quantes pàgines carrega el feed en mode zen abans de fer una pausa.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

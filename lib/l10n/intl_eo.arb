@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "Ne eblas trovi iujn ajn pepojn de antaŭ 7 tagoj!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "Ne eblis ricevi la cititan pecon",
   "country": "Lando",
   "@country": {},
   "create": "Krei",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "Vidi ĉe GitHub",
   "@view_on_github": {},
+  "view_quoted_tweet": "Vidi la cititan pecon",
   "view_version_on_github": "Vidi version ĉe GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Ĉu kaŝi pepojn markite kiel sentemaj",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Longo de la fluo en zena reĝimo",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kiom da paĝoj la fluo ŝargas en zena reĝimo antaŭ ol paŭzi.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

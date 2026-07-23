@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quax/client/client.dart';
 import 'package:quax/tweet/tweet.dart';
+import 'package:quax/tweet/tweet_chrome.dart';
 import 'package:quax/utils/iterables.dart';
 
 class TweetConversation extends StatefulWidget {
@@ -52,24 +53,15 @@ class _TweetConversationState extends State<TweetConversation> {
           initialMediaIndex: tweets[i].idStr == widget.id ? widget.initialMediaIndex : 0));
     }
 
-    // One rounded card for the whole thread, so its tweets read as a single surface. The trailing
-    // divider matches the one every standalone tweet draws below itself.
+    // One flat card for the whole thread so its tweets read as a single surface.
+    // Trailing hairline matches the divider every standalone tweet draws below itself.
     return Column(
       children: [
-        Card(
-          clipBehavior: Clip.antiAlias,
+        tweetFlatCard(
           color: tweetCardColor(context),
-          child: Column(
-            children: [
-              ...tiles,
-            ],
-          ),
+          child: Column(children: tiles),
         ),
-        Divider(
-          height: 0,
-          thickness: 1,
-          color: Theme.of(context).colorScheme.surfaceBright.withAlpha(150),
-        ),
+        tweetHairlineDivider(context),
       ],
     );
   }

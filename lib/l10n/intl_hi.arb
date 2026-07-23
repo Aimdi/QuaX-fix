@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "पिछले 7 दिनों की कोई पोस्ट नहीं मिली!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "उद्धृत पोस्ट प्राप्त नहीं किया जा सका",
   "country": "देश",
   "@country": {},
   "create": "बनाएँ",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "GitHub पर देखें",
   "@view_on_github": {},
+  "view_quoted_tweet": "उद्धृत पोस्ट देखें",
   "view_version_on_github": "GitHub पर संस्करण देखें",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "संवेदनशील के रूप में चिह्नित पोस्ट छुपाएं या नहीं",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "ज़ेन मोड में फ़ीड की लंबाई",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "ज़ेन मोड में रुकने से पहले फ़ीड कितने पेज लोड करेगी।",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

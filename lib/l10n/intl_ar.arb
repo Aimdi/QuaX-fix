@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "لم يُعثر على أي تغريدات من الأيام الـ7 الماضية!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "تعذر استرداد التغريدة المقتبسة",
   "country": "البلد",
   "@country": {},
   "create": "إنشاء",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "عرض على GitHub",
   "@view_on_github": {},
+  "view_quoted_tweet": "عرض التغريدة المقتبسة",
   "view_version_on_github": "عرض الإصدار على GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "ما إذا كنت تريد إخفاء التغريدات التي تم وضع علامة عليها على أنها حساسة",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "طول الخلاصة في وضع الهدوء",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

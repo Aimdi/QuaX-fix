@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "Son 7 güne ait herhangi bir tweet bulunamadı!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "Alıntılanan gönderi alınamadı",
   "country": "Ülke",
   "@country": {},
   "create": "Oluştur",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "GitHub'da görüntüle",
   "@view_on_github": {},
+  "view_quoted_tweet": "Alıntılanan gönderiyi görüntüle",
   "view_version_on_github": "GitHub'da sürümü görüntüle",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Hassas olarak işaretlenen tweetlerin gizlenip gizlenmeyeceği",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Zen modunda akış uzunluğu",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zen modunda akışın duraklamadan önce kaç sayfa yükleyeceği.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

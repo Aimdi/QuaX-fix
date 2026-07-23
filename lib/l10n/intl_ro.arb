@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "Nu am putut găsi niciun tweet din ultimele 7 zile!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "Nu s-a putut prelua postarea citată",
   "country": "Țară",
   "@country": {},
   "create": "Creează",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "Vizualizați pe GitHub",
   "@view_on_github": {},
+  "view_quoted_tweet": "Vezi postarea citată",
   "view_version_on_github": "Vizualizați versiunea pe GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Dacă să ascundeți postările marcate ca sensibile",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Lungimea fluxului în modul zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Câte pagini încarcă fluxul în modul zen înainte de a se opri.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "Не удаётся найти какие-либо твиты за последние 7 дней!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "Не удалось получить цитируемый пост",
   "country": "Страна",
   "@country": {},
   "create": "Создать",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "Просмотреть на GitHub",
   "@view_on_github": {},
+  "view_quoted_tweet": "Посмотреть цитируемый пост",
   "view_version_on_github": "Просмотреть версию на GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Следует ли скрывать твиты, помеченные как чувствительные",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Длина ленты в дзен-режиме",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Сколько страниц загружает лента в дзен-режиме перед паузой.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

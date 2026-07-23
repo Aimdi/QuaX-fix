@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "Ezin izan da azken 7 egunetako txiorik aurkitu!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "Ezin izan da aipatutako txioa berreskuratu",
   "country": "Herrialdea",
   "@country": {},
   "create": "Sortu",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "Ikusi GitHuben",
   "@view_on_github": {},
+  "view_quoted_tweet": "Ikusi aipatutako txioa",
   "view_version_on_github": "Ikusi bertsioa GitHuben",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Sentikor gisa markatutako txioak ezkutatu",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Jarioaren luzera zen moduan",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zenbat orrialde kargatzen dituen jarioak zen moduan gelditu aurretik.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }
