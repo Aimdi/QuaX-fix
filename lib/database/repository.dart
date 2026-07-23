@@ -26,19 +26,12 @@ const String tablePostNotification = 'post_notification';
 const String tableRetweetFilter = 'retweet_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-class Repository {
-  static final log = Logger('Repository');
+const int databaseVersion = 33;
 
-  static Future<Database> readOnly() async {
-    return openDatabase(databaseName, readOnly: true, singleInstance: false);
-  }
-
-  static Future<Database> writable() async {
-    return openDatabase(databaseName);
-  }
-
-  Future<bool> migrate() async {
-    MigrationPlan myMigrationPlan = MigrationPlan({
+/// Schema migration plan from the earliest versions through [databaseVersion].
+/// Extracted so characterization tests can open a DB at an intermediate version
+/// and upgrade to current without going through [Repository.migrate].
+MigrationPlan buildMigrationPlan() => MigrationPlan({
       2: [
         SqlMigration(
             'CREATE TABLE IF NOT EXISTS following (id INTEGER PRIMARY KEY, screen_name VARCHAR, name VARCHAR, profile_image_url_https VARCHAR, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)'),
@@ -303,9 +296,24 @@ class Repository {
             reverseSql: 'ALTER TABLE $tableSavedTweetFolder DROP COLUMN auto_download'),
       ]
     });
+
+class Repository {
+  static final log = Logger('Repository');
+
+  static Future<Database> readOnly() async {
+    return openDatabase(databaseName, readOnly: true, singleInstance: false);
+  }
+
+  static Future<Database> writable() async {
+    return openDatabase(databaseName);
+  }
+
+  Future<bool> migrate() async {
+    final myMigrationPlan = buildMigrationPlan();
+
     await openDatabase(
       databaseName,
-      version: 33,
+      version: databaseVersion,
       onUpgrade: myMigrationPlan.call,
       onCreate: myMigrationPlan.call,
       onDowngrade: myMigrationPlan.call,
