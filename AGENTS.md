@@ -28,6 +28,12 @@ hardware acceleration). No physical device is attached, and the app is Android-o
 Android-only plugins). Meaningful features also require an X account + live x.com
 access. Verify changes with `analyze` + `test` + `build apk --debug` instead.
 
+The reverse-engineered X client *can* be exercised headlessly without the UI: the
+guest path in `lib/client/client_unauthenticated.dart` is pure Dart (`http`), so a
+throwaway test under `test/` can call `getToken()` + `fetchUnauthenticated()` against
+live x.com (e.g. replicate `getProfileByScreenName`'s `UserByScreenName` request) to
+confirm the guest-auth handshake + a real fetch work end to end. x.com egress works here.
+
 ### Non-obvious gotchas
 - **`compileSdk 37` platform fix.** `android/app/build.gradle` uses `compileSdkVersion 37`,
   but `sdkmanager` only ships `platforms;android-37.0` (its `AndroidVersion.ApiLevel=37.0`),
