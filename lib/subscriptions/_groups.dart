@@ -9,6 +9,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/subscriptions/_group_list_item.dart';
 import 'package:quax/subscriptions/users_model.dart';
+import 'package:quax/ui/errors.dart';
 import 'package:quax/user.dart';
 import 'package:provider/provider.dart';
 
@@ -188,7 +189,12 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
   Widget build(BuildContext context) {
     return ScopedBuilder<GroupsModel, List<SubscriptionGroup>>.transition(
       store: context.read<GroupsModel>(),
-      // TODO: Error
+      onError: (_, error) => FullPageErrorWidget(
+        error: error,
+        stackTrace: null,
+        prefix: L10n.of(context).unable_to_load_the_group,
+        onRetry: () => context.read<GroupsModel>().reloadGroups(),
+      ),
       onState: (_, state) {
         if (state.isEmpty) {
           return _buildEmptyState(context);

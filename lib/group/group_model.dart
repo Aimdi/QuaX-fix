@@ -7,6 +7,7 @@ import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/database/repository.dart';
 import 'package:logging/logging.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:pref/pref.dart';
 import 'package:uuid/uuid.dart';
 
@@ -198,14 +199,14 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
   /// A few member avatar URLs per group, for the list row preview cluster.
   static const _avatarPreviewCount = 4;
 
-  Future<Map<String, List<String>>> _loadMemberAvatars(dynamic database) async {
+  Future<Map<String, List<String>>> _loadMemberAvatars(DatabaseExecutor database) async {
     var rows = await database.rawQuery(
         'SELECT gm.group_id, s.profile_image_url_https FROM $tableSubscriptionGroupMember gm '
         'JOIN $tableSubscription s ON s.id = gm.profile_id '
         'WHERE s.profile_image_url_https IS NOT NULL '
         'ORDER BY gm.group_id, s.screen_name COLLATE NOCASE');
 
-    return rows.fold<Map<String, List<String>>>({}, (acc, row) {
+    return rows.fold<Map<String, List<String>>>(<String, List<String>>{}, (acc, row) {
       var urls = acc.putIfAbsent(row['group_id'] as String, () => []);
       if (urls.length < _avatarPreviewCount) {
         urls.add(row['profile_image_url_https'] as String);
