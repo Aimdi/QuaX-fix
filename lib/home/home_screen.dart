@@ -11,6 +11,7 @@ import 'package:quax/home/_feed.dart';
 import 'package:quax/home/_missing.dart';
 import 'package:quax/home/_saved.dart';
 import 'package:quax/home/home_model.dart';
+import 'package:quax/plugins/plugin_registry.dart';
 import 'package:quax/search/search.dart';
 import 'package:quax/subscriptions/subscriptions.dart';
 import 'package:quax/trends/trends_screen.dart';
@@ -133,7 +134,9 @@ class _HomeScreenState extends State<_HomeScreen> {
                     scrollController: scrollControllers[index]!,
                   );
                 default:
-                  return const MissingScreen();
+                  final plugin = pluginById(page.id);
+                  final screen = plugin?.homeScreen(scrollController: scrollControllers[index]!);
+                  return screen ?? const MissingScreen();
               }
             });
           },

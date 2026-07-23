@@ -33,6 +33,10 @@ const optionDownloadTypeAsk = 'ask';
 const optionLocale = 'locale';
 const optionLocaleDefault = 'system';
 
+const pluginIdSubstack = 'substack';
+const optionPluginSubstackEnabled = 'plugin.substack.enabled';
+const optionPluginSubstackPublications = 'plugin.substack.publications';
+
 const optionShouldCheckForUpdates = 'should_check_for_updates';
 const optionConfirmClose = 'confirm_close';
 const optionShareBaseUrl = 'share_base_url';

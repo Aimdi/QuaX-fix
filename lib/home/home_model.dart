@@ -4,6 +4,7 @@ import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/home/home_screen.dart';
+import 'package:quax/plugins/plugin_registry.dart';
 import 'package:quax/utils/iterables.dart';
 import 'package:pref/pref.dart';
 
@@ -37,31 +38,47 @@ class HomeModel extends Store<List<HomePage>> {
     await execute(() async {
       var saved = prefs.getStringList(optionHomePages) ?? [];
 
+      // BuildContext is unavailable here; plugins expose title via L10n builders
+      // when their homePage is constructed from UI. Use icon + title helpers.
+      final pluginPages = <NavigationPage>[
+        for (final plugin in builtInPlugins)
+          if (plugin.isEnabled(prefs))
+            NavigationPage(
+              plugin.id,
+              (c) => plugin.title(c),
+              Icon(plugin.icon),
+              Icon(plugin.icon),
+            ),
+      ];
+
       var available = [
         ...defaultHomePages,
+        ...pluginPages,
         ...groupsModel.state.map((e) =>
             NavigationPage('group-${e.id}', (c) => L10n.of(c).group_name(e.name), Icon(e.iconData), Icon(e.iconData))),
       ];
 
       var pages = <HomePage>[];
 
-      // First, add all of our saved pages, in the correct order
       for (var id in saved) {
         var page = available.firstWhereOrNull((e) => e.id == id);
         if (page == null) {
           continue;
         }
-
         pages.add(HomePage(id, true, page));
       }
 
-      // Then add all the other available pages, unselected, to the end of the list, for the settings screen
       for (var page in available) {
         if (saved.contains(page.id)) {
           continue;
         }
+        final autoSelect = page.id == pluginIdSubstack && prefs.get(optionPluginSubstackEnabled) == true;
+        pages.add(HomePage(page.id, autoSelect, page));
+      }
 
-        pages.add(HomePage(page.id, false, page));
+      final selectedIds = pages.where((e) => e.selected).map((e) => e.id).toList();
+      if (selectedIds.length != saved.length || !selectedIds.every(saved.contains)) {
+        await prefs.set(optionHomePages, selectedIds);
       }
 
       return pages;
