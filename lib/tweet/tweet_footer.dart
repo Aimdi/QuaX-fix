@@ -110,6 +110,10 @@ TextButton tweetFooterTextButton(IconData icon, String label, [Color? color, Voi
 }
 
 /// Engagement / save / share / translate strip under a tweet tile.
+///
+/// QuaX is a read-oriented frontend: these controls must not post to X.
+/// Comment opens the conversation, repeat opens quotes, heart/bookmark are
+/// local-only, share uses the OS sheet, translate works on loaded text.
 class TweetFooterBar extends StatelessWidget {
   final TweetWithCard tweet;
   final String tweetText;

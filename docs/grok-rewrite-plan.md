@@ -16,6 +16,12 @@ schemes, rate limits) — not the new Android UI.
 - Do **not** rebuild `lib/client/` or `lib/database/` as part of a UI rewrite.
 - Do **not** chase visual parity with X's new Android app unless explicitly scoped.
 - Do **not** plan around Musk open-sourcing X — no timeline.
+- Do **not** turn QuaX into a full X clone. It is a **read-oriented frontend**:
+  browse feeds, profiles, search, and media. Never add compose / reply-to-X /
+  quote-post / repost / like-on-X / DMs / Spaces hosting. Local-only features
+  (SQLite subscriptions, saved folders, on-device likes) are intentional and
+  must not be rewired to X write APIs. UI rewrite means clearer *viewer*
+  chrome — not posting parity with the official app.
 
 ## Phase 0 — Tooling port (done in this change set)
 

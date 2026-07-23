@@ -13,6 +13,15 @@ appear.
 
 ### Hard rules (do not violate)
 
+- **QuaX is a read-oriented X frontend, not X itself.** It views timelines,
+  profiles, search, and media via reverse-engineered APIs. It does **not**
+  create posts on X. Never add compose / reply / quote / repost / like-on-X /
+  DM / Spaces hosting / account settings write-back. Local-only actions
+  (device likes, saved folders, subscriptions stored in SQLite) are fine and
+  already exist — do not wire them to X write endpoints.
+- Footer icons that look like X actions are **navigation / local** affordances
+  (e.g. comment opens the conversation; repeat opens the quotes screen; heart
+  is local-only). Do not "fix" them into real posting.
 - **Do not big-bang rewrite.** Keep `lib/client/` and `lib/database/` intact
   unless fixing a live API break. Rewrite UI/feature folders incrementally.
 - **Store pattern only.** Use `flutter_triple` `Store<T>` — never `setState` or
