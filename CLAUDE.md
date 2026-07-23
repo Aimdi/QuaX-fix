@@ -107,6 +107,10 @@ Strings live in `lib/l10n/*.arb` files. The `L10n` class in `lib/generated/l10n.
 
 ## Custom Skills
 
+Skills live under both `.claude/skills/` (Claude Code) and `.grok/skills/`
+(Grok Build). Keep them in sync. Grok also loads this file and `AGENTS.md`
+automatically — see `docs/grok-rewrite-plan.md` for the incremental rewrite plan.
+
 - `/parse-api` — guidance for safely parsing reverse-engineered X API responses
 - `/port-from-squawker` — port a bug fix or feature from the Squawker codebase
 - `/translate` — user asked anything about translation, or you tried to add/remove/edit a text that appears in the UI

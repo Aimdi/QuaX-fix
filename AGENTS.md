@@ -1,7 +1,64 @@
 # AGENTS.md
 
 General build/architecture/testing guidance for this repo lives in `CLAUDE.md`,
-`README.md` (see "Build locally"), and `.claude/skills/`. Read those first.
+`README.md` (see "Build locally"), `.claude/skills/`, and `.grok/skills/`.
+Read those first.
+
+## Grok Build (grok-4.5) — project instructions
+
+Grok Build auto-loads Claude Code assets (`CLAUDE.md`, `.claude/skills/`) **and**
+this `AGENTS.md`, plus native skills under `.grok/skills/`. After changing
+instruction or skill files, run `grok inspect` in the repo root and confirm they
+appear.
+
+### Hard rules (do not violate)
+
+- **Do not big-bang rewrite.** Keep `lib/client/` and `lib/database/` intact
+  unless fixing a live API break. Rewrite UI/feature folders incrementally.
+- **Store pattern only.** Use `flutter_triple` `Store<T>` — never `setState` or
+  `ChangeNotifier` for feature state.
+- **No raw UI strings.** Every user-visible string goes through ARB / `L10n`
+  (see `/translate`).
+- **Null-safe API parsing.** Reverse-engineered X JSON is fragile — use `?[]`
+  and `as Type?` (see `/parse-api`).
+- Prefer pure functions; keep functions under ~30 lines (widget builders excepted).
+- Schema changes only via `sqflite_migration_plan` migrations.
+
+### Permission / worktree workflow
+
+- Default permission mode: **ask**. Keep **ask** for anything touching
+  `lib/client/` or `lib/database/`. Use `always-approve` only inside isolated
+  UI-module worktrees.
+- One module per worktree (Grok has no built-in worktree flag):
+
+  ```bash
+  git worktree add ../quax-tweet rewrite/tweet
+  cd ../quax-tweet && grok
+  ```
+
+- Module order for incremental UI rewrite:
+  `tweet/` → `home/` → `profile/` → `search/` → `group/` → `saved/` → `settings/`
+- Per module: Plan mode (`Shift+Tab` / `/plan`) → write a spec file → commit the
+  spec → implement against it. Use `/context`, `/compact` between modules,
+  `/memory` + `/flush` for durable decisions, `/rewind` to undo a bad direction,
+  `/btw` for side questions.
+
+### Skills (slash commands)
+
+| Command | Source | Purpose |
+|---|---|---|
+| `/parse-api` | `.grok/skills/parse-api` (+ `.claude` mirror) | Safe X API JSON parsing |
+| `/port-from-squawker` | `.grok/skills/port-from-squawker` | Port upstream Squawker fixes |
+| `/translate` | `.grok/skills/translate` | ARB / UI string changes |
+
+If names collide, use the qualified form (e.g. `/local:parse-api`).
+
+### Rewrite plan
+
+See `docs/grok-rewrite-plan.md` for phases, characterization-test targets, and
+compatibility checkpoints. Do not start Phase 2 UI rewrites until Phase 0–1
+gates pass (clean debug APK + characterization coverage for selector / rate
+limits / migrations / client parsers).
 
 ## Cursor Cloud specific instructions
 
