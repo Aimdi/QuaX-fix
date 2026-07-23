@@ -1,53 +1,58 @@
 # Phase 1 — Characterization test plan
 
-Status: **partially started**. Selector + rate-limit tracker tests land with the
-Grok Build setup PR. Remaining items below are next.
+Status: **core gate met**. Selector, rate-limit, migration smoke, and live
+parser fixtures are green. Optional follow-ups listed below.
 
-## Inventory (before Phase 1)
+## Inventory
 
-| Existing test | Area |
+| Test | Area |
 |---|---|
 | `test/clean_url_test.dart` | `utils/urls.dart` tracking params |
 | `test/list_url_test.dart` | list deep links |
 | `test/feed_read_position_test.dart` | feed dedup / caught-up |
+| `test/account_selector_test.dart` | account health selection |
+| `test/rate_limit_tracker_test.dart` | per-endpoint 429 memory |
+| `test/migration_test.dart` | schema upgrade 22 → current |
+| `test/client_parser_test.dart` | live GraphQL fixture parsers |
 
-Gaps: no coverage for `AccountSelector`, `RateLimitTracker`, DB migrations, or
-client JSON parsers.
-
-## Spec — must lock before UI rewrite
+## Spec
 
 ### 1. Account selection — DONE (`test/account_selector_test.dart`)
 
-Lock:
-
 - Prefer healthy over not-found-flagged / rate-limited.
-- Fall back to flagged when nothing healthy remains (never short-circuit to null
-  while an untried account exists).
-- Respect `notFoundCooldown` boundary.
-- Honor `exclude` set; null only when all accounts tried.
+- Fall back to flagged when nothing healthy remains.
+- Respect `notFoundCooldown` boundary; honor `exclude`.
 
 ### 2. Rate limit tracker — DONE (`test/rate_limit_tracker_test.dart`)
 
-Lock:
+- Keyed by `(accountId, endpoint)`; clear is pair-scoped.
 
-- Keyed by `(accountId, endpoint)`.
-- Limited strictly before reset; not limited at/after reset.
-- `clear` removes only that pair.
+### 3. Database migrations — DONE (`test/migration_test.dart`)
 
-### 3. Database migrations — TODO
+- `buildMigrationPlan()` + `databaseVersion` extracted from `repository.dart`.
+- Fresh `onCreate` → current version has accounts/subscription tables + health columns.
+- Seed at **v22**, upgrade to current: `auth_header` and subscription fields survive.
 
-- Boot an in-memory (or temp-file) DB at the oldest schema, migrate to current.
-- Assert `accounts` auth headers / subscription rows survive.
-- Target: repository migration plan entry points under `lib/database/`.
+### 4. Client JSON parsers — DONE (first fixtures)
 
-### 4. Client JSON parsers — TODO
+Live guest captures (2026-07-23), redacted of tokens:
 
-- Capture live fixtures into `test/fixtures/<endpoint>/` (UserByScreenName,
-  TweetDetail, HomeTimeline / SearchTimeline as available).
-- Parser unit tests must use null-safe access expectations (`/parse-api`).
-- Fixtures are the ground truth for "does the client still parse what X returns."
+| Fixture | Parser entry |
+|---|---|
+| `test/fixtures/UserByScreenName/ok.json` | `UserWithExtra.fromNonLegacyJson` |
+| `test/fixtures/TweetDetail/tweet_result.json` | `TweetWithCard.fromGraphqlJson` |
+| `test/fixtures/UserTweets/add_entries.json` | `Twitter.createTweetChains` |
+
+`TweetDetail` GraphQL returned 404 for guests; tweet nodes were taken from
+`UserTweets` instead. That is still live X JSON.
+
+## Optional follow-ups (not blocking Phase 2)
+
+- Authenticated `TweetDetail` / `SearchTimeline` / `HomeTimeline` fixtures.
+- Older migration path (e.g. v6 → current) for pre-accounts installs.
+- Unavailable / tombstone user+tweet shapes.
 
 ## Gate
 
-Phase 2 UI rewrites must not start until items 1–2 stay green and 3–4 have at
-least a first fixture + migration smoke test.
+Phase 2 UI rewrites may start when this file's DONE items stay green on CI /
+`fvm flutter test`. Keep `lib/client/` + `lib/database/` ask-mode only.

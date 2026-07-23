@@ -29,26 +29,22 @@ schemes, rate limits) — not the new Android UI.
 
 ## Phase 1 — Characterization tests (lock behavior first)
 
-Existing coverage (as of this plan) is thin:
+**Status: core gate met** (see `docs/specs/phase1-characterization.md`).
+
+Coverage now includes:
 
 | File | Covers |
 |---|---|
 | `test/clean_url_test.dart` | URL tracking-param stripping |
 | `test/list_url_test.dart` | List deep links |
 | `test/feed_read_position_test.dart` | Feed dedup / caught-up |
+| `test/account_selector_test.dart` | Healthy vs 404 cooldown / 429 injection |
+| `test/rate_limit_tracker_test.dart` | Per-(account, endpoint) windows |
+| `test/migration_test.dart` | `buildMigrationPlan()` v22 → current |
+| `test/client_parser_test.dart` | Live UserByScreenName / tweet fixtures |
 
-**Priority targets** (pure / injectable where possible):
-
-1. `lib/client/account_selector.dart` — healthy vs not-found cooldown, rate-limit
-   injection, exclude set, fallback to flagged accounts.
-2. `lib/client/rate_limit_tracker.dart` — per-(account, endpoint) windows, expiry,
-   clear.
-3. Database migrations (`lib/database/`) — schema upgrades do not drop accounts /
-   tokens.
-4. JSON parsers in `lib/client/` — fixture-driven from captured live X responses.
-
-Enter Plan mode, inventory + write the test plan, approve with `/plan` before
-execution. Capture live X JSON into `test/fixtures/` as ground truth.
+Live fixtures live under `test/fixtures/`. Optional authenticated timeline
+fixtures can land later without blocking Phase 2.
 
 ## Phase 2 — Incremental UI/feature rewrite
 
