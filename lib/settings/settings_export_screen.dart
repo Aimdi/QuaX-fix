@@ -11,6 +11,7 @@ import 'package:quax/saved/saved_tweet_folder_model.dart';
 import 'package:quax/saved/saved_tweet_model.dart';
 import 'package:quax/settings/_data.dart';
 import 'package:quax/subscriptions/users_model.dart';
+import 'package:quax/utils/crash_reporter.dart';
 import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
@@ -135,7 +136,7 @@ class _SettingsExportScreenState extends State<SettingsExportScreen> {
                 var prefs = PrefService.of(context);
 
                 // TODO: Check exporting
-                var settings = _exportSettings ? prefs.toMap() : null;
+                var settings = _exportSettings ? prefsMapWithoutSecrets(prefs.toMap()) : null;
 
                 var subscriptions = _exportSubscriptions ? subscriptionsModel.state : null;
 

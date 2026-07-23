@@ -37,6 +37,11 @@ const optionShouldCheckForUpdates = 'should_check_for_updates';
 const optionConfirmClose = 'confirm_close';
 const optionShareBaseUrl = 'share_base_url';
 
+const optionCrashReportsEnabled = 'crash.reports_enabled';
+const optionCrashGithubRepo = 'crash.github_repo';
+const optionCrashGithubToken = 'crash.github_token';
+const defaultCrashGithubRepo = 'Aimdi/QuaX-gamma';
+
 const optionDisableWarningsForUnrelatedPostsInFeed = 'disable_warnings_for_unrelated_posts_in_feed';
 
 const alwaysShowFullTweetContents = 'always_show_full_tweet_contents';

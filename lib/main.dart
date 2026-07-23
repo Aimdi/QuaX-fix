@@ -43,6 +43,7 @@ import 'package:quax/tweet/_video.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/ui/theme_presets.dart';
 import 'package:quax/ui/x_look_theme.dart';
+import 'package:quax/utils/crash_reporter.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
@@ -251,6 +252,9 @@ Future<void> main() async {
     optionThreadedReplies: true,
     optionMediaGridLayout: mediaGridLayoutMasonry,
     optionShouldCheckForUpdates: true,
+    optionCrashReportsEnabled: false,
+    optionCrashGithubRepo: defaultCrashGithubRepo,
+    optionCrashGithubToken: '',
     optionSubscriptionGroupsOrderByAscending: true,
     optionDisableWarningsForUnrelatedPostsInFeed: false,
     alwaysShowFullTweetContents: false,
@@ -282,6 +286,8 @@ Future<void> main() async {
   });
 
   await _migrateMediaQualityPrefs(prefService);
+
+  CrashReporter.install(prefService);
 
   try {
     // Run the migrations early, so models work. We also do this later on so we can display errors to the user
