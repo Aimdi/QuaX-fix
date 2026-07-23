@@ -1,8 +1,10 @@
 plugins {
     id "com.android.application"
-    // Built-in Kotlin (AGP 9): do not apply kotlin-android / org.jetbrains.kotlin.android.
-    // With android.builtInKotlin=false, Flutter still applies KGP for unmigrated plugins;
-    // the app module uses the kotlin { compilerOptions } DSL instead of kotlinOptions.
+    // Built-in Kotlin migration (Flutter 3.44): do not apply kotlin-android.
+    // Flutter still applies KGP while android.builtInKotlin=false so MainActivity
+    // and unmigrated plugins keep compiling; the app uses kotlin.compilerOptions
+    // instead of the removed android.kotlinOptions DSL.
+    // https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-app-developers
     id "dev.flutter.flutter-gradle-plugin"
 }
 
