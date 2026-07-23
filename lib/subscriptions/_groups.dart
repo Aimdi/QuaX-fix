@@ -22,6 +22,141 @@ Future openSubscriptionGroupDialog(BuildContext context, String? id, String name
       });
 }
 
+class SubscriptionGroupsPage extends StatelessWidget {
+  final ScrollController scrollController;
+
+  const SubscriptionGroupsPage({super.key, required this.scrollController});
+
+  @override
+  Widget build(BuildContext context) {
+    return ScopedBuilder<GroupsModel, List<SubscriptionGroup>>.transition(
+      store: context.read<GroupsModel>(),
+      onState: (_, state) {
+        if (state.isEmpty) {
+          return ListView(
+            controller: scrollController,
+            padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
+            children: [
+              Icon(Icons.workspaces_outlined, size: 48, color: Theme.of(context).colorScheme.outline),
+              const SizedBox(height: 16),
+              Text(
+                L10n.of(context).no_subscription_groups_yet,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                L10n.of(context).no_subscription_groups_description,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Center(
+                child: FilledButton.icon(
+                  onPressed: () => openSubscriptionGroupDialog(context, null, '', defaultGroupIcon),
+                  icon: const Icon(Icons.add),
+                  label: Text(L10n.of(context).create_subscription_group),
+                ),
+              ),
+            ],
+          );
+        }
+
+        return GridView.builder(
+          controller: scrollController,
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            childAspectRatio: 1.35,
+          ),
+          itemCount: state.length,
+          itemBuilder: (context, index) {
+            final e = state[index];
+            return _GroupTile(
+              id: e.id,
+              name: e.name,
+              icon: e.icon,
+              color: e.color,
+              numberOfMembers: e.numberOfMembers,
+              onLongPress: () => openSubscriptionGroupDialog(context, e.id, e.name, e.icon),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _GroupTile extends StatelessWidget {
+  final String id;
+  final String name;
+  final String icon;
+  final Color? color;
+  final int? numberOfMembers;
+  final VoidCallback? onLongPress;
+
+  const _GroupTile({
+    required this.id,
+    required this.name,
+    required this.icon,
+    required this.color,
+    required this.numberOfMembers,
+    this.onLongPress,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final base = color?.harmonizeWith(scheme.primary) ?? scheme.surfaceContainerHighest;
+    final onBase = ThemeData.estimateBrightnessForColor(base) == Brightness.dark ? Colors.white : Colors.black87;
+    final subtitle = numberOfMembers == null
+        ? null
+        : L10n.of(context).subscription_group_member_count(numberOfMembers!);
+
+    return Material(
+      color: base,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () {
+          Navigator.pushNamed(context, routeGroup, arguments: GroupScreenArguments(id: id, name: name));
+        },
+        onLongPress: onLongPress,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(deserializeIconData(icon), size: 28, color: onBase),
+              const Spacer(),
+              Text(
+                name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: onBase,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+              if (subtitle != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: onBase.withValues(alpha: 0.8)),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Legacy embedded grid used by older layouts; prefer [SubscriptionGroupsPage].
 class SubscriptionGroups extends StatefulWidget {
   final ScrollController scrollController;
 
@@ -32,62 +167,9 @@ class SubscriptionGroups extends StatefulWidget {
 }
 
 class _SubscriptionGroupsState extends State<SubscriptionGroups> {
-  Widget _createGroupCard(
-      String id, String name, String icon, Color? color, int? numberOfMembers, void Function()? onLongPress) {
-    var title = numberOfMembers == null ? name : '$name ($numberOfMembers)';
-
-    return Card(
-      color: color?.harmonizeWith(Theme.of(context).colorScheme.primary),
-      child: InkWell(
-        onTap: () {
-          // Open page with the group's feed
-          Navigator.pushNamed(context, routeGroup, arguments: GroupScreenArguments(id: id, name: name));
-        },
-        onLongPress: onLongPress,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(deserializeIconData(icon), size: 24),
-            Text(title,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return ScopedBuilder<GroupsModel, List<SubscriptionGroup>>.transition(
-      store: context.read<GroupsModel>(),
-      // TODO: Error
-      onState: (_, state) {
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.only(top: 4),
-          gridDelegate:
-              const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 100, childAspectRatio: 20 / 15),
-          itemCount: state.length + 1,
-          itemBuilder: (context, index) {
-            var actualIndex = index;
-
-            if (actualIndex < state.length) {
-              var e = state[actualIndex];
-
-              return _createGroupCard(e.id, e.name, e.icon, e.color, e.numberOfMembers,
-                  () => openSubscriptionGroupDialog(context, e.id, e.name, e.icon));
-            }
-
-            return null;
-          },
-        );
-      },
-    );
+    return SubscriptionGroupsPage(scrollController: widget.scrollController);
   }
 }
 
