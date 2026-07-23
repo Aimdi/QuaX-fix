@@ -24,6 +24,8 @@ import 'package:quax/home/home_model.dart';
 import 'package:quax/home/home_screen.dart';
 import 'package:quax/import_data_model.dart';
 import 'package:quax/profile/profile.dart';
+import 'package:quax/plugins/substack/substack_client.dart';
+import 'package:quax/plugins/substack/substack_store.dart';
 import 'package:quax/saved/liked_tweet_model.dart';
 import 'package:quax/saved/saved_folders_screen.dart';
 import 'package:quax/saved/saved_tweet_folder_model.dart';
@@ -252,9 +254,15 @@ Future<void> main() async {
     optionThreadedReplies: true,
     optionMediaGridLayout: mediaGridLayoutMasonry,
     optionShouldCheckForUpdates: true,
+<<<<<<< HEAD
     optionCrashReportsEnabled: false,
     optionCrashGithubRepo: defaultCrashGithubRepo,
     optionCrashGithubToken: '',
+=======
+    optionPluginSubstackEnabled: false,
+    optionPluginSubstackPublications: '[]',
+    optionPluginSubstackReadIds: '[]',
+>>>>>>> origin/cursor/substack-plugin-c090
     optionSubscriptionGroupsOrderByAscending: true,
     optionDisableWarningsForUnrelatedPostsInFeed: false,
     alwaysShowFullTweetContents: false,
@@ -319,6 +327,14 @@ Future<void> main() async {
 
     var trendLocationModel = UserTrendLocationModel(prefService);
 
+    final substackClient = SubstackClient();
+    final substackPublications = SubstackPublicationsStore(prefService);
+    await substackPublications.load();
+    final substackFeed = SubstackFeedStore(substackClient, substackPublications);
+    final substackAdd = SubstackAddPublicationStore(substackClient);
+    final substackRead = SubstackReadStore(prefService);
+    await substackRead.load();
+
     runApp(PrefService(
         service: prefService,
         child: MultiProvider(
@@ -336,6 +352,11 @@ Future<void> main() async {
             Provider(create: (context) => trendLocationModel),
             Provider(create: (context) => TrendLocationsModel()),
             Provider(create: (context) => TrendsModel(trendLocationModel)),
+            Provider(create: (_) => substackClient),
+            Provider(create: (_) => substackPublications),
+            Provider(create: (_) => substackFeed),
+            Provider(create: (_) => substackAdd),
+            Provider(create: (_) => substackRead),
             ChangeNotifierProvider(create: (_) => VideoContextState(prefService.get(optionMediaDefaultMute))),
           ],
           child: FritterApp(),

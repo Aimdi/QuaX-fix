@@ -8,6 +8,7 @@ import 'package:quax/settings/_data.dart';
 import 'package:quax/settings/_general.dart';
 import 'package:quax/settings/_home.dart';
 import 'package:quax/settings/_media.dart';
+import 'package:quax/settings/_plugin_store.dart';
 import 'package:quax/settings/_posts.dart';
 import 'package:quax/settings/_theme.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -146,6 +147,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const SettingsAccessibilityFragment()),
+            ),
+          ),
+          ListTile(
+            title: Text(L10n.of(context).plugin_store),
+            leading: Icon(Icons.extension_outlined),
+            subtitle: Text(
+              L10n.of(context).plugin_store_description,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsPluginStoreFragment()),
             ),
           ),
           Card(
