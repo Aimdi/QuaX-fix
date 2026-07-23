@@ -87,23 +87,29 @@ symlinked into `/usr/local/bin`. The startup update script runs `fvm install`,
 `fvm flutter pub get`, and the two pure-Dart codegen steps below.
 
 ### Verifying the environment (what works here)
+- One-shot: `bash scripts/cloud_verify.sh` (analyze + tests + debug APK).
 - Lint: `fvm flutter analyze` (expect ~44 `info` lints, no errors).
 - Tests: `fvm flutter test` (pure-Dart unit tests under `test/`; use in-memory
   sqflite — these exercise core deep-link parsing and feed dedup/caught-up logic).
+- Live guest API (optional):
+  `fvm flutter test test/live/guest_api_smoke_test.dart --dart-define=RUN_LIVE=true`
 - Build: `fvm flutter build apk --debug` → `build/app/outputs/flutter-apk/app-debug.apk`.
+- Details: `docs/cloud-testing.md`.
 
-### Running the app is NOT possible in this VM
-There is no `/dev/kvm`, so the Android emulator cannot start (x86_64 images require
-hardware acceleration). No physical device is attached, and the app is Android-only
-(the `linux`/`chrome` devices `flutter` lists are unusable — no platform folders and
-Android-only plugins). Meaningful features also require an X account + live x.com
-access. Verify changes with `analyze` + `test` + `build apk --debug` instead.
+### Running the app UI is NOT possible in this VM without a phone
+There is no `/dev/kvm`, so a usable Android emulator is not available (software
+emulation can start but Package Manager / boot stay broken). No physical device is
+attached by default, and the app is Android-only (the `linux`/`chrome` devices
+`flutter` lists are unusable — no platform folders and Android-only plugins).
+
+Interactive UI testing needs a real device via wireless ADB:
+`bash scripts/adb_wireless_connect.sh <pair_host:port> <code> <connect_host:port>`
+then `adb install -r build/app/outputs/flutter-apk/app-debug.apk`.
 
 The reverse-engineered X client *can* be exercised headlessly without the UI: the
-guest path in `lib/client/client_unauthenticated.dart` is pure Dart (`http`), so a
-throwaway test under `test/` can call `getToken()` + `fetchUnauthenticated()` against
-live x.com (e.g. replicate `getProfileByScreenName`'s `UserByScreenName` request) to
-confirm the guest-auth handshake + a real fetch work end to end. x.com egress works here.
+guest path in `lib/client/client_unauthenticated.dart` is pure Dart (`http`), so
+`test/live/guest_api_smoke_test.dart` hits live x.com guest auth + a profile fetch.
+x.com egress works here.
 
 ### Non-obvious gotchas
 - **`compileSdk 37` platform fix.** `android/app/build.gradle` uses `compileSdkVersion 37`,
