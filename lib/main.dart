@@ -254,15 +254,12 @@ Future<void> main() async {
     optionThreadedReplies: true,
     optionMediaGridLayout: mediaGridLayoutMasonry,
     optionShouldCheckForUpdates: true,
-<<<<<<< HEAD
     optionCrashReportsEnabled: false,
     optionCrashGithubRepo: defaultCrashGithubRepo,
     optionCrashGithubToken: '',
-=======
     optionPluginSubstackEnabled: false,
     optionPluginSubstackPublications: '[]',
     optionPluginSubstackReadIds: '[]',
->>>>>>> origin/cursor/substack-plugin-c090
     optionSubscriptionGroupsOrderByAscending: true,
     optionDisableWarningsForUnrelatedPostsInFeed: false,
     alwaysShowFullTweetContents: false,
