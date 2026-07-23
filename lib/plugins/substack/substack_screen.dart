@@ -4,8 +4,8 @@ import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/substack/substack_add_screen.dart';
+import 'package:quax/plugins/substack/substack_archive_screen.dart';
 import 'package:quax/plugins/substack/substack_models.dart';
-import 'package:quax/plugins/substack/substack_reader_screen.dart';
 import 'package:quax/plugins/substack/substack_store.dart';
 import 'package:quax/ui/errors.dart';
 
@@ -25,7 +25,9 @@ class _SubstackScreenState extends State<SubstackScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final pubs = context.read<SubstackPublicationsStore>();
       final feed = context.read<SubstackFeedStore>();
+      final read = context.read<SubstackReadStore>();
       await pubs.load();
+      await read.load();
       await feed.refresh();
     });
   }
@@ -106,7 +108,7 @@ class _SubstackScreenState extends State<SubstackScreen> {
               );
             }
 
-            return ScopedBuilder<SubstackFeedStore, List<SubstackPost>>(
+            return ScopedBuilder<SubstackFeedStore, SubstackFeedSnapshot>(
               store: feed,
               onError: (_, error) => FullPageErrorWidget(
                 error: error,
@@ -115,24 +117,65 @@ class _SubstackScreenState extends State<SubstackScreen> {
                 onRetry: feed.refresh,
               ),
               onLoading: (_) => const Center(child: CircularProgressIndicator()),
-              onState: (context, posts) {
+              onState: (context, snapshot) {
+                final children = <Widget>[
+                  _FollowedStrip(
+                    publications: publications,
+                    onOpen: (pub) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => SubstackArchiveScreen(publication: pub)),
+                      );
+                    },
+                    onRemove: (id) async {
+                      await pubs.remove(id);
+                      await feed.refresh();
+                    },
+                  ),
+                ];
+
+                if (snapshot.failedCount > 0) {
+                  children.add(
+                    ListTile(
+                      leading: Icon(Icons.warning_amber_outlined, color: Theme.of(context).colorScheme.error),
+                      title: Text(L10n.of(context).plugin_substack_partial_error(snapshot.failedCount)),
+                    ),
+                  );
+                }
+
+                if (snapshot.posts.isEmpty) {
+                  children.addAll([
+                    const SizedBox(height: 48),
+                    Center(child: Text(L10n.of(context).plugin_substack_feed_empty)),
+                  ]);
+                  return ListView(
+                    controller: widget.scrollController,
+                    children: children,
+                  );
+                }
+
                 return ListView.separated(
                   controller: widget.scrollController,
                   padding: const EdgeInsets.only(bottom: 24),
-                  itemCount: posts.length + 1,
+                  itemCount: 1 + snapshot.posts.length + (snapshot.canLoadMore ? 1 : 0),
                   separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     if (index == 0) {
-                      return _FollowedStrip(
-                        publications: publications,
-                        onRemove: (id) async {
-                          await pubs.remove(id);
-                          await feed.refresh();
-                        },
-                      );
+                      return Column(mainAxisSize: MainAxisSize.min, children: children);
                     }
-                    final post = posts[index - 1];
-                    return _PostTile(post: post);
+                    final postIndex = index - 1;
+                    if (postIndex < snapshot.posts.length) {
+                      return SubstackPostTile(post: snapshot.posts[postIndex]);
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Center(
+                        child: OutlinedButton(
+                          onPressed: feed.loadMore,
+                          child: Text(L10n.of(context).plugin_substack_load_more),
+                        ),
+                      ),
+                    );
                   },
                 );
               },
@@ -147,8 +190,13 @@ class _SubstackScreenState extends State<SubstackScreen> {
 class _FollowedStrip extends StatelessWidget {
   final List<SubstackPublication> publications;
   final Future<void> Function(String id) onRemove;
+  final void Function(SubstackPublication publication) onOpen;
 
-  const _FollowedStrip({required this.publications, required this.onRemove});
+  const _FollowedStrip({
+    required this.publications,
+    required this.onRemove,
+    required this.onOpen,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -168,46 +216,13 @@ class _FollowedStrip extends StatelessWidget {
                     child: ExtendedImage.network(pub.logoUrl!, width: 24, height: 24, fit: BoxFit.cover),
                   ),
             label: Text(pub.name),
+            onPressed: () => onOpen(pub),
             onDeleted: () => onRemove(pub.id),
             deleteIcon: const Icon(Icons.close, size: 16),
+            deleteButtonTooltipMessage: L10n.of(context).plugin_substack_unfollow,
           );
         },
       ),
-    );
-  }
-}
-
-class _PostTile extends StatelessWidget {
-  final SubstackPost post;
-
-  const _PostTile({required this.post});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      leading: post.coverImage == null
-          ? const CircleAvatar(child: Icon(Icons.article_outlined))
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: ExtendedImage.network(post.coverImage!, width: 56, height: 56, fit: BoxFit.cover),
-            ),
-      title: Text(post.title, maxLines: 2, overflow: TextOverflow.ellipsis),
-      subtitle: Text(
-        [
-          post.publicationName,
-          if (post.isPaywalled) L10n.of(context).plugin_substack_paywalled,
-          if (post.subtitle != null && post.subtitle!.trim().isNotEmpty) post.subtitle!,
-        ].join(' · '),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => SubstackReaderScreen(post: post)),
-        );
-      },
     );
   }
 }

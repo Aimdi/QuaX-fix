@@ -255,6 +255,7 @@ Future<void> main() async {
     optionShouldCheckForUpdates: true,
     optionPluginSubstackEnabled: false,
     optionPluginSubstackPublications: '[]',
+    optionPluginSubstackReadIds: '[]',
     optionSubscriptionGroupsOrderByAscending: true,
     optionDisableWarningsForUnrelatedPostsInFeed: false,
     alwaysShowFullTweetContents: false,
@@ -322,6 +323,8 @@ Future<void> main() async {
     await substackPublications.load();
     final substackFeed = SubstackFeedStore(substackClient, substackPublications);
     final substackAdd = SubstackAddPublicationStore(substackClient);
+    final substackRead = SubstackReadStore(prefService);
+    await substackRead.load();
 
     runApp(PrefService(
         service: prefService,
@@ -344,6 +347,7 @@ Future<void> main() async {
             Provider(create: (_) => substackPublications),
             Provider(create: (_) => substackFeed),
             Provider(create: (_) => substackAdd),
+            Provider(create: (_) => substackRead),
             ChangeNotifierProvider(create: (_) => VideoContextState(prefService.get(optionMediaDefaultMute))),
           ],
           child: FritterApp(),

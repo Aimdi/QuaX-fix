@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:quax/plugins/substack/substack_client.dart';
 import 'package:quax/plugins/substack/substack_models.dart';
+import 'package:quax/plugins/substack/substack_reader_screen.dart';
 
 void main() {
   test('resolveSubstackBase accepts handle and URL', () {
@@ -10,6 +11,13 @@ void main() {
     expect(resolveSubstackBase('https://astralcodexten.substack.com/p/x')?.origin, 'https://astralcodexten.substack.com');
     expect(resolveSubstackBase('www.astralcodexten.com')?.host, 'www.astralcodexten.com');
     expect(resolveSubstackBase(''), isNull);
+  });
+
+  test('resolveSubstackPostRef parses /p/slug URLs', () {
+    final ref = resolveSubstackPostRef('https://astralcodexten.substack.com/p/hello-world?utm=1');
+    expect(ref?.base.host, 'astralcodexten.substack.com');
+    expect(ref?.slug, 'hello-world');
+    expect(resolveSubstackPostRef('astralcodexten'), isNull);
   });
 
   test('publicationFromPostJson reads nested publication metadata', () {
@@ -37,6 +45,27 @@ void main() {
     expect(pub.description, 'commentary');
   });
 
+  test('isPaywalled recognizes live only_paid audience', () {
+    const paid = SubstackPost(
+      id: '1',
+      title: 'Paid',
+      slug: 'paid',
+      audience: 'only_paid',
+      publicationBaseUrl: 'https://example.substack.com',
+      publicationName: 'Example',
+    );
+    const free = SubstackPost(
+      id: '2',
+      title: 'Free',
+      slug: 'free',
+      audience: 'everyone',
+      publicationBaseUrl: 'https://example.substack.com',
+      publicationName: 'Example',
+    );
+    expect(paid.isPaywalled, isTrue);
+    expect(free.isPaywalled, isFalse);
+  });
+
   test('SubstackClient.fetchPosts parses public JSON without body', () async {
     final client = SubstackClient(
       httpClient: MockClient((request) async {
@@ -48,6 +77,7 @@ void main() {
             "title": "Hello",
             "slug": "hello",
             "subtitle": "world",
+            "description": "longer excerpt",
             "post_date": "2026-07-01T00:00:00.000Z",
             "canonical_url": "https://example.substack.com/p/hello",
             "audience": "everyone",
@@ -74,9 +104,10 @@ void main() {
     expect(posts.first.authorName, 'Author');
     expect(posts.first.isPaywalled, isFalse);
     expect(posts.first.bodyHtml, isNull);
+    expect(posts.first.excerpt, 'world');
   });
 
-  test('SubstackClient.fetchPost loads full body', () async {
+  test('SubstackClient.fetchPost loads full body and paywall flag', () async {
     final client = SubstackClient(
       httpClient: MockClient((request) async {
         expect(request.url.path, '/api/v1/posts/hello');
@@ -86,8 +117,8 @@ void main() {
             "id": 1,
             "title": "Hello",
             "slug": "hello",
-            "audience": "only_paying",
-            "body_html": "<p>full</p>",
+            "audience": "only_paid",
+            "body_html": "",
             "canonical_url": "https://example.substack.com/p/hello"
           }
           ''',
@@ -106,8 +137,25 @@ void main() {
       'hello',
     );
 
-    expect(post.bodyHtml, '<p>full</p>');
     expect(post.isPaywalled, isTrue);
+  });
+
+  test('wrapSubstackHtml is theme-aware', () {
+    final html = wrapSubstackHtml(
+      title: 'Hello <World>',
+      body: '<p>Body</p>',
+      background: '#000000',
+      foreground: '#FFFFFF',
+      muted: '#AAAAAA',
+      link: '#1D9BF0',
+      isDark: true,
+      subtitle: 'Sub',
+      publicationName: 'Pub',
+    );
+    expect(html, contains('color-scheme: dark'));
+    expect(html, contains('#000000'));
+    expect(html, contains('Hello &lt;World&gt;'));
+    expect(html, contains('<p>Body</p>'));
   });
 
   test('SubstackPublication prefs round-trip', () {
