@@ -128,7 +128,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
   void _share() {
     final url = _post.canonicalUrl;
     if (url == null || url.isEmpty) return;
-    Share.share('${_post.title}\n$url');
+    SharePlus.instance.share(ShareParams(text: '${_post.title}\n$url'));
   }
 
   @override

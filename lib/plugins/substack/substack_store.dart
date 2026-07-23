@@ -130,21 +130,16 @@ class SubstackArchiveStore extends Store<SubstackFeedSnapshot> {
   }
 
   Future<SubstackFeedSnapshot> _fetchPage({required bool replace}) async {
-    try {
-      final page = await client.fetchPosts(publication, limit: substackFeedPageSize, offset: _offset);
-      _offset += substackFeedPageSize;
-      final posts = replace
-          ? page
-          : [...state.posts, ...page.where((e) => !state.posts.any((p) => p.id == e.id))];
-      return SubstackFeedSnapshot(
-        posts: posts,
-        canLoadMore: page.length >= substackFeedPageSize,
-        failedCount: 0,
-      );
-    } catch (e) {
-      if (!replace && state.posts.isNotEmpty) rethrow;
-      throw e;
-    }
+    final page = await client.fetchPosts(publication, limit: substackFeedPageSize, offset: _offset);
+    _offset += substackFeedPageSize;
+    final posts = replace
+        ? page
+        : [...state.posts, ...page.where((e) => !state.posts.any((p) => p.id == e.id))];
+    return SubstackFeedSnapshot(
+      posts: posts,
+      canLoadMore: page.length >= substackFeedPageSize,
+      failedCount: 0,
+    );
   }
 }
 
