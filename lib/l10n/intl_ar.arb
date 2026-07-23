@@ -104,6 +104,7 @@
   "could_not_find_any_tweets_from_the_last_7_days": "لم يُعثر على أي تغريدات من الأيام الـ7 الماضية!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
   "could_not_retrieve_quoted_tweet": "تعذر استرداد التغريدة المقتبسة",
+  "@could_not_retrieve_quoted_tweet": {},
   "country": "البلد",
   "@country": {},
   "create": "إنشاء",
@@ -578,6 +579,12 @@
   "@theme_preset": {},
   "theme_preset_description": "مظهر كامل يتجاوز وضع السمة واللون أدناه",
   "@theme_preset_description": {},
+  "theme_preset_x_look_dim": "مظهر X (باهت)",
+  "@theme_preset_x_look_dim": {},
+  "theme_preset_x_look_light": "مظهر X (فاتح)",
+  "@theme_preset_x_look_light": {},
+  "theme_preset_x_look_lights_out": "مظهر X (أسود)",
+  "@theme_preset_x_look_lights_out": {},
   "there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": "لم يتم إرجاع أي ترند. هذا غير متوقع! رجائاً أبلغ عن خطأ، إذا كان ممكناً.",
   "@there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": {},
   "these_hashtags": "هذه الوسوم",
@@ -709,6 +716,7 @@
   "view_on_github": "عرض على GitHub",
   "@view_on_github": {},
   "view_quoted_tweet": "عرض التغريدة المقتبسة",
+  "@view_quoted_tweet": {},
   "view_version_on_github": "عرض الإصدار على GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "ما إذا كنت تريد إخفاء التغريدات التي تم وضع علامة عليها على أنها حساسة",
@@ -738,7 +746,5 @@
   "zen_mode_page_cap": "طول الخلاصة في وضع الهدوء",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
-  "@zen_mode_page_cap_description": {},
-  "@could_not_retrieve_quoted_tweet": {},
-  "@view_quoted_tweet": {}
+  "@zen_mode_page_cap_description": {}
 }

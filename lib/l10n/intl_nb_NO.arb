@@ -104,6 +104,7 @@
   "could_not_find_any_tweets_from_the_last_7_days": "Kunne ikke finne noen tweets fra de siste 7 dagene!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
   "could_not_retrieve_quoted_tweet": "Kunne ikke hente det siterte innlegget",
+  "@could_not_retrieve_quoted_tweet": {},
   "country": "Land",
   "@country": {},
   "create": "Opprett",
@@ -578,6 +579,12 @@
   "@theme_preset": {},
   "theme_preset_description": "Et komplett utseende som overstyrer temamodus og farge nedenfor",
   "@theme_preset_description": {},
+  "theme_preset_x_look_dim": "X-utseende (dempet)",
+  "@theme_preset_x_look_dim": {},
+  "theme_preset_x_look_light": "X-utseende (lys)",
+  "@theme_preset_x_look_light": {},
+  "theme_preset_x_look_lights_out": "X-utseende (svart)",
+  "@theme_preset_x_look_lights_out": {},
   "there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": "Det var ingen trender tilbake. Dette er uventet! Vennligst rapporter som en feil, hvis mulig.",
   "@there_were_no_trends_returned_this_is_unexpected_please_report_as_a_bug_if_possible": {},
   "these_hashtags": "Disse emneknaggene",
@@ -709,6 +716,7 @@
   "view_on_github": "Se på GitHub",
   "@view_on_github": {},
   "view_quoted_tweet": "Vis sitert innlegg",
+  "@view_quoted_tweet": {},
   "view_version_on_github": "Se versjon på GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Om innlegg merket som sensitive skal skjules",
@@ -738,7 +746,5 @@
   "zen_mode_page_cap": "Feed-lengde i zen-modus",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hvor mange sider en feed laster i zen-modus før den tar en pause.",
-  "@zen_mode_page_cap_description": {},
-  "@could_not_retrieve_quoted_tweet": {},
-  "@view_quoted_tweet": {}
+  "@zen_mode_page_cap_description": {}
 }

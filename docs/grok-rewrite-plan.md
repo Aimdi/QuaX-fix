@@ -52,11 +52,18 @@ Coverage now includes:
 Live fixtures live under `test/fixtures/`. Optional authenticated timeline
 fixtures can land later without blocking Phase 2.
 
-## Phase 2 — Incremental UI/feature rewrite
+## Phase 1b — Perf baseline (before more UI work)
+
+Record cold start, scroll jank, and APK size in `docs/perf-baseline.md`.
+Device rows are TBD in Cloud VMs (no emulator / phone); fill on a mid-range
+handset with `flutter run --profile --trace-startup` and DevTools.
+
+## Phase 2 — Incremental UI/feature rewrite (+ performance)
 
 One feature folder per worktree / Grok session. Order:
 
-1. `tweet/` (most reused) — PR-1 chrome/L10n + PR-2 footer extract (`docs/specs/tweet.md`)
+1. `tweet/` (most reused) — PR-1 chrome/L10n + PR-2 footer extract
+   (`docs/specs/tweet.md`) + **perf pass** (`docs/specs/tweet-perf.md`)
 2. `home/`
 3. `profile/`
 4. `search/`
@@ -64,20 +71,32 @@ One feature folder per worktree / Grok session. Order:
 6. `saved/`
 7. `settings/`
 
+Perf techniques (priority): `const`, image `cacheWidth`, `RepaintBoundary` on
+media, `ListView.builder` (no reckless `cacheExtent` with live GIF players),
+parsing out of `build()`, small `ScopedBuilder`s, skeleton loaders.
+
 Workflow per module:
 
 1. Plan mode → write a module spec under `docs/specs/<module>.md` → commit.
 2. Implement against the spec; keep `flutter_triple` Stores and ARB discipline.
 3. `/compact` between modules; `/memory` + `/flush` for durable decisions.
 
-## Phase 3 — Compatibility verification
+## Phase 3 — X-look theme (switchable)
 
-After any change near `client/`:
+`ThemeExtension` token layer + Settings presets (Light / Dim / Lights-Out).
+Spec: `docs/specs/x-look-theme.md`. Existing themes remain. Inter font (never
+bundle Chirp). No hardcoded colors in widgets — token lookups only.
+
+## Phase 4 — Compatibility / verify
+
+After any change near `client/` **or** a UI/perf module:
 
 1. `fvm flutter analyze` + `fvm flutter test` + `fvm flutter build apk --debug`.
 2. Install on a real device, log in with a real X account (no pure-guest product
    mode), exercise timeline / profile / search / media / 429–404 retry paths.
-3. Prefer upstream fixes via `/port-from-squawker` (`Teskann/QuaX`,
+3. Re-run Phase 1b traces; require fewer dropped frames, cold start not worse,
+   APK not materially bigger — else revert the module worktree.
+4. Prefer upstream fixes via `/port-from-squawker` (`Teskann/QuaX`,
    `j-fbriere/squawker`) when X breaks auth or GraphQL docs.
 
 ## Plan-changing benchmarks

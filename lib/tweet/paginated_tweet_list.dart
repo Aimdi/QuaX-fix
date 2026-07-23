@@ -6,6 +6,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/feed_refresh_controller.dart';
 import 'package:quax/tweet/cached_tweet_list.dart';
 import 'package:quax/tweet/conversation.dart';
+import 'package:quax/tweet/tweet_skeleton.dart';
 import 'package:quax/ui/caught_up_divider.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/utils/paging.dart';
@@ -314,7 +315,7 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
                 ],
               );
             },
-            firstPageProgressIndicatorBuilder: (context) => const Center(child: CircularProgressIndicator()),
+            firstPageProgressIndicatorBuilder: (context) => const TweetFeedSkeleton(),
             firstPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
               error: pagingErrorOf(state)?.error,
               stackTrace: pagingErrorOf(state)?.stackTrace,

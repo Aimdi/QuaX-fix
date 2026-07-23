@@ -13,6 +13,7 @@ import 'package:quax/tweet/_photo.dart';
 import 'package:quax/tweet/_video.dart';
 import 'package:quax/tweet/tweet_chrome.dart';
 import 'package:quax/ui/errors.dart';
+import 'package:quax/ui/x_look_theme.dart';
 import 'package:quax/utils/downloads.dart';
 import 'package:path/path.dart' as path;
 import 'package:pref/pref.dart';
@@ -211,45 +212,50 @@ class _TweetMediaState extends State<TweetMedia> {
         );
       }
 
-      return Container(
-        margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(kTweetMediaRadius)),
-        child: AspectRatio(
-          aspectRatio: largestAspectRatio,
-          child: PageView.builder(
-            controller: _controller,
-            scrollDirection: Axis.horizontal,
-            itemCount: widget.media.length,
-            itemBuilder: (context, index) {
-              var item = widget.media[index];
+      final tokens = XLookTokens.maybeOf(context);
+      final radius = tokens?.mediaRadius ?? kTweetMediaRadius;
 
-              // A video has its own tap controls and must never open the
-              // fullscreen media viewer. Photos and GIFs still open it.
-              final isVideo = item.type == 'video';
+      return RepaintBoundary(
+        child: Container(
+          margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
+          child: AspectRatio(
+            aspectRatio: largestAspectRatio,
+            child: PageView.builder(
+              controller: _controller,
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.media.length,
+              itemBuilder: (context, index) {
+                var item = widget.media[index];
 
-              return GestureDetector(
-                onTap: isVideo
-                    ? null
-                    : () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TweetMediaView(
-                                initialIndex: index,
-                                media: widget.media,
-                                username: widget.username,
-                                tweetId: widget.tweetId))),
-                onLongPress:
-                    item.type == 'photo' ? () => downloadMediaItem(context, item, widget.username) : null,
-                child: _TweetMediaItem(
-                    media: item,
-                    index: index + 1,
-                    mediaIndex: index,
-                    total: widget.media.length,
-                    username: widget.username,
-                    tweetId: widget.tweetId),
-              );
-            },
+                // A video has its own tap controls and must never open the
+                // fullscreen media viewer. Photos and GIFs still open it.
+                final isVideo = item.type == 'video';
+
+                return GestureDetector(
+                  onTap: isVideo
+                      ? null
+                      : () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TweetMediaView(
+                                  initialIndex: index,
+                                  media: widget.media,
+                                  username: widget.username,
+                                  tweetId: widget.tweetId))),
+                  onLongPress:
+                      item.type == 'photo' ? () => downloadMediaItem(context, item, widget.username) : null,
+                  child: _TweetMediaItem(
+                      media: item,
+                      index: index + 1,
+                      mediaIndex: index,
+                      total: widget.media.length,
+                      username: widget.username,
+                      tweetId: widget.tweetId),
+                );
+              },
+            ),
           ),
         ),
       );
@@ -499,6 +505,6 @@ class _TweetMediaThing extends StatelessWidget {
       media = Text(L10n.of(context).unknown);
     }
 
-    return media;
+    return RepaintBoundary(child: media);
   }
 }

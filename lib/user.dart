@@ -9,6 +9,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/profile/profile.dart';
 import 'package:quax/subscriptions/users_model.dart';
+import 'package:quax/ui/x_look_theme.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -65,12 +66,14 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokens = XLookTokens.maybeOf(context);
+    final resolvedSize = size == 48 && tokens != null ? tokens.avatarSize : size;
     // Decode at the displayed size instead of the full 200x200 download, so
     // scrolling feeds don't pay for oversized bitmaps.
-    final cacheWidth = (size * MediaQuery.devicePixelRatioOf(context)).ceil();
+    final cacheWidth = (resolvedSize * MediaQuery.devicePixelRatioOf(context)).ceil();
     return ClipRRect(
-      borderRadius: BorderRadius.circular(size),
-      child: _createUserAvatar(uri, size, cacheWidth),
+      borderRadius: BorderRadius.circular(resolvedSize),
+      child: _createUserAvatar(uri, resolvedSize, cacheWidth),
     );
   }
 }
