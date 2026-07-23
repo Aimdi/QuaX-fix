@@ -2,8 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:quax/plugins/substack/substack_client.dart';
+import 'package:quax/plugins/substack/substack_html.dart';
 import 'package:quax/plugins/substack/substack_models.dart';
-import 'package:quax/plugins/substack/substack_reader_screen.dart';
 
 void main() {
   test('resolveSubstackBase accepts handle and URL', () {
@@ -140,10 +140,10 @@ void main() {
     expect(post.isPaywalled, isTrue);
   });
 
-  test('wrapSubstackHtml is theme-aware', () {
+  test('wrapSubstackHtml is theme-aware and sanitizes chrome', () {
     final html = wrapSubstackHtml(
       title: 'Hello <World>',
-      body: '<p>Body</p>',
+      body: '<p>Body</p><button>x</button><svg></svg>',
       background: '#000000',
       foreground: '#FFFFFF',
       muted: '#AAAAAA',
@@ -156,6 +156,23 @@ void main() {
     expect(html, contains('#000000'));
     expect(html, contains('Hello &lt;World&gt;'));
     expect(html, contains('<p>Body</p>'));
+    expect(html, isNot(contains('<button')));
+    expect(html, contains('font-family: Georgia'));
+  });
+
+  test('sanitize and plain text keep readable content', () {
+    const raw = '''
+      <p>Hello <strong>world</strong>.</p>
+      <button>Follow</button>
+      <p>Second paragraph</p>
+    ''';
+    final clean = sanitizeSubstackBodyHtml(raw);
+    expect(clean, contains('Hello'));
+    expect(clean, isNot(contains('<button')));
+    final text = substackHtmlToPlainText(raw);
+    expect(text, contains('Hello world.'));
+    expect(text, contains('Second paragraph'));
+    expect(buildSubstackSpeakText(title: 'T', bodyHtml: raw), contains('T'));
   });
 
   test('SubstackPublication prefs round-trip', () {

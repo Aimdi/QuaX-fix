@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/substack/substack_client.dart';
+import 'package:quax/plugins/substack/substack_html.dart';
 import 'package:quax/plugins/substack/substack_models.dart';
 import 'package:quax/plugins/substack/substack_store.dart';
 import 'package:quax/ui/errors.dart';
@@ -20,21 +23,58 @@ class SubstackReaderScreen extends StatefulWidget {
 
 class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
   late final WebViewController _controller;
+  late final FlutterTts _tts;
   late SubstackPost _post;
   Object? _error;
   var _loading = true;
   var _empty = false;
   var _paywalled = false;
+  var _speaking = false;
+  var _ttsReady = false;
+  String? _speakText;
 
   @override
   void initState() {
     super.initState();
     _post = widget.post;
     _controller = WebViewController()..setJavaScriptMode(JavaScriptMode.unrestricted);
+    _tts = FlutterTts();
+    _initTts();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SubstackReadStore>().markRead(_post.id);
       _load();
     });
+  }
+
+  Future<void> _initTts() async {
+    await _tts.awaitSpeakCompletion(true);
+    _tts.setCancelHandler(() {
+      if (mounted) setState(() => _speaking = false);
+    });
+    _tts.setErrorHandler((_) {
+      if (mounted) setState(() => _speaking = false);
+    });
+
+    final locale = Intl.shortLocale(Intl.getCurrentLocale());
+    final language = switch (locale) {
+      'zh' => 'zh-CN',
+      'nb' => 'nb-NO',
+      'pt' => 'pt-BR',
+      _ => locale.contains('_') ? locale.replaceAll('_', '-') : '$locale-${locale.toUpperCase()}',
+    };
+    try {
+      await _tts.setLanguage(language);
+    } catch (_) {
+      await _tts.setLanguage('en-US');
+    }
+    await _tts.setSpeechRate(0.45);
+    if (mounted) setState(() => _ttsReady = true);
+  }
+
+  @override
+  void dispose() {
+    _tts.stop();
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -51,6 +91,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
         _error = null;
         _paywalled = false;
         _empty = false;
+        _speakText = null;
         _controller.setNavigationDelegate(NavigationDelegate(
           onPageFinished: (_) {
             if (mounted) setState(() => _loading = false);
@@ -72,6 +113,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
         _paywalled = true;
         _empty = false;
         _loading = false;
+        _speakText = null;
       });
       return;
     }
@@ -80,6 +122,13 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
     if (html != null && html.trim().isNotEmpty) {
       _paywalled = false;
       _empty = false;
+      _speakText = buildSubstackSpeakText(
+        title: post.title,
+        subtitle: post.excerpt,
+        authorName: post.authorName,
+        publicationName: post.publicationName,
+        bodyHtml: html,
+      );
       _controller.setNavigationDelegate(NavigationDelegate(
         onPageFinished: (_) {
           if (mounted) setState(() => _loading = false);
@@ -107,6 +156,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
     if (post.canonicalUrl != null) {
       _paywalled = false;
       _empty = false;
+      _speakText = null;
       _controller.setNavigationDelegate(NavigationDelegate(
         onPageFinished: (_) {
           if (mounted) setState(() => _loading = false);
@@ -121,8 +171,35 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
         _loading = false;
         _empty = true;
         _paywalled = false;
+        _speakText = null;
       });
     }
+  }
+
+  Future<void> _toggleTts() async {
+    if (_speaking) {
+      await _tts.stop();
+      if (mounted) setState(() => _speaking = false);
+      return;
+    }
+
+    final text = _speakText?.trim();
+    if (text == null || text.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(L10n.of(context).plugin_substack_tts_unavailable)),
+      );
+      return;
+    }
+
+    // Android engines can choke on very long utterances; speak in chunks.
+    final chunks = _chunkForTts(text);
+    setState(() => _speaking = true);
+    for (final chunk in chunks) {
+      if (!mounted || !_speaking) break;
+      await _tts.speak(chunk);
+    }
+    if (mounted) setState(() => _speaking = false);
   }
 
   void _share() {
@@ -133,10 +210,20 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final canSpeak = _ttsReady && !_paywalled && !_empty && (_speakText?.trim().isNotEmpty ?? false);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_post.title, maxLines: 1, overflow: TextOverflow.ellipsis),
         actions: [
+          if (canSpeak || _speaking)
+            IconButton(
+              tooltip: _speaking
+                  ? L10n.of(context).plugin_substack_tts_stop
+                  : L10n.of(context).plugin_substack_tts_listen,
+              icon: Icon(_speaking ? Icons.stop_circle_outlined : Icons.record_voice_over_outlined),
+              onPressed: _toggleTts,
+            ),
           if (_post.canonicalUrl != null) ...[
             IconButton(
               tooltip: L10n.of(context).plugin_substack_share,
@@ -229,71 +316,20 @@ String _cssColor(Color color) {
   return '#${hex.substring(2)}';
 }
 
-@visibleForTesting
-String wrapSubstackHtml({
-  required String title,
-  required String body,
-  required String background,
-  required String foreground,
-  required String muted,
-  required String link,
-  required bool isDark,
-  String? subtitle,
-  String? authorName,
-  String? publicationName,
-}) {
-  final meta = [
-    if (publicationName != null && publicationName.isNotEmpty) _escape(publicationName),
-    if (authorName != null && authorName.isNotEmpty) _escape(authorName),
-  ].join(' · ');
+List<String> _chunkForTts(String text, {int maxChars = 3500}) {
+  if (text.length <= maxChars) return [text];
 
-  return '''
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="color-scheme" content="${isDark ? 'dark' : 'light'}" />
-<style>
-  :root { color-scheme: ${isDark ? 'dark' : 'light'}; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    padding: 16px;
-    line-height: 1.6;
-    color: $foreground;
-    background: $background;
-    margin: 0;
+  final chunks = <String>[];
+  var remaining = text;
+  while (remaining.length > maxChars) {
+    var splitAt = remaining.lastIndexOf('\n\n', maxChars);
+    if (splitAt < maxChars ~/ 2) {
+      splitAt = remaining.lastIndexOf('. ', maxChars);
+      if (splitAt < maxChars ~/ 2) splitAt = maxChars;
+    }
+    chunks.add(remaining.substring(0, splitAt).trim());
+    remaining = remaining.substring(splitAt).trimLeft();
   }
-  img, video, iframe { max-width: 100%; height: auto; }
-  h1 { font-size: 1.55rem; line-height: 1.25; margin: 0 0 8px; }
-  .meta { color: $muted; font-size: 0.9rem; margin-bottom: 8px; }
-  .subtitle { color: $muted; font-size: 1.05rem; margin: 0 0 20px; }
-  a { color: $link; }
-  blockquote {
-    margin: 16px 0;
-    padding-left: 12px;
-    border-left: 3px solid $muted;
-    color: $muted;
-  }
-  pre, code {
-    background: ${isDark ? '#1E1E1E' : '#F2F2F2'};
-    border-radius: 6px;
-  }
-  pre { padding: 12px; overflow-x: auto; }
-  code { padding: 1px 4px; }
-</style>
-</head>
-<body>
-<h1>${_escape(title)}</h1>
-${meta.isEmpty ? '' : '<div class="meta">$meta</div>'}
-${subtitle == null || subtitle.isEmpty ? '' : '<p class="subtitle">${_escape(subtitle)}</p>'}
-$body
-</body>
-</html>
-''';
+  if (remaining.isNotEmpty) chunks.add(remaining);
+  return chunks;
 }
-
-String _escape(String value) => value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
