@@ -9,6 +9,7 @@ import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/tweet/_media.dart';
 import 'package:quax/tweet/_video.dart';
+import 'package:quax/tweet/tweet_chrome.dart';
 import 'package:quax/utils/urls.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
@@ -31,7 +32,7 @@ class TweetCard extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           color: Theme.of(context).colorScheme.inversePrimary,
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(kTweetMediaRadius)),
           child: child,
         ));
   }

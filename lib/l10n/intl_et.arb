@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "Viimase 7 päeva andmetest ei leidu ühtegi säutsu!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "Tsiteeritud postitust ei õnnestunud laadida",
   "country": "Riik",
   "@country": {},
   "create": "Loo",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "Vaata GitHubis",
   "@view_on_github": {},
+  "view_quoted_tweet": "Vaata tsiteeritud postitust",
   "view_version_on_github": "Vaata versiooni GitHubis",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Kas soovid peita säutse, kus võib olla ebasobilikku sisu",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Voo pikkus Zen-režiimis",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Mitu lehte voog Zen-režiimis enne pausi laadib.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

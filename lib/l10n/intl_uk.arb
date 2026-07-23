@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "Не вдалося знайти жодного твіту за останні 7 днів!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "Не вдалося отримати цитований допис",
   "country": "Країна",
   "@country": {},
   "create": "Створити",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "Переглянути на GitHub",
   "@view_on_github": {},
+  "view_quoted_tweet": "Переглянути цитований допис",
   "view_version_on_github": "Переглянути версію на GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Чи приховувати публікації, позначені як чутливі",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Довжина стрічки в дзен-режимі",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Скільки сторінок завантажує стрічка в дзен-режимі перед паузою.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

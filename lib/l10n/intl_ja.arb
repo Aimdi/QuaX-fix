@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "過去7日間にツイートが見つかりませんでした！",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "引用ポストを取得できませんでした",
   "country": "国",
   "@country": {},
   "create": "作成",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "View on GitHub",
   "@view_on_github": {},
+  "view_quoted_tweet": "引用ポストを表示",
   "view_version_on_github": "View version {version} on GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "センシティブとされたツイートを隠すかどうか",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "禅モードのフィードの長さ",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅モードでフィードが一時停止するまでに読み込むページ数。",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

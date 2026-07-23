@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "Nie atrymlivajecca znajści jakija-niebudź tvity za apošnija 7 dzion!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "Nie ŭdalosia atrymac cytavany post",
   "country": "Kraina",
   "@country": {},
   "create": "Stvaryć",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "Ahliadaĺ na GitHub",
   "@view_on_github": {},
+  "view_quoted_tweet": "Prahladzieć cytavany post",
   "view_version_on_github": "Ahliadaĺ viersiju na GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Ci skryvać posty, adznačanyja jak čulivyja",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Daŭžynia stužki ŭ dzen-režymie",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolki staronak zahružaje stužka ŭ dzen-režymie pierad paŭzaj.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

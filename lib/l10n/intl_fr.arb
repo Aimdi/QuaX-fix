@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "Impossible de trouver des tweets des 7 derniers jours !",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "Impossible de récupérer le post cité",
   "country": "Pays",
   "@country": {},
   "create": "Créer",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "Voir sur GitHub",
   "@view_on_github": {},
+  "view_quoted_tweet": "Voir le post cité",
   "view_version_on_github": "Téléchargez la version {version} sur GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Masquer ou non les tweets marqués comme sensibles",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Longueur du fil en mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Nombre de pages chargées par le fil en mode zen avant de faire une pause.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

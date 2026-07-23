@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "Không thể tìm bài viết nào trong 7 ngày vừa qua!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "Không thể lấy bài đăng được trích dẫn",
   "country": "Thành phố",
   "@country": {},
   "create": "Tạo",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "Xem ở Github",
   "@view_on_github": {},
+  "view_quoted_tweet": "Xem bài đăng được trích dẫn",
   "view_version_on_github": "Xem bản {version} ở Github",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Ẩn những bài viết gắn mác nhạy cảm",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Độ dài bảng tin ở chế độ zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Số trang bảng tin tải ở chế độ zen trước khi tạm dừng.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

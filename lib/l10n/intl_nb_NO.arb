@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "Kunne ikke finne noen tweets fra de siste 7 dagene!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "Kunne ikke hente det siterte innlegget",
   "country": "Land",
   "@country": {},
   "create": "Opprett",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "Se på GitHub",
   "@view_on_github": {},
+  "view_quoted_tweet": "Vis sitert innlegg",
   "view_version_on_github": "Se versjon på GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Om innlegg merket som sensitive skal skjules",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Feed-lengde i zen-modus",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hvor mange sider en feed laster i zen-modus før den tar en pause.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

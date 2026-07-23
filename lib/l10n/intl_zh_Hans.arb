@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "找不到过去 7 天的任何推文！",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "无法获取引用的帖子",
   "country": "国家",
   "@country": {},
   "create": "创建",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "在GitHub上查看",
   "@view_on_github": {},
+  "view_quoted_tweet": "查看引用的帖子",
   "view_version_on_github": "在GitHub上查看版本",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "是否隐藏被标记为敏感的推文",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "禅模式信息流长度",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

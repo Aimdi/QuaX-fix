@@ -103,6 +103,7 @@
   "@could_not_find_any_tweets_by_this_user": {},
   "could_not_find_any_tweets_from_the_last_7_days": "Tidak bisa menemukan cuitan apa pun dari 7 hari terakhir!",
   "@could_not_find_any_tweets_from_the_last_7_days": {},
+  "could_not_retrieve_quoted_tweet": "Tidak dapat mengambil tweet yang dikutip",
   "country": "Negara",
   "@country": {},
   "create": "Buat",
@@ -707,6 +708,7 @@
   "@video_quality_description": {},
   "view_on_github": "Lihat di GitHub",
   "@view_on_github": {},
+  "view_quoted_tweet": "Lihat tweet yang dikutip",
   "view_version_on_github": "Lihat versi di GitHub",
   "@view_version_on_github": {},
   "whether_to_hide_tweets_marked_as_sensitive": "Untuk menyembunyikan cuitan yang ditandai sebagai sensitif",
@@ -736,5 +738,7 @@
   "zen_mode_page_cap": "Panjang beranda di mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@could_not_retrieve_quoted_tweet": {},
+  "@view_quoted_tweet": {}
 }

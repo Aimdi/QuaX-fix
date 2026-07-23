@@ -11,6 +11,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/profile/profile.dart';
 import 'package:quax/tweet/_photo.dart';
 import 'package:quax/tweet/_video.dart';
+import 'package:quax/tweet/tweet_chrome.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/utils/downloads.dart';
 import 'package:path/path.dart' as path;
@@ -213,7 +214,7 @@ class _TweetMediaState extends State<TweetMedia> {
       return Container(
         margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
         clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(kTweetMediaRadius)),
         child: AspectRatio(
           aspectRatio: largestAspectRatio,
           child: PageView.builder(

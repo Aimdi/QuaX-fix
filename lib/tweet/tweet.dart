@@ -22,6 +22,7 @@ import 'package:quax/tweet/_ExpandableTweetText.dart';
 import 'package:quax/tweet/_card.dart';
 import 'package:quax/tweet/_media.dart';
 import 'package:quax/tweet/quotes_screen.dart';
+import 'package:quax/tweet/tweet_chrome.dart';
 import 'package:quax/article/article.dart';
 import 'package:quax/ui/dates.dart';
 import 'package:quax/ui/errors.dart';
@@ -752,7 +753,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       } else if (tweet.quotedStatusIdStr != null) {
         // If twitter did not gave us the full tweet for some reason, we show a clickable tile to the tweet
         // There always seem to be an actual link to the quoted tweet that we can display (showing username + id)
-        String? msg = tweet.quotedStatusPermalink?.display ?? 'View quoted tweet'; // Just in case, add a default String
+        String? msg = tweet.quotedStatusPermalink?.display ?? L10n.of(context).view_quoted_tweet;
         quotedContent = GestureDetector(
             onTap: () => Navigator.pushNamed(context, routeStatus,
                 arguments: StatusScreenArguments(id: tweet.quotedStatusIdStr!, username: null)),
@@ -760,12 +761,12 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         );
       } else {
         // If we have a quote tweet we should at least have quotedStatusIdStr, but just in case twitter is being weird
-        quotedContent = _buildErrorTweet('Could not retrieve quoted tweet');
+        quotedContent = _buildErrorTweet(L10n.of(context).could_not_retrieve_quoted_tweet);
       }
       quotedTweet = Container(
         decoration: BoxDecoration(
         border: Border.all(color: theme.colorScheme.surfaceBright.withAlpha(180)),
-        borderRadius: BorderRadius.circular(16)),
+        borderRadius: BorderRadius.circular(kTweetMediaRadius)),
         clipBehavior: Clip.antiAlias,
         margin: const EdgeInsets.all(8),
         child: quotedContent,
@@ -969,11 +970,8 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     return RepaintBoundary(
             key: _globalKey,
             child: Column(children: [
-              Card(
+              tweetFlatCard(
                 color: tweetCardColor(context),
-                margin: EdgeInsets.zero,
-                elevation: 0,
-                shape: const RoundedRectangleBorder(),
                 child: Row(
                   children: [
                     retweetSidebar,
@@ -992,11 +990,10 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                   ],
                 ),
               ),
-              Divider(
-                height: 0,
-                thickness: 0.5,
-                color: addSeparator ? theme.colorScheme.surfaceBright.withAlpha(150) : Colors.transparent,
-              ),
+              if (addSeparator)
+                tweetHairlineDivider(context)
+              else
+                const Divider(height: 0, thickness: kTweetDividerThickness, color: Colors.transparent),
             ]));
   }
 
