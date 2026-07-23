@@ -38,8 +38,6 @@ class HomeModel extends Store<List<HomePage>> {
     await execute(() async {
       var saved = prefs.getStringList(optionHomePages) ?? [];
 
-      // BuildContext is unavailable here; plugins expose title via L10n builders
-      // when their homePage is constructed from UI. Use icon + title helpers.
       final pluginPages = <NavigationPage>[
         for (final plugin in builtInPlugins)
           if (plugin.isEnabled(prefs))
