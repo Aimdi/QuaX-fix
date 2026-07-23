@@ -101,6 +101,8 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
                   context.read<GroupsModel>().changeOrderSubscriptionGroupsBy('name');
                 case _SubscriptionsMenuAction.sortGroupsByDate:
                   context.read<GroupsModel>().changeOrderSubscriptionGroupsBy('created_at');
+                case _SubscriptionsMenuAction.sortGroupsByCustom:
+                  context.read<GroupsModel>().changeOrderSubscriptionGroupsBy('position');
                 case _SubscriptionsMenuAction.toggleGroupsOrder:
                   context.read<GroupsModel>().toggleOrderSubscriptionGroupsAscending();
                 case _SubscriptionsMenuAction.importSubscriptions:
@@ -133,6 +135,10 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
                 PopupMenuItem(
                   value: _SubscriptionsMenuAction.sortGroupsByDate,
                   child: Text(l10n.date_created),
+                ),
+                PopupMenuItem(
+                  value: _SubscriptionsMenuAction.sortGroupsByCustom,
+                  child: Text(l10n.custom),
                 ),
                 PopupMenuItem(
                   value: _SubscriptionsMenuAction.toggleGroupsOrder,
@@ -186,6 +192,7 @@ enum _SubscriptionsMenuAction {
   importList,
   sortGroupsByName,
   sortGroupsByDate,
+  sortGroupsByCustom,
   toggleGroupsOrder,
   importSubscriptions,
   findBroken,

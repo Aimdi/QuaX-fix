@@ -1,157 +1,214 @@
 import 'dart:convert';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/Models/configuration.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
-import 'package:quax/group/group_screen.dart';
+import 'package:quax/subscriptions/_group_list_item.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/user.dart';
 import 'package:provider/provider.dart';
 
 Future openSubscriptionGroupDialog(BuildContext context, String? id, String name, String icon) {
-  return showDialog(
+  return showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
       builder: (context) {
-        return SubscriptionGroupEditDialog(id: id, name: name, icon: icon);
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: FractionallySizedBox(
+            heightFactor: 0.85,
+            child: SubscriptionGroupEditDialog(id: id, name: name, icon: icon),
+          ),
+        );
       });
 }
 
-class SubscriptionGroupsPage extends StatelessWidget {
+/// The Groups tab: a dense list of group rows with search, pinning,
+/// drag-to-reorder (in custom sort mode) and swipe actions.
+class SubscriptionGroupsPage extends StatefulWidget {
   final ScrollController scrollController;
 
   const SubscriptionGroupsPage({super.key, required this.scrollController});
 
   @override
-  Widget build(BuildContext context) {
-    return ScopedBuilder<GroupsModel, List<SubscriptionGroup>>.transition(
-      store: context.read<GroupsModel>(),
-      onState: (_, state) {
-        if (state.isEmpty) {
-          return ListView(
-            controller: scrollController,
-            padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
-            children: [
-              Icon(Icons.workspaces_outlined, size: 48, color: Theme.of(context).colorScheme.outline),
-              const SizedBox(height: 16),
-              Text(
-                L10n.of(context).no_subscription_groups_yet,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                L10n.of(context).no_subscription_groups_description,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Center(
-                child: FilledButton.icon(
-                  onPressed: () => openSubscriptionGroupDialog(context, null, '', defaultGroupIcon),
-                  icon: const Icon(Icons.add),
-                  label: Text(L10n.of(context).create_subscription_group),
-                ),
-              ),
-            ],
-          );
-        }
+  State<SubscriptionGroupsPage> createState() => _SubscriptionGroupsPageState();
+}
 
-        return GridView.builder(
-          controller: scrollController,
-          padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 1.35,
+class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return ListView(
+      controller: widget.scrollController,
+      padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
+      children: [
+        Icon(Icons.workspaces_outlined, size: 48, color: Theme.of(context).colorScheme.outline),
+        const SizedBox(height: 16),
+        Text(
+          L10n.of(context).no_subscription_groups_yet,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          L10n.of(context).no_subscription_groups_description,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 24),
+        Center(
+          child: FilledButton.icon(
+            onPressed: () => openSubscriptionGroupDialog(context, null, '', defaultGroupIcon),
+            icon: const Icon(Icons.add),
+            label: Text(L10n.of(context).create_subscription_group),
           ),
-          itemCount: state.length,
-          itemBuilder: (context, index) {
-            final e = state[index];
-            return _GroupTile(
-              id: e.id,
-              name: e.name,
-              icon: e.icon,
-              color: e.color,
-              numberOfMembers: e.numberOfMembers,
-              onLongPress: () => openSubscriptionGroupDialog(context, e.id, e.name, e.icon),
-            );
-          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSearchBar(BuildContext context) {
+    final hasQuery = _searchController.text.isNotEmpty;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      child: SearchBar(
+        controller: _searchController,
+        hintText: L10n.of(context).search,
+        leading: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: Icon(Icons.search),
+        ),
+        trailing: hasQuery
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    _searchController.clear();
+                    setState(() {});
+                  },
+                ),
+              ]
+            : null,
+        onChanged: (_) => setState(() {}),
+      ),
+    );
+  }
+
+  Widget _swipeBackground(BuildContext context, {required bool alignEnd, required IconData icon}) {
+    return Container(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      alignment: alignEnd ? Alignment.centerRight : Alignment.centerLeft,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Icon(icon),
+    );
+  }
+
+  Future<bool?> _confirmDeleteGroup(BuildContext context, SubscriptionGroup group) {
+    return showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(L10n.of(context).are_you_sure),
+              content: Text(L10n.of(context)
+                  .are_you_sure_you_want_to_delete_the_subscription_group_name_of_group(group.name)),
+              actions: [
+                TextButton(onPressed: () => Navigator.pop(context, false), child: Text(L10n.of(context).no)),
+                TextButton(onPressed: () => Navigator.pop(context, true), child: Text(L10n.of(context).yes)),
+              ],
+            ));
+  }
+
+  // Swipe towards the end deletes (after confirmation); swipe from the start
+  // toggles the pin without dismissing the row.
+  Widget _buildSwipeableRow(BuildContext context, SubscriptionGroup group) {
+    final model = context.read<GroupsModel>();
+    return Dismissible(
+      key: ValueKey(group.id),
+      background: _swipeBackground(context,
+          alignEnd: false, icon: group.pinned ? Icons.push_pin_outlined : Icons.push_pin),
+      secondaryBackground: _swipeBackground(context, alignEnd: true, icon: Icons.delete_outline),
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.startToEnd) {
+          await model.toggleGroupPinned(group.id, !group.pinned);
+          return false;
+        }
+        return await _confirmDeleteGroup(context, group) ?? false;
+      },
+      onDismissed: (_) => model.deleteGroup(group.id),
+      child: GroupListItem(
+        group: group,
+        onLongPress: () => openSubscriptionGroupDialog(context, group.id, group.name, group.icon),
+      ),
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<SubscriptionGroup> groups) {
+    return ListView.builder(
+      controller: widget.scrollController,
+      padding: const EdgeInsets.fromLTRB(8, 4, 8, 24),
+      itemCount: groups.length,
+      itemBuilder: (context, index) => _buildSwipeableRow(context, groups[index]),
+    );
+  }
+
+  Widget _buildReorderableList(BuildContext context, List<SubscriptionGroup> groups) {
+    return ReorderableListView.builder(
+      scrollController: widget.scrollController,
+      padding: const EdgeInsets.fromLTRB(8, 4, 8, 24),
+      buildDefaultDragHandles: false,
+      itemCount: groups.length,
+      itemBuilder: (context, index) {
+        final group = groups[index];
+        return GroupListItem(
+          key: ValueKey(group.id),
+          group: group,
+          reorderIndex: index,
+          onLongPress: () => openSubscriptionGroupDialog(context, group.id, group.name, group.icon),
         );
+      },
+      onReorderItem: (oldIndex, newIndex) {
+        final ids = groups.map((g) => g.id).toList();
+        ids.insert(newIndex, ids.removeAt(oldIndex));
+        context.read<GroupsModel>().saveGroupPositions(ids);
       },
     );
   }
-}
-
-class _GroupTile extends StatelessWidget {
-  final String id;
-  final String name;
-  final String icon;
-  final Color? color;
-  final int? numberOfMembers;
-  final VoidCallback? onLongPress;
-
-  const _GroupTile({
-    required this.id,
-    required this.name,
-    required this.icon,
-    required this.color,
-    required this.numberOfMembers,
-    this.onLongPress,
-  });
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final base = color?.harmonizeWith(scheme.primary) ?? scheme.surfaceContainerHighest;
-    final onBase = ThemeData.estimateBrightnessForColor(base) == Brightness.dark ? Colors.white : Colors.black87;
-    final subtitle = numberOfMembers == null
-        ? null
-        : L10n.of(context).subscription_group_member_count(numberOfMembers!);
+    return ScopedBuilder<GroupsModel, List<SubscriptionGroup>>.transition(
+      store: context.read<GroupsModel>(),
+      // TODO: Error
+      onState: (_, state) {
+        if (state.isEmpty) {
+          return _buildEmptyState(context);
+        }
 
-    return Material(
-      color: base,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: () {
-          Navigator.pushNamed(context, routeGroup, arguments: GroupScreenArguments(id: id, name: name));
-        },
-        onLongPress: onLongPress,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(deserializeIconData(icon), size: 28, color: onBase),
-              const Spacer(),
-              Text(
-                name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: onBase,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-              if (subtitle != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: onBase.withValues(alpha: 0.8)),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
+        final query = _searchController.text.toLowerCase();
+        final groups = query.isEmpty
+            ? state
+            : state.where((g) => g.name.toLowerCase().contains(query)).toList(growable: false);
+        final manualOrder = context.read<GroupsModel>().orderGroupsBy == 'position' && query.isEmpty;
+
+        return Column(
+          children: [
+            if (state.length > 5) _buildSearchBar(context),
+            Expanded(
+              child: manualOrder ? _buildReorderableList(context, groups) : _buildList(context, groups),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -221,6 +278,33 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         }));
   }
 
+  /// Picks another group and moves every member of this one into it, deleting
+  /// this group afterwards. Resolves accidental duplicates like "Art (1)"/"Art (2)".
+  Future<void> _openMergeSheet(BuildContext context) async {
+    final groupsModel = context.read<GroupsModel>();
+    final others = groupsModel.state.where((g) => g.id != widget.id).toList(growable: false);
+
+    final target = await showModalBottomSheet<SubscriptionGroup>(
+        context: context,
+        builder: (sheetContext) => SafeArea(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  for (final g in others)
+                    ListTile(
+                      leading: Icon(g.iconData),
+                      title: Text(g.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      onTap: () => Navigator.pop(sheetContext, g),
+                    ),
+                ],
+              ),
+            ));
+
+    if (target == null || !context.mounted) return;
+    await groupsModel.mergeGroups(widget.id!, target.id);
+    if (context.mounted) Navigator.pop(context);
+  }
+
   void openDeleteSubscriptionGroupDialog(String id, String name) {
     showDialog(
         context: context,
@@ -271,6 +355,11 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         },
         child: Text(L10n.of(context).toggle_all),
       ),
+      if (widget.id != null)
+        TextButton(
+          onPressed: () => _openMergeSheet(context),
+          child: Text(L10n.of(context).merge_into),
+        ),
       TextButton(
         onPressed: id == null ? null : () => openDeleteSubscriptionGroupDialog(id!, name!),
         child: Text(L10n.of(context).delete),
@@ -296,13 +385,9 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         );
       }),
     ];
-    return AlertDialog(
-      actionsOverflowAlignment: OverflowBarAlignment.end,
-      actions: [
-        ...buttonsLst1,
-        ...buttonsLst2,
-      ],
-      content: Form(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Form(
         key: _formKey,
         child: SizedBox(
           width: double.maxFinite,
@@ -422,6 +507,14 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                     );
                   },
                 ),
+              ),
+              OverflowBar(
+                alignment: MainAxisAlignment.end,
+                overflowAlignment: OverflowBarAlignment.end,
+                children: [
+                  ...buttonsLst1,
+                  ...buttonsLst2,
+                ],
               ),
             ],
           ),
