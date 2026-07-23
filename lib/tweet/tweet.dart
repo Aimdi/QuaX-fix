@@ -12,7 +12,6 @@ import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/subscriptions/users_model.dart';
-import 'package:quax/import_data_model.dart';
 import 'package:quax/profile/profile.dart';
 import 'package:quax/saved/folder_picker.dart';
 import 'package:quax/saved/liked_tweet_model.dart';
@@ -81,6 +80,10 @@ class TweetTile extends StatefulWidget {
 
 class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixin {
   static final log = Logger('TweetTile');
+
+  // Short K/M suffixes: locale-specific compact forms like "12 Tsd." or
+  // "1,2 Mio." eat the footer's width and push the trailing buttons away.
+  static final NumberFormat _numberFormat = NumberFormat.compact(locale: 'en_US');
 
   late final bool clickable;
   late final String? currentUsername;
@@ -560,17 +563,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     );
   }
 
-  Color? buttonsColor(BuildContext c) {
-    if (Theme.of(c).textTheme.bodyMedium == null || Theme.of(c).textTheme.bodyMedium!.color == null) return null;
-    final hsl = HSLColor.fromColor(Theme.of(c).textTheme.bodyMedium!.color!);
-    const lightnessFactorDark = 0.5;
-    const lightnessFactorLight = 4.0;
-    final adjustedLightness =
-        (hsl.lightness * (hsl.lightness > 0.5 ? lightnessFactorDark : lightnessFactorLight)).clamp(0.0, 1.0);
-    final adjustedSaturation = (hsl.saturation * 0.2).clamp(0.0, 1.0);
-    final newHsl = hsl.withLightness(adjustedLightness).withSaturation(adjustedSaturation);
-    return newHsl.toColor();
-  }
+  Color? buttonsColor(BuildContext c) => _footerButtonsColor(Theme.of(c).textTheme.bodyMedium?.color);
 
   Widget _buildErrorTweet(String text) {
     // create the layout of tombstones (deleted tweets) and other possible errors that we want to display as a tweet
@@ -614,9 +607,6 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         currentUsername != null && tweet.user != null && currentUsername == tweet.user!.screenName;
     final hideAuthorInformation = !isTweetOnSameProfile && prefs.get(optionNonConfirmationBiasMode);
 
-    // Short K/M suffixes: locale-specific compact forms like "12 Tsd." or
-    // "1,2 Mio." eat the footer's width and push the trailing buttons away.
-    var numberFormat = NumberFormat.compact(locale: 'en_US');
     var theme = Theme.of(context);
 
     if (tweet.isTombstone ?? false) {
@@ -775,7 +765,8 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       quotedTweet = Container(
         decoration: BoxDecoration(
         border: Border.all(color: theme.colorScheme.surfaceBright.withAlpha(180)),
-        borderRadius: BorderRadius.circular(8)),
+        borderRadius: BorderRadius.circular(16)),
+        clipBehavior: Clip.antiAlias,
         margin: const EdgeInsets.all(8),
         child: quotedContent,
       );
@@ -801,7 +792,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
     final locale = _effectiveLocale();
 
-    final footerBar = _buildFooterBar(tweet, tweetText, shareBaseUrl, locale, numberFormat, isArticle: tweet.article != null);
+    final footerBar = _buildFooterBar(tweet, tweetText, shareBaseUrl, locale, _numberFormat, isArticle: tweet.article != null);
 
     var article = Container();
     if (tweet.article != null) {
@@ -886,7 +877,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
               Flexible(
                   child: Text(tweet.user!.name!,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.w500))),
+                      style: const TextStyle(fontWeight: FontWeight.w700))),
               if (tweet.user!.verified ?? false) const SizedBox(width: 4),
               if (tweet.user!.verified ?? false)
                 Icon(Icons.verified, size: 18, color: Theme.of(context).colorScheme.primary)
@@ -943,8 +934,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     final isThreadTile = widget.threadConnectTop || widget.threadConnectBottom;
 
     if (isThreadTile) {
-      return Consumer<ImportDataModel>(
-          builder: (context, model, child) => RepaintBoundary(
+      return RepaintBoundary(
               key: _globalKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -973,15 +963,17 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                       indentBody: widget.threadConnectBottom,
                       onTapProfile: onTapProfile),
                 ],
-              )));
+              ));
     }
 
-    return Consumer<ImportDataModel>(
-        builder: (context, model, child) => RepaintBoundary(
+    return RepaintBoundary(
             key: _globalKey,
             child: Column(children: [
               Card(
                 color: tweetCardColor(context),
+                margin: EdgeInsets.zero,
+                elevation: 0,
+                shape: const RoundedRectangleBorder(),
                 child: Row(
                   children: [
                     retweetSidebar,
@@ -1002,10 +994,10 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
               ),
               Divider(
                 height: 0,
-                thickness: 1,
+                thickness: 0.5,
                 color: addSeparator ? theme.colorScheme.surfaceBright.withAlpha(150) : Colors.transparent,
               ),
-            ])));
+            ]));
   }
 
   Widget _buildThreadBody(ThemeData theme, Widget avatar, Widget header, List<Widget> bodyChildren,
@@ -1061,17 +1053,50 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   }
 }
 
+// The footer action tint is pure math on the body text color; memoized so the
+// HSL round-trip doesn't run six times per tile per frame.
+Color? _buttonsColorCache;
+Color? _buttonsColorBase;
+
+Color? _footerButtonsColor(Color? base) {
+  if (base == null) return null;
+  if (base != _buttonsColorBase) {
+    final hsl = HSLColor.fromColor(base);
+    const lightnessFactorDark = 0.5;
+    const lightnessFactorLight = 4.0;
+    final adjustedLightness =
+        (hsl.lightness * (hsl.lightness > 0.5 ? lightnessFactorDark : lightnessFactorLight)).clamp(0.0, 1.0);
+    final adjustedSaturation = (hsl.saturation * 0.2).clamp(0.0, 1.0);
+    _buttonsColorBase = base;
+    _buttonsColorCache = hsl.withLightness(adjustedLightness).withSaturation(adjustedSaturation).toColor();
+  }
+  return _buttonsColorCache;
+}
+
+// Deriving the card color constructs a whole ThemeData (and runs
+// ColorScheme.fromSeed's HCT math) — far too expensive to repeat for every
+// tile on every frame, so the result is memoized per theme.
+Color? _cardColorCache;
+Color? _cardColorSeed;
+Brightness? _cardColorBrightness;
+
 Color? tweetCardColor(BuildContext context) {
   final theme = Theme.of(context);
   final prefs = PrefService.of(context, listen: false);
   final trueBlack = theme.brightness == Brightness.dark &&
       prefs.get(optionThemeTrueBlack) &&
       prefs.get(optionThemeTrueBlackTweetCards);
-  return trueBlack
-      ? Colors.black
-      : ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: theme.colorScheme.primary, brightness: theme.brightness),
-        ).cardColor;
+  if (trueBlack) {
+    return Colors.black;
+  }
+  if (theme.colorScheme.primary != _cardColorSeed || theme.brightness != _cardColorBrightness) {
+    _cardColorSeed = theme.colorScheme.primary;
+    _cardColorBrightness = theme.brightness;
+    _cardColorCache = ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: theme.colorScheme.primary, brightness: theme.brightness),
+    ).cardColor;
+  }
+  return _cardColorCache;
 }
 
 class TweetHasNoContentException {

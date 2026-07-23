@@ -209,7 +209,10 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
   }
 
   void _onControllerChanged() {
-    if (mounted) setState(() {});
+    // PagingListener already rebuilds the list on controller changes; this
+    // extra rebuild only matters for swapping the cached preview out once the
+    // first page arrives, so skip it entirely when there is no preview.
+    if (mounted && widget.firstPagePreview != null) setState(() {});
   }
 
   // Drives the same RefreshIndicator the user pulls down, so the app-bar refresh
