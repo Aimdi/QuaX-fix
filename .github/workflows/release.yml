@@ -21,8 +21,13 @@ jobs:
           distribution: 'zulu'
           java-version: '21.x'
       
-      - name:
-        run: echo $SIGNING_KEY | base64 -d > android/app/key.jks
+      - name: Set up signing key
+        run: |
+          if [ -n "$SIGNING_KEY" ]; then
+            echo "$SIGNING_KEY" | base64 -d > android/app/key.jks
+          else
+            echo "No SIGNING_KEY secret configured; APKs will be signed with the debug key"
+          fi
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
 
@@ -41,6 +46,10 @@ jobs:
 
       - name: Build APKs
         run: |
+          if [ -s android/app/key.jks ]; then
+            export KEY_PATH=key.jks
+          fi
+
           flutter config --no-analytics
           flutter pub get
           dart run flutter_launcher_icons
@@ -48,23 +57,17 @@ jobs:
           dart run intl_utils:generate
           dart run flutter_iconpicker:generate_packs --packs material
 
-          # Create a directory for our release APKs	
           mkdir -pv build/app/outputs/release
 
-          # Build our big boy APK, and move it into the release APKs folder
           flutter build apk --release --no-tree-shake-icons
-          
           mv build/app/outputs/apk/release/*.apk build/app/outputs/release
 
-          # Build our ABI-specific APKs and move them into the release APKs folder
           flutter build apk --release --no-tree-shake-icons --split-per-abi --target-platform=android-x64,android-arm,android-arm64
-          
           mv build/app/outputs/apk/release/*.apk build/app/outputs/release
         env:
           KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PATH: key.jks
 
       - name: Create release
         id: upload-release-assets
