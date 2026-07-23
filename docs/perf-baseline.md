@@ -42,7 +42,7 @@ Recorded on this VM after a clean debug build (see Phase 0 gate):
 
 | Artifact | Baseline bytes | Notes |
 |---|---|---|
-| `app-debug.apk` | _(filled after first clean build on this branch)_ | debug; release size tracked separately on device CI |
+| `app-debug.apk` | 222344320 (~212 MiB) | debug build 2026-07-23 on this branch after icons + Inter |
 | `--analyze-size` summary | TBD — device / local | prefer release / profile for fair comparison |
 
 ## Prior hot-path work already on mainline
