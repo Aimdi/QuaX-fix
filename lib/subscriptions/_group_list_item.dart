@@ -6,6 +6,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/group/group_screen.dart';
 import 'package:quax/user.dart';
+import 'package:provider/provider.dart';
 
 /// Deterministic fallback color for groups without a chosen color, hashed from
 /// the group name so the same group always gets the same hue.
@@ -22,7 +23,34 @@ class GroupListItem extends StatelessWidget {
   final SubscriptionGroup group;
   final VoidCallback? onLongPress;
 
-  const GroupListItem({super.key, required this.group, this.onLongPress});
+  // When set, the row is part of a manually-ordered list and shows a drag
+  // handle bound to this index.
+  final int? reorderIndex;
+
+  const GroupListItem({super.key, required this.group, this.onLongPress, this.reorderIndex});
+
+  Widget _buildTrailing(BuildContext context) {
+    final l10n = L10n.of(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(group.pinned ? Icons.push_pin : Icons.push_pin_outlined,
+              size: 20,
+              color: group.pinned ? Theme.of(context).colorScheme.primary : Theme.of(context).hintColor),
+          tooltip: group.pinned ? l10n.unpin : l10n.pin,
+          onPressed: () => context.read<GroupsModel>().toggleGroupPinned(group.id, !group.pinned),
+        ),
+        if (reorderIndex != null)
+          ReorderableDragStartListener(
+            index: reorderIndex!,
+            child: Icon(Icons.drag_handle, color: Theme.of(context).hintColor),
+          )
+        else
+          const Icon(Icons.chevron_right),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +87,7 @@ class GroupListItem extends StatelessWidget {
           ],
         ],
       ),
-      trailing: const Icon(Icons.chevron_right),
+      trailing: _buildTrailing(context),
       onTap: () => Navigator.pushNamed(context, routeGroup,
           arguments: GroupScreenArguments(id: group.id, name: group.name)),
       onLongPress: onLongPress,

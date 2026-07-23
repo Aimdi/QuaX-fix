@@ -93,6 +93,10 @@ class SubscriptionsScreen extends StatelessWidget {
                               value: 'created_at',
                               child: Text(L10n.of(context).date_created),
                             ),
+                            PopupMenuItem(
+                              value: 'position',
+                              child: Text(L10n.of(context).custom),
+                            ),
                           ],
                           onSelected: (value) => context
                               .read<GroupsModel>()

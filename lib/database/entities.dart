@@ -226,6 +226,7 @@ class SubscriptionGroup with ToMappable {
   final Color? color;
   final int numberOfMembers;
   final DateTime createdAt;
+  final bool pinned;
 
   // Not persisted: a few member avatar URLs for the list row preview,
   // populated by GroupsModel.reloadGroups.
@@ -240,6 +241,7 @@ class SubscriptionGroup with ToMappable {
       required this.color,
       required this.numberOfMembers,
       required this.createdAt,
+      this.pinned = false,
       this.memberAvatarUrls = const []});
 
   SubscriptionGroup withMemberAvatarUrls(List<String> urls) => SubscriptionGroup(
@@ -249,6 +251,7 @@ class SubscriptionGroup with ToMappable {
       color: color,
       numberOfMembers: numberOfMembers,
       createdAt: createdAt,
+      pinned: pinned,
       memberAvatarUrls: urls);
 
   factory SubscriptionGroup.fromMap(Map<String, Object?> json) {
@@ -264,12 +267,20 @@ class SubscriptionGroup with ToMappable {
         icon: icon,
         color: json['color'] == null ? null : Color(json['color'] as int),
         numberOfMembers: json['number_of_members'] == null ? 0 : json['number_of_members'] as int,
-        createdAt: DateTime.parse(json['created_at'] as String));
+        createdAt: DateTime.parse(json['created_at'] as String),
+        pinned: json['pinned'] == 1);
   }
 
   @override
   Map<String, dynamic> toMap() {
-    return {'id': id, 'name': name, 'icon': icon, 'color': color?.toARGB32(), 'created_at': createdAt.toIso8601String()};
+    return {
+      'id': id,
+      'name': name,
+      'icon': icon,
+      'color': color?.toARGB32(),
+      'created_at': createdAt.toIso8601String(),
+      'pinned': pinned ? 1 : 0
+    };
   }
 }
 

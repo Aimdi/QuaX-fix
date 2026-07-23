@@ -174,8 +174,14 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
 
       var orderByDirection = orderGroupsAscending ? 'COLLATE NOCASE ASC' : 'COLLATE NOCASE DESC';
 
+      // Pinned groups always come first; within each block the chosen field
+      // applies. Manual order sorts on the persisted position column.
+      var orderBy = orderGroupsBy == 'position'
+          ? 'g.position ${orderGroupsAscending ? 'ASC' : 'DESC'}'
+          : 'g.$orderGroupsBy $orderByDirection';
+
       var query =
-          "SELECT g.id, g.name, g.icon, g.color, g.created_at, COUNT(gm.profile_id) AS number_of_members FROM $tableSubscriptionGroup g LEFT JOIN $tableSubscriptionGroupMember gm ON gm.group_id = g.id WHERE g.id != '-1' GROUP BY g.id ORDER BY $orderGroupsBy $orderByDirection";
+          "SELECT g.id, g.name, g.icon, g.color, g.created_at, g.pinned, COUNT(gm.profile_id) AS number_of_members FROM $tableSubscriptionGroup g LEFT JOIN $tableSubscriptionGroupMember gm ON gm.group_id = g.id WHERE g.id != '-1' GROUP BY g.id ORDER BY g.pinned DESC, $orderBy";
 
       var groups = (await database.rawQuery(query)).map((e) => SubscriptionGroup.fromMap(e)).toList(growable: false);
       var avatars = await _loadMemberAvatars(database);
@@ -333,6 +339,36 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
       // TODO: Replace the group in the state instead
       return state;
     });
+  }
+
+  Future<void> toggleGroupPinned(String id, bool pinned) async {
+    var database = await Repository.writable();
+    await database.update(tableSubscriptionGroup, {'pinned': pinned ? 1 : 0}, where: 'id = ?', whereArgs: [id]);
+    await reloadGroups();
+  }
+
+  /// Persists a manual order: each group's position becomes its index in [ids].
+  Future<void> saveGroupPositions(List<String> ids) async {
+    var database = await Repository.writable();
+    var batch = database.batch();
+    for (var (i, id) in ids.indexed) {
+      batch.update(tableSubscriptionGroup, {'position': i}, where: 'id = ?', whereArgs: [id]);
+    }
+    await batch.commit(noResult: true);
+    await reloadGroups();
+  }
+
+  /// Moves every member of [sourceId] into [targetId] (skipping duplicates),
+  /// then deletes the now-empty source group.
+  Future<void> mergeGroups(String sourceId, String targetId) async {
+    var database = await Repository.writable();
+    await database.rawInsert(
+        'INSERT OR IGNORE INTO $tableSubscriptionGroupMember (group_id, profile_id) '
+        'SELECT ?, profile_id FROM $tableSubscriptionGroupMember WHERE group_id = ?',
+        [targetId, sourceId]);
+    await database.delete(tableSubscriptionGroupMember, where: 'group_id = ?', whereArgs: [sourceId]);
+    await database.delete(tableSubscriptionGroup, where: 'id = ?', whereArgs: [sourceId]);
+    await reloadGroups();
   }
 
   void changeOrderSubscriptionGroupsBy(String? value) async {

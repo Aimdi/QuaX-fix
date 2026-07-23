@@ -13,10 +13,19 @@ import 'package:quax/user.dart';
 import 'package:provider/provider.dart';
 
 Future openSubscriptionGroupDialog(BuildContext context, String? id, String name, String icon) {
-  return showDialog(
+  return showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
       builder: (context) {
-        return SubscriptionGroupEditDialog(id: id, name: name, icon: icon);
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: FractionallySizedBox(
+            heightFactor: 0.85,
+            child: SubscriptionGroupEditDialog(id: id, name: name, icon: icon),
+          ),
+        );
       });
 }
 
@@ -65,6 +74,87 @@ class _SubscriptionGroupsState extends State<SubscriptionGroups> {
     );
   }
 
+  Widget _swipeBackground(BuildContext context, {required bool alignEnd, required IconData icon}) {
+    return Container(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      alignment: alignEnd ? Alignment.centerRight : Alignment.centerLeft,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Icon(icon),
+    );
+  }
+
+  Future<bool?> _confirmDeleteGroup(BuildContext context, SubscriptionGroup group) {
+    return showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(L10n.of(context).are_you_sure),
+              content: Text(L10n.of(context)
+                  .are_you_sure_you_want_to_delete_the_subscription_group_name_of_group(group.name)),
+              actions: [
+                TextButton(onPressed: () => Navigator.pop(context, false), child: Text(L10n.of(context).no)),
+                TextButton(onPressed: () => Navigator.pop(context, true), child: Text(L10n.of(context).yes)),
+              ],
+            ));
+  }
+
+  // Swipe towards the end deletes (after confirmation); swipe from the start
+  // toggles the pin without dismissing the row.
+  Widget _buildSwipeableRow(BuildContext context, SubscriptionGroup group) {
+    final model = context.read<GroupsModel>();
+    return Dismissible(
+      key: ValueKey(group.id),
+      background: _swipeBackground(context,
+          alignEnd: false, icon: group.pinned ? Icons.push_pin_outlined : Icons.push_pin),
+      secondaryBackground: _swipeBackground(context, alignEnd: true, icon: Icons.delete_outline),
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.startToEnd) {
+          await model.toggleGroupPinned(group.id, !group.pinned);
+          return false;
+        }
+        return await _confirmDeleteGroup(context, group) ?? false;
+      },
+      onDismissed: (_) => model.deleteGroup(group.id),
+      child: GroupListItem(
+        group: group,
+        onLongPress: () => openSubscriptionGroupDialog(context, group.id, group.name, group.icon),
+      ),
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<SubscriptionGroup> groups) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(top: 4),
+      itemCount: groups.length,
+      itemBuilder: (context, index) => _buildSwipeableRow(context, groups[index]),
+    );
+  }
+
+  Widget _buildReorderableList(BuildContext context, List<SubscriptionGroup> groups) {
+    return ReorderableListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(top: 4),
+      buildDefaultDragHandles: false,
+      itemCount: groups.length,
+      itemBuilder: (context, index) {
+        final group = groups[index];
+        return GroupListItem(
+          key: ValueKey(group.id),
+          group: group,
+          reorderIndex: index,
+          onLongPress: () => openSubscriptionGroupDialog(context, group.id, group.name, group.icon),
+        );
+      },
+      onReorderItem: (oldIndex, newIndex) {
+        final ids = groups.map((g) => g.id).toList();
+        ids.insert(newIndex, ids.removeAt(oldIndex));
+        context.read<GroupsModel>().saveGroupPositions(ids);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedBuilder<GroupsModel, List<SubscriptionGroup>>.transition(
@@ -75,23 +165,12 @@ class _SubscriptionGroupsState extends State<SubscriptionGroups> {
         final groups = query.isEmpty
             ? state
             : state.where((g) => g.name.toLowerCase().contains(query)).toList(growable: false);
+        final manualOrder = context.read<GroupsModel>().orderGroupsBy == 'position' && query.isEmpty;
 
         return Column(
           children: [
             if (state.length > 5) _buildSearchBar(context),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.only(top: 4),
-              itemCount: groups.length,
-              itemBuilder: (context, index) {
-                final group = groups[index];
-                return GroupListItem(
-                  group: group,
-                  onLongPress: () => openSubscriptionGroupDialog(context, group.id, group.name, group.icon),
-                );
-              },
-            ),
+            manualOrder ? _buildReorderableList(context, groups) : _buildList(context, groups),
           ],
         );
       },
@@ -147,6 +226,33 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         }));
   }
 
+  /// Picks another group and moves every member of this one into it, deleting
+  /// this group afterwards. Resolves accidental duplicates like "Art (1)"/"Art (2)".
+  Future<void> _openMergeSheet(BuildContext context) async {
+    final groupsModel = context.read<GroupsModel>();
+    final others = groupsModel.state.where((g) => g.id != widget.id).toList(growable: false);
+
+    final target = await showModalBottomSheet<SubscriptionGroup>(
+        context: context,
+        builder: (sheetContext) => SafeArea(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  for (final g in others)
+                    ListTile(
+                      leading: Icon(g.iconData),
+                      title: Text(g.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      onTap: () => Navigator.pop(sheetContext, g),
+                    ),
+                ],
+              ),
+            ));
+
+    if (target == null || !context.mounted) return;
+    await groupsModel.mergeGroups(widget.id!, target.id);
+    if (context.mounted) Navigator.pop(context);
+  }
+
   void openDeleteSubscriptionGroupDialog(String id, String name) {
     showDialog(
         context: context,
@@ -197,6 +303,11 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         },
         child: Text(L10n.of(context).toggle_all),
       ),
+      if (widget.id != null)
+        TextButton(
+          onPressed: () => _openMergeSheet(context),
+          child: Text(L10n.of(context).merge_into),
+        ),
       TextButton(
         onPressed: id == null ? null : () => openDeleteSubscriptionGroupDialog(id!, name!),
         child: Text(L10n.of(context).delete),
@@ -222,13 +333,9 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         );
       }),
     ];
-    return AlertDialog(
-      actionsOverflowAlignment: OverflowBarAlignment.end,
-      actions: [
-        ...buttonsLst1,
-        ...buttonsLst2,
-      ],
-      content: Form(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Form(
         key: _formKey,
         child: SizedBox(
           width: double.maxFinite,
@@ -348,6 +455,14 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                     );
                   },
                 ),
+              ),
+              OverflowBar(
+                alignment: MainAxisAlignment.end,
+                overflowAlignment: OverflowBarAlignment.end,
+                children: [
+                  ...buttonsLst1,
+                  ...buttonsLst2,
+                ],
               ),
             ],
           ),

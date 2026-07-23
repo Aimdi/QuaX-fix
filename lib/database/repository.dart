@@ -301,11 +301,28 @@ class Repository {
         // Per-folder toggle: download a post's images when it's filed here.
         SqlMigration('ALTER TABLE $tableSavedTweetFolder ADD COLUMN auto_download BOOLEAN DEFAULT 0',
             reverseSql: 'ALTER TABLE $tableSavedTweetFolder DROP COLUMN auto_download'),
+      ],
+      34: [
+        // Pinned groups and manual ordering for the groups list. Positions are
+        // backfilled from the default alphabetical order.
+        SqlMigration('ALTER TABLE $tableSubscriptionGroup ADD COLUMN pinned BOOLEAN DEFAULT 0',
+            reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN pinned'),
+        SqlMigration('ALTER TABLE $tableSubscriptionGroup ADD COLUMN position INTEGER DEFAULT 0',
+            reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN position'),
+        Migration(Operation((db) async {
+          var groups = await db.query(tableSubscriptionGroup,
+              columns: ['id'], where: "id != '-1'", orderBy: 'name COLLATE NOCASE ASC');
+          var batch = db.batch();
+          for (var (i, group) in groups.indexed) {
+            batch.update(tableSubscriptionGroup, {'position': i}, where: 'id = ?', whereArgs: [group['id']]);
+          }
+          await batch.commit(noResult: true);
+        })),
       ]
     });
     await openDatabase(
       databaseName,
-      version: 33,
+      version: 34,
       onUpgrade: myMigrationPlan.call,
       onCreate: myMigrationPlan.call,
       onDowngrade: myMigrationPlan.call,
