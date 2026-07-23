@@ -53,7 +53,7 @@ dependencies:
 
   # UI & Media
   auto_direction: ^0.0.7
-  extended_image: ^10.0.1
+  extended_image: ^10.1.0
   extended_nested_scroll_view: ^6.2.1
   flutter_staggered_grid_view: ^0.7.0
   infinite_scroll_pagination: ^5.1.1
@@ -63,14 +63,14 @@ dependencies:
   # 13 / wakelock_plus 1.6 / chewie 1.14 (all win32 ^6) resolve alongside it.
   # Pinned to beta.2: the plugin's Android sources import kotlinx.coroutines but
   # never declare it. beta.2's androidx deps (lifecycle-runtime 2.8.7, core-ktx
-  # 1.15.0) still put coroutines on the compile classpath; beta.3+ bumped those
-  # versions so coroutines drops off, and the Android build then fails with
-  # cascading "unresolved reference" errors. beta.2 keeps win32-6 Dart support.
+  # 1.15.0) still put coroutines on the compile classpath; beta.3–beta.7 still
+  # import coroutines without declaring the dep (and newer androidx no longer
+  # transitively provides it), so the Android build fails. Stay on beta.2.
   file_picker: 12.0.0-beta.2
   flutter_file_dialog: ^3.3.1
   flutter_iconpicker: ^4.0.3
   flutter_portal: ^1.1.4
-  webview_flutter: 4.14.0
+  webview_flutter: ^4.14.1
   webview_cookie_manager_plus: ^2.0.16
 
   # Localization & Styling
@@ -89,31 +89,33 @@ dependencies:
   html_unescape: ^2.0.0
   logging: ^1.3.0
   measure_size: ^5.0.2
-  package_info_plus: ^10.1.0
+  package_info_plus: ^10.2.1
   path: ^1.9.1
   path_provider: ^2.1.4
   permission_handler: ^12.0.3
   quiver: ^3.2.2
   scroll_to_index: ^3.0.1
   secure_content: ^1.0.1
-  share_plus: ^13.1.0
+  share_plus: ^13.3.0
   sqflite: ^2.4.3
   sqflite_common: ^2.5.0
   sqflite_migration_plan: ^1.0.0
   timeago: ^3.7.0
-  app_links: ^7.2.0
+  app_links: ^7.2.1
   url_launcher: ^6.3.2
-  android_intent_plus: ^6.0.0
-  uuid: ^4.5.0
+  android_intent_plus: ^6.1.0
+  uuid: ^4.6.0
   visibility_detector: ^0.4.0+2
-  wakelock_plus: ^1.6.1
+  # 1.7.0 ships broken Pigeon Android stubs (IsEnabledMessage / ToggleMessage in
+  # the default package; Kotlin cannot resolve them from the plugin package).
+  wakelock_plus: ">=1.6.1 <1.7.0"
 
   # Miscellaneous
   async_button_builder: ^3.0.0+1
   media_kit: ^1.2.6
   media_kit_video: ^2.0.1
   media_kit_libs_video: ^1.0.7
-  audio_session: ^0.2.3
+  audio_session: ^0.2.4
   ffcache: ^1.1.0
   flutter_tts: ^4.2.5
 
@@ -123,7 +125,7 @@ dev_dependencies:
 
   flutter_launcher_icons: ^0.14.4
   flutter_lints: ^6.0.0
-  dart_pubspec_licenses: ^3.0.12
+  dart_pubspec_licenses: ^3.2.0
   intl_utils: ^2.8.1
   sqflite_common_ffi: ^2.2.0+1
   arb_utils: ^0.11.1
