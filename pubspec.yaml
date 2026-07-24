@@ -66,7 +66,7 @@ dependencies:
   # 1.15.0) still put coroutines on the compile classpath; beta.3–beta.7 still
   # import coroutines without declaring the dep (and newer androidx no longer
   # transitively provides it), so the Android build fails. Stay on beta.2.
-  file_picker: 12.0.0-beta.2
+  file_picker: 12.0.0-beta.7
   flutter_file_dialog: ^3.3.1
   flutter_iconpicker: ^4.0.3
   flutter_portal: ^1.1.4
