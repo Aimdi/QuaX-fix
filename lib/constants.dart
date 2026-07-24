@@ -50,7 +50,7 @@ const optionShareBaseUrl = 'share_base_url';
 const optionCrashReportsEnabled = 'crash.reports_enabled';
 const optionCrashGithubRepo = 'crash.github_repo';
 const optionCrashGithubToken = 'crash.github_token';
-const defaultCrashGithubRepo = 'Aimdi/QuaX-gamma';
+const defaultCrashGithubRepo = githubRepo;
 
 const optionDisableWarningsForUnrelatedPostsInFeed = 'disable_warnings_for_unrelated_posts_in_feed';
 
