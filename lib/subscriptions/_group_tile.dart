@@ -5,8 +5,8 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_screen.dart';
 import 'package:quax/subscriptions/group_identity.dart';
 
-/// Compact Groups-grid tile: image-free tonal (or accent) chrome with glyph,
-/// name, member count, and optional pin mark.
+/// Compact Groups-grid tile: color-tinted cell + tonal [GroupMark] chip.
+/// Name/count stay on the surface (not on a saturated fill).
 class SubscriptionGroupTile extends StatelessWidget {
   final SubscriptionGroup group;
   final VoidCallback? onLongPress;
@@ -18,22 +18,8 @@ class SubscriptionGroupTile extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = L10n.of(context);
     final seed = groupSeedColor(group);
-    final accent = useAccentTileVariant(context);
-    final pair = tonalPair(context, seed);
-
-    final Color fill;
-    final Color onFill;
-    final Color? accentBar;
-    if (accent) {
-      fill = theme.colorScheme.surfaceContainerHigh;
-      onFill = theme.colorScheme.onSurface;
-      accentBar = seed;
-    } else {
-      fill = pair.container;
-      onFill = pair.onContainer;
-      accentBar = null;
-    }
-
+    final fill = tintedSurface(context, seed);
+    final outlined = useGroupMarkOutline(context);
     final countLabel = l10n.subscription_group_member_count(group.numberOfMembers);
     final semanticsLabel = '${group.name}, $countLabel';
 
@@ -44,7 +30,14 @@ class SubscriptionGroupTile extends StatelessWidget {
         color: fill,
         borderRadius: BorderRadius.circular(16),
         clipBehavior: Clip.antiAlias,
+        shape: outlined
+            ? RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: BorderSide(color: theme.colorScheme.outlineVariant, width: 1),
+              )
+            : null,
         child: InkWell(
+          borderRadius: BorderRadius.circular(16),
           onTap: () => Navigator.pushNamed(
             context,
             routeGroup,
@@ -53,55 +46,47 @@ class SubscriptionGroupTile extends StatelessWidget {
           onLongPress: onLongPress,
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 48),
-            child: Stack(
-              children: [
-                if (accentBar != null)
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    width: 4,
-                    child: ColoredBox(color: accentBar),
-                  ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(accentBar != null ? 12 : 10, 10, 10, 10),
-                  child: Column(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          groupGlyph(group, color: onFill, size: 28),
-                          const Spacer(),
-                          if (group.pinned)
-                            Icon(Icons.push_pin, size: 16, color: onFill.withValues(alpha: 0.85)),
-                        ],
-                      ),
+                      GroupMark.forGroup(group, size: 40),
                       const Spacer(),
-                      Text(
-                        group.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          color: onFill,
-                          fontWeight: FontWeight.w700,
-                          height: 1.15,
+                      if (group.pinned)
+                        Icon(
+                          Icons.push_pin,
+                          size: 16,
+                          color: theme.colorScheme.onSurfaceVariant,
                         ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        countLabel,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: onFill.withValues(alpha: 0.85),
-                        ),
-                      ),
                     ],
                   ),
-                ),
-              ],
+                  const Spacer(),
+                  Text(
+                    group.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: theme.colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                      height: 1.15,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    countLabel,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

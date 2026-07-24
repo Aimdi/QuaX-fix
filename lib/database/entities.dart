@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/group/group_model.dart';
+import 'package:quax/subscriptions/group_mark_style.dart';
 import 'package:quax/user.dart';
 import 'package:intl/intl.dart';
 
@@ -227,6 +228,8 @@ class SubscriptionGroup with ToMappable {
   final int numberOfMembers;
   final DateTime createdAt;
   final bool pinned;
+  final String? emoji;
+  final int markStyle;
 
   // Not persisted: a few member avatar URLs for the list row preview,
   // populated by GroupsModel.reloadGroups.
@@ -242,6 +245,8 @@ class SubscriptionGroup with ToMappable {
       required this.numberOfMembers,
       required this.createdAt,
       this.pinned = false,
+      this.emoji,
+      this.markStyle = 0,
       this.memberAvatarUrls = const []});
 
   SubscriptionGroup withMemberAvatarUrls(List<String> urls) => SubscriptionGroup(
@@ -252,6 +257,8 @@ class SubscriptionGroup with ToMappable {
       numberOfMembers: numberOfMembers,
       createdAt: createdAt,
       pinned: pinned,
+      emoji: emoji,
+      markStyle: markStyle,
       memberAvatarUrls: urls);
 
   factory SubscriptionGroup.fromMap(Map<String, Object?> json) {
@@ -268,7 +275,9 @@ class SubscriptionGroup with ToMappable {
         color: json['color'] == null ? null : Color(json['color'] as int),
         numberOfMembers: json['number_of_members'] == null ? 0 : json['number_of_members'] as int,
         createdAt: DateTime.parse(json['created_at'] as String),
-        pinned: json['pinned'] == 1);
+        pinned: json['pinned'] == 1,
+        emoji: json['emoji'] as String?,
+        markStyle: GroupMarkStyle.coerce(json['mark_style']));
   }
 
   @override
@@ -279,7 +288,9 @@ class SubscriptionGroup with ToMappable {
       'icon': icon,
       'color': color?.toARGB32(),
       'created_at': createdAt.toIso8601String(),
-      'pinned': pinned ? 1 : 0
+      'pinned': pinned ? 1 : 0,
+      'emoji': emoji,
+      'mark_style': markStyle,
     };
   }
 }
@@ -340,9 +351,17 @@ class SubscriptionGroupEdit {
   String icon;
   Color? color;
   Set<String> members;
+  String? emoji;
+  int markStyle;
 
   SubscriptionGroupEdit(
-      {required this.id, required this.name, required this.icon, required this.color, required this.members});
+      {required this.id,
+      required this.name,
+      required this.icon,
+      required this.color,
+      required this.members,
+      this.emoji,
+      this.markStyle = GroupMarkStyle.auto});
 }
 
 class SubscriptionGroupMember with ToMappable {
