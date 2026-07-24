@@ -47,6 +47,7 @@ import 'package:quax/ui/errors.dart';
 import 'package:quax/ui/theme_presets.dart';
 import 'package:quax/ui/x_look_theme.dart';
 import 'package:quax/utils/crash_reporter.dart';
+import 'package:quax/utils/updates.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
@@ -65,20 +66,25 @@ Future checkForUpdates(context) async {
   client.userAgent =
       "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36";
 
-  final request = await client.getUrl(Uri.parse("https://api.github.com/repos/teskann/quax/releases/latest"));
+  final request = await client.getUrl(Uri.parse('https://api.github.com/repos/$githubRepo/releases/latest'));
   final response = await request.close();
 
   if (response.statusCode == 200) {
     final contentAsString = await utf8.decodeStream(response);
     final Map<dynamic, dynamic> map = json.decode(contentAsString);
-    if (map["tag_name"] != null) {
-      if (map["tag_name"] != 'v${packageInfo.version}') {
+    final latestTag = map['tag_name'] as String?;
+    if (latestTag != null) {
+      if (isUpdateAvailable(
+        latestTag: latestTag,
+        installedTag: buildReleaseTag,
+        installedVersion: packageInfo.version,
+      )) {
         await showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text(L10n.of(context).an_update_for_fritter_is_available),
-              content: Text(L10n.of(context).view_version_on_github(map["tag_name"])),
+              content: Text(L10n.of(context).view_version_on_github(latestTag)),
               actions: [
                 TextButton(
                   child: Text(L10n.of(context).dismiss),
@@ -95,8 +101,6 @@ Future checkForUpdates(context) async {
             );
           },
         );
-      } else if (map['html_url'].isEmpty) {
-        Logger.root.severe('Unable to check for updates');
       }
     }
   }

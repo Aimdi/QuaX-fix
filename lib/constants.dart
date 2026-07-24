@@ -41,6 +41,9 @@ const substackFeedPageSize = 8;
 const substackReadIdsCap = 400;
 
 const optionShouldCheckForUpdates = 'should_check_for_updates';
+// This fork's own repository. Releases and crash reports belong here, not on
+// upstream teskann/quax, whose versions this fork never matches.
+const githubRepo = 'Aimdi/QuaX-fix';
 const optionConfirmClose = 'confirm_close';
 const optionShareBaseUrl = 'share_base_url';
 
