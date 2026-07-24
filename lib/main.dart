@@ -270,7 +270,9 @@ Future<void> main() async {
     optionPluginSubstackReadIds: '[]',
     optionSubscriptionGroupsOrderByAscending: true,
     optionDisableWarningsForUnrelatedPostsInFeed: false,
-    alwaysShowFullTweetContents: false,
+    // Reading is the whole point of the app, so posts are not clipped unless
+    // the reader asks for the compact form in settings.
+    alwaysShowFullTweetContents: true,
     optionSubscriptionGroupsOrderByField: 'name',
     optionSubscriptionGroupsColumns: 2,
     optionSubscriptionOrderByAscending: true,
