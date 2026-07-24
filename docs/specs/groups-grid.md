@@ -138,8 +138,7 @@ into the edit sheet if the tile chrome gets crowded.
    (`InkWell` + tonal/`accent` container, radius 16, min height 48, semantics).
 3. In `SubscriptionGroupsPage`, replace `ListView` /
    `ReorderableListView` of `GroupListItem` with
-   `GridView.builder` /
-   `Reorderable`-compatible grid when `orderGroupsBy == 'position'`:
+   `GridView.builder`:
    ```dart
    SliverGridDelegateWithFixedCrossAxisCount(
      crossAxisCount: 3,
@@ -149,6 +148,9 @@ into the edit sheet if the tile chrome gets crowded.
    )
    ```
    Keep client-side `SearchBar` filter. Preserve empty state.
+   Custom `position` order still applies via SQL `ORDER BY`; in-grid
+   drag-reorder is deferred (no new dependency in Phase 1). Pin remains
+   visible as a tile mark; toggle via long-press edit sheet.
 4. **Remove** `_AvatarCluster` / `memberAvatarUrls` from the default Groups
    presentation (stop fetching avatars in `GroupsModel.reloadGroups` for this
    screen, or stop attaching them to tiles — prefer stop attaching to avoid
