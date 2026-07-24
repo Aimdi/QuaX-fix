@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quax/ui/contrast.dart';
 import 'package:quax/ui/x_look_theme.dart';
 
 /// Shared timeline chrome for tweet tiles (matches twitter-ui-redesign / X-look).
@@ -29,6 +30,35 @@ Widget tweetFlatCard({
     clipBehavior: clipBehavior,
     color: color,
     child: child,
+  );
+}
+
+/// Nudges [surface] a few percent towards [toward] — the flat-design
+/// equivalent of elevation, so a nested card separates without a shadow.
+Color _lift(Color surface, Color toward) => Color.alphaBlend(toward.withValues(alpha: 0.06), surface);
+
+/// Chrome for a quoted tweet nested inside another tweet.
+///
+/// The nested card has to read as nested on every theme, including the pure
+/// black ones where a translucent surface tint disappears entirely, so the
+/// border comes from an outline token and the fill is lifted off the parent
+/// card rather than matching it.
+BoxDecoration quoteCardDecoration(BuildContext context) {
+  final tokens = XLookTokens.maybeOf(context);
+  final scheme = Theme.of(context).colorScheme;
+  final onSurface = tokens?.onBackground ?? scheme.onSurface;
+  final fill = _lift(tokens?.card ?? scheme.surface, onSurface);
+
+  // X's own hairline (#EFF3F4 light, #38444D dim) barely registers against the
+  // card it outlines, which is what made quotes indistinguishable from separate
+  // posts. Correct it against the fill it is drawn on instead of picking a
+  // colour per theme.
+  final border = ensureContrast(tokens?.border ?? scheme.outline, fill, minRatio: 1.5);
+
+  return BoxDecoration(
+    color: fill,
+    border: Border.all(color: border),
+    borderRadius: BorderRadius.circular(tweetMediaRadiusOf(context)),
   );
 }
 
