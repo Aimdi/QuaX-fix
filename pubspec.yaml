@@ -61,11 +61,10 @@ dependencies:
   flutter_material_color_picker: ^1.2.0
   # 12.0.0-beta moves to win32 ^6.2.0, letting package_info_plus 10 / share_plus
   # 13 / wakelock_plus 1.6 / chewie 1.14 (all win32 ^6) resolve alongside it.
-  # Pinned to beta.2: the plugin's Android sources import kotlinx.coroutines but
-  # never declare it. beta.2's androidx deps (lifecycle-runtime 2.8.7, core-ktx
-  # 1.15.0) still put coroutines on the compile classpath; beta.3–beta.7 still
-  # import coroutines without declaring the dep (and newer androidx no longer
-  # transitively provides it), so the Android build fails. Stay on beta.2.
+  # Still exact-pinned rather than ^: the plugin's Android sources import
+  # kotlinx.coroutines without declaring the dependency, so it only compiles
+  # while another module puts coroutines on the compile classpath (currently
+  # 1.11.0). Re-check the Android build before moving to a newer beta.
   file_picker: 12.0.0-beta.7
   flutter_file_dialog: ^3.3.1
   flutter_iconpicker: ^4.0.3
@@ -106,9 +105,9 @@ dependencies:
   android_intent_plus: ^6.1.0
   uuid: ^4.6.0
   visibility_detector: ^0.4.0+2
-  # 1.7.0 ships broken Pigeon Android stubs (IsEnabledMessage / ToggleMessage in
-  # the default package; Kotlin cannot resolve them from the plugin package).
-  wakelock_plus: ">=1.6.1 <1.7.0"
+  # Declared directly only so the win32 ^6 resolution stays consistent with
+  # file_picker / share_plus; the wakelock itself is driven by chewie/media_kit.
+  wakelock_plus: ^1.7.0
 
   # Miscellaneous
   async_button_builder: ^3.0.0+1
