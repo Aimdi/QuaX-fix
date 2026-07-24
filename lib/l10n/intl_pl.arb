@@ -655,6 +655,8 @@
   "@subscribe": {},
   "subscription_group_member_count": "{count, plural, one{1 subskrypcja} few{{count} subskrypcje} many{{count} subskrypcji} other{{count} subskrypcji}}",
   "@subscription_group_member_count": {},
+  "subscription_groups_columns": "Kolumny",
+  "@subscription_groups_columns": {},
   "subscriptions": "Subskrypcje",
   "@subscriptions": {},
   "subtitles": "Napisy",

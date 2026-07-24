@@ -5,6 +5,7 @@ import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/group/group_screen.dart';
+import 'package:quax/subscriptions/widgets/fallback_avatar.dart';
 import 'package:quax/user.dart';
 import 'package:provider/provider.dart';
 
@@ -58,7 +59,7 @@ class GroupListItem extends StatelessWidget {
     final fill = (group.color ?? groupFallbackColor(group.name)).harmonizeWith(theme.colorScheme.primary);
     final onFill =
         ThemeData.estimateBrightnessForColor(fill) == Brightness.dark ? Colors.white : Colors.black87;
-    final hiddenMembers = group.numberOfMembers - group.memberAvatarUrls.length;
+    final hiddenMembers = group.numberOfMembers - group.memberPreviews.length;
 
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
@@ -77,9 +78,9 @@ class GroupListItem extends StatelessWidget {
             child: Text(L10n.of(context).subscription_group_member_count(group.numberOfMembers),
                 maxLines: 1, overflow: TextOverflow.ellipsis),
           ),
-          if (group.memberAvatarUrls.isNotEmpty) ...[
+          if (group.memberPreviews.isNotEmpty) ...[
             const SizedBox(width: 8),
-            ExcludeSemantics(child: _AvatarCluster(urls: group.memberAvatarUrls)),
+            ExcludeSemantics(child: _AvatarCluster(members: group.memberPreviews)),
             if (hiddenMembers > 0) ...[
               const SizedBox(width: 4),
               Text('+$hiddenMembers', style: theme.textTheme.bodySmall),
@@ -100,21 +101,22 @@ class _AvatarCluster extends StatelessWidget {
   static const double _step = 13;
   static const double _ring = 1.5;
 
-  final List<String> urls;
+  final List<GroupMemberPreview> members;
 
-  const _AvatarCluster({required this.urls});
+  const _AvatarCluster({required this.members});
 
   @override
   Widget build(BuildContext context) {
-    final ringColor = Theme.of(context).colorScheme.surface;
+    final theme = Theme.of(context);
+    final ringColor = theme.colorScheme.surface;
     final diameter = _size + 2 * _ring;
 
     return SizedBox(
       height: diameter,
-      width: (urls.length - 1) * _step + diameter,
+      width: (members.length - 1) * _step + diameter,
       child: Stack(
         children: [
-          for (final (i, url) in urls.indexed)
+          for (final (i, member) in members.indexed)
             Positioned(
               left: i * _step,
               child: Container(
@@ -122,7 +124,13 @@ class _AvatarCluster extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: ringColor, width: _ring),
                 ),
-                child: UserAvatar(uri: url, size: _size),
+                child: member.avatarUrl == null
+                    ? FallbackAvatar(
+                        seed: member.id,
+                        displayName: member.name,
+                        size: _size,
+                        accent: theme.colorScheme.primary)
+                    : UserAvatar(uri: member.avatarUrl, size: _size),
               ),
             ),
         ],

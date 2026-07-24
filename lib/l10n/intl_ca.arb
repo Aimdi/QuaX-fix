@@ -655,6 +655,8 @@
   "@subscribe": {},
   "subscription_group_member_count": "{count, plural, one{1 subscripció} other{{count} subscripcions}}",
   "@subscription_group_member_count": {},
+  "subscription_groups_columns": "Columnes",
+  "@subscription_groups_columns": {},
   "subscriptions": "Subscripcions",
   "@subscriptions": {},
   "subtitles": "Subtítols",

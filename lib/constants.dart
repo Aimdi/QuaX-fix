@@ -55,6 +55,8 @@ const alwaysShowFullTweetContents = 'always_show_full_tweet_contents';
 
 const optionSubscriptionGroupsOrderByAscending = 'subscription_groups.order_by.ascending';
 const optionSubscriptionGroupsOrderByField = 'subscription_groups.order_by.field';
+// How many tile columns the groups board shows (2 = bold, 3 = compact).
+const optionSubscriptionGroupsColumns = 'subscription_groups.columns';
 const optionSubscriptionOrderByAscending = 'subscription.order_by.ascending';
 const optionSubscriptionOrderCustom = 'subscription.order_by.custom';
 const optionSubscriptionOrderByField = 'subscription.order_by.field';

@@ -655,6 +655,8 @@
   "@subscribe": {},
   "subscription_group_member_count": "{count, plural, one{{count} падпіска} few{{count} падпіскі} many{{count} падпісак} other{{count} падпіскі}}",
   "@subscription_group_member_count": {},
+  "subscription_groups_columns": "Слупкі",
+  "@subscription_groups_columns": {},
   "subscriptions": "Падпіскі",
   "@subscriptions": {},
   "subtitles": "Субтытры",

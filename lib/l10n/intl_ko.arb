@@ -655,6 +655,8 @@
   "@subscribe": {},
   "subscription_group_member_count": "{count, plural, other{구독 {count}개}}",
   "@subscription_group_member_count": {},
+  "subscription_groups_columns": "열 수",
+  "@subscription_groups_columns": {},
   "subscriptions": "구독",
   "@subscriptions": {},
   "subtitles": "자막",

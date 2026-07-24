@@ -1,17 +1,25 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/Models/configuration.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:flutter_triple/flutter_triple.dart';
+import 'package:pref/pref.dart';
+import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
+import 'package:quax/group/group_screen.dart';
 import 'package:quax/subscriptions/_group_list_item.dart';
 import 'package:quax/subscriptions/users_model.dart';
+import 'package:quax/subscriptions/widgets/group_tile.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/user.dart';
 import 'package:provider/provider.dart';
+
+/// Tiles past this index appear without the entrance stagger.
+const _staggerLimit = 12;
 
 Future openSubscriptionGroupDialog(BuildContext context, String? id, String name, String icon) {
   return showModalBottomSheet(
@@ -106,59 +114,47 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
     );
   }
 
-  Widget _swipeBackground(BuildContext context, {required bool alignEnd, required IconData icon}) {
-    return Container(
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      alignment: alignEnd ? Alignment.centerRight : Alignment.centerLeft,
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Icon(icon),
-    );
-  }
+  /// The board: a compact grid of member-faced tiles.
+  Widget _buildBoard(BuildContext context, List<SubscriptionGroup> groups, {required bool animate}) {
+    final prefs = PrefService.of(context);
+    final columns = (prefs.get<int>(optionSubscriptionGroupsColumns) ?? 2).clamp(2, 3);
 
-  Future<bool?> _confirmDeleteGroup(BuildContext context, SubscriptionGroup group) {
-    return showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text(L10n.of(context).are_you_sure),
-              content: Text(L10n.of(context)
-                  .are_you_sure_you_want_to_delete_the_subscription_group_name_of_group(group.name)),
-              actions: [
-                TextButton(onPressed: () => Navigator.pop(context, false), child: Text(L10n.of(context).no)),
-                TextButton(onPressed: () => Navigator.pop(context, true), child: Text(L10n.of(context).yes)),
-              ],
-            ));
-  }
+    // Large text needs taller tiles, or the title and count would squeeze the
+    // avatar mosaic out of the tile entirely.
+    final textScale = MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 2.0);
+    final baseRatio = columns == 2 ? 168 / 132 : 1.0;
+    final aspectRatio = baseRatio / (1 + (textScale - 1) * 0.55);
 
-  // Swipe towards the end deletes (after confirmation); swipe from the start
-  // toggles the pin without dismissing the row.
-  Widget _buildSwipeableRow(BuildContext context, SubscriptionGroup group) {
-    final model = context.read<GroupsModel>();
-    return Dismissible(
-      key: ValueKey(group.id),
-      background: _swipeBackground(context,
-          alignEnd: false, icon: group.pinned ? Icons.push_pin_outlined : Icons.push_pin),
-      secondaryBackground: _swipeBackground(context, alignEnd: true, icon: Icons.delete_outline),
-      confirmDismiss: (direction) async {
-        if (direction == DismissDirection.startToEnd) {
-          await model.toggleGroupPinned(group.id, !group.pinned);
-          return false;
-        }
-        return await _confirmDeleteGroup(context, group) ?? false;
-      },
-      onDismissed: (_) => model.deleteGroup(group.id),
-      child: GroupListItem(
-        group: group,
-        onLongPress: () => openSubscriptionGroupDialog(context, group.id, group.name, group.icon),
-      ),
-    );
-  }
-
-  Widget _buildList(BuildContext context, List<SubscriptionGroup> groups) {
-    return ListView.builder(
+    return GridView.builder(
       controller: widget.scrollController,
-      padding: const EdgeInsets.fromLTRB(8, 4, 8, 24),
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 24),
+      // Build a row ahead so avatars decode before they scroll into view.
+      cacheExtent: 300,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: columns,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        childAspectRatio: aspectRatio,
+      ),
       itemCount: groups.length,
-      itemBuilder: (context, index) => _buildSwipeableRow(context, groups[index]),
+      itemBuilder: (context, index) {
+        final group = groups[index];
+        final tile = GroupTile(
+          key: ValueKey(group.id),
+          group: group,
+          animate: animate,
+          onTap: () => Navigator.pushNamed(context, routeGroup,
+              arguments: GroupScreenArguments(id: group.id, name: group.name)),
+          onLongPress: () => openSubscriptionGroupDialog(context, group.id, group.name, group.icon),
+        );
+
+        // Only the first screenful is staggered; tiles scrolled into view later
+        // appear immediately rather than animating under the user's thumb.
+        if (!animate || index >= _staggerLimit) {
+          return tile;
+        }
+        return _StaggeredEntrance(delay: Duration(milliseconds: 20 * index), child: tile);
+      },
     );
   }
 
@@ -204,17 +200,67 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
         final groups = query.isEmpty
             ? state
             : state.where((g) => g.name.toLowerCase().contains(query)).toList(growable: false);
+        // Manual ordering keeps the list form: dragging tiles around a grid is
+        // far fiddlier than dragging rows, and the row carries a drag handle.
         final manualOrder = context.read<GroupsModel>().orderGroupsBy == 'position' && query.isEmpty;
+        final animate = PrefService.of(context).get<bool>(optionDisableAnimations) != true;
 
         return Column(
           children: [
             if (state.length > 5) _buildSearchBar(context),
             Expanded(
-              child: manualOrder ? _buildReorderableList(context, groups) : _buildList(context, groups),
+              child: manualOrder
+                  ? _buildReorderableList(context, groups)
+                  : _buildBoard(context, groups, animate: animate),
             ),
           ],
         );
       },
+    );
+  }
+}
+
+/// Fades and lifts a tile into place once, shortly after first build.
+class _StaggeredEntrance extends StatefulWidget {
+  final Duration delay;
+  final Widget child;
+
+  const _StaggeredEntrance({required this.delay, required this.child});
+
+  @override
+  State<_StaggeredEntrance> createState() => _StaggeredEntranceState();
+}
+
+class _StaggeredEntranceState extends State<_StaggeredEntrance> {
+  bool _shown = false;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(widget.delay, () {
+      if (mounted) setState(() => _shown = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSlide(
+      offset: _shown ? Offset.zero : const Offset(0, 0.06),
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
+      child: AnimatedOpacity(
+        opacity: _shown ? 1 : 0,
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOutCubic,
+        child: widget.child,
+      ),
     );
   }
 }
@@ -365,6 +411,22 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         TextButton(
           onPressed: () => _openMergeSheet(context),
           child: Text(L10n.of(context).merge_into),
+        ),
+      // The board has no swipe gesture, so pinning lives here alongside the
+      // group's other actions.
+      if (widget.id != null)
+        TextButton(
+          onPressed: () async {
+            final groupsModel = context.read<GroupsModel>();
+            final pinned = groupsModel.state.any((g) => g.id == widget.id && g.pinned);
+            await groupsModel.toggleGroupPinned(widget.id!, !pinned);
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
+          },
+          child: Text(context.read<GroupsModel>().state.any((g) => g.id == widget.id && g.pinned)
+              ? L10n.of(context).unpin
+              : L10n.of(context).pin),
         ),
       TextButton(
         onPressed: id == null ? null : () => openDeleteSubscriptionGroupDialog(id!, name!),

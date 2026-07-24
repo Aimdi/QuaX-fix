@@ -185,10 +185,10 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
           "SELECT g.id, g.name, g.icon, g.color, g.created_at, g.pinned, COUNT(gm.profile_id) AS number_of_members FROM $tableSubscriptionGroup g LEFT JOIN $tableSubscriptionGroupMember gm ON gm.group_id = g.id WHERE g.id != '-1' GROUP BY g.id ORDER BY g.pinned DESC, $orderBy";
 
       var groups = (await database.rawQuery(query)).map((e) => SubscriptionGroup.fromMap(e)).toList(growable: false);
-      var avatars = await _loadMemberAvatars(database);
+      var previews = await _loadMemberPreviews(database);
 
       return groups
-          .map((g) => g.withMemberAvatarUrls(avatars[g.id] ?? const []))
+          .map((g) => g.withMemberPreviews(previews[g.id] ?? const []))
           .toList(growable: false);
     });
     for (final callback in _onGroupsReloaded.values) {
@@ -196,20 +196,34 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
     }
   }
 
-  /// A few member avatar URLs per group, for the list row preview cluster.
+  /// How many members each group tile previews.
   static const _avatarPreviewCount = 4;
 
-  Future<Map<String, List<String>>> _loadMemberAvatars(DatabaseExecutor database) async {
+  /// The first few members of every group, for the tile avatar mosaic.
+  ///
+  /// One query for all groups (never N+1). Members without a picture are
+  /// deliberately included — they render as a deterministic monogram, which is
+  /// far better than a group of avatar-less accounts showing nothing at all.
+  ///
+  /// Deliberately NOT a `ROW_NUMBER() OVER (PARTITION BY ...)` single query:
+  /// window functions need SQLite >= 3.25, and this app's minSdk 24 reaches
+  /// Android 7 devices whose bundled SQLite predates that. The per-group cut is
+  /// therefore taken in Dart.
+  Future<Map<String, List<GroupMemberPreview>>> _loadMemberPreviews(DatabaseExecutor database) async {
     var rows = await database.rawQuery(
-        'SELECT gm.group_id, s.profile_image_url_https FROM $tableSubscriptionGroupMember gm '
+        'SELECT gm.group_id, s.id, s.name, s.screen_name, s.profile_image_url_https FROM $tableSubscriptionGroupMember gm '
         'JOIN $tableSubscription s ON s.id = gm.profile_id '
-        'WHERE s.profile_image_url_https IS NOT NULL '
         'ORDER BY gm.group_id, s.screen_name COLLATE NOCASE');
 
-    return rows.fold<Map<String, List<String>>>(<String, List<String>>{}, (acc, row) {
-      var urls = acc.putIfAbsent(row['group_id'] as String, () => []);
-      if (urls.length < _avatarPreviewCount) {
-        urls.add(row['profile_image_url_https'] as String);
+    return rows.fold<Map<String, List<GroupMemberPreview>>>(<String, List<GroupMemberPreview>>{}, (acc, row) {
+      var previews = acc.putIfAbsent(row['group_id'] as String, () => <GroupMemberPreview>[]);
+      if (previews.length < _avatarPreviewCount) {
+        final screenName = row['screen_name'] as String?;
+        previews.add(GroupMemberPreview(
+          id: row['id'] as String,
+          name: (row['name'] as String?) ?? screenName ?? '',
+          avatarUrl: row['profile_image_url_https'] as String?,
+        ));
       }
       return acc;
     });

@@ -655,6 +655,8 @@
   "@subscribe": {},
   "subscription_group_member_count": "{count, plural, other{{count} 個訂閱}}",
   "@subscription_group_member_count": {},
+  "subscription_groups_columns": "欄數",
+  "@subscription_groups_columns": {},
   "subscriptions": "訂閱",
   "@subscriptions": {},
   "subtitles": "字幕",
