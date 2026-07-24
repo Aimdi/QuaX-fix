@@ -211,6 +211,17 @@ Future<void> _migrateMediaQualityPrefs(BasePrefService prefs) async {
   await prefs.set(optionMediaQualitySplitMigrated, true);
 }
 
+/// Earlier builds seeded the crash-report repository with a name that does not
+/// exist on GitHub. The stored preference wins over the default, so installs
+/// that already ran keep the dead value until it is rewritten here. Only the
+/// broken value is touched — a repository the user chose is left alone.
+Future<void> _migrateCrashRepoPref(BasePrefService prefs) async {
+  const brokenRepo = 'Aimdi/QuaX-gamma';
+  if (prefs.get<String>(optionCrashGithubRepo)?.trim() == brokenRepo) {
+    await prefs.set(optionCrashGithubRepo, defaultCrashGithubRepo);
+  }
+}
+
 Future<void> main() async {
   Logger.root.onRecord.listen((event) async {
     log(event.message, error: event.error, stackTrace: event.stackTrace);
@@ -304,6 +315,7 @@ Future<void> main() async {
   });
 
   await _migrateMediaQualityPrefs(prefService);
+  await _migrateCrashRepoPref(prefService);
 
   CrashReporter.install(prefService);
 
