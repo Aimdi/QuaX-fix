@@ -93,9 +93,11 @@ This fork is based on upstream **v4.12.0**. Everything below is on top of that.
 
 ### Build & release
 
-- **CI works without upstream signing secrets** — fork builds fall back to debug signing, and APKs
-  are uploaded as workflow artifacts.
-- **Release workflow** — publishes the built APKs as GitHub release assets.
+- **Release signing is required** — GitHub release workflows fail unless a stable
+  keystore is configured via Actions secrets (`SIGNING_KEY`, etc.). See
+  [`docs/signing.md`](docs/signing.md). Without that, every CI run would sign
+  with a fresh debug key and Android would refuse in-place updates.
+- **CI PR artifacts** may still be debug-signed for testing only.
 
 ### Fixes
 
@@ -120,10 +122,15 @@ QuaX-fix ships two hand-tuned theme presets on top of the regular light/dark/tru
 
 ## Download
 
-Grab the APK from this fork's [GitHub releases](https://github.com/Aimdi/QuaX-fix/releases), or add
-the repo to [Obtainium](https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/Aimdi/QuaX-fix).
-Fork builds are **debug-signed** — they won't update over an installation of upstream QuaX (and
-vice versa).
+Grab the APK from this fork's [GitHub releases](https://github.com/Aimdi/QuaX-gamma/releases), or add
+the repo to [Obtainium](https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/Aimdi/QuaX-gamma).
+
+> [!IMPORTANT]
+> Releases must be signed with this fork's own stable keystore (see
+> [`docs/signing.md`](docs/signing.md)). They will **not** update over upstream
+> [Teskann/QuaX](https://github.com/Teskann/QuaX), and older Aimdi builds that
+> were accidentally debug-signed need a one-time uninstall before the first
+> properly signed update.
 
 For upstream releases and APK signature verification, see
 [Teskann/QuaX](https://github.com/Teskann/QuaX/releases).
