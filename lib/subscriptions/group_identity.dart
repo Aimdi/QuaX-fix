@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
+import 'package:quax/group/group_model.dart';
+import 'package:quax/subscriptions/group_mark_style.dart';
 import 'package:pref/pref.dart';
 
 /// Deterministic seed color for groups without a chosen color. Stable for a
@@ -56,9 +58,6 @@ bool useAccentTileVariant(BuildContext context) => useGroupMarkOutline(context);
 final RegExp _letterGrapheme = RegExp(r'\p{L}', unicode: true);
 
 /// Single dominant initial: first letter grapheme, else first grapheme, else `?`.
-///
-/// One letter + color disambiguates colliding names (`Art (1)` / `Art NSFW` →
-/// both `A`). Never returns a two-letter monogram.
 String groupInitial(String name) {
   final trimmed = name.trim();
   if (trimmed.isEmpty) {
@@ -83,17 +82,51 @@ String monogram(String name) {
   return chars.take(take).toString().toUpperCase();
 }
 
-/// 40dp tonal chip: Phase 1 always shows [groupInitial]. Emoji / stored icon /
-/// generative fallbacks arrive with `mark_style` in Phase 2.
+bool _hasEmoji(String? emoji) => emoji != null && emoji.trim().isNotEmpty;
+
+bool _hasCustomIcon(String icon) =>
+    icon.isNotEmpty && icon != defaultGroupIcon && icon != 'rss' && icon != 'rss_feed';
+
+/// Which mark content the chip should show for [markStyle] + stored fields.
+enum GroupMarkKind { emoji, initial, symbol }
+
+GroupMarkKind resolveGroupMarkKind({
+  required int markStyle,
+  required String? emoji,
+  required String icon,
+}) {
+  switch (GroupMarkStyle.coerce(markStyle)) {
+    case GroupMarkStyle.emoji:
+      return _hasEmoji(emoji) ? GroupMarkKind.emoji : GroupMarkKind.initial;
+    case GroupMarkStyle.symbol:
+      return _hasCustomIcon(icon) ? GroupMarkKind.symbol : GroupMarkKind.initial;
+    case GroupMarkStyle.generated:
+      return GroupMarkKind.initial;
+    case GroupMarkStyle.auto:
+    default:
+      if (_hasEmoji(emoji)) {
+        return GroupMarkKind.emoji;
+      }
+      return GroupMarkKind.initial;
+  }
+}
+
+/// 40dp tonal chip with a single resolver path for emoji / initial / symbol.
 class GroupMark extends StatelessWidget {
   final String name;
   final Color seed;
+  final String? emoji;
+  final String icon;
+  final int markStyle;
   final double size;
 
   const GroupMark({
     super.key,
     required this.name,
     required this.seed,
+    this.emoji,
+    this.icon = '',
+    this.markStyle = GroupMarkStyle.auto,
     this.size = 40,
   });
 
@@ -102,6 +135,9 @@ class GroupMark extends StatelessWidget {
       key: key,
       name: group.name,
       seed: groupSeedColor(group),
+      emoji: group.emoji,
+      icon: group.icon,
+      markStyle: group.markStyle,
       size: size,
     );
   }
@@ -109,8 +145,28 @@ class GroupMark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pair = tonalPair(context, seed);
-    final initial = groupInitial(name);
-    final fontSize = size * 0.5;
+    final kind = resolveGroupMarkKind(markStyle: markStyle, emoji: emoji, icon: icon);
+    final child = switch (kind) {
+      GroupMarkKind.emoji => Text(
+          emoji!.trim().characters.first,
+          style: TextStyle(fontSize: size * 0.55, height: 1),
+        ),
+      GroupMarkKind.symbol => Icon(
+          deserializeIconData(icon),
+          size: size * 0.55,
+          color: pair.onContainer,
+        ),
+      GroupMarkKind.initial => Text(
+          groupInitial(name),
+          style: TextStyle(
+            color: pair.onContainer,
+            fontWeight: FontWeight.w700,
+            fontSize: size * 0.5,
+            height: 1,
+            letterSpacing: 0,
+          ),
+        ),
+    };
 
     return ExcludeSemantics(
       child: SizedBox(
@@ -119,18 +175,7 @@ class GroupMark extends StatelessWidget {
         child: Material(
           color: pair.container,
           borderRadius: BorderRadius.circular(size * 0.3),
-          child: Center(
-            child: Text(
-              initial,
-              style: TextStyle(
-                color: pair.onContainer,
-                fontWeight: FontWeight.w700,
-                fontSize: fontSize,
-                height: 1,
-                letterSpacing: 0,
-              ),
-            ),
-          ),
+          child: Center(child: child),
         ),
       ),
     );

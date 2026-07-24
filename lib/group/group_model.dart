@@ -6,6 +6,7 @@ import 'package:flutter_triple/flutter_triple.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/database/repository.dart';
+import 'package:quax/subscriptions/group_mark_style.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:uuid/uuid.dart';
@@ -181,7 +182,7 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
           : 'g.$orderGroupsBy $orderByDirection';
 
       var query =
-          "SELECT g.id, g.name, g.icon, g.color, g.created_at, g.pinned, COUNT(gm.profile_id) AS number_of_members FROM $tableSubscriptionGroup g LEFT JOIN $tableSubscriptionGroupMember gm ON gm.group_id = g.id WHERE g.id != '-1' GROUP BY g.id ORDER BY g.pinned DESC, $orderBy";
+          "SELECT g.id, g.name, g.icon, g.color, g.created_at, g.pinned, g.emoji, g.mark_style, COUNT(gm.profile_id) AS number_of_members FROM $tableSubscriptionGroup g LEFT JOIN $tableSubscriptionGroupMember gm ON gm.group_id = g.id WHERE g.id != '-1' GROUP BY g.id ORDER BY g.pinned DESC, $orderBy";
 
       var groups = (await database.rawQuery(query)).map((e) => SubscriptionGroup.fromMap(e)).toList(growable: false);
       return groups;
@@ -245,6 +246,8 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
         icon: defaultGroupIcon,
         color: null,
         members: <String>{},
+        emoji: null,
+        markStyle: GroupMarkStyle.auto,
       );
     }
 
@@ -256,6 +259,8 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
         icon: defaultGroupIcon,
         color: null,
         members: <String>{},
+        emoji: null,
+        markStyle: GroupMarkStyle.auto,
       );
     }
 
@@ -269,10 +274,20 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
       icon: group.first['icon'] as String,
       color: group.first['color'] == null ? null : Color(group.first['color'] as int),
       members: members,
+      emoji: group.first['emoji'] as String?,
+      markStyle: GroupMarkStyle.coerce(group.first['mark_style']),
     );
   }
 
-  Future saveGroup(String? id, String name, String icon, Color? color, Set<String> subscriptions) async {
+  Future saveGroup(
+    String? id,
+    String name,
+    String icon,
+    Color? color,
+    Set<String> subscriptions, {
+    String? emoji,
+    int markStyle = GroupMarkStyle.auto,
+  }) async {
     await execute(() async {
       var database = await Repository.writable();
 
@@ -289,6 +304,8 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
           'icon': icon,
           'include_replies': null,
           'include_retweets': null,
+          'emoji': emoji,
+          'mark_style': markStyle,
         });
       } else {
         await database.update(
@@ -297,6 +314,8 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
               'name': name,
               'color': color?.toARGB32(),
               'icon': icon,
+              'emoji': emoji,
+              'mark_style': markStyle,
             },
             where: 'id = ?',
             whereArgs: [id]);

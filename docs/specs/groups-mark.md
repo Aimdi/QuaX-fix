@@ -75,24 +75,34 @@ Cell chrome:
 Do **not** add `material_symbols_icons`, `flex_seed_scheme`, or generative
 avatar packages in Phase 1. Keep `flutter_iconpicker` in the edit sheet.
 
-## Phase 2 — additive migration (gated)
+## Phase 2 — additive migration (shipped, DB v35)
 
-Only after the user confirms the color-dominant direction on device
-(Pitch Black + Fairy Forest):
-
-- `ALTER TABLE subscription_group ADD COLUMN emoji TEXT`
-- `ALTER TABLE subscription_group ADD COLUMN mark_style INTEGER NOT NULL DEFAULT 0`
-  (`0` auto/initial, `1` emoji, `2` symbol, `3` generated)
+- `emoji TEXT` + `mark_style INTEGER NOT NULL DEFAULT 0`
+  (`0` auto, `1` emoji, `2` symbol, `3` generated → initial fallback)
 - Backfill existing non-default icons → `mark_style=2`
 - New groups → `mark_style=0`
-- Edit sheet: Auto / Emoji / Icon segmented control; then drop unrestricted
-  picker if a curated set replaces it
+- `GroupMark` resolver: style-aware emoji / initial / symbol
 
-## Phase 3+ (later)
+## Phase 3 — edit sheet (shipped)
 
-- Optional Concept A ("Minimal", no chip) as a style toggle
-- Curated ~40 Material Symbols set + `material_symbols_icons` if Icon path stays
-- Unread Badge from `feed_read_position` (still deferred from grid spec)
+- Segmented control: Auto / Emoji / Icon (`group_mark_style_*` ARB)
+- Emoji via system-keyboard dialog (no Noto bundle, no emoji_picker package)
+- Icon via curated ~40 Material set (`serializeCuratedGroupIcon`); unrestricted
+  `showIconPicker` removed from the sheet
+- `flutter_iconpicker` kept only for `deserializeIconData` of legacy JSON
+
+## Phase 4 — L10n (shipped)
+
+Keys: `group_mark_style_label`, `group_mark_style_auto`,
+`group_mark_style_emoji`, `group_mark_style_icon`, `choose_emoji`,
+`choose_icon`. Removed unused `pick_an_icon` / `no_results_for`.
+
+## Still deferred
+
+- Optional Concept A ("Minimal", no chip) style toggle
+- `material_symbols_icons` / FILLED axes
+- Unread Badge from `feed_read_position`
+- Dropping `flutter_iconpicker` entirely (needs a local deserializer)
 
 ## Out of scope
 

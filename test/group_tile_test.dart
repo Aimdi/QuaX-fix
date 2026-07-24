@@ -6,6 +6,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/subscriptions/_group_tile.dart';
 import 'package:quax/subscriptions/group_identity.dart';
+import 'package:quax/subscriptions/group_mark_style.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
       localizationsDelegates: const [
@@ -22,6 +23,8 @@ SubscriptionGroup _group({
   String name = 'Anime',
   String? icon,
   Color? color,
+  String? emoji,
+  int markStyle = GroupMarkStyle.auto,
   int members = 15,
   bool pinned = false,
 }) =>
@@ -33,6 +36,8 @@ SubscriptionGroup _group({
       numberOfMembers: members,
       createdAt: DateTime.utc(2024),
       pinned: pinned,
+      emoji: emoji,
+      markStyle: markStyle,
     );
 
 void main() {
@@ -51,6 +56,33 @@ void main() {
     expect(groupInitial('  '), '?');
     expect(groupInitial(''), '?');
     expect(groupInitial('42'), '4');
+  });
+
+  test('resolveGroupMarkKind follows style + stored fields', () {
+    expect(
+      resolveGroupMarkKind(markStyle: GroupMarkStyle.auto, emoji: null, icon: defaultGroupIcon),
+      GroupMarkKind.initial,
+    );
+    expect(
+      resolveGroupMarkKind(markStyle: GroupMarkStyle.auto, emoji: '🎨', icon: defaultGroupIcon),
+      GroupMarkKind.emoji,
+    );
+    expect(
+      resolveGroupMarkKind(
+        markStyle: GroupMarkStyle.symbol,
+        emoji: null,
+        icon: '{"pack":"material","key":"star"}',
+      ),
+      GroupMarkKind.symbol,
+    );
+    expect(
+      resolveGroupMarkKind(markStyle: GroupMarkStyle.emoji, emoji: null, icon: defaultGroupIcon),
+      GroupMarkKind.initial,
+    );
+    expect(
+      resolveGroupMarkKind(markStyle: GroupMarkStyle.generated, emoji: '🎨', icon: defaultGroupIcon),
+      GroupMarkKind.initial,
+    );
   });
 
   testWidgets('tintedSurface differs from raw seed and from base surface', (tester) async {
@@ -88,13 +120,33 @@ void main() {
     expect(find.text('1 subscription'), findsOneWidget);
   });
 
-  testWidgets('custom icon is not shown on the tile in Phase 1', (tester) async {
+  testWidgets('auto style ignores custom icon and shows initial', (tester) async {
     const icon = '{"pack":"material","key":"star"}';
     await tester.pumpWidget(_wrap(SubscriptionGroupTile(group: _group(icon: icon))));
     await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.star), findsNothing);
     expect(find.text('A'), findsOneWidget);
+  });
+
+  testWidgets('symbol style shows the stored icon', (tester) async {
+    final icon = serializeCuratedGroupIcon('star', Icons.star);
+    await tester.pumpWidget(_wrap(SubscriptionGroupTile(
+      group: _group(icon: icon, markStyle: GroupMarkStyle.symbol),
+    )));
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.star), findsOneWidget);
+    expect(find.text('A'), findsNothing);
+  });
+
+  testWidgets('emoji style shows the emoji', (tester) async {
+    await tester.pumpWidget(_wrap(SubscriptionGroupTile(
+      group: _group(emoji: '🎨', markStyle: GroupMarkStyle.emoji),
+    )));
+    await tester.pumpAndSettle();
+
+    expect(find.text('🎨'), findsOneWidget);
   });
 
   testWidgets('colliding Art* names all resolve to A', (tester) async {

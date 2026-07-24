@@ -26,7 +26,7 @@ const String tablePostNotification = 'post_notification';
 const String tableRetweetFilter = 'retweet_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 34;
+const int databaseVersion = 35;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -311,7 +311,33 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
           }
           await batch.commit(noResult: true);
         })),
-      ]
+      ],
+      35: [
+        // Per-group identity mark: optional emoji + style override. Existing
+        // non-default icons keep showing via mark_style=2 (symbol).
+        SqlMigration('ALTER TABLE $tableSubscriptionGroup ADD COLUMN emoji TEXT',
+            reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN emoji'),
+        SqlMigration('ALTER TABLE $tableSubscriptionGroup ADD COLUMN mark_style INTEGER NOT NULL DEFAULT 0',
+            reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN mark_style'),
+        Migration(Operation((db) async {
+          const defaultIcon = '{"pack":"custom","key":"rss_feed"}';
+          final groups = await db.query(tableSubscriptionGroup, columns: ['id', 'icon']);
+          final batch = db.batch();
+          for (final group in groups) {
+            final icon = group['icon'] as String?;
+            final isCustom = icon != null &&
+                icon.isNotEmpty &&
+                icon != 'rss' &&
+                icon != 'rss_feed' &&
+                icon != defaultIcon;
+            if (isCustom) {
+              batch.update(tableSubscriptionGroup, {'mark_style': 2},
+                  where: 'id = ?', whereArgs: [group['id']]);
+            }
+          }
+          await batch.commit(noResult: true);
+        })),
+      ],
     });
 
 class Repository {

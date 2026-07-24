@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_iconpicker/Models/configuration.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
+import 'package:quax/subscriptions/group_identity.dart';
+import 'package:quax/subscriptions/group_mark_style.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/user.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +46,8 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
   late String? name;
   late String icon;
   Color? color;
+  String? emoji;
+  int markStyle = GroupMarkStyle.auto;
   Set<String> members = <String>{};
   List<Subscription> orderedSubscriptions = [];
 
@@ -67,6 +68,8 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
           name = group.name;
           icon = group.icon;
           color = group.color;
+          emoji = group.emoji;
+          markStyle = group.markStyle;
           members = group.members;
           orderedSubscriptions = [
             ...subscriptions.where((s) => group.members.contains(s.id)),
@@ -75,8 +78,6 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         }));
   }
 
-  /// Picks another group and moves every member of this one into it, deleting
-  /// this group afterwards. Resolves accidental duplicates like "Art (1)"/"Art (2)".
   Future<void> _openMergeSheet(BuildContext context) async {
     final groupsModel = context.read<GroupsModel>();
     final others = groupsModel.state.where((g) => g.id != widget.id).toList(growable: false);
@@ -89,7 +90,7 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                 children: [
                   for (final g in others)
                     ListTile(
-                      leading: Icon(g.iconData),
+                      leading: GroupMark.forGroup(g, size: 32),
                       title: Text(g.name, maxLines: 1, overflow: TextOverflow.ellipsis),
                       onTap: () => Navigator.pop(sheetContext, g),
                     ),
@@ -130,6 +131,112 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         });
   }
 
+  Future<void> _pickEmoji() async {
+    final controller = TextEditingController(text: emoji ?? '');
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        final l10n = L10n.of(context);
+        return AlertDialog(
+          title: Text(l10n.choose_emoji),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 40),
+            decoration: InputDecoration(hintText: l10n.choose_emoji),
+            onSubmitted: (value) => Navigator.pop(context, value.trim()),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, controller.text.trim()),
+              child: Text(l10n.ok),
+            ),
+          ],
+        );
+      },
+    );
+    if (!mounted || result == null) return;
+    setState(() {
+      emoji = result.isEmpty ? null : result.characters.first;
+      markStyle = GroupMarkStyle.emoji;
+    });
+  }
+
+  Future<void> _pickIcon() async {
+    final selected = await showDialog<({String key, IconData data})>(
+      context: context,
+      builder: (context) {
+        final l10n = L10n.of(context);
+        return AlertDialog(
+          title: Text(l10n.choose_icon),
+          content: SizedBox(
+            width: 320,
+            child: GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+              ),
+              itemCount: curatedGroupIcons.length,
+              itemBuilder: (context, index) {
+                final entry = curatedGroupIcons[index];
+                return IconButton(
+                  onPressed: () => Navigator.pop(context, entry),
+                  icon: Icon(entry.data),
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.cancel),
+            ),
+          ],
+        );
+      },
+    );
+    if (!mounted || selected == null) return;
+    setState(() {
+      icon = serializeCuratedGroupIcon(selected.key, selected.data);
+      markStyle = GroupMarkStyle.symbol;
+    });
+  }
+
+  Future<void> _onMarkStyleSelected(Set<int> selection) async {
+    final next = selection.first;
+    if (next == GroupMarkStyle.emoji) {
+      await _pickEmoji();
+      return;
+    }
+    if (next == GroupMarkStyle.symbol) {
+      await _pickIcon();
+      return;
+    }
+    setState(() {
+      markStyle = GroupMarkStyle.auto;
+      emoji = null;
+    });
+  }
+
+  Widget _markPreview(BuildContext context) {
+    final seed = color ?? hashedSeedColor(name ?? '');
+    return GroupMark(
+      name: name ?? '',
+      seed: seed,
+      emoji: emoji,
+      icon: icon,
+      markStyle: markStyle,
+      size: 40,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var subscriptionsModel = context.read<SubscriptionsModel>();
@@ -139,6 +246,7 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
       return const Center(child: CircularProgressIndicator());
     }
 
+    final l10n = L10n.of(context);
     final isPinned = widget.id != null &&
         context.read<GroupsModel>().state.any((g) => g.id == widget.id && g.pinned);
 
@@ -153,7 +261,7 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
             }
           });
         },
-        child: Text(L10n.of(context).toggle_all),
+        child: Text(l10n.toggle_all),
       ),
       if (widget.id != null)
         TextButton(
@@ -162,27 +270,35 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
             await groupsModel.toggleGroupPinned(widget.id!, !isPinned);
             if (mounted) setState(() {});
           },
-          child: Text(isPinned ? L10n.of(context).unpin : L10n.of(context).pin),
+          child: Text(isPinned ? l10n.unpin : l10n.pin),
         ),
       if (widget.id != null)
         TextButton(
           onPressed: () => _openMergeSheet(context),
-          child: Text(L10n.of(context).merge_into),
+          child: Text(l10n.merge_into),
         ),
       TextButton(
         onPressed: id == null ? null : () => openDeleteSubscriptionGroupDialog(id!, name!),
-        child: Text(L10n.of(context).delete),
+        child: Text(l10n.delete),
       ),
     ];
     List<Widget> buttonsLst2 = [
       TextButton(
         onPressed: () => Navigator.pop(context),
-        child: Text(L10n.of(context).cancel),
+        child: Text(l10n.cancel),
       ),
       Builder(builder: (context) {
         onPressed() async {
           if (_formKey.currentState!.validate()) {
-            await context.read<GroupsModel>().saveGroup(id, name!, icon, color, members);
+            await context.read<GroupsModel>().saveGroup(
+                  id,
+                  name!,
+                  icon,
+                  color,
+                  members,
+                  emoji: emoji,
+                  markStyle: markStyle,
+                );
 
             Navigator.pop(context);
           }
@@ -190,7 +306,7 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
 
         return TextButton(
           onPressed: onPressed,
-          child: Text(L10n.of(context).ok),
+          child: Text(l10n.ok),
         );
       }),
     ];
@@ -204,23 +320,23 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
             mainAxisSize: MainAxisSize.max,
             children: [
               Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [
+                  _markPreview(context),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: TextFormField(
                       initialValue: group.name,
                       decoration: InputDecoration(
                         border: const UnderlineInputBorder(),
-                        hintText: L10n.of(context).name,
+                        hintText: l10n.name,
                       ),
                       onChanged: (value) => setState(() {
                         name = value;
                       }),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return L10n.of(context).please_enter_a_name;
+                          return l10n.please_enter_a_name;
                         }
-
                         return null;
                       },
                     ),
@@ -234,7 +350,7 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                             var selectedColor = color;
 
                             return AlertDialog(
-                              title: Text(L10n.of(context).pick_a_color),
+                              title: Text(l10n.pick_a_color),
                               content: SingleChildScrollView(
                                 child: MaterialColorPicker(
                                   selectedColor: color ?? Colors.grey,
@@ -245,13 +361,13 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                               ),
                               actions: <Widget>[
                                 TextButton(
-                                  child: Text(L10n.of(context).cancel),
+                                  child: Text(l10n.cancel),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
                                 ),
                                 TextButton(
-                                  child: Text(L10n.of(context).ok),
+                                  child: Text(l10n.ok),
                                   onPressed: () {
                                     setState(() {
                                       color = selectedColor;
@@ -264,26 +380,28 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                           });
                     },
                   ),
-                  IconButton(
-                    icon: Icon(deserializeIconData(icon)),
-                    onPressed: () async {
-                      var selectedIcon = await showIconPicker(
-                        context,
-                        configuration: SinglePickerConfiguration(
-                            iconPackModes: [IconPack.material],
-                            title: Text(L10n.of(context).pick_an_icon),
-                            closeChild: Text(L10n.of(context).close),
-                            searchHintText: L10n.of(context).search,
-                            noResultsText: L10n.of(context).no_results_for),
-                      );
-                      if (selectedIcon != null) {
-                        setState(() {
-                          icon = jsonEncode(serializeIcon(selectedIcon));
-                        });
-                      }
-                    },
-                  )
                 ],
+              ),
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(l10n.group_mark_style_label, style: Theme.of(context).textTheme.labelLarge),
+              ),
+              const SizedBox(height: 8),
+              SegmentedButton<int>(
+                segments: [
+                  ButtonSegment(value: GroupMarkStyle.auto, label: Text(l10n.group_mark_style_auto)),
+                  ButtonSegment(value: GroupMarkStyle.emoji, label: Text(l10n.group_mark_style_emoji)),
+                  ButtonSegment(value: GroupMarkStyle.symbol, label: Text(l10n.group_mark_style_icon)),
+                ],
+                selected: {
+                  markStyle == GroupMarkStyle.emoji
+                      ? GroupMarkStyle.emoji
+                      : markStyle == GroupMarkStyle.symbol
+                          ? GroupMarkStyle.symbol
+                          : GroupMarkStyle.auto,
+                },
+                onSelectionChanged: _onMarkStyleSelected,
               ),
               Expanded(
                 child: ListView.builder(
@@ -295,13 +413,13 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                     var subtitle =
                         subscription is SearchSubscription ? L10n.current.search_term : '@${subscription.screenName}';
 
-                    var icon = subscription is SearchSubscription
+                    var avatar = subscription is SearchSubscription
                         ? const SizedBox(width: 48, child: Icon(Icons.search))
                         : UserAvatar(uri: subscription.profileImageUrlHttps);
 
                     return CheckboxListTile(
                       dense: true,
-                      secondary: icon,
+                      secondary: avatar,
                       title: Text(subscription.name),
                       subtitle: Text(subtitle),
                       selected: members.contains(subscription.id),
