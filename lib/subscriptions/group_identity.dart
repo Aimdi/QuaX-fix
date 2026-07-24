@@ -12,14 +12,10 @@ Color groupFallbackColor(String name) {
 
 Color groupSeedColor(SubscriptionGroup group) => group.color ?? groupFallbackColor(group.name);
 
-/// Contrast-safe tonal fill + on-fill pair from a seed, adapted to brightness.
-({Color container, Color onContainer}) tonalPair(BuildContext context, Color seed) {
-  final scheme = ColorScheme.fromSeed(
-    seedColor: seed,
-    brightness: Theme.of(context).brightness,
-  );
-  return (container: scheme.primaryContainer, onContainer: scheme.onPrimaryContainer);
-}
+/// Glyph colour for a solid [seed] disc: white on saturated colours, near-black
+/// on pale ones — the same rule the member avatars use.
+Color onGroupSeed(Color seed) =>
+    ThemeData.estimateBrightnessForColor(seed) == Brightness.dark ? Colors.white : Colors.black87;
 
 final RegExp _letterGrapheme = RegExp(r'\p{L}', unicode: true);
 
@@ -77,7 +73,13 @@ bool hasExplicitGroupMark(SubscriptionGroup group) {
   return _hasEmoji(group.emoji);
 }
 
-/// Tonal chip with a single resolver path for emoji / initial / symbol.
+/// A group's identity disc: a solid circle in the group's own colour carrying
+/// one emoji, initial or icon.
+///
+/// Deliberately not a Material tonal container — no `primaryContainer` pair, no
+/// rounded-square chip, no ink. It matches the circular member avatars beside
+/// it, so a group reads as "one of these accounts' faces" rather than as a
+/// Material You chip.
 class GroupMark extends StatelessWidget {
   final String name;
   final Color seed;
@@ -110,26 +112,26 @@ class GroupMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pair = tonalPair(context, seed);
+    final onSeed = onGroupSeed(seed);
     final kind = resolveGroupMarkKind(markStyle: markStyle, emoji: emoji, icon: icon);
     final child = switch (kind) {
       GroupMarkKind.emoji => Text(
           emoji!.trim().characters.first,
           textScaler: TextScaler.noScaling,
-          style: TextStyle(fontSize: size * 0.55, height: 1),
+          style: TextStyle(fontSize: size * 0.5, height: 1),
         ),
       GroupMarkKind.symbol => Icon(
           deserializeIconData(icon),
-          size: size * 0.55,
-          color: pair.onContainer,
+          size: size * 0.5,
+          color: onSeed,
         ),
       GroupMarkKind.initial => Text(
           groupInitial(name),
           textScaler: TextScaler.noScaling,
           style: TextStyle(
-            color: pair.onContainer,
+            color: onSeed,
             fontWeight: FontWeight.w700,
-            fontSize: size * 0.5,
+            fontSize: size * 0.46,
             height: 1,
             letterSpacing: 0,
           ),
@@ -137,14 +139,12 @@ class GroupMark extends StatelessWidget {
     };
 
     return ExcludeSemantics(
-      child: SizedBox(
+      child: Container(
         width: size,
         height: size,
-        child: Material(
-          color: pair.container,
-          borderRadius: BorderRadius.circular(size * 0.3),
-          child: Center(child: child),
-        ),
+        decoration: BoxDecoration(color: seed, shape: BoxShape.circle),
+        alignment: Alignment.center,
+        child: child,
       ),
     );
   }

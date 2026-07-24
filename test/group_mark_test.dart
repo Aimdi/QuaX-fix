@@ -106,6 +106,27 @@ void main() {
     expect(find.text('AN'), findsNothing);
   });
 
+  testWidgets('GroupMark is a solid disc in the group colour, not a tonal chip', (tester) async {
+    const chosen = Color(0xFF7856FF);
+    await tester.pumpWidget(_wrap(GroupMark.forGroup(_group(color: chosen))));
+    await tester.pumpAndSettle();
+
+    final decoration = tester
+        .widget<Container>(find.descendant(of: find.byType(GroupMark), matching: find.byType(Container)))
+        .decoration as BoxDecoration;
+
+    expect(decoration.shape, BoxShape.circle, reason: 'the disc matches the circular member avatars');
+    expect(decoration.color, chosen, reason: 'the group colour is painted solid, not blended into a tonal container');
+    expect(decoration.borderRadius, isNull, reason: 'a rounded-square chip is the Material You shape we dropped');
+    expect(find.descendant(of: find.byType(GroupMark), matching: find.byType(Material)), findsNothing,
+        reason: 'no Material surface inside the disc means no tonal fill and no ink');
+  });
+
+  testWidgets('the glyph stays legible on both pale and saturated colours', (tester) async {
+    expect(onGroupSeed(const Color(0xFF0F1419)), Colors.white);
+    expect(onGroupSeed(const Color(0xFFFFD400)), Colors.black87);
+  });
+
   testWidgets('GroupMark shows the chosen emoji', (tester) async {
     await tester.pumpWidget(_wrap(
       GroupMark.forGroup(_group(emoji: '🎨', markStyle: GroupMarkStyle.emoji)),

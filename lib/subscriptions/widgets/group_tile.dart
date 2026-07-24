@@ -1,4 +1,3 @@
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
@@ -45,14 +44,14 @@ class _GroupTileState extends State<GroupTile> {
   Widget build(BuildContext context) {
     final tokens = GroupBoardTokens.resolve(context);
     final group = widget.group;
-    final accentColor =
-        (group.color ?? groupFallbackColor(group.name)).harmonizeWith(tokens.accent);
+    // The group's own colour, unharmonised: X does not rotate a user's colour
+    // towards a theme accent, and the colour only ever appears on the round
+    // identity disc — never as a wash over the card.
+    final accentColor = group.color ?? groupFallbackColor(group.name);
     final l10n = L10n.of(context);
     final countLabel = l10n.subscription_group_member_count(group.numberOfMembers);
 
-    // The group's colour tints the tile, so text contrast is verified against
-    // the blend actually painted rather than against the bare token.
-    final tileColor = Color.alphaBlend(accentColor.withValues(alpha: 0.10), tokens.tile);
+    final tileColor = tokens.tile;
     final titleColor = GroupBoardTokens.ensureContrast(tokens.onSurface, tileColor);
     final metaColor = GroupBoardTokens.ensureContrast(tokens.secondary, tileColor);
 
@@ -66,7 +65,6 @@ class _GroupTileState extends State<GroupTile> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(width: 4, color: accentColor),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(12),
