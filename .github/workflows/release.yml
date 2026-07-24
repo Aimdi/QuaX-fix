@@ -25,13 +25,29 @@ jobs:
       
       - name: Set up signing key
         run: |
-          if [ -n "$SIGNING_KEY" ]; then
-            echo "$SIGNING_KEY" | base64 -d > android/app/key.jks
-          else
-            echo "No SIGNING_KEY secret configured; APKs will be signed with the debug key"
+          missing=()
+          [ -z "$SIGNING_KEY" ] && missing+=(SIGNING_KEY)
+          [ -z "$KEY_STORE_PASSWORD" ] && missing+=(KEY_STORE_PASSWORD)
+          [ -z "$KEY_PASSWORD" ] && missing+=(KEY_PASSWORD)
+          [ -z "$KEY_ALIAS" ] && missing+=(KEY_ALIAS)
+          if [ ${#missing[@]} -ne 0 ]; then
+            echo "::error::Missing GitHub Actions secrets: ${missing[*]}"
+            echo "Release APKs must use a stable keystore. Without SIGNING_KEY,"
+            echo "CI falls back to a fresh debug.keystore on every runner — Android"
+            echo "then refuses in-place updates (uninstall/reinstall every release)."
+            echo "See docs/signing.md for how to create the keystore and set secrets."
+            exit 1
+          fi
+          echo "$SIGNING_KEY" | base64 -d > android/app/key.jks
+          if [ ! -s android/app/key.jks ]; then
+            echo "::error::SIGNING_KEY decoded to an empty file"
+            exit 1
           fi
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
       - name: Install and set up Flutter
         uses: subosito/flutter-action@v2
@@ -48,9 +64,7 @@ jobs:
 
       - name: Build APKs
         run: |
-          if [ -s android/app/key.jks ]; then
-            export KEY_PATH=key.jks
-          fi
+          export KEY_PATH=key.jks
 
           flutter config --no-analytics
           flutter pub get

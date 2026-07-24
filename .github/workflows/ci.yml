@@ -32,9 +32,13 @@ jobs:
       - name: Set up signing key
         run: |
           if [ -n "$SIGNING_KEY" ]; then
-            echo $SIGNING_KEY | base64 -d > android/app/key.jks
+            echo "$SIGNING_KEY" | base64 -d > android/app/key.jks
+            if [ ! -s android/app/key.jks ]; then
+              echo "::warning::SIGNING_KEY decoded empty; falling back to debug signing for CI artifacts"
+              rm -f android/app/key.jks
+            fi
           else
-            echo "No SIGNING_KEY secret configured; APKs will be signed with the debug key"
+            echo "::warning::No SIGNING_KEY secret — CI APK artifacts will be debug-signed (not for Obtainium / long-lived installs). See docs/signing.md"
           fi
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
