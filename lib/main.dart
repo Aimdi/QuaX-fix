@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/foundation.dart' show LicenseEntryWithLineBreaks, LicenseRegistry;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -218,6 +219,13 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
+  // The bundled Inter font ships under the SIL Open Font License, which
+  // requires the licence to travel with the software.
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('assets/fonts/Inter-OFL.txt');
+    yield LicenseEntryWithLineBreaks(const ['Inter'], license);
+  });
+
   MediaKit.ensureInitialized();
 
   setTimeagoLocales();
@@ -264,6 +272,7 @@ Future<void> main() async {
     optionDisableWarningsForUnrelatedPostsInFeed: false,
     alwaysShowFullTweetContents: false,
     optionSubscriptionGroupsOrderByField: 'name',
+    optionSubscriptionGroupsColumns: 2,
     optionSubscriptionOrderByAscending: true,
     optionSubscriptionOrderByField: 'name',
     optionSubscriptionOrderCustom: '',

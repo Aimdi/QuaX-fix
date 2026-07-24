@@ -220,6 +220,18 @@ class UserSubscription extends Subscription {
   }
 }
 
+/// One member shown in a group's avatar preview. [avatarUrl] is nullable: a
+/// member with no picture still appears, as a deterministic monogram keyed by
+/// [id].
+@immutable
+class GroupMemberPreview {
+  final String id;
+  final String name;
+  final String? avatarUrl;
+
+  const GroupMemberPreview({required this.id, required this.name, this.avatarUrl});
+}
+
 class SubscriptionGroup with ToMappable {
   final String id;
   final String name;
@@ -231,9 +243,9 @@ class SubscriptionGroup with ToMappable {
   final String? emoji;
   final int markStyle;
 
-  // Not persisted: a few member avatar URLs for the list row preview,
-  // populated by GroupsModel.reloadGroups.
-  final List<String> memberAvatarUrls;
+  // Not persisted: a few members for the tile's avatar preview, populated by
+  // GroupsModel.reloadGroups.
+  final List<GroupMemberPreview> memberPreviews;
 
   IconData get iconData => deserializeIconData(icon);
 
@@ -247,9 +259,9 @@ class SubscriptionGroup with ToMappable {
       this.pinned = false,
       this.emoji,
       this.markStyle = 0,
-      this.memberAvatarUrls = const []});
+      this.memberPreviews = const []});
 
-  SubscriptionGroup withMemberAvatarUrls(List<String> urls) => SubscriptionGroup(
+  SubscriptionGroup withMemberPreviews(List<GroupMemberPreview> previews) => SubscriptionGroup(
       id: id,
       name: name,
       icon: icon,
@@ -259,7 +271,7 @@ class SubscriptionGroup with ToMappable {
       pinned: pinned,
       emoji: emoji,
       markStyle: markStyle,
-      memberAvatarUrls: urls);
+      memberPreviews: previews);
 
   factory SubscriptionGroup.fromMap(Map<String, Object?> json) {
     // This is here to handle imports of data from before v2.15.0

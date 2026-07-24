@@ -226,7 +226,7 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
   }
 
   Widget _markPreview(BuildContext context) {
-    final seed = color ?? hashedSeedColor(name ?? '');
+    final seed = color ?? groupFallbackColor(name ?? '');
     return GroupMark(
       name: name ?? '',
       seed: seed,

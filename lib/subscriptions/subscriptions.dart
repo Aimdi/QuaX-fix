@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pref/pref.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
@@ -103,6 +104,10 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
                   context.read<GroupsModel>().changeOrderSubscriptionGroupsBy('created_at');
                 case _SubscriptionsMenuAction.sortGroupsByCustom:
                   context.read<GroupsModel>().changeOrderSubscriptionGroupsBy('position');
+                case _SubscriptionsMenuAction.toggleGroupColumns:
+                  final prefs = PrefService.of(context);
+                  final current = prefs.get<int>(optionSubscriptionGroupsColumns) ?? 2;
+                  prefs.set(optionSubscriptionGroupsColumns, current == 2 ? 3 : 2);
                 case _SubscriptionsMenuAction.toggleGroupsOrder:
                   context.read<GroupsModel>().toggleOrderSubscriptionGroupsAscending();
                 case _SubscriptionsMenuAction.importSubscriptions:
@@ -139,6 +144,11 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
                 PopupMenuItem(
                   value: _SubscriptionsMenuAction.sortGroupsByCustom,
                   child: Text(l10n.custom),
+                ),
+                const PopupMenuDivider(),
+                PopupMenuItem(
+                  value: _SubscriptionsMenuAction.toggleGroupColumns,
+                  child: Text(l10n.subscription_groups_columns),
                 ),
                 PopupMenuItem(
                   value: _SubscriptionsMenuAction.toggleGroupsOrder,
@@ -193,6 +203,7 @@ enum _SubscriptionsMenuAction {
   sortGroupsByName,
   sortGroupsByDate,
   sortGroupsByCustom,
+  toggleGroupColumns,
   toggleGroupsOrder,
   importSubscriptions,
   findBroken,
