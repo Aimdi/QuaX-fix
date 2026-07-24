@@ -309,10 +309,10 @@ packages:
     dependency: "direct overridden"
     description:
       name: dcli
-      sha256: b1ed6379df3bd885a111eb69ea9ed18d0747c833611f871c22e9606a7fd64d28
+      sha256: "37bd946c4e29236d84e1b7c573d8ef11c6775bf082bb9e091a0f3643c97c6cee"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.0"
+    version: "9.0.1"
   dcli_common:
     dependency: transitive
     description:
@@ -450,10 +450,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_file_dialog
-      sha256: a8adb4411bf53835e6176481b12c3dc79abc9b61d9c90198a2eddddcb8cf71c7
+      sha256: "2bb0ac16fe5a390eae8f718e80cc0807fcf3ae2b4c3b9ab1e1c2a130bf904d4f"
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.1"
+    version: "3.3.2"
   flutter_iconpicker:
     dependency: "direct main"
     description:
@@ -1137,10 +1137,10 @@ packages:
     dependency: transitive
     description:
       name: posix
-      sha256: "185ef7606574f789b40f289c233efa52e96dead518aed988e040a10737febb07"
+      sha256: bc1bad54ad2b735816e31f8d4600cfde6c7839975085ddfbca48b6c9f7c4044e
       url: "https://pub.dev"
     source: hosted
-    version: "6.5.0"
+    version: "6.5.2"
   pref:
     dependency: "direct main"
     description:
