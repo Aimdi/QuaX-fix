@@ -6,6 +6,7 @@ import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:quax/home/edge_swipe.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/profile/profile.dart';
@@ -222,7 +223,13 @@ class _TweetMediaState extends State<TweetMedia> {
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
           child: AspectRatio(
             aspectRatio: largestAspectRatio,
-            child: PageView.builder(
+            // A carousel of several images owns horizontal drags that start on
+            // it, so without this a swipe over a post's media could not reach
+            // the home page view. (One image scrolls nowhere, so Flutter never
+            // gives it a drag recogniser and it already passes them through.)
+            child: edgeSwipeToChangeHomePage(
+              context,
+              PageView.builder(
               controller: _controller,
               scrollDirection: Axis.horizontal,
               itemCount: widget.media.length,
@@ -255,6 +262,7 @@ class _TweetMediaState extends State<TweetMedia> {
                       tweetId: widget.tweetId),
                 );
               },
+              ),
             ),
           ),
         ),

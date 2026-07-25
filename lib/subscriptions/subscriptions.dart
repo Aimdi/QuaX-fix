@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
+import 'package:quax/home/edge_swipe.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
@@ -186,12 +187,17 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
           ),
         ],
       ),
-      body: TabBarView(
-        controller: _tabs,
-        children: [
-          SubscriptionGroupsPage(scrollController: _groupsScrollController),
-          SubscriptionUsersPage(scrollController: widget.scrollController),
-        ],
+      // Without this the inner tab view keeps every horizontal swipe, so the
+      // home page view could never be reached from this tab.
+      body: edgeSwipeToChangeHomePage(
+        context,
+        TabBarView(
+          controller: _tabs,
+          children: [
+            SubscriptionGroupsPage(scrollController: _groupsScrollController),
+            SubscriptionUsersPage(scrollController: widget.scrollController),
+          ],
+        ),
       ),
     );
   }

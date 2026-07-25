@@ -6,6 +6,7 @@ import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/home/edge_swipe.dart';
 import 'package:quax/group/group_screen.dart';
 import 'package:quax/home/_feed.dart';
 import 'package:quax/home/_missing.dart';
@@ -161,19 +162,38 @@ class ScaffoldWithBottomNavigation extends StatefulWidget {
 
 /// Which page a swipe on the navigation bar should land on.
 ///
-/// Positive [velocity] is a drag to the right, which goes back a tab. Ends are
-/// clamped rather than wrapping around, so a swipe never jumps across the whole
-/// bar. Returns [current] when nothing should move.
+/// Positive [velocity] and [distance] both mean a drag to the right, which goes
+/// back a tab. Ends are clamped rather than wrapping around, so a swipe never
+/// jumps across the whole bar. Returns [current] when nothing should move.
+///
+/// A flick *or* a long enough drag counts. Velocity alone is not enough: a
+/// deliberate, slow drag — and any drag that pauses before the finger lifts —
+/// ends at roughly zero velocity, so gating on speed made the bar ignore it no
+/// matter how far it travelled. A mis-tap is still ignored because it has
+/// neither speed nor distance, which is what the guard was for.
 int pageAfterNavigationSwipe({
   required int current,
   required int pageCount,
   required double velocity,
+  double distance = 0,
   double threshold = 120,
+  double distanceThreshold = 48,
 }) {
-  if (pageCount <= 1 || velocity.abs() < threshold) {
+  if (pageCount <= 1) {
     return current;
   }
-  final next = velocity < 0 ? current + 1 : current - 1;
+
+  final flicked = velocity.abs() >= threshold;
+  final dragged = distance.abs() >= distanceThreshold;
+  if (!flicked && !dragged) {
+    return current;
+  }
+
+  // A flick states the intent better than where the finger happened to stop,
+  // so its direction wins whenever there was one.
+  final forward = flicked ? velocity < 0 : distance < 0;
+
+  final next = forward ? current + 1 : current - 1;
   if (next < 0 || next >= pageCount) {
     return current;
   }
@@ -185,6 +205,9 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
   late int _currentPage;
   final Map<int, ScrollController> _scrollControllers = {};
   final Map<int, FocusNode> _focusNodes = {};
+
+  /// How far the current drag across the navigation bar has travelled.
+  double _dragDistance = 0;
 
   void unfocusOtherPages(){
     _focusNodes.forEach((index, focusNode) {
@@ -227,6 +250,29 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
 
+    return HomePageSwiper(
+      movePage: _movePage,
+      child: _buildScaffold(context, l10n),
+    );
+  }
+
+  /// Moves [direction] pages along, for a tab whose own content swallowed the
+  /// swipe. Clamped, so the ends stay put rather than wrapping.
+  void _movePage(int direction) {
+    final target = _currentPage + direction;
+    if (target < 0 || target >= widget.pages.length) {
+      return;
+    }
+
+    unfocusOtherPages();
+    if (widget.prefs.get<bool>(optionDisableAnimations) == true) {
+      _pageController.jumpToPage(target);
+    } else {
+      _pageController.animateToPage(target, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+    }
+  }
+
+  Widget _buildScaffold(BuildContext context, L10n l10n) {
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -260,7 +306,11 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
       // passing it out at its edge.
       bottomNavigationBar: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onHorizontalDragEnd: (details) => _swipeNavigationBar(details.primaryVelocity ?? 0),
+        // DragEndDetails carries velocity but not how far the finger went, so
+        // the distance has to be accumulated as the drag happens.
+        onHorizontalDragStart: (_) => _dragDistance = 0,
+        onHorizontalDragUpdate: (details) => _dragDistance += details.primaryDelta ?? 0,
+        onHorizontalDragEnd: (details) => _swipeNavigationBar(details.primaryVelocity ?? 0, _dragDistance),
         child: NavigationBar(
         selectedIndex: _currentPage,
         labelBehavior: widget.prefs.get(optionShowNavigationLabels)
@@ -317,11 +367,12 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
     );
   }
 
-  void _swipeNavigationBar(double velocity) {
+  void _swipeNavigationBar(double velocity, double distance) {
     final target = pageAfterNavigationSwipe(
       current: _currentPage,
       pageCount: widget.pages.length,
       velocity: velocity,
+      distance: distance,
     );
     if (target == _currentPage) {
       return;
