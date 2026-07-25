@@ -11,6 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:quax/client/accounts.dart';
+import 'package:quax/client/endpoint_overrides.dart';
 import 'package:quax/client/login_webview.dart';
 
 import 'package:quax/constants.dart';
@@ -282,6 +283,10 @@ Future<void> main() async {
     optionThreadedReplies: true,
     optionMediaGridLayout: mediaGridLayoutMasonry,
     optionShouldCheckForUpdates: true,
+    optionEndpointRegistryEnabled: true,
+    optionEndpointRegistryUrl: defaultEndpointRegistryUrl,
+    optionEndpointRegistryCache: '',
+    optionEndpointRegistryFetchedAt: '',
     optionOpenLinksInEmbeddedBrowser: false,
     optionCrashReportsEnabled: false,
     optionCrashGithubRepo: defaultCrashGithubRepo,
@@ -337,6 +342,13 @@ Future<void> main() async {
   await _migrateCrashRepoPref(prefService);
 
   CrashReporter.install(prefService);
+
+  // Apply the last known query ids before the first request goes out; the
+  // network refresh runs unawaited so a slow or blocked fetch never delays
+  // startup.
+  final endpointRegistry = EndpointRegistry(prefService);
+  endpointRegistry.applyCached();
+  unawaited(endpointRegistry.refresh());
 
   try {
     // Run the migrations early, so models work. We also do this later on so we can display errors to the user

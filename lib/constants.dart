@@ -175,6 +175,15 @@ const Duration rateLimitFallback = Duration(minutes: 15);
 const Duration notFoundCooldown = Duration(hours: 6);
 const int notFoundThreshold = 3;
 
+// Endpoint registry: repairs rotated GraphQL query ids without a new release.
+const optionEndpointRegistryEnabled = 'api.endpoint_registry.enabled';
+const optionEndpointRegistryUrl = 'api.endpoint_registry.url';
+const optionEndpointRegistryCache = 'api.endpoint_registry.cache';
+const optionEndpointRegistryFetchedAt = 'api.endpoint_registry.fetched_at';
+const defaultEndpointRegistryUrl =
+    'https://raw.githubusercontent.com/$githubRepo/master/endpoints.json';
+const Duration endpointRegistryTimeout = Duration(seconds: 10);
+
 const routeHome = '/';
 const routeGroup = '/group';
 const routeProfile = '/profile';

@@ -9,6 +9,7 @@ import 'package:quax/client/account_selector.dart';
 import 'package:quax/client/accounts.dart';
 import 'package:quax/client/client_regular_account.dart';
 import 'package:quax/client/client_unauthenticated.dart';
+import 'package:quax/client/endpoints.dart';
 import 'package:quax/client/rate_limit_tracker.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
@@ -210,7 +211,7 @@ class Twitter {
   };
 
   static Future<Profile> getProfileById(String id) async {
-    var uri = Uri.https('twitter.com', '/i/api/graphql/Qs44y3K0SXxItjNi6mUFQA/UserByRestId', {
+    var uri = XEndpoints.uri(XEndpoints.userByRestId, {
       'variables': jsonEncode({
         'userId': id,
         'withHighlightedLabel': true,
@@ -231,7 +232,7 @@ class Twitter {
     if (screenName.startsWith('@')) {
       screenName = screenName.substring(1);
     }
-    var uri = Uri.https('twitter.com', '/i/api/graphql/qW5u-DAuXpMEG0zA1F7UGQ/UserByScreenName', {
+    var uri = XEndpoints.uri(XEndpoints.userByScreenName, {
       'variables': jsonEncode({'screen_name': screenName, "withSafetyModeUserFields": true}),
       'features': jsonEncode({
         "hidden_profile_likes_enabled": true,
@@ -302,8 +303,7 @@ class Twitter {
         userId,
         count,
         cursor: cursor,
-        queryId: 'FEcMGoVOUjm0aU9BJrrGZA',
-        operation: 'Following',
+        endpoint: XEndpoints.following,
         features: _followingFeatures,
       );
 
@@ -312,22 +312,20 @@ class Twitter {
         userId,
         count,
         cursor: cursor,
-        queryId: '4yeuNabfz3qFlfncCAy8Yw',
-        operation: 'Followers',
+        endpoint: XEndpoints.followers,
         features: _followersFeatures,
       );
 
   // Shared cursor-paginated GraphQL user-list fetch (Following / Followers share
-  // the same timeline shape; only the query id, operation and feature flags differ).
+  // the same timeline shape; only the endpoint and feature flags differ).
   static Future<PaginatedUsers> _graphqlFollows(
     String userId,
     int count, {
     String? cursor,
-    required String queryId,
-    required String operation,
+    required String endpoint,
     required Map<String, dynamic> features,
   }) async {
-    final uri = Uri.https('x.com', '/i/api/graphql/$queryId/$operation', {
+    final uri = XEndpoints.uri(endpoint, {
       "variables": jsonEncode({
         "userId": userId,
         "count": count,
@@ -383,7 +381,7 @@ class Twitter {
   // GraphQL "ListByRestId" — metadata of an X list. The name is null when the
   // list is deleted or private (data.list absent from the response).
   static Future<TwitterListInfo> getListDetails(String listId) async {
-    final uri = Uri.https('x.com', '/i/api/graphql/I1h1FzuuiD__nNvG466mKQ/ListByRestId', {
+    final uri = XEndpoints.uri(XEndpoints.listByRestId, {
       'variables': jsonEncode({'listId': listId}),
       'features': jsonEncode(_listByRestIdFeatures),
     });
@@ -400,7 +398,7 @@ class Twitter {
   // nests under data.list.members_timeline, not data.user.result.timeline.
   // The web client pages with count=20; larger values are unverified here.
   static Future<Follows> getListMembers(String listId, {String? cursor, int count = 20}) async {
-    final uri = Uri.https('x.com', '/i/api/graphql/kcsJubZ1BIwpdKrYfiNRtg/ListMembers', {
+    final uri = XEndpoints.uri(XEndpoints.listMembers, {
       'variables': jsonEncode({'listId': listId, 'count': count, 'cursor': ?cursor}),
       'features': jsonEncode(_followersFeatures),
     });
@@ -708,9 +706,7 @@ class Twitter {
 
     defaultParam["variables"] = json.encode(variables);
 
-    var response = await _twitterApi.client.get(
-      Uri.https('x.com', '/i/api/graphql/xIYgDwjboktoFeXe_fgacw/TweetDetail', defaultParam),
-    );
+    var response = await _twitterApi.client.get(XEndpoints.uri(XEndpoints.tweetDetail, defaultParam));
 
     var result = json.decode(response.body);
 
@@ -799,7 +795,7 @@ class Twitter {
       variables['cursor'] = cursor;
     }
 
-    var uri = Uri.https('x.com', '/i/api/graphql/-TFXKoMnMTKdEXcCn-eahw/SearchTimeline', {
+    var uri = XEndpoints.uri(XEndpoints.searchTimeline, {
       'variables': jsonEncode(variables),
       'features': jsonEncode(features),
     });
@@ -889,7 +885,7 @@ class Twitter {
       variables['cursor'] = cursor;
     }
 
-    var uri = Uri.https('twitter.com', '/i/api/graphql/-KWrbTBsPifMuLUqqDiU_A/SearchTimeline', {
+    var uri = XEndpoints.uri(XEndpoints.searchTimelineUsers, {
       'variables': jsonEncode(variables),
       'features': jsonEncode(searchFeatures),
     });
@@ -978,9 +974,8 @@ class Twitter {
     }
     defaultUserTweetsParam["variables"] = json.encode(variables);
 
-    var response = await _twitterApi.client.get(
-      Uri.https('twitter.com', 'i/api/graphql/W4Tpu1uueTGK53paUgxF0Q/HomeTimeline', defaultUserTweetsParam),
-    );
+    var response =
+        await _twitterApi.client.get(XEndpoints.uri(XEndpoints.homeTimeline, defaultUserTweetsParam));
     var result = json.decode(response.body);
     //if this page is not first one on the profile page, dont add pinned tweet
     if (variables['cursor'] != null) showPinnedTweet = false;
@@ -1151,16 +1146,14 @@ class Twitter {
     variables['count'] = count;
     defaultUserTweetsParam["variables"] = json.encode(variables);
 
-    late String path;
+    late String endpoint;
     if (type == "media") {
-      path = "/i/api/graphql/36oKqyQ7E_9CmtONGjJRsA/UserMedia";
+      endpoint = XEndpoints.userMedia;
     } else {
-      path = includeReplies
-          ? "/i/api/graphql/T52C7z3XOxUTSsIn1sQ5MA/UserTweetsAndReplies"
-          : '/i/api/graphql/2GIWTr7XwadIixZDtyXd4A/UserTweets';
+      endpoint = includeReplies ? XEndpoints.userTweetsAndReplies : XEndpoints.userTweets;
     }
 
-    var response = await _twitterApi.client.get(Uri.https('x.com', path, defaultUserTweetsParam));
+    var response = await _twitterApi.client.get(XEndpoints.uri(endpoint, defaultUserTweetsParam));
 
     if (cursor != null) {
       query['cursor'] = cursor;

@@ -1,0 +1,5 @@
+{
+  "_comment": "Query-id overrides for the X GraphQL endpoints in lib/client/endpoints.dart. Apps fetch this on launch, so correcting an id here repairs every install without a release. Only ids for operations the installed build already knows are accepted, and only when they match ^[A-Za-z0-9_-]{16,32}$ — this file cannot redirect traffic or add endpoints. Leave 'endpoints' empty while the shipped ids are correct.",
+  "version": 1,
+  "endpoints": {}
+}
