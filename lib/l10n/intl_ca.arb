@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Obre la discussió",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Amaga les respostes",
-  "hide_replies_description": "No mostrar als teus canals les respostes d’aquest usuari a altres persones. Els seus propis fils es mantenen."
+  "hide_replies_description": "No mostrar als teus canals les respostes d’aquest usuari a altres persones. Els seus propis fils es mantenen.",
+  "download_path_needs_reselect": "torna a triar-la"
 }

@@ -26,6 +26,9 @@ const optionMediaVideoPrefetchSeconds = 'media.video_prefetch_seconds';
 
 const optionDownloadType = 'download.type';
 const optionDownloadPath = 'download.path';
+// Android document tree for the download folder. The legacy path above is kept
+// only so an existing setting can still be shown and migrated.
+const optionDownloadTreeUri = 'download.tree_uri';
 
 const optionDownloadTypeDirectory = 'directory';
 const optionDownloadTypeAsk = 'ask';

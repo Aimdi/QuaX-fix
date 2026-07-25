@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "토론 열기",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "답글 숨기기",
-  "hide_replies_description": "이 사용자가 다른 사람에게 남긴 답글을 피드에 표시하지 않습니다. 본인의 스레드는 남습니다."
+  "hide_replies_description": "이 사용자가 다른 사람에게 남긴 답글을 피드에 표시하지 않습니다. 본인의 스레드는 남습니다.",
+  "download_path_needs_reselect": "다시 선택하세요"
 }

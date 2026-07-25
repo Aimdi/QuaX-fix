@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Discussie openen",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Reacties verbergen",
-  "hide_replies_description": "Reacties van deze gebruiker op anderen niet in je feeds tonen. Eigen threads blijven staan."
+  "hide_replies_description": "Reacties van deze gebruiker op anderen niet in je feeds tonen. Eigen threads blijven staan.",
+  "download_path_needs_reselect": "kies opnieuw"
 }

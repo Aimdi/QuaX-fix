@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Ava arutelu",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Peida vastused",
-  "hide_replies_description": "Ära näita voogudes selle kasutaja vastuseid teistele. Tema enda lõimed jäävad alles."
+  "hide_replies_description": "Ära näita voogudes selle kasutaja vastuseid teistele. Tema enda lõimed jäävad alles.",
+  "download_path_needs_reselect": "vali see uuesti"
 }

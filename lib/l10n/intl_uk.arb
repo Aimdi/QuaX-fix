@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Відкрити обговорення",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Приховати відповіді",
-  "hide_replies_description": "Не показувати в лентах відповіді цього користувача іншим людям. Його власні ланцюжки залишаються."
+  "hide_replies_description": "Не показувати в лентах відповіді цього користувача іншим людям. Його власні ланцюжки залишаються.",
+  "download_path_needs_reselect": "виберіть знову"
 }

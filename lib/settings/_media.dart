@@ -1,8 +1,8 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:pref/pref.dart';
+import 'package:quax/utils/download_directory.dart';
 
 class SettingsMediaFragment extends StatelessWidget {
   const SettingsMediaFragment({super.key});
@@ -136,6 +136,7 @@ class DownloadTypeSettingState extends State<DownloadTypeSetting> {
   @override
   Widget build(BuildContext context) {
     var downloadPath = widget.prefs.get<String>(optionDownloadPath) ?? '';
+    var treeUri = widget.prefs.get<String>(optionDownloadTreeUri) ?? '';
 
     return Column(
       children: [
@@ -156,19 +157,26 @@ class DownloadTypeSettingState extends State<DownloadTypeSetting> {
         if (widget.prefs.get(optionDownloadType) == optionDownloadTypeDirectory)
           PrefButton(
             onTap: () async {
-              String? directoryPath = await FilePicker.getDirectoryPath();
-
-              if (directoryPath == null) {
+              // The system picker, which also hands over lasting write access.
+              // A bare path cannot be written to on Android 11 and later.
+              final treeUri = await DownloadDirectory.pick();
+              if (treeUri == null) {
                 return;
               }
-              // TODO: Gross. Figure out how to re-render automatically when the preference changes
               setState(() {
-                widget.prefs.set(optionDownloadPath, directoryPath);
+                widget.prefs.set(optionDownloadTreeUri, treeUri);
+                widget.prefs.set(optionDownloadPath, DownloadDirectory.displayName(treeUri));
               });
             },
             title: Text(L10n.current.download_path),
             subtitle: Text(
-              downloadPath.isEmpty ? L10n.current.not_set : downloadPath,
+              treeUri.isEmpty && downloadPath.isEmpty
+                  ? L10n.current.not_set
+                  : (treeUri.isEmpty
+                      // Chosen by an older build, so it cannot be written to
+                      // any more; say so instead of failing at save time.
+                      ? '$downloadPath — ${L10n.current.download_path_needs_reselect}'
+                      : DownloadDirectory.displayName(treeUri)),
             ),
             child: Text(L10n.current.choose),
           )

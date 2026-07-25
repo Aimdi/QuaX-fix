@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "打开讨论",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "隐藏回复",
-  "hide_replies_description": "不在你的信息流中显示该用户对他人的回复。他自己的推文串仍会保留。"
+  "hide_replies_description": "不在你的信息流中显示该用户对他人的回复。他自己的推文串仍会保留。",
+  "download_path_needs_reselect": "请重新选择"
 }

@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Open the discussion",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Hide replies",
-  "hide_replies_description": "Do not show this user's replies to other people in your feeds. Their own threads stay."
+  "hide_replies_description": "Do not show this user's replies to other people in your feeds. Their own threads stay.",
+  "download_path_needs_reselect": "choose it again"
 }

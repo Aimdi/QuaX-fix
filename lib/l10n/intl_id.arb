@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Buka diskusi",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Sembunyikan balasan",
-  "hide_replies_description": "Jangan tampilkan balasan pengguna ini kepada orang lain di feed Anda. Utas miliknya tetap ada."
+  "hide_replies_description": "Jangan tampilkan balasan pengguna ini kepada orang lain di feed Anda. Utas miliknya tetap ada.",
+  "download_path_needs_reselect": "pilih lagi"
 }

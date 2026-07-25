@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "فتح المناقشة",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "إخفاء الردود",
-  "hide_replies_description": "عدم إظهار ردود هذا المستخدم على الآخرين في تغذياتك. سلاسله الخاصة تبقى."
+  "hide_replies_description": "عدم إظهار ردود هذا المستخدم على الآخرين في تغذياتك. سلاسله الخاصة تبقى.",
+  "download_path_needs_reselect": "اخترها من جديد"
 }

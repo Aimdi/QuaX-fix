@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Mở thảo luận",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Ẩn trả lời",
-  "hide_replies_description": "Không hiển thị trong nguồn của bạn các trả lời của người này cho người khác. Chuỗi bài của họ vẫn còn."
+  "hide_replies_description": "Không hiển thị trong nguồn của bạn các trả lời của người này cho người khác. Chuỗi bài của họ vẫn còn.",
+  "download_path_needs_reselect": "hãy chọn lại"
 }

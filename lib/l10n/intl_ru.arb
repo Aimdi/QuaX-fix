@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Открыть обсуждение",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Скрыть ответы",
-  "hide_replies_description": "Не показывать в лентах ответы этого пользователя другим людям. Его собственные ветки остаются."
+  "hide_replies_description": "Не показывать в лентах ответы этого пользователя другим людям. Его собственные ветки остаются.",
+  "download_path_needs_reselect": "выберите заново"
 }

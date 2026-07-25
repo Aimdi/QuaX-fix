@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Åpne diskusjonen",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Skjul svar",
-  "hide_replies_description": "Ikke vis denne brukerens svar til andre i strømmene dine. Egne tråder blir værende."
+  "hide_replies_description": "Ikke vis denne brukerens svar til andre i strømmene dine. Egne tråder blir værende.",
+  "download_path_needs_reselect": "velg den på nytt"
 }

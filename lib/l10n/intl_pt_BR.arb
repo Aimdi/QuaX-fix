@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Abrir a discussão",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Ocultar respostas",
-  "hide_replies_description": "Não mostrar nos seus feeds as respostas deste usuário a outras pessoas. As threads dele continuam."
+  "hide_replies_description": "Não mostrar nos seus feeds as respostas deste usuário a outras pessoas. As threads dele continuam.",
+  "download_path_needs_reselect": "escolha de novo"
 }

@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Ireki eztabaida",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Ezkutatu erantzunak",
-  "hide_replies_description": "Ez erakutsi zure jarioetan erabiltzaile honek beste pertsonei emandako erantzunak. Bere hariak mantentzen dira."
+  "hide_replies_description": "Ez erakutsi zure jarioetan erabiltzaile honek beste pertsonei emandako erantzunak. Bere hariak mantentzen dira.",
+  "download_path_needs_reselect": "aukeratu berriro"
 }

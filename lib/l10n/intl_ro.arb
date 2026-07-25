@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Deschide discuția",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Ascunde răspunsurile",
-  "hide_replies_description": "Nu arăta în fluxuri răspunsurile acestui utilizator către alte persoane. Propriile fire rămân."
+  "hide_replies_description": "Nu arăta în fluxuri răspunsurile acestui utilizator către alte persoane. Propriile fire rămân.",
+  "download_path_needs_reselect": "alege-o din nou"
 }

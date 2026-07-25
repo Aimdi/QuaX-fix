@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Diskussion öffnen",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Antworten ausblenden",
-  "hide_replies_description": "Antworten dieses Nutzers an andere nicht in deinen Feeds anzeigen. Eigene Threads bleiben."
+  "hide_replies_description": "Antworten dieses Nutzers an andere nicht in deinen Feeds anzeigen. Eigene Threads bleiben.",
+  "download_path_needs_reselect": "bitte neu auswählen"
 }

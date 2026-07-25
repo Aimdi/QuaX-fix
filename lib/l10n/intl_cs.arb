@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Otevřít diskusi",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Skrýt odpovědi",
-  "hide_replies_description": "Nezobrazovat v kanálech odpovědi tohoto uživatele jiným lidem. Jeho vlastní vlákna zůstanou."
+  "hide_replies_description": "Nezobrazovat v kanálech odpovědi tohoto uživatele jiným lidem. Jeho vlastní vlákna zůstanou.",
+  "download_path_needs_reselect": "vyberte ji znovu"
 }

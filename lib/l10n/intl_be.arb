@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Адкрыць абмеркаванне",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Схаваць адказы",
-  "hide_replies_description": "Не паказваць у вашых лентах адказы гэтага карыстальніка іншым людзям. Уласныя ланцужкі застаюцца."
+  "hide_replies_description": "Не паказваць у вашых лентах адказы гэтага карыстальніка іншым людзям. Уласныя ланцужкі застаюцца.",
+  "download_path_needs_reselect": "выберыце нанова"
 }

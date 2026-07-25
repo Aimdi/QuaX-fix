@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Otwórz dyskusję",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Ukryj odpowiedzi",
-  "hide_replies_description": "Nie pokazuj w kanałach odpowiedzi tego użytkownika do innych osób. Jego własne wątki zostają."
+  "hide_replies_description": "Nie pokazuj w kanałach odpowiedzi tego użytkownika do innych osób. Jego własne wątki zostają.",
+  "download_path_needs_reselect": "wybierz ponownie"
 }

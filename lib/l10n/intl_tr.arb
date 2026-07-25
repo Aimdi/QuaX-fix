@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Tartışmayı aç",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Yanıtları gizle",
-  "hide_replies_description": "Bu kullanıcının başkalarına verdiği yanıtlar akışlarınızda görünmesin. Kendi dizileri kalır."
+  "hide_replies_description": "Bu kullanıcının başkalarına verdiği yanıtlar akışlarınızda görünmesin. Kendi dizileri kalır.",
+  "download_path_needs_reselect": "yeniden seçin"
 }

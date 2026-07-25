@@ -505,5 +505,6 @@
   "plugin_reddit_open_discussion": "Malfermi la diskuton",
   "plugin_reddit_title": "Reddit",
   "hide_replies": "Kaŝi respondojn",
-  "hide_replies_description": "Ne montri en viaj fluoj la respondojn de ĉi tiu uzanto al aliaj homoj. Liaj propraj fadenoj restas."
+  "hide_replies_description": "Ne montri en viaj fluoj la respondojn de ĉi tiu uzanto al aliaj homoj. Liaj propraj fadenoj restas.",
+  "download_path_needs_reselect": "elektu ĝin denove"
 }
