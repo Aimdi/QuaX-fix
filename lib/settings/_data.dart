@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:quax/client/accounts.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/database/repository.dart';
@@ -11,7 +12,10 @@ import 'package:quax/group/group_model.dart';
 import 'package:quax/import_data_model.dart';
 import 'package:quax/saved/liked_tweet_model.dart';
 import 'package:quax/saved/saved_tweet_folder_model.dart';
+import 'package:quax/saved/saved_tweet_model.dart';
+import 'package:quax/settings/sync_screen.dart';
 import 'package:quax/subscriptions/users_model.dart';
+import 'package:quax/utils/crash_reporter.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
@@ -79,7 +83,13 @@ class SettingsData {
 }
 
 Future<void> _importFromFile(BuildContext context, File file) async {
-  var content = jsonDecode(file.readAsStringSync());
+  await importSettingsJson(context, file.readAsStringSync());
+}
+
+/// Applies an exported backup document. Shared by the file import and the
+/// WebDAV restore so a restore can never diverge from what a file does.
+Future<void> importSettingsJson(BuildContext context, String json) async {
+  var content = jsonDecode(json);
 
   var importModel = context.read<ImportDataModel>();
   var groupModel = context.read<GroupsModel>();
@@ -147,6 +157,36 @@ Future<void> _importFromFile(BuildContext context, File file) async {
   }
 }
 
+/// The whole backup payload as JSON, for callers that write it somewhere other
+/// than a file. Accounts are opt-in because they carry X session tokens.
+Future<String> exportSettingsJson(BuildContext context, {required bool includeAccounts}) async {
+  final groupModel = context.read<GroupsModel>();
+  final subscriptionsModel = context.read<SubscriptionsModel>();
+  final savedTweetModel = context.read<SavedTweetModel>();
+  final savedTweetFolderModel = context.read<SavedTweetFolderModel>();
+  final likedTweetModel = context.read<LikedTweetModel>();
+  final prefs = PrefService.of(context, listen: false);
+
+  await subscriptionsModel.reloadSubscriptions();
+  await savedTweetModel.listSavedTweets();
+  await savedTweetFolderModel.listFolders();
+  await likedTweetModel.listLikedTweets();
+
+  final subscriptions = subscriptionsModel.state;
+
+  return jsonEncode(SettingsData(
+    settings: prefsMapWithoutSecrets(prefs.toMap()),
+    searchSubscriptions: subscriptions.whereType<SearchSubscription>().toList(),
+    userSubscriptions: subscriptions.whereType<UserSubscription>().toList(),
+    subscriptionGroups: groupModel.state,
+    subscriptionGroupMembers: await groupModel.listGroupMembers(),
+    tweets: savedTweetModel.state,
+    savedTweetFolders: savedTweetFolderModel.state,
+    likedTweets: likedTweetModel.state,
+    accounts: includeAccounts ? await getAccounts() : null,
+  ).toJson());
+}
+
 Future<void> importBackup(BuildContext context) async {
   var path = await FlutterFileDialog.pickFile(params: const OpenFileDialogParams());
   if (path != null && context.mounted) {
@@ -173,6 +213,12 @@ class SettingsDataFragment extends StatelessWidget {
         title: Text(L10n.of(context).export),
         subtitle: Text(L10n.of(context).export_your_data),
         onTap: () => Navigator.pushNamed(context, routeSettingsExport),
+      ),
+      PrefLabel(
+        leading: const Icon(Icons.cloud_sync_outlined),
+        title: Text(L10n.of(context).sync),
+        subtitle: Text(L10n.of(context).sync_description),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SyncScreen())),
       ),
     ]);
   }

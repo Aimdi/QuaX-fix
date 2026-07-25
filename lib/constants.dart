@@ -191,6 +191,15 @@ const Duration endpointRegistryTimeout = Duration(seconds: 10);
 const Duration threadCacheMaxAge = Duration(minutes: 10);
 const Duration profileCacheMaxAge = Duration(minutes: 15);
 
+// WebDAV sync of the local backup payload to a server the reader controls.
+const optionWebDavUrl = 'sync.webdav.url';
+const optionWebDavUsername = 'sync.webdav.username';
+const optionWebDavPassword = 'sync.webdav.password';
+// Off by default: the backup payload carries X session tokens, and uploading
+// those anywhere has to be a deliberate choice rather than a default.
+const optionWebDavIncludeAccounts = 'sync.webdav.include_accounts';
+const optionWebDavLastSyncAt = 'sync.webdav.last_sync_at';
+
 const routeHome = '/';
 const routeGroup = '/group';
 const routeProfile = '/profile';
