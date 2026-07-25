@@ -517,25 +517,51 @@ class Twitter {
     return !(entryIdContainsPromoted || hasPromotedMetadata);
   }
 
+  /// The tweet node inside a `tweet_results.result`, unwrapping the extra layer
+  /// that reply-restricted tweets (`TweetWithVisibilityResults`) add. Null when
+  /// the result carries no usable tweet — deleted, restricted, or a shape we no
+  /// longer recognise.
+  static Map<String, dynamic>? _unwrapTweetResult(dynamic result) {
+    if (result is! Map<String, dynamic>) {
+      return null;
+    }
+    final unwrapped = result['rest_id'] != null ? result : result['tweet'];
+    if (unwrapped is! Map<String, dynamic> || unwrapped['rest_id'] == null) {
+      return null;
+    }
+    return unwrapped;
+  }
+
+  /// Tweets carried by a conversation entry. Items X has reshaped are skipped
+  /// rather than throwing, so one unreadable reply cannot empty a thread.
+  static List<TweetWithCard> _conversationTweets(dynamic entry, {required bool skipPromoted}) {
+    final items = entry?['content']?['items'] as List<dynamic>? ?? const [];
+
+    return items
+        .where((item) => !skipPromoted || isNotPromoted(item))
+        .where((item) => item?['item']?['itemContent']?['itemType'] == 'TimelineTweet')
+        .map((item) => _unwrapTweetResult(item?['item']?['itemContent']?['tweet_results']?['result']))
+        .nonNulls
+        .map(TweetWithCard.fromGraphqlJson)
+        .toList();
+  }
+
   static List<TweetChain> createTweetChains(List<dynamic> addEntries) {
     List<TweetChain> replies = [];
 
     for (var entry in addEntries) {
-      var entryId = entry['entryId'] as String;
+      var entryId = entry?['entryId'] as String?;
+      if (entryId == null) {
+        continue;
+      }
       if (entryId.startsWith('tweet-')) {
-        dynamic result;
-        final tweetResults = entry['content']['itemContent']['tweet_results'];
+        final tweetResults = entry['content']?['itemContent']?['tweet_results'] as Map<String, dynamic>?;
 
         // This may happen for tweets that x.com cannot open neither
-        if (!tweetResults.containsKey("result")) continue;
+        if (tweetResults == null || !tweetResults.containsKey('result')) continue;
 
-        if (tweetResults['result']["__typename"] == "TweetWithVisibilityResults") {
-          result = tweetResults['result']['tweet'];
-        } else {
-          result = tweetResults['result'];
-        }
-
-        if (result != null && result.containsKey('rest_id')) {
+        final result = _unwrapTweetResult(tweetResults['result']);
+        if (result != null) {
           replies.add(
             TweetChain(id: result['rest_id'], tweets: [TweetWithCard.fromGraphqlJson(result)], isPinned: false),
           );
@@ -549,20 +575,12 @@ class Twitter {
       }
 
       if (entryId.startsWith('conversationthread')) {
-        List<TweetWithCard> tweets = [];
-
         // TODO: This is missing tombstone support
-        for (var item in entry['content']['items'].where((e) => isNotPromoted(e))) {
-          var itemType = item['item']?['itemContent']?['itemType'];
-          if (itemType == 'TimelineTweet') {
-            if (item['item']['itemContent']['tweet_results']?['result'] != null) {
-              tweets.add(TweetWithCard.fromGraphqlJson(item['item']['itemContent']['tweet_results']['result']));
-            }
-          }
-        }
-
-        // TODO: There must be a better way of getting the conversation ID
-        replies.add(TweetChain(id: entryId.replaceFirst('conversationthread-', ''), tweets: tweets, isPinned: false));
+        replies.add(TweetChain(
+          id: entryId.replaceFirst('conversationthread-', ''),
+          tweets: _conversationTweets(entry, skipPromoted: true),
+          isPinned: false,
+        ));
       }
     }
 
@@ -574,17 +592,14 @@ class Twitter {
 
     // Deleted or restricted posts come back without a usable result; they must
     // be skipped so one bad entry cannot break the whole page.
-    Map<String, dynamic>? usableResult(dynamic container) {
-      Map<String, dynamic>? result = container?['itemContent']?['tweet_results']?['result'];
-      if (result == null) {
-        return null;
-      }
-      result = result['rest_id'] != null ? result : result['tweet'];
-      return result?['rest_id'] != null ? result : null;
-    }
+    Map<String, dynamic>? usableResult(dynamic container) =>
+        _unwrapTweetResult(container?['itemContent']?['tweet_results']?['result']);
 
     for (var entry in addEntries) {
-      var entryId = entry['entryId'] as String;
+      var entryId = entry?['entryId'] as String?;
+      if (entryId == null) {
+        continue;
+      }
       if (entryId.startsWith('tweet-')) {
         var result = usableResult(entry['content']);
         if (result != null) {
@@ -609,28 +624,12 @@ class Twitter {
       }
 
       if (entryId.startsWith('profile-conversation')) {
-        List<TweetWithCard> tweets = [];
-
         // TODO: This is missing tombstone support
-        for (var item in entry['content']['items']) {
-          var itemType = item['item']?['itemContent']?['itemType'];
-          if (itemType == 'TimelineTweet') {
-            if (item['item']['itemContent']['tweet_results']?['result'] != null) {
-              if (item['item']['itemContent']['tweet_results']['result']['tweet'] == null) {
-                var tweet = TweetWithCard.fromGraphqlJson(item['item']['itemContent']['tweet_results']['result']);
-                tweets.add(tweet);
-              } else {
-                var tweet = TweetWithCard.fromGraphqlJson(
-                  item['item']['itemContent']['tweet_results']['result']['tweet'],
-                );
-                tweets.add(tweet);
-              }
-            }
-          }
-        }
-
-        // TODO: There must be a better way of getting the conversation ID
-        replies.add(TweetChain(id: entryId.replaceFirst('profile-conversation-', ''), tweets: tweets, isPinned: false));
+        replies.add(TweetChain(
+          id: entryId.replaceFirst('profile-conversation-', ''),
+          tweets: _conversationTweets(entry, skipPromoted: false),
+          isPinned: false,
+        ));
       }
     }
     return replies;

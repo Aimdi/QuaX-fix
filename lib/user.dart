@@ -283,7 +283,11 @@ class UserWithExtra extends User {
   }
 
   factory UserWithExtra.fromNonLegacyJson(Map<String, dynamic> json) {
-    var userWithExtra = UserWithExtra.fromJson(json["legacy"]);
+    // X keeps moving profile fields out of `legacy` and into `core` / `avatar`.
+    // A response that has finished that migration must still yield a usable
+    // profile, so an absent `legacy` degrades to whatever the rest carries
+    // rather than throwing and taking the whole screen down.
+    var userWithExtra = UserWithExtra.fromJson((json["legacy"] as Map<String, dynamic>?) ?? const <String, dynamic>{});
     userWithExtra
       ..name = json["core"]?["name"] ?? userWithExtra.name
       ..createdAt = convertTwitterDateTime(json["core"]?["created_at"]) ?? userWithExtra.createdAt
