@@ -159,6 +159,27 @@ class ScaffoldWithBottomNavigation extends StatefulWidget {
   State<ScaffoldWithBottomNavigation> createState() => _ScaffoldWithBottomNavigationState();
 }
 
+/// Which page a swipe on the navigation bar should land on.
+///
+/// Positive [velocity] is a drag to the right, which goes back a tab. Ends are
+/// clamped rather than wrapping around, so a swipe never jumps across the whole
+/// bar. Returns [current] when nothing should move.
+int pageAfterNavigationSwipe({
+  required int current,
+  required int pageCount,
+  required double velocity,
+  double threshold = 120,
+}) {
+  if (pageCount <= 1 || velocity.abs() < threshold) {
+    return current;
+  }
+  final next = velocity < 0 ? current + 1 : current - 1;
+  if (next < 0 || next >= pageCount) {
+    return current;
+  }
+  return next;
+}
+
 class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigation> {
   late PageController _pageController;
   late int _currentPage;
@@ -233,7 +254,14 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
         },
         children: widget.builder(_scrollControllers, _focusNodes),
       ),
-      bottomNavigationBar: NavigationBar(
+      // Swiping the bar itself always changes tab, which swiping the page
+      // cannot promise: the Subscriptions tab holds its own Groups/People tab
+      // view, and a nested horizontal scroll keeps the gesture rather than
+      // passing it out at its edge.
+      bottomNavigationBar: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onHorizontalDragEnd: (details) => _swipeNavigationBar(details.primaryVelocity ?? 0),
+        child: NavigationBar(
         selectedIndex: _currentPage,
         labelBehavior: widget.prefs.get(optionShowNavigationLabels)
             ? NavigationDestinationLabelBehavior.alwaysShow
@@ -284,8 +312,27 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
           unfocusOtherPages();
           _pageController.jumpToPage(index);
         },
+        ),
       ),
     );
+  }
+
+  void _swipeNavigationBar(double velocity) {
+    final target = pageAfterNavigationSwipe(
+      current: _currentPage,
+      pageCount: widget.pages.length,
+      velocity: velocity,
+    );
+    if (target == _currentPage) {
+      return;
+    }
+
+    unfocusOtherPages();
+    if (widget.prefs.get<bool>(optionDisableAnimations) == true) {
+      _pageController.jumpToPage(target);
+    } else {
+      _pageController.animateToPage(target, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+    }
   }
 
   @override
