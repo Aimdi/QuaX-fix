@@ -1,0 +1,79 @@
+name: verify
+
+# The build in ci.yml proves the app compiles. This proves it is *correct*:
+# formatting, static analysis, unit tests and ARB integrity, on every pull
+# request rather than only after a push to master.
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - master
+      - main
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  arb:
+    name: ARB integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      # No Flutter needed, so this reports broken translations in seconds even
+      # when the Dart job is still warming up.
+      - name: Validate ARB files
+        run: python scripts/validate_arb.py
+
+  dart:
+    name: Format, analyze, test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install and set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # lib/generated and lib/oss_licenses.dart are gitignored, so analysis
+      # would drown in missing-import errors without generating them first.
+      - name: Generate sources
+        run: |
+          dart run dart_pubspec_licenses:generate
+          dart run intl_utils:generate
+          dart run flutter_iconpicker:generate_packs --packs material
+
+      # Only files the PR *adds*. Dart 3.7's tall style would rewrite 195 of the
+      # 250 existing files, and this fork regularly ports patches from upstream
+      # QuaX and Squawker — a mass reformat would turn every future port into a
+      # conflict. New code is still born formatted.
+      - name: Check formatting of new files
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE"
+          mapfile -t added < <(git diff --diff-filter=A --name-only "origin/$BASE"...HEAD -- '*.dart')
+          if [ ${#added[@]} -eq 0 ]; then
+            echo "No new Dart files."
+            exit 0
+          fi
+          printf '%s\n' "${added[@]}"
+          dart format --output=none --set-exit-if-changed --line-length 120 "${added[@]}"
+        env:
+          BASE: ${{ github.base_ref }}
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Test
+        run: flutter test --reporter expanded

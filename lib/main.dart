@@ -714,7 +714,7 @@ class _DefaultPageState extends State<DefaultPage> {
         Navigator.pushNamed(context, routeProfile,
             arguments: ProfileScreenArguments.fromScreenName(screenName, tab));
         return;
-      case PostUriInfo(screenName: final screenName, id: final id, direct: final direct, photoNumber: final photoNumber):
+      case PostUriInfo(screenName: final screenName, id: final id):
         Navigator.pushNamed(context, routeStatus,
             arguments: StatusScreenArguments(
               id: id,
