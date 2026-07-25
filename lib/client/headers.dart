@@ -33,10 +33,14 @@ class TwitterHeaders {
 
   static Future<ClientTransaction>? _initFuture;
   static DateTime? _derivedAt;
+  static Object? _lastFailure;
+  static DateTime? _failedAt;
 
   static void resetForTesting() {
     _initFuture = null;
     _derivedAt = null;
+    _lastFailure = null;
+    _failedAt = null;
     initializer = ClientTransaction.initialize;
     clock = DateTime.now;
   }
@@ -46,6 +50,16 @@ class TwitterHeaders {
     final cached = _initFuture;
     if (cached != null && transactionKeyUsable(derivedAt: _derivedAt, now: now, lifetime: transactionKeyLifetime)) {
       return cached;
+    }
+
+    // Forgetting a failure (below) means the next request tries again, which is
+    // the point — but deriving costs two requests to x.com, so an outright
+    // broken derivation would turn one feed load into twenty extra hits on X.
+    // Failures are therefore rate-limited rather than retried on every request.
+    final failure = _lastFailure;
+    final failedAt = _failedAt;
+    if (failure != null && failedAt != null && now.difference(failedAt) < transactionKeyRetryCooldown) {
+      return Future.error(failure);
     }
 
     final started = initializer();
@@ -63,12 +77,17 @@ class TwitterHeaders {
     // failure and reports it normally.
     unawaited(
       started.then(
-        (_) {},
-        onError: (Object _) {
+        (_) {
+          _lastFailure = null;
+          _failedAt = null;
+        },
+        onError: (Object error) {
           if (identical(_initFuture, started)) {
             _initFuture = null;
             _derivedAt = null;
           }
+          _lastFailure = error;
+          _failedAt = clock();
         },
       ),
     );

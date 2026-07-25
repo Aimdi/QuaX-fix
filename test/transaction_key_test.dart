@@ -68,9 +68,13 @@ void main() {
       expect(derivations, 1);
     });
 
-    // The regression this file exists for.
-    test('a failed derivation is not cached, so the next request retries', () async {
+    // The regression this file exists for: a failure must not be latched for
+    // the life of the process. It is rate-limited (see the cooldown tests
+    // below), but it always recovers without a force-stop.
+    test('a failed derivation is not cached, so a later request retries', () async {
       var attempts = 0;
+      var now = DateTime.utc(2026, 7, 25, 12);
+      TwitterHeaders.clock = () => now;
       TwitterHeaders.initializer = () async {
         attempts++;
         if (attempts == 1) {
@@ -80,6 +84,7 @@ void main() {
       };
 
       await expectLater(TwitterHeaders.getXClientTransactionIdHeader(uri), throwsA(isA<Exception>()));
+      now = now.add(transactionKeyRetryCooldown + const Duration(seconds: 1));
 
       final header = await TwitterHeaders.getXClientTransactionIdHeader(uri);
 
@@ -87,17 +92,82 @@ void main() {
       expect(header?['x-client-transaction-id'], isNotNull);
     });
 
-    test('repeated failures keep retrying rather than latching', () async {
+    // Forgetting the failure must not mean re-deriving on every request:
+    // deriving costs two requests to x.com, so a derivation that is outright
+    // broken (X reshaped its HTML) would turn one feed load into twenty extra
+    // hits on X.
+    test('a persistent failure is retried on a cooldown, not on every request', () async {
       var attempts = 0;
+      var now = DateTime.utc(2026, 7, 25, 12);
+      TwitterHeaders.clock = () => now;
       TwitterHeaders.initializer = () async {
         attempts++;
-        throw Exception('still down');
+        throw Exception('X reshaped its HTML');
       };
 
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < 5; i++) {
         await expectLater(TwitterHeaders.getXClientTransactionIdHeader(uri), throwsA(isA<Exception>()));
       }
 
+      expect(attempts, 1, reason: 'the cooldown should have suppressed the retries');
+    });
+
+    test('the caller still sees the failure while the cooldown suppresses retries', () async {
+      var now = DateTime.utc(2026, 7, 25, 12);
+      TwitterHeaders.clock = () => now;
+      TwitterHeaders.initializer = () async => throw Exception('X reshaped its HTML');
+
+      await expectLater(TwitterHeaders.getXClientTransactionIdHeader(uri), throwsA(isA<Exception>()));
+
+      // Suppressed, but still an error rather than a silently missing header.
+      await expectLater(TwitterHeaders.getXClientTransactionIdHeader(uri), throwsA(isA<Exception>()));
+    });
+
+    test('a retry happens once the cooldown has elapsed', () async {
+      var attempts = 0;
+      var now = DateTime.utc(2026, 7, 25, 12);
+      TwitterHeaders.clock = () => now;
+      TwitterHeaders.initializer = () async {
+        attempts++;
+        if (attempts == 1) {
+          throw Exception('transient');
+        }
+        return fakeTransaction();
+      };
+
+      await expectLater(TwitterHeaders.getXClientTransactionIdHeader(uri), throwsA(isA<Exception>()));
+      now = now.add(transactionKeyRetryCooldown + const Duration(seconds: 1));
+
+      expect((await TwitterHeaders.getXClientTransactionIdHeader(uri))?['x-client-transaction-id'], isNotNull);
+      expect(attempts, 2);
+    });
+
+    test('a success clears the cooldown, so a later failure retries promptly', () async {
+      var attempts = 0;
+      var now = DateTime.utc(2026, 7, 25, 12);
+      TwitterHeaders.clock = () => now;
+      TwitterHeaders.initializer = () async {
+        attempts++;
+        if (attempts == 1) {
+          throw Exception('transient');
+        }
+        return fakeTransaction();
+      };
+
+      await expectLater(TwitterHeaders.getXClientTransactionIdHeader(uri), throwsA(isA<Exception>()));
+      now = now.add(transactionKeyRetryCooldown + const Duration(seconds: 1));
+      await TwitterHeaders.getXClientTransactionIdHeader(uri);
+
+      // The key has expired and derivation fails again; because the last
+      // outcome was a success, this is a fresh attempt rather than a suppressed
+      // one.
+      now = now.add(transactionKeyLifetime + const Duration(minutes: 1));
+      TwitterHeaders.initializer = () async {
+        attempts++;
+        throw Exception('down again');
+      };
+
+      await expectLater(TwitterHeaders.getXClientTransactionIdHeader(uri), throwsA(isA<Exception>()));
       expect(attempts, 3);
     });
 

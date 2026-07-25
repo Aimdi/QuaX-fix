@@ -180,6 +180,11 @@ const String guestBearerToken =
 // request 404 — indistinguishable from a rotated query id.
 const Duration transactionKeyLifetime = Duration(hours: 6);
 
+// How long to wait before re-deriving after a failure. Deriving costs two
+// requests to x.com, so a persistent failure (X reshaping its HTML) would
+// otherwise turn every single app request into two more.
+const Duration transactionKeyRetryCooldown = Duration(seconds: 30);
+
 // Account selection strategy: cooldowns and flagging thresholds.
 const Duration rateLimitFallback = Duration(minutes: 15);
 const Duration notFoundCooldown = Duration(hours: 6);
