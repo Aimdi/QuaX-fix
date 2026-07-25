@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:quax/client/client.dart';
 import 'package:quax/constants.dart';
+import 'package:quax/database/repository.dart';
+import 'package:quax/database/timeline_cache.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/profile/profile.dart';
 import 'package:quax/tweet/conversation.dart';
@@ -11,6 +13,7 @@ import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/utils/paging.dart';
 import 'package:quax/utils/translation.dart';
+import 'package:logging/logging.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 /// Zen mode hides the replies under an opened post until the reader
@@ -79,6 +82,8 @@ class _StatusScreen extends StatefulWidget {
 }
 
 class _StatusScreenState extends State<_StatusScreen> {
+  static final log = Logger('StatusScreen');
+
   late final CursorPagingController<String, TweetChain> _paging;
   PagingController<int, TweetChain> get _pagingController => _paging.pagingController;
   final _scrollController = AutoScrollController();
@@ -157,8 +162,39 @@ class _StatusScreenState extends State<_StatusScreen> {
     });
   }
 
+  /// The first page of a thread, from cache when it is fresh enough.
+  ///
+  /// Re-opening a post is the commonest thing a reader does after scrolling,
+  /// and it cost a TweetDetail request every time. On a failure the cached copy
+  /// is used at any age: a thread the reader saw ten minutes ago beats an error
+  /// screen when the network is down or every account is rate limited.
+  Future<TweetStatus> _fetchFirstPage() async {
+    final key = TimelineCache.threadKey(widget.id);
+    final cache = TimelineCache(await Repository.writable());
+
+    // The thread screen has no pull-to-refresh, so nothing here has to bypass
+    // the cache; re-entering the screen after the window expires re-fetches.
+    final cached = await cache.read(key, maxAge: threadCacheMaxAge);
+    if (cached != null) {
+      return cached;
+    }
+
+    try {
+      final result = await Twitter.getTweet(widget.id);
+      await cache.write(key, result);
+      return result;
+    } catch (e) {
+      final stale = await cache.readStale(key);
+      if (stale == null) {
+        rethrow;
+      }
+      log.info('Showing the cached thread for ${widget.id} after $e');
+      return stale;
+    }
+  }
+
   Future<CursorPage<String, TweetChain>> _fetchPage(String? cursor) async {
-    var result = await Twitter.getTweet(widget.id, cursor: cursor);
+    var result = cursor == null ? await _fetchFirstPage() : await Twitter.getTweet(widget.id, cursor: cursor);
 
     // Cursor didn't advance on a later page -> nothing new, drop the page.
     if (cursor != null && result.cursorBottom == cursor) {

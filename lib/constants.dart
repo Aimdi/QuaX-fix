@@ -184,6 +184,13 @@ const defaultEndpointRegistryUrl =
     'https://raw.githubusercontent.com/$githubRepo/master/endpoints.json';
 const Duration endpointRegistryTimeout = Duration(seconds: 10);
 
+// Offline read cache for threads and profile timelines (feed_group_chunk covers
+// group feeds). Short windows: these are re-read within a session far more
+// often than they change, and a stale entry is still served when a request
+// fails outright.
+const Duration threadCacheMaxAge = Duration(minutes: 10);
+const Duration profileCacheMaxAge = Duration(minutes: 15);
+
 const routeHome = '/';
 const routeGroup = '/group';
 const routeProfile = '/profile';

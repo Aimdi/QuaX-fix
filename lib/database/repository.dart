@@ -10,6 +10,7 @@ import 'package:uuid/uuid.dart';
 const String databaseName = 'quax.db';
 
 const String tableFeedGroupChunk = 'feed_group_chunk';
+const String tableTimelineCache = 'timeline_cache';
 const String tableFeedGroupCursor = 'feed_group_cursor';
 
 const String tableSavedTweet = 'saved_tweet';
@@ -27,7 +28,7 @@ const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 37;
+const int databaseVersion = 38;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -359,6 +360,15 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
             'CREATE TABLE IF NOT EXISTS $tableReplyFilter (user_id VARCHAR PRIMARY KEY, screen_name VARCHAR NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
             reverseSql: 'DROP TABLE $tableReplyFilter'),
       ],
+      38: [
+        // Threads and profile timelines are re-fetched from X on every visit.
+        // This caches the first page of each so revisiting one paints instantly
+        // and still works offline or while every account is rate limited.
+        // Group feeds already have their own cache in $tableFeedGroupChunk.
+        SqlMigration(
+            'CREATE TABLE IF NOT EXISTS $tableTimelineCache (key VARCHAR PRIMARY KEY, response TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+            reverseSql: 'DROP TABLE $tableTimelineCache'),
+      ],
     });
 
 class Repository {
@@ -387,6 +397,7 @@ class Repository {
     var repository = await writable();
     await repository.delete(tableFeedGroupChunk, where: "created_at <= date('now', '-7 day')");
     await repository.delete(tableFeedGroupCursor, where: "created_at <= date('now', '-7 day')");
+    await repository.delete(tableTimelineCache, where: "created_at <= date('now', '-7 day')");
 
     log.info('Finished migrating database');
 
