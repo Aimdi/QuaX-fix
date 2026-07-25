@@ -33,6 +33,11 @@ const optionDownloadTypeAsk = 'ask';
 const optionLocale = 'locale';
 const optionLocaleDefault = 'system';
 
+const pluginIdReddit = 'reddit';
+const optionPluginRedditEnabled = 'plugin.reddit.enabled';
+const optionPluginRedditClientId = 'plugin.reddit.client_id';
+const optionPluginRedditSubreddits = 'plugin.reddit.subreddits';
+
 const pluginIdSubstack = 'substack';
 const optionPluginSubstackEnabled = 'plugin.substack.enabled';
 const optionPluginSubstackPublications = 'plugin.substack.publications';
