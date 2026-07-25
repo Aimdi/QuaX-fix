@@ -46,7 +46,7 @@ void main() {
       final entries = fixture['entries'] as List<dynamic>;
       expect(entries, isNotEmpty);
 
-      final chains = Twitter.createTweetChains(entries);
+      final chains = TimelineParser.createTweetChains(entries);
       expect(chains, isNotEmpty);
       expect(chains.first.id, isNotEmpty);
       expect(chains.first.tweets, isNotEmpty);

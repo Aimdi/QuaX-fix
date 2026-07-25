@@ -140,7 +140,7 @@ void main() {
     final entries = _fixture('UserTweets/add_entries.json')['entries'] as List<dynamic>;
 
     test('parses the live entries', () {
-      expect(Twitter.createTweetChains(entries), isNotEmpty);
+      expect(TimelineParser.createTweetChains(entries), isNotEmpty);
     });
 
     test('skips entries whose content X has reshaped', () {
@@ -149,14 +149,14 @@ void main() {
         (entry as Map<String, dynamic>)['content']?['itemContent']?.remove('tweet_results');
       }
 
-      expect(() => Twitter.createTweetChains(mangled), returnsNormally);
+      expect(() => TimelineParser.createTweetChains(mangled), returnsNormally);
     });
 
     test('an entry with no content at all is skipped, not fatal', () {
       final mangled = jsonDecode(jsonEncode(entries)) as List<dynamic>;
       (mangled.first as Map<String, dynamic>).remove('content');
 
-      expect(() => Twitter.createTweetChains(mangled), returnsNormally);
+      expect(() => TimelineParser.createTweetChains(mangled), returnsNormally);
     });
   });
 }
