@@ -12,6 +12,7 @@ import 'package:quax/subscriptions/_group_list_item.dart';
 import 'package:quax/subscriptions/_groups_edit.dart';
 import 'package:quax/subscriptions/widgets/group_tile.dart';
 import 'package:quax/ui/errors.dart';
+import 'package:quax/ui/x_controls.dart';
 import 'package:provider/provider.dart';
 
 export 'package:quax/subscriptions/_groups_edit.dart'
@@ -60,6 +61,7 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
         const SizedBox(height: 24),
         Center(
           child: FilledButton.icon(
+            style: xPrimaryPillStyle(context),
             onPressed: () => openSubscriptionGroupDialog(context, null, '', defaultGroupIcon),
             icon: const Icon(Icons.add),
             label: Text(L10n.of(context).create_subscription_group),
@@ -70,27 +72,11 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
   }
 
   Widget _buildSearchBar(BuildContext context) {
-    final hasQuery = _searchController.text.isNotEmpty;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      child: SearchBar(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      child: XSearchField(
         controller: _searchController,
         hintText: L10n.of(context).search,
-        leading: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Icon(Icons.search),
-        ),
-        trailing: hasQuery
-            ? [
-                IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    _searchController.clear();
-                    setState(() {});
-                  },
-                ),
-              ]
-            : null,
         onChanged: (_) => setState(() {}),
       ),
     );

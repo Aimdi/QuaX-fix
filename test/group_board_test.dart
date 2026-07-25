@@ -188,6 +188,40 @@ void main() {
       expect(find.byType(AnimatedScale), findsOneWidget);
     });
 
+    testWidgets('the card is a flat surface: no colour wash, no accent bar', (tester) async {
+      late GroupBoardTokens tokens;
+      await tester.pumpWidget(_wrap(Builder(builder: (context) {
+        tokens = GroupBoardTokens.resolve(context);
+        return SizedBox(
+          width: 168,
+          height: 132,
+          child: GroupTile(
+            group: _group(previews: _members(2, withAvatars: false)),
+            onTap: () {},
+          ),
+        );
+      })));
+      await tester.pump();
+
+      final card = tester.widget<Container>(
+        find.descendant(of: find.byType(GroupTile), matching: find.byType(Container)).first,
+      );
+      final decoration = card.decoration as BoxDecoration;
+
+      // A tinted card is the Material You look; X keeps the surface flat and
+      // puts the colour on the round identity disc instead.
+      expect(decoration.color, tokens.tile);
+      expect(decoration.border, isNotNull, reason: 'depth comes from a hairline border');
+
+      // The 4dp accent rule that used to run down the left edge is gone.
+      final rules = find
+          .byType(Container)
+          .evaluate()
+          .map((e) => e.widget as Container)
+          .where((c) => c.constraints?.maxWidth == 4);
+      expect(rules, isEmpty);
+    });
+
     testWidgets('marks a pinned group', (tester) async {
       await tester.pumpWidget(_wrap(SizedBox(
         width: 168,

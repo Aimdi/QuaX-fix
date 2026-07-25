@@ -10,6 +10,7 @@ import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/user.dart';
 import 'package:provider/provider.dart';
+import 'package:quax/ui/x_controls.dart';
 
 class SubscriptionUsersPage extends StatefulWidget {
   final ScrollController scrollController;
@@ -45,6 +46,7 @@ class _SubscriptionUsersPageState extends State<SubscriptionUsersPage> {
           const SizedBox(height: 24),
           Center(
             child: FilledButton.icon(
+              style: xPrimaryPillStyle(context),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -75,29 +77,13 @@ class _SubscriptionUsersPageState extends State<SubscriptionUsersPage> {
   }
 
   Widget _buildSearchBar(BuildContext context) {
-    final hasQuery = _searchController.text.isNotEmpty;
-    return Material(
+    return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-        child: SearchBar(
+        child: XSearchField(
           controller: _searchController,
           hintText: L10n.of(context).search_subscriptions,
-          leading: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: Icon(Icons.search),
-          ),
-          trailing: hasQuery
-              ? [
-                  IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      _searchController.clear();
-                      setState(() {});
-                    },
-                  ),
-                ]
-              : null,
           onChanged: (_) => setState(() {}),
         ),
       ),
