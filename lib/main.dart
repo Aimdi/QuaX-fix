@@ -58,6 +58,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:app_links/app_links.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quax/plugins/karakeep/karakeep_client.dart';
+import 'package:quax/plugins/deepmarks/deepmarks_client.dart';
 
 Future checkForUpdates(context) async {
   Logger.root.info('Checking for updates');
@@ -282,6 +283,10 @@ Future<void> main() async {
     optionCrashReportsEnabled: false,
     optionCrashGithubRepo: defaultCrashGithubRepo,
     optionCrashGithubToken: '',
+    optionPluginDeepmarksEnabled: false,
+    optionPluginDeepmarksApiBase: '',
+    optionPluginDeepmarksApiKey: '',
+    optionPluginDeepmarksSecretKey: '',
     optionPluginKarakeepEnabled: false,
     optionPluginKarakeepServerUrl: '',
     optionPluginKarakeepApiKey: '',
@@ -357,6 +362,7 @@ Future<void> main() async {
 
     var trendLocationModel = UserTrendLocationModel(prefService);
 
+    final deepmarksClient = DeepmarksClient();
     final karakeepClient = KarakeepClient();
     final substackClient = SubstackClient();
     final substackPublications = SubstackPublicationsStore(prefService);
@@ -383,6 +389,7 @@ Future<void> main() async {
             Provider(create: (context) => trendLocationModel),
             Provider(create: (context) => TrendLocationsModel()),
             Provider(create: (context) => TrendsModel(trendLocationModel)),
+            Provider(create: (_) => deepmarksClient),
             Provider(create: (_) => karakeepClient),
             Provider(create: (_) => substackClient),
             Provider(create: (_) => substackPublications),

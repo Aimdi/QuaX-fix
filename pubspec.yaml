@@ -117,6 +117,8 @@ dependencies:
   audio_session: ^0.2.4
   ffcache: ^1.1.0
   flutter_tts: ^4.2.5
+  bip340: ^0.3.1
+  bech32: ^0.2.2
 
 dev_dependencies:
   flutter_test:

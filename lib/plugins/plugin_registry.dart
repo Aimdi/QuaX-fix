@@ -1,3 +1,4 @@
+import 'package:quax/plugins/deepmarks/deepmarks_plugin.dart';
 import 'package:quax/plugins/karakeep/karakeep_plugin.dart';
 import 'package:quax/plugins/plugin.dart';
 import 'package:quax/plugins/substack/substack_plugin.dart';
@@ -6,6 +7,7 @@ import 'package:quax/plugins/substack/substack_plugin.dart';
 final List<QuaxPlugin> builtInPlugins = [
   SubstackPlugin(),
   KarakeepPlugin(),
+  DeepmarksPlugin(),
 ];
 
 QuaxPlugin? pluginById(String id) {

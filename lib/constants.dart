@@ -33,6 +33,12 @@ const optionDownloadTypeAsk = 'ask';
 const optionLocale = 'locale';
 const optionLocaleDefault = 'system';
 
+const pluginIdDeepmarks = 'deepmarks';
+const optionPluginDeepmarksEnabled = 'plugin.deepmarks.enabled';
+const optionPluginDeepmarksApiBase = 'plugin.deepmarks.api_base';
+const optionPluginDeepmarksApiKey = 'plugin.deepmarks.api_key';
+const optionPluginDeepmarksSecretKey = 'plugin.deepmarks.secret_key';
+
 const pluginIdKarakeep = 'karakeep';
 const optionPluginKarakeepEnabled = 'plugin.karakeep.enabled';
 const optionPluginKarakeepServerUrl = 'plugin.karakeep.server_url';
