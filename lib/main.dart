@@ -267,6 +267,7 @@ Future<void> main() async {
     optionCrashGithubRepo: defaultCrashGithubRepo,
     optionCrashGithubToken: '',
     optionPluginSubstackEnabled: false,
+    optionPluginSubstackShowTab: true,
     optionPluginSubstackPublications: '[]',
     optionPluginSubstackReadIds: '[]',
     optionSubscriptionGroupsOrderByAscending: true,

@@ -35,6 +35,7 @@ const optionLocaleDefault = 'system';
 
 const pluginIdSubstack = 'substack';
 const optionPluginSubstackEnabled = 'plugin.substack.enabled';
+const optionPluginSubstackShowTab = 'plugin.substack.show_tab';
 const optionPluginSubstackPublications = 'plugin.substack.publications';
 const optionPluginSubstackReadIds = 'plugin.substack.read_ids';
 const substackFeedPageSize = 8;

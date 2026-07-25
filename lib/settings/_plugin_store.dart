@@ -27,7 +27,9 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
         itemBuilder: (context, index) {
           final plugin = builtInPlugins[index];
           final enabled = plugin.isEnabled(prefs);
-          return SwitchListTile(
+          final tabPref = plugin.homeTabPrefKey;
+
+          final row = SwitchListTile(
             secondary: Icon(plugin.icon),
             title: Text(plugin.title(context)),
             subtitle: Text(plugin.description(context)),
@@ -38,6 +40,33 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
               await context.read<HomeModel>().loadPages();
               setState(() {});
             },
+          );
+
+          if (tabPref == null) {
+            return row;
+          }
+
+          // Plugins whose feature is reachable from the Groups tab as well can
+          // give up their own tab.
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              row,
+              SwitchListTile(
+                secondary: const SizedBox(width: 24),
+                title: Text(L10n.of(context).plugin_show_as_tab),
+                subtitle: Text(L10n.of(context).plugin_show_as_tab_description),
+                value: plugin.showsHomeTab(prefs),
+                onChanged: enabled
+                    ? (value) async {
+                        await prefs.set(tabPref, value);
+                        if (!context.mounted) return;
+                        await context.read<HomeModel>().loadPages();
+                        setState(() {});
+                      }
+                    : null,
+              ),
+            ],
           );
         },
       ),

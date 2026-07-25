@@ -15,6 +15,9 @@ class SubstackPlugin extends QuaxPlugin {
   String get enabledPrefKey => optionPluginSubstackEnabled;
 
   @override
+  String? get homeTabPrefKey => optionPluginSubstackShowTab;
+
+  @override
   IconData get icon => Icons.newspaper_outlined;
 
   @override
