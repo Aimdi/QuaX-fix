@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_twitter_api/twitter_api.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart' as mk;
@@ -393,7 +394,8 @@ class _TweetVideoState extends State<TweetVideo> {
               fit: StackFit.expand,
               alignment: Alignment.center,
               children: [
-                if (widget.metadata.imageUrl != null) Image.network(widget.metadata.imageUrl!, fit: BoxFit.cover),
+                if (widget.metadata.imageUrl != null)
+                  ExtendedImage.network(widget.metadata.imageUrl!, cache: true, fit: BoxFit.cover),
                 if (!widget.disableControls) const Center(child: CircularProgressIndicator()),
               ],
             ),
@@ -412,7 +414,9 @@ class _TweetVideoState extends State<TweetVideo> {
         alignment: Alignment.center,
         children: [
           if (widget.metadata.imageUrl != null)
-            Positioned.fill(child: Image.network(widget.metadata.imageUrl!, fit: BoxFit.cover)),
+            Positioned.fill(
+              child: ExtendedImage.network(widget.metadata.imageUrl!, cache: true, fit: BoxFit.cover),
+            ),
           ?child,
         ],
       ),
