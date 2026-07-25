@@ -15,6 +15,7 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:quax/plugins/plugin_links.dart';
 
 class TweetCard extends StatelessWidget {
   static final log = Logger('TweetCard');
@@ -40,7 +41,16 @@ class TweetCard extends StatelessWidget {
   GestureDetector _createCard(String? url, Widget child, BuildContext context) {
     return GestureDetector(
       child: _createBaseCard(child, context),
-      onTap: () => url == null ? null : openUri(url),
+      onTap: () async {
+        if (url == null) {
+          return;
+        }
+        // A Substack card opens in the in-app reader when the plugin is on.
+        if (await openWithPlugins(context, url)) {
+          return;
+        }
+        await openUri(url);
+      },
     );
   }
 
