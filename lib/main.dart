@@ -741,6 +741,8 @@ class DefaultPage extends StatefulWidget {
 }
 
 class _DefaultPageState extends State<DefaultPage> {
+  static final log = Logger('DefaultPage');
+
   Object? _migrationError;
   StackTrace? _migrationStackTrace;
   StreamSubscription<Uri>? _sub;
@@ -818,8 +820,7 @@ class _DefaultPageState extends State<DefaultPage> {
         // whatever was already on screen, with no clue their tap did nothing.
         log.warning('Unable to handle an incoming link', err, stackTrace);
 
-        final context = _navigatorKey.currentContext;
-        if (context != null && context.mounted) {
+        if (mounted) {
           showSnackBar(context, icon: '🔗', message: L10n.of(context).unable_to_open_link);
         }
       },
