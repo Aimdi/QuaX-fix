@@ -1,14 +1,12 @@
-import 'dart:io';
-
 import 'package:dart_twitter_api/twitter_api.dart' show Media;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 
 import 'package:quax/client/client.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/ui/errors.dart';
+import 'package:quax/utils/download_directory.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 import 'package:pref/pref.dart';
@@ -41,15 +39,15 @@ Future<void> autoDownloadTweetPhotos({
   }
 
   final downloadType = prefs.get(optionDownloadType);
-  final downloadPath = prefs.get<String>(optionDownloadPath);
-  if (downloadType == optionDownloadTypeAsk || downloadPath == null || downloadPath.isEmpty) {
+  final treeUri = prefs.get<String>(optionDownloadTreeUri) ?? '';
+  if (downloadType == optionDownloadTypeAsk || treeUri.isEmpty) {
     messenger.showSnackBar(SnackBar(content: Text(needFolderLabel)));
     return;
   }
 
   messenger.showSnackBar(SnackBar(content: Text(downloadingLabel)));
-  const platform = MethodChannel('browser_resolver');
   var saved = 0;
+  Object? failure;
   for (final media in photos) {
     try {
       final response = await http.get(Uri.parse('${media.mediaUrlHttps}:orig'));
@@ -57,17 +55,19 @@ Future<void> autoDownloadTweetPhotos({
         continue;
       }
       final fileName = '$username-${p.basename(media.mediaUrlHttps!)}'.split('?')[0];
-      final savedFile = p.join(downloadPath, fileName);
-      await File(savedFile).writeAsBytes(response.bodyBytes);
-      try {
-        await platform.invokeMethod('scanMediaFile', {'path': savedFile});
-      } catch (_) {}
+      await DownloadDirectory.save(treeUri: treeUri, fileName: fileName, bytes: response.bodyBytes);
       saved++;
-    } catch (_) {}
+    } catch (e) {
+      failure ??= e;
+    }
   }
+
+  messenger.hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
   if (saved > 0) {
-    messenger.hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
     messenger.showSnackBar(SnackBar(content: Text(doneLabel)));
+  } else if (failure != null) {
+    // Silent failure is what made this hard to diagnose; say what to do.
+    messenger.showSnackBar(SnackBar(content: Text(needFolderLabel)));
   }
 }
 
@@ -85,10 +85,11 @@ Future<void> downloadUriToPickedFile(BuildContext context, Uri uri, String fileN
     }
 
     final downloadType = prefs.get(optionDownloadType);
-    final downloadPath = prefs.get(optionDownloadPath);
+    final treeUri = prefs.get<String>(optionDownloadTreeUri) ?? '';
 
-    // If the user wants to pick a file every time a download happens
-    if (downloadType == optionDownloadTypeAsk || downloadPath == '') {
+    // Ask every time, or fall back to asking when no folder is usable yet — a
+    // folder chosen by an older build cannot be written to any more.
+    if (downloadType == optionDownloadTypeAsk || treeUri.isEmpty) {
       var fileInfo =
           await FlutterFileDialog.saveFile(params: SaveFileDialogParams(fileName: sanitizedFilename, data: response));
       if (fileInfo == null) {
@@ -99,15 +100,9 @@ Future<void> downloadUriToPickedFile(BuildContext context, Uri uri, String fileN
       return;
     }
 
-    // Finally, save to the user-defined directory
-    var savedFile = p.join(downloadPath, sanitizedFilename);
-    await File(savedFile).writeAsBytes(response);
-
-    // Notify Android's media scanner so the file appears in the gallery
-    const platform = MethodChannel('browser_resolver');
-    try {
-      await platform.invokeMethod('scanMediaFile', {'path': savedFile});
-    } catch (_) {}
+    // Write through the document tree the user granted, which is the only way
+    // to reach shared storage on Android 11 and later.
+    await DownloadDirectory.save(treeUri: treeUri, fileName: sanitizedFilename, bytes: response);
 
     onSuccess();
   } catch (e) {

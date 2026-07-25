@@ -236,6 +236,7 @@ Future<void> main() async {
     optionTextScaleFactor: 1.0,
     optionDisableScreenshots: false,
     optionDownloadPath: '',
+    optionDownloadTreeUri: '',
     optionDownloadType: optionDownloadTypeAsk,
     optionHomePages: defaultHomePages.map((e) => e.id).toList(),
     optionLocale: optionLocaleDefault,
