@@ -1052,5 +1052,6 @@
   "sync_error_server": "伺服器無法處理該請求",
   "sync_error_network": "無法連線到伺服器",
   "endpoint_refused_title": "𝕏 拒絕了這個請求",
-  "endpoint_refused_message": "𝕏 的這個部分拒絕了所有帳號，所以多半不是你的帳號有問題。𝕏 很可能改動了什麼；應用程式會在可能時自行修復。請稍後再試。"
+  "endpoint_refused_message": "𝕏 的這個部分拒絕了所有帳號，所以多半不是你的帳號有問題。𝕏 很可能改動了什麼；應用程式會在可能時自行修復。請稍後再試。",
+  "show_additional_replies": "顯示更多回覆"
 }

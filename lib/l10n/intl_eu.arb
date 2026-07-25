@@ -1052,5 +1052,6 @@
   "sync_error_server": "Zerbitzariak ezin izan du eskaera prozesatu",
   "sync_error_network": "Ezin izan da zerbitzarira konektatu",
   "endpoint_refused_title": "𝕏-k eskaera hau ukatu du",
-  "endpoint_refused_message": "𝕏-ren zati honetan kontu guztiak ukatu dituzte, beraz ez dira zure kontuak ziurrenik. 𝕏-k zerbait aldatu duela dirudi; aplikazioa bere kabuz konpontzen da ahal duenean. Saiatu berriro pixka bat barru."
+  "endpoint_refused_message": "𝕏-ren zati honetan kontu guztiak ukatu dituzte, beraz ez dira zure kontuak ziurrenik. 𝕏-k zerbait aldatu duela dirudi; aplikazioa bere kabuz konpontzen da ahal duenean. Saiatu berriro pixka bat barru.",
+  "show_additional_replies": "Erakutsi erantzun gehiago"
 }

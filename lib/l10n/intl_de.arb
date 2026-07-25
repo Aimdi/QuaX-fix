@@ -1052,5 +1052,6 @@
   "sync_error_server": "Der Server konnte die Anfrage nicht verarbeiten",
   "sync_error_network": "Der Server war nicht erreichbar",
   "endpoint_refused_title": "𝕏 hat diese Anfrage abgewiesen",
-  "endpoint_refused_message": "In diesem Teil von 𝕏 wurden alle Konten abgewiesen, es liegt also vermutlich nicht an deinen Konten. Wahrscheinlich hat 𝕏 etwas geändert; die App repariert sich selbst, sobald sie kann. Versuch es gleich noch einmal."
+  "endpoint_refused_message": "In diesem Teil von 𝕏 wurden alle Konten abgewiesen, es liegt also vermutlich nicht an deinen Konten. Wahrscheinlich hat 𝕏 etwas geändert; die App repariert sich selbst, sobald sie kann. Versuch es gleich noch einmal.",
+  "show_additional_replies": "Weitere Antworten anzeigen"
 }

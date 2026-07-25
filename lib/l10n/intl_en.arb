@@ -1052,5 +1052,6 @@
   "sync_error_server": "The server could not handle the request",
   "sync_error_network": "Could not reach the server",
   "endpoint_refused_title": "𝕏 turned this request away",
-  "endpoint_refused_message": "Every account was refused on this part of 𝕏, so this is unlikely to be your accounts. 𝕏 probably changed something; the app repairs itself when it can. Try again shortly."
+  "endpoint_refused_message": "Every account was refused on this part of 𝕏, so this is unlikely to be your accounts. 𝕏 probably changed something; the app repairs itself when it can. Try again shortly.",
+  "show_additional_replies": "Show additional replies"
 }

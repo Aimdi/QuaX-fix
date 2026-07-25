@@ -1052,5 +1052,6 @@
   "sync_error_server": "Tjeneren klarte ikke å behandle forespørselen",
   "sync_error_network": "Fikk ikke kontakt med tjeneren",
   "endpoint_refused_title": "𝕏 avviste denne forespørselen",
-  "endpoint_refused_message": "Alle kontoene ble avvist på denne delen av 𝕏, så det er neppe kontoene dine. 𝕏 har trolig endret noe; appen reparerer seg selv når den kan. Prøv igjen om litt."
+  "endpoint_refused_message": "Alle kontoene ble avvist på denne delen av 𝕏, så det er neppe kontoene dine. 𝕏 har trolig endret noe; appen reparerer seg selv når den kan. Prøv igjen om litt.",
+  "show_additional_replies": "Vis flere svar"
 }

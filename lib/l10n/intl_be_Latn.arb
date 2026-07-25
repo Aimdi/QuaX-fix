@@ -1052,5 +1052,6 @@
   "sync_error_server": "Server nie zmoh apracavać zapyt",
   "sync_error_network": "Nie ŭdałosia zviazacca z serveram",
   "endpoint_refused_title": "𝕏 adchiliŭ hety zapyt",
-  "endpoint_refused_message": "Usie ulikovyja zapisy atrymali admovu ŭ hetaj častcy 𝕏, tamu sprava naŭrad ci ŭ ich. Chutčej za ŭsio 𝕏 niešta zmianiŭ; prahrama vypraŭlajecca sama, kali moža. Pasprabujcie praz chvilinu."
+  "endpoint_refused_message": "Usie ulikovyja zapisy atrymali admovu ŭ hetaj častcy 𝕏, tamu sprava naŭrad ci ŭ ich. Chutčej za ŭsio 𝕏 niešta zmianiŭ; prahrama vypraŭlajecca sama, kali moža. Pasprabujcie praz chvilinu.",
+  "show_additional_replies": "Pakazać dadatkovyja adkazy"
 }

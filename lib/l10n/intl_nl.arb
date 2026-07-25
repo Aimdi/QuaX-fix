@@ -1052,5 +1052,6 @@
   "sync_error_server": "De server kon het verzoek niet verwerken",
   "sync_error_network": "De server was niet bereikbaar",
   "endpoint_refused_title": "𝕏 heeft dit verzoek geweigerd",
-  "endpoint_refused_message": "Alle accounts werden geweigerd op dit deel van 𝕏, dus het ligt waarschijnlijk niet aan je accounts. 𝕏 heeft vermoedelijk iets gewijzigd; de app herstelt zichzelf zodra dat kan. Probeer het zo meteen opnieuw."
+  "endpoint_refused_message": "Alle accounts werden geweigerd op dit deel van 𝕏, dus het ligt waarschijnlijk niet aan je accounts. 𝕏 heeft vermoedelijk iets gewijzigd; de app herstelt zichzelf zodra dat kan. Probeer het zo meteen opnieuw.",
+  "show_additional_replies": "Meer reacties tonen"
 }

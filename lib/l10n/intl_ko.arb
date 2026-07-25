@@ -1052,5 +1052,6 @@
   "sync_error_server": "서버가 요청을 처리하지 못했습니다",
   "sync_error_network": "서버에 연결할 수 없습니다",
   "endpoint_refused_title": "𝕏 가 이 요청을 거부했습니다",
-  "endpoint_refused_message": "𝕏 의 이 부분에서 모든 계정이 거부되었으므로 계정 문제일 가능성은 낮습니다. 𝕏 가 무언가를 바꾼 것으로 보이며, 앱은 가능해지는 대로 스스로 복구합니다. 잠시 후 다시 시도해 주세요."
+  "endpoint_refused_message": "𝕏 의 이 부분에서 모든 계정이 거부되었으므로 계정 문제일 가능성은 낮습니다. 𝕏 가 무언가를 바꾼 것으로 보이며, 앱은 가능해지는 대로 스스로 복구합니다. 잠시 후 다시 시도해 주세요.",
+  "show_additional_replies": "댓글 더 보기"
 }

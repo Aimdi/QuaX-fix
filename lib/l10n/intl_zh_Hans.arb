@@ -1052,5 +1052,6 @@
   "sync_error_server": "服务器无法处理该请求",
   "sync_error_network": "无法连接到服务器",
   "endpoint_refused_title": "𝕏 拒绝了这个请求",
-  "endpoint_refused_message": "𝕏 的这一部分拒绝了所有账号，所以多半不是你的账号有问题。𝕏 很可能改动了什么；应用会在可能时自行修复。请稍后再试。"
+  "endpoint_refused_message": "𝕏 的这一部分拒绝了所有账号，所以多半不是你的账号有问题。𝕏 很可能改动了什么；应用会在可能时自行修复。请稍后再试。",
+  "show_additional_replies": "显示更多回复"
 }

@@ -91,6 +91,11 @@ class _StatusScreenState extends State<_StatusScreen> {
   final _seenAlready = <String>{};
   bool _firstLoadStarted = false;
 
+  /// Set once paging ends while X is still withholding replies behind its
+  /// "Show additional replies" prompt. Held rather than followed: these are the
+  /// replies X judged low quality, so asking for them is the reader's call.
+  String? _showMoreCursor;
+
   @override
   void initState() {
     super.initState();
@@ -216,7 +221,42 @@ class _StatusScreenState extends State<_StatusScreen> {
     // No new tweets returned, or the cursor doesn't advance -> stop pagination.
     final next = result.cursorBottom;
     final stop = chains.isEmpty || next == null || next == cursor;
+
+    // Only offer the prompt where the thread actually ends, and never offer the
+    // cursor we just followed — otherwise the button reloads the same replies.
+    _showMoreCursor = stop && result.cursorShowMore != cursor ? result.cursorShowMore : null;
+
     return (items: chains, nextCursor: stop ? null : next);
+  }
+
+  void _loadWithheldReplies() {
+    final cursor = _showMoreCursor;
+    if (cursor == null) {
+      return;
+    }
+
+    setState(() => _showMoreCursor = null);
+    _paging.resume(cursor);
+  }
+
+  /// The end-of-thread prompt, shown only when X told us replies are withheld.
+  /// Absent that cursor this is nothing, so a thread that ends normally ends
+  /// silently, exactly as before.
+  Widget _showMoreIndicator(BuildContext context) {
+    if (_showMoreCursor == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      child: Center(
+        child: TextButton.icon(
+          onPressed: _loadWithheldReplies,
+          icon: const Icon(Icons.more_horiz),
+          label: Text(L10n.of(context).show_additional_replies),
+        ),
+      ),
+    );
   }
 
   @override
@@ -389,6 +429,7 @@ class _StatusScreenState extends State<_StatusScreen> {
             ),
           );
         },
+        noMoreItemsIndicatorBuilder: _showMoreIndicator,
       ),
     );
   }
@@ -451,6 +492,6 @@ class _StatusScreenState extends State<_StatusScreen> {
       });
       return const Padding(padding: EdgeInsets.all(16), child: Center(child: CircularProgressIndicator()));
     }
-    return const SizedBox.shrink();
+    return _showMoreIndicator(context);
   }
 }

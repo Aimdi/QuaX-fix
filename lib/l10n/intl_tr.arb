@@ -1052,5 +1052,6 @@
   "sync_error_server": "Sunucu isteği işleyemedi",
   "sync_error_network": "Sunucuya ulaşılamadı",
   "endpoint_refused_title": "𝕏 bu isteği geri çevirdi",
-  "endpoint_refused_message": "𝕏 'in bu bölümünde tüm hesaplar geri çevrildi, dolayısıyla sorun büyük olasılıkla hesaplarınız değil. 𝕏 muhtemelen bir şeyi değiştirdi; uygulama elverdiğinde kendini onarır. Birazdan yeniden deneyin."
+  "endpoint_refused_message": "𝕏 'in bu bölümünde tüm hesaplar geri çevrildi, dolayısıyla sorun büyük olasılıkla hesaplarınız değil. 𝕏 muhtemelen bir şeyi değiştirdi; uygulama elverdiğinde kendini onarır. Birazdan yeniden deneyin.",
+  "show_additional_replies": "Daha fazla yanıt göster"
 }

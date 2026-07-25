@@ -441,7 +441,12 @@ class Twitter {
     String? cursorBottom = TimelineParser.getCursor(addEntries, repEntries, 'cursor-bottom', 'Bottom');
     String? cursorTop = TimelineParser.getCursor(addEntries, repEntries, 'cursor-top', 'Top');
 
-    return TweetStatus(chains: chains, cursorBottom: cursorBottom, cursorTop: cursorTop);
+    return TweetStatus(
+      chains: chains,
+      cursorBottom: cursorBottom,
+      cursorTop: cursorTop,
+      cursorShowMore: TimelineParser.getShowMoreCursor(addEntries),
+    );
   }
 
   static Future<TweetStatus> searchTweets(

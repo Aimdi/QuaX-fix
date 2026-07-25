@@ -1052,5 +1052,6 @@
   "sync_error_server": "Server ei suutnud päringut töödelda",
   "sync_error_network": "Serverini ei õnnestunud jõuda",
   "endpoint_refused_title": "𝕏 lükkas selle päringu tagasi",
-  "endpoint_refused_message": "Selles 𝕏 osas lükati tagasi kõik kontod, seega asi pole tõenäoliselt sinu kontodes. Ilmselt muutis 𝕏 midagi; rakendus parandab end ise, kui saab. Proovi mõne aja pärast uuesti."
+  "endpoint_refused_message": "Selles 𝕏 osas lükati tagasi kõik kontod, seega asi pole tõenäoliselt sinu kontodes. Ilmselt muutis 𝕏 midagi; rakendus parandab end ise, kui saab. Proovi mõne aja pärast uuesti.",
+  "show_additional_replies": "Näita rohkem vastuseid"
 }
