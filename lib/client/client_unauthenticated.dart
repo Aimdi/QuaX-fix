@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:quax/client/http_client.dart';
 import 'package:quax/constants.dart';
 
 String? _guestToken;
@@ -63,7 +64,7 @@ Future<String> getToken(Logger log, {bool forceRefresh = false}) async {
 
   log.info('Refreshing the X guest token');
 
-  var response = await http.post(
+  var response = await xHttpClient.post(
     Uri.parse('https://api.x.com/1.1/guest/activate.json'),
     headers: {'Authorization': guestBearerToken},
   );
@@ -90,7 +91,7 @@ Future<String> getToken(Logger log, {bool forceRefresh = false}) async {
 Future<http.Response> fetchUnauthenticated(Uri uri, {Map<String, String>? headers, required Logger log}) async {
   log.info('Fetching (unauthenticated) $uri');
 
-  Future<http.Response> send(String token) => http.get(
+  Future<http.Response> send(String token) => xHttpClient.get(
     uri,
     headers: {
       ...?headers,
