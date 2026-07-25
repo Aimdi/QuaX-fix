@@ -230,12 +230,35 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
 
   /// Makes the global replies/reposts default apply to every group again by
   /// clearing each group's own choice.
+  ///
+  /// Deliberately not called when the global switches change: a default that
+  /// overwrites explicit per-feed choices is not a default. This runs only from
+  /// the "apply to all feeds" action.
   Future<void> clearIncludeOverrides({required bool replies}) async {
     final database = await Repository.writable();
     final column = replies ? 'include_replies' : 'include_retweets';
 
     await database.rawUpdate('UPDATE $tableSubscriptionGroup SET $column = NULL');
     await reloadGroups();
+  }
+
+  /// How many groups keep their own replies / reposts choice instead of
+  /// following the global default.
+  ///
+  /// Worth surfacing because the columns were originally created with
+  /// `DEFAULT true`: groups made before the default existed hold an explicit
+  /// value, so the global switch would appear to do nothing for them.
+  Future<({int replies, int retweets})> countIncludeOverrides() async {
+    final database = await Repository.readOnly();
+    final rows = await database.rawQuery(
+        'SELECT COUNT(include_replies) AS replies, COUNT(include_retweets) AS retweets '
+        "FROM $tableSubscriptionGroup WHERE id != '-1'");
+
+    final row = rows.isEmpty ? const <String, Object?>{} : rows.first;
+    return (
+      replies: (row['replies'] as int?) ?? 0,
+      retweets: (row['retweets'] as int?) ?? 0,
+    );
   }
 
   Future<List<SubscriptionGroupMember>> listGroupMembers() async {
