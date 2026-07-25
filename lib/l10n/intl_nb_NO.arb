@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Diagnostikk",
+  "diagnostics_description": "Tilstanden til 𝕏-tilkoblingen, kontoene og endepunktversjonene",
+  "diagnostics_no_accounts": "Ingen konto lagt til",
+  "diagnostics_account_ok": "Fungerer",
+  "diagnostics_account_rate_limited": "{count, plural, one{Forespørselsgrense nådd på {count} endepunkt} other{Forespørselsgrense nådd på {count} endepunkter}}",
+  "diagnostics_account_sign_in_broken": "Innloggingen ser ikke ut til å gjelde lenger, pause til {time}",
+  "diagnostics_endpoints": "𝕏-endepunkter",
+  "diagnostics_endpoint_updated": "Oppdatert eksternt",
+  "diagnostics_registry_checked": "Endepunktlisten sist sjekket {date}",
+  "diagnostics_registry_never_checked": "Endepunktlisten er aldri sjekket",
+  "diagnostics_copy_report": "Kopier rapporten",
+  "diagnostics_report_copied": "Diagnostikk kopiert til utklippstavlen"
 }

@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Chẩn đoán",
+  "diagnostics_description": "Tình trạng kết nối tới 𝕏, trạng thái tài khoản và phiên bản điểm cuối",
+  "diagnostics_no_accounts": "Chưa thêm tài khoản nào",
+  "diagnostics_account_ok": "Hoạt động",
+  "diagnostics_account_rate_limited": "{count, plural, other{Bị giới hạn yêu cầu ở {count} điểm cuối}}",
+  "diagnostics_account_sign_in_broken": "Đăng nhập có vẻ không còn hiệu lực, tạm dừng đến {time}",
+  "diagnostics_endpoints": "Điểm cuối của 𝕏",
+  "diagnostics_endpoint_updated": "Đã cập nhật từ xa",
+  "diagnostics_registry_checked": "Danh sách điểm cuối được kiểm tra lần cuối {date}",
+  "diagnostics_registry_never_checked": "Danh sách điểm cuối chưa từng được kiểm tra",
+  "diagnostics_copy_report": "Sao chép báo cáo",
+  "diagnostics_report_copied": "Đã sao chép chẩn đoán vào bảng nhớ tạm"
 }

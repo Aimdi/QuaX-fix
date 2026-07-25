@@ -81,8 +81,10 @@ void main() {
           unreachable.add(endpoint.name);
         }
 
-        report.add('${endpoint.name.padRight(22)} ${endpoint.host.padRight(12)} '
-            '${status.padLeft(3)}  $verdict  ${XEndpoints.queryId(endpoint.name)}');
+        report.add(
+          '${endpoint.name.padRight(22)} ${endpoint.host.padRight(12)} '
+          '${status.padLeft(3)}  $verdict  ${XEndpoints.queryId(endpoint.name)}',
+        );
 
         // X rate limits per endpoint, but a burst of 13 requests from one guest
         // token still trips its abuse heuristics.
@@ -97,14 +99,16 @@ void main() {
       expect(
         rotated,
         isEmpty,
-        reason: 'X no longer knows these query ids. Re-capture them from the web client and publish the '
+        reason:
+            'X no longer knows these query ids. Re-capture them from the web client and publish the '
             'corrected ids in endpoints.json — see lib/client/endpoint_overrides.dart.',
       );
 
       expect(
         unreachable.length,
         lessThan(XEndpoints.all.length),
-        reason: 'Every endpoint was unreachable, so this run proves nothing about X. Check the runner\'s '
+        reason:
+            'Every endpoint was unreachable, so this run proves nothing about X. Check the runner\'s '
             'network before reading anything into it.',
       );
     },

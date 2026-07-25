@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Диагностика",
+  "diagnostics_description": "Состояние соединения с 𝕏, состояние аккаунтов и версии конечных точек",
+  "diagnostics_no_accounts": "Нет добавленных аккаунтов",
+  "diagnostics_account_ok": "Работает",
+  "diagnostics_account_rate_limited": "{count, plural, one{Ограничение запросов на {count} конечной точке} few{Ограничение запросов на {count} конечных точках} many{Ограничение запросов на {count} конечных точках} other{Ограничение запросов на {count} конечной точки}}",
+  "diagnostics_account_sign_in_broken": "Похоже, вход больше не действует, пауза до {time}",
+  "diagnostics_endpoints": "Конечные точки 𝕏",
+  "diagnostics_endpoint_updated": "Обновлено удалённо",
+  "diagnostics_registry_checked": "Список конечных точек проверен {date}",
+  "diagnostics_registry_never_checked": "Список конечных точек ещё не проверялся",
+  "diagnostics_copy_report": "Скопировать отчёт",
+  "diagnostics_report_copied": "Диагностика скопирована в буфер обмена"
 }

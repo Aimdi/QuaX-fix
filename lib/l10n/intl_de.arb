@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Diagnose",
+  "diagnostics_description": "Verbindungsstatus zu 𝕏, Zustand der Konten und Versionen der Endpunkte",
+  "diagnostics_no_accounts": "Kein Konto hinzugefügt",
+  "diagnostics_account_ok": "Funktioniert",
+  "diagnostics_account_rate_limited": "{count, plural, one{Anfragelimit an {count} Endpunkt erreicht} other{Anfragelimit an {count} Endpunkten erreicht}}",
+  "diagnostics_account_sign_in_broken": "Die Anmeldung scheint nicht mehr zu gelten, Pause bis {time}",
+  "diagnostics_endpoints": "𝕏-Endpunkte",
+  "diagnostics_endpoint_updated": "Aus der Ferne aktualisiert",
+  "diagnostics_registry_checked": "Endpunktliste zuletzt geprüft am {date}",
+  "diagnostics_registry_never_checked": "Endpunktliste noch nie geprüft",
+  "diagnostics_copy_report": "Bericht kopieren",
+  "diagnostics_report_copied": "Diagnose in die Zwischenablage kopiert"
 }

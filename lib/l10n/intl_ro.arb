@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Diagnosticare",
+  "diagnostics_description": "Starea conexiunii la 𝕏, starea conturilor și versiunile punctelor de acces",
+  "diagnostics_no_accounts": "Niciun cont adăugat",
+  "diagnostics_account_ok": "Funcționează",
+  "diagnostics_account_rate_limited": "{count, plural, one{Limită de cereri pe {count} punct de acces} few{Limită de cereri pe {count} puncte de acces} other{Limită de cereri pe {count} de puncte de acces}}",
+  "diagnostics_account_sign_in_broken": "Autentificarea pare să nu mai fie valabilă, pauză până la {time}",
+  "diagnostics_endpoints": "Puncte de acces 𝕏",
+  "diagnostics_endpoint_updated": "Actualizat de la distanță",
+  "diagnostics_registry_checked": "Lista punctelor de acces verificată la {date}",
+  "diagnostics_registry_never_checked": "Lista punctelor de acces nu a fost verificată niciodată",
+  "diagnostics_copy_report": "Copiază raportul",
+  "diagnostics_report_copied": "Diagnosticarea a fost copiată în clipboard"
 }

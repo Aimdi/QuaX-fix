@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Tanılama",
+  "diagnostics_description": "𝕏 bağlantısının durumu, hesapların durumu ve uç nokta sürümleri",
+  "diagnostics_no_accounts": "Eklenmiş hesap yok",
+  "diagnostics_account_ok": "Çalışıyor",
+  "diagnostics_account_rate_limited": "{count, plural, one{{count} uç noktada istek sınırına ulaşıldı} other{{count} uç noktada istek sınırına ulaşıldı}}",
+  "diagnostics_account_sign_in_broken": "Oturum artık geçerli görünmüyor, {time} saatine kadar duraklatıldı",
+  "diagnostics_endpoints": "𝕏 uç noktaları",
+  "diagnostics_endpoint_updated": "Uzaktan güncellendi",
+  "diagnostics_registry_checked": "Uç nokta listesi en son {date} tarihinde denetlendi",
+  "diagnostics_registry_never_checked": "Uç nokta listesi hiç denetlenmedi",
+  "diagnostics_copy_report": "Raporu kopyala",
+  "diagnostics_report_copied": "Tanılama panoya kopyalandı"
 }

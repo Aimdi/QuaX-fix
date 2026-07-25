@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Diagnóstico",
+  "diagnostics_description": "Estado de la conexión con 𝕏, de las cuentas y de las versiones de los puntos de acceso",
+  "diagnostics_no_accounts": "No hay ninguna cuenta añadida",
+  "diagnostics_account_ok": "Funciona",
+  "diagnostics_account_rate_limited": "{count, plural, one{Límite de peticiones en {count} punto de acceso} other{Límite de peticiones en {count} puntos de acceso}}",
+  "diagnostics_account_sign_in_broken": "La sesión parece haber dejado de ser válida; se reanudará a las {time}",
+  "diagnostics_endpoints": "Puntos de acceso de 𝕏",
+  "diagnostics_endpoint_updated": "Actualizado de forma remota",
+  "diagnostics_registry_checked": "Lista de puntos de acceso comprobada el {date}",
+  "diagnostics_registry_never_checked": "La lista de puntos de acceso nunca se ha comprobado",
+  "diagnostics_copy_report": "Copiar el informe",
+  "diagnostics_report_copied": "Diagnóstico copiado al portapapeles"
 }

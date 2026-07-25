@@ -22,12 +22,7 @@ class XEndpoint {
   /// interchangeable, so each endpoint pins the host it was captured from.
   final String host;
 
-  const XEndpoint({
-    required this.name,
-    required this.operation,
-    required this.queryId,
-    required this.host,
-  });
+  const XEndpoint({required this.name, required this.operation, required this.queryId, required this.host});
 
   String pathFor(String id) => '/i/api/graphql/$id/$operation';
 }
@@ -65,18 +60,8 @@ class XEndpoints {
       queryId: 'qW5u-DAuXpMEG0zA1F7UGQ',
       host: 'twitter.com',
     ),
-    following: XEndpoint(
-      name: following,
-      operation: 'Following',
-      queryId: 'FEcMGoVOUjm0aU9BJrrGZA',
-      host: 'x.com',
-    ),
-    followers: XEndpoint(
-      name: followers,
-      operation: 'Followers',
-      queryId: '4yeuNabfz3qFlfncCAy8Yw',
-      host: 'x.com',
-    ),
+    following: XEndpoint(name: following, operation: 'Following', queryId: 'FEcMGoVOUjm0aU9BJrrGZA', host: 'x.com'),
+    followers: XEndpoint(name: followers, operation: 'Followers', queryId: '4yeuNabfz3qFlfncCAy8Yw', host: 'x.com'),
     listByRestId: XEndpoint(
       name: listByRestId,
       operation: 'ListByRestId',
@@ -114,24 +99,14 @@ class XEndpoints {
       queryId: 'W4Tpu1uueTGK53paUgxF0Q',
       host: 'twitter.com',
     ),
-    userMedia: XEndpoint(
-      name: userMedia,
-      operation: 'UserMedia',
-      queryId: '36oKqyQ7E_9CmtONGjJRsA',
-      host: 'x.com',
-    ),
+    userMedia: XEndpoint(name: userMedia, operation: 'UserMedia', queryId: '36oKqyQ7E_9CmtONGjJRsA', host: 'x.com'),
     userTweetsAndReplies: XEndpoint(
       name: userTweetsAndReplies,
       operation: 'UserTweetsAndReplies',
       queryId: 'T52C7z3XOxUTSsIn1sQ5MA',
       host: 'x.com',
     ),
-    userTweets: XEndpoint(
-      name: userTweets,
-      operation: 'UserTweets',
-      queryId: '2GIWTr7XwadIixZDtyXd4A',
-      host: 'x.com',
-    ),
+    userTweets: XEndpoint(name: userTweets, operation: 'UserTweets', queryId: '2GIWTr7XwadIixZDtyXd4A', host: 'x.com'),
   };
 
   static Map<String, String> _overrides = const {};
@@ -171,8 +146,7 @@ class XEndpoints {
 
   static String path(String name) => endpoint(name).pathFor(queryId(name));
 
-  static Uri uri(String name, Map<String, dynamic> params) =>
-      Uri.https(endpoint(name).host, path(name), params);
+  static Uri uri(String name, Map<String, dynamic> params) => Uri.https(endpoint(name).host, path(name), params);
 
   static List<XEndpoint> get all => shipped.values.toList(growable: false);
 }

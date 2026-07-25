@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Diagnostic",
+  "diagnostics_description": "État de la connexion à 𝕏, santé des comptes et versions des points d'accès",
+  "diagnostics_no_accounts": "Aucun compte ajouté",
+  "diagnostics_account_ok": "Fonctionne",
+  "diagnostics_account_rate_limited": "{count, plural, one{Limite de requêtes atteinte sur {count} point d'accès} other{Limite de requêtes atteinte sur {count} points d'accès}}",
+  "diagnostics_account_sign_in_broken": "La connexion ne semble plus valide, mise en pause jusqu'à {time}",
+  "diagnostics_endpoints": "Points d'accès 𝕏",
+  "diagnostics_endpoint_updated": "Mis à jour à distance",
+  "diagnostics_registry_checked": "Liste des points d'accès vérifiée le {date}",
+  "diagnostics_registry_never_checked": "Liste des points d'accès jamais vérifiée",
+  "diagnostics_copy_report": "Copier le rapport",
+  "diagnostics_report_copied": "Diagnostic copié dans le presse-papiers"
 }

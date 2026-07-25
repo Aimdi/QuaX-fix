@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "التشخيص",
+  "diagnostics_description": "حالة الاتصال بـ 𝕏 ووضع الحسابات وإصدارات نقاط الوصول",
+  "diagnostics_no_accounts": "لم تتم إضافة أي حساب",
+  "diagnostics_account_ok": "يعمل",
+  "diagnostics_account_rate_limited": "{count, plural, zero{لا توجد قيود على الطلبات} one{تم تجاوز حد الطلبات على نقطة وصول واحدة} two{تم تجاوز حد الطلبات على نقطتي وصول} few{تم تجاوز حد الطلبات على {count} نقاط وصول} many{تم تجاوز حد الطلبات على {count} نقطة وصول} other{تم تجاوز حد الطلبات على {count} نقطة وصول}}",
+  "diagnostics_account_sign_in_broken": "يبدو أن تسجيل الدخول لم يعد صالحًا، سيُعاد المحاولة في {time}",
+  "diagnostics_endpoints": "نقاط وصول 𝕏",
+  "diagnostics_endpoint_updated": "محدَّثة عن بُعد",
+  "diagnostics_registry_checked": "آخر فحص لقائمة نقاط الوصول: {date}",
+  "diagnostics_registry_never_checked": "لم يتم فحص قائمة نقاط الوصول من قبل",
+  "diagnostics_copy_report": "نسخ التقرير",
+  "diagnostics_report_copied": "تم نسخ التشخيص إلى الحافظة"
 }

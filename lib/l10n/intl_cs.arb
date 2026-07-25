@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Diagnostika",
+  "diagnostics_description": "Stav připojení k 𝕏, stav účtů a verze koncových bodů",
+  "diagnostics_no_accounts": "Není přidán žádný účet",
+  "diagnostics_account_ok": "Funguje",
+  "diagnostics_account_rate_limited": "{count, plural, one{Omezení počtu požadavků na {count} koncovém bodu} few{Omezení počtu požadavků na {count} koncových bodech} many{Omezení počtu požadavků na {count} koncového bodu} other{Omezení počtu požadavků na {count} koncových bodech}}",
+  "diagnostics_account_sign_in_broken": "Přihlášení zřejmě přestalo platit, pauza do {time}",
+  "diagnostics_endpoints": "Koncové body 𝕏",
+  "diagnostics_endpoint_updated": "Aktualizováno na dálku",
+  "diagnostics_registry_checked": "Seznam koncových bodů naposledy ověřen {date}",
+  "diagnostics_registry_never_checked": "Seznam koncových bodů zatím nebyl ověřen",
+  "diagnostics_copy_report": "Zkopírovat hlášení",
+  "diagnostics_report_copied": "Diagnostika zkopírována do schránky"
 }

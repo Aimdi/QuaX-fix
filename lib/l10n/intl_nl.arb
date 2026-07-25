@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Diagnose",
+  "diagnostics_description": "Staat van de verbinding met 𝕏, van de accounts en van de endpointversies",
+  "diagnostics_no_accounts": "Geen account toegevoegd",
+  "diagnostics_account_ok": "Werkt",
+  "diagnostics_account_rate_limited": "{count, plural, one{Verzoeklimiet bereikt op {count} endpoint} other{Verzoeklimiet bereikt op {count} endpoints}}",
+  "diagnostics_account_sign_in_broken": "De aanmelding lijkt niet meer geldig, pauze tot {time}",
+  "diagnostics_endpoints": "𝕏-endpoints",
+  "diagnostics_endpoint_updated": "Op afstand bijgewerkt",
+  "diagnostics_registry_checked": "Endpointlijst laatst gecontroleerd op {date}",
+  "diagnostics_registry_never_checked": "Endpointlijst nog nooit gecontroleerd",
+  "diagnostics_copy_report": "Rapport kopiëren",
+  "diagnostics_report_copied": "Diagnose gekopieerd naar het klembord"
 }

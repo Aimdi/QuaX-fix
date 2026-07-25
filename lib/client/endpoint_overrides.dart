@@ -39,8 +39,8 @@ class EndpointRegistry {
   final http.Client client;
 
   EndpointRegistry(this.prefs, {Logger? log, http.Client? client})
-      : log = log ?? Logger('EndpointRegistry'),
-        client = client ?? http.Client();
+    : log = log ?? Logger('EndpointRegistry'),
+      client = client ?? http.Client();
 
   /// Applies the last payload we stored, so a cold start is already repaired
   /// before (or without) any network round trip.

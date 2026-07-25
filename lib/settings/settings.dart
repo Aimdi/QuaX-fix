@@ -11,6 +11,7 @@ import 'package:quax/settings/_media.dart';
 import 'package:quax/settings/_plugin_store.dart';
 import 'package:quax/settings/_posts.dart';
 import 'package:quax/settings/_theme.dart';
+import 'package:quax/settings/diagnostics_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -161,6 +162,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const SettingsPluginStoreFragment()),
+            ),
+          ),
+          ListTile(
+            title: Text(L10n.of(context).diagnostics),
+            leading: Icon(Icons.monitor_heart_outlined),
+            subtitle: Text(
+              L10n.of(context).diagnostics_description,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const DiagnosticsScreen()),
             ),
           ),
           Card(

@@ -64,11 +64,7 @@ void main() {
     test('reads a profile that has finished the legacy migration', () {
       final legacy = profile['legacy'] as Map<String, dynamic>;
       final migrated = _without(profile, 'legacy')
-        ..['core'] = {
-          'name': legacy['name'],
-          'screen_name': legacy['screen_name'],
-          'created_at': legacy['created_at'],
-        }
+        ..['core'] = {'name': legacy['name'], 'screen_name': legacy['screen_name'], 'created_at': legacy['created_at']}
         ..['avatar'] = {'image_url': legacy['profile_image_url_https']};
 
       final user = UserWithExtra.fromNonLegacyJson(migrated);
@@ -93,8 +89,11 @@ void main() {
 
     test('survives losing any single top-level field', () {
       for (final key in profile.keys) {
-        expect(() => UserWithExtra.fromNonLegacyJson(_without(profile, key)), returnsNormally,
-            reason: 'dropping "$key" from the profile result throws');
+        expect(
+          () => UserWithExtra.fromNonLegacyJson(_without(profile, key)),
+          returnsNormally,
+          reason: 'dropping "$key" from the profile result throws',
+        );
       }
     });
   });
@@ -104,15 +103,21 @@ void main() {
 
     test('survives losing any single top-level field', () {
       for (final key in tweet.keys) {
-        expect(() => TweetWithCard.fromGraphqlJson(_without(tweet, key)), returnsNormally,
-            reason: 'dropping "$key" from the tweet result throws');
+        expect(
+          () => TweetWithCard.fromGraphqlJson(_without(tweet, key)),
+          returnsNormally,
+          reason: 'dropping "$key" from the tweet result throws',
+        );
       }
     });
 
     test('survives any single top-level field turning null', () {
       for (final key in tweet.keys) {
-        expect(() => TweetWithCard.fromGraphqlJson(_nulling(tweet, key)), returnsNormally,
-            reason: 'a null "$key" on the tweet result throws');
+        expect(
+          () => TweetWithCard.fromGraphqlJson(_nulling(tweet, key)),
+          returnsNormally,
+          reason: 'a null "$key" on the tweet result throws',
+        );
       }
     });
 

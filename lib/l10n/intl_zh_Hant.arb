@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "診斷",
+  "diagnostics_description": "𝕏 連線狀況、帳號狀態與端點版本",
+  "diagnostics_no_accounts": "尚未新增帳號",
+  "diagnostics_account_ok": "正常",
+  "diagnostics_account_rate_limited": "{count, plural, other{已在 {count} 個端點觸發請求限制}}",
+  "diagnostics_account_sign_in_broken": "登入似乎已失效，暫停至 {time}",
+  "diagnostics_endpoints": "𝕏 端點",
+  "diagnostics_endpoint_updated": "已遠端更新",
+  "diagnostics_registry_checked": "端點清單上次檢查於 {date}",
+  "diagnostics_registry_never_checked": "端點清單從未檢查過",
+  "diagnostics_copy_report": "複製報告",
+  "diagnostics_report_copied": "診斷已複製到剪貼簿"
 }

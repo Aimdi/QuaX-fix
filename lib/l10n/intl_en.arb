@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Diagnostics",
+  "diagnostics_description": "𝕏 connection health, account status and endpoint versions",
+  "diagnostics_no_accounts": "No account added",
+  "diagnostics_account_ok": "Working",
+  "diagnostics_account_rate_limited": "{count, plural, one{Rate limited on 1 endpoint} other{Rate limited on {count} endpoints}}",
+  "diagnostics_account_sign_in_broken": "Sign-in looks broken, resting until {time}",
+  "diagnostics_endpoints": "𝕏 endpoints",
+  "diagnostics_endpoint_updated": "Updated remotely",
+  "diagnostics_registry_checked": "Endpoint list last checked {date}",
+  "diagnostics_registry_never_checked": "Endpoint list never checked",
+  "diagnostics_copy_report": "Copy report",
+  "diagnostics_report_copied": "Diagnostics copied to the clipboard"
 }

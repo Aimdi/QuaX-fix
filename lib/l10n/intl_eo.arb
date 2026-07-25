@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Diagnozo",
+  "diagnostics_description": "Stato de la konekto al 𝕏, stato de la kontoj kaj versioj de la finpunktoj",
+  "diagnostics_no_accounts": "Neniu konto aldonita",
+  "diagnostics_account_ok": "Funkcias",
+  "diagnostics_account_rate_limited": "{count, plural, one{Petlimo atingita ĉe {count} finpunkto} other{Petlimo atingita ĉe {count} finpunktoj}}",
+  "diagnostics_account_sign_in_broken": "La ensaluto ŝajnas ne plu validi, paŭzo ĝis {time}",
+  "diagnostics_endpoints": "Finpunktoj de 𝕏",
+  "diagnostics_endpoint_updated": "Fore ĝisdatigita",
+  "diagnostics_registry_checked": "Listo de finpunktoj laste kontrolita je {date}",
+  "diagnostics_registry_never_checked": "La listo de finpunktoj neniam estis kontrolita",
+  "diagnostics_copy_report": "Kopii la raporton",
+  "diagnostics_report_copied": "Diagnozo kopiita al la tondujo"
 }

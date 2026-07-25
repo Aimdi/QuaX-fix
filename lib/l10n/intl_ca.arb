@@ -1014,5 +1014,17 @@
   "@zen_mode_feed_end": {},
   "@zen_mode_load_more": {},
   "@zen_mode_page_cap": {},
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "diagnostics": "Diagnòstic",
+  "diagnostics_description": "Estat de la connexió amb 𝕏, dels comptes i de les versions dels punts d'accés",
+  "diagnostics_no_accounts": "Cap compte afegit",
+  "diagnostics_account_ok": "Funciona",
+  "diagnostics_account_rate_limited": "{count, plural, one{Límit de peticions en {count} punt d'accés} other{Límit de peticions en {count} punts d'accés}}",
+  "diagnostics_account_sign_in_broken": "Sembla que la sessió ja no és vàlida; es reprendrà a les {time}",
+  "diagnostics_endpoints": "Punts d'accés d'𝕏",
+  "diagnostics_endpoint_updated": "Actualitzat remotament",
+  "diagnostics_registry_checked": "Llista de punts d'accés comprovada el {date}",
+  "diagnostics_registry_never_checked": "La llista de punts d'accés no s'ha comprovat mai",
+  "diagnostics_copy_report": "Copia l'informe",
+  "diagnostics_report_copied": "Diagnòstic copiat al porta-retalls"
 }
