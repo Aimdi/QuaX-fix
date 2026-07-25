@@ -1050,5 +1050,7 @@
   "sync_error_unauthorized": "Serwer odrzucił te dane logowania",
   "sync_error_not_found": "Pod ten adres nic jeszcze nie wysłano",
   "sync_error_server": "Serwer nie zdołał obsłużyć żądania",
-  "sync_error_network": "Nie udało się połączyć z serwerem"
+  "sync_error_network": "Nie udało się połączyć z serwerem",
+  "endpoint_refused_title": "𝕏 odrzucił to żądanie",
+  "endpoint_refused_message": "W tej części 𝕏 odrzucono wszystkie konta, więc raczej nie chodzi o twoje konta. 𝕏 prawdopodobnie coś zmienił; aplikacja naprawia się sama, gdy tylko może. Spróbuj ponownie za chwilę."
 }

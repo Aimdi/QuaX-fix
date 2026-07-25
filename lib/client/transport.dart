@@ -42,6 +42,12 @@ class QuackerTwitterClient extends TwitterClient {
   /// endpoint, tracked in memory) or a 404 (retried once, then surfaced). Rate
   /// limits are per-endpoint, so a 429 on one endpoint never blocks another.
   ///
+  /// A 404 is only blamed on the account when another account served the same
+  /// endpoint: X also answers 404 for a rotated query id and for a stale
+  /// `x-client-transaction-id`, neither of which is the account's fault. When
+  /// every account is refused, nothing is flagged and
+  /// [EndpointRefusedException] says so.
+  ///
   /// A real request is always attempted before any error: with accounts, each is
   /// tried; with none, an unauthenticated (guest) request is sent. Errors surface
   /// only from actual responses: [RateLimitedException] when every account was
@@ -58,7 +64,10 @@ class QuackerTwitterClient extends TwitterClient {
       isRateLimited: (a) => RateLimitTracker.isLimited(a.id, endpoint, now),
     );
     final tried = <String>{};
-    var notFoundAttempts = 0;
+    // Accounts that 404'd on this endpoint. Held rather than flagged straight
+    // away: whether they are actually broken only becomes clear if some other
+    // account succeeds here.
+    final refused = <String>[];
     http.Response? lastError;
 
     while (true) {
@@ -81,6 +90,11 @@ class QuackerTwitterClient extends TwitterClient {
         if (!account.isClean) {
           await recordAccountSuccess(account.id);
         }
+        // This account proves the endpoint works, so anything refused before it
+        // really was the account's own authentication.
+        for (final id in refused) {
+          await recordNotFound(id);
+        }
         return response;
       }
       lastError = response;
@@ -89,8 +103,8 @@ class QuackerTwitterClient extends TwitterClient {
         continue;
       }
       if (code == 404) {
-        await recordNotFound(account.id);
-        if (++notFoundAttempts >= 2) {
+        refused.add(account.id);
+        if (refused.length >= 2) {
           break; // tried enough accounts; surface the 404 outcome below
         }
         continue;
@@ -111,7 +125,18 @@ class QuackerTwitterClient extends TwitterClient {
       throw RateLimitedException(); // every account was rate-limited on this endpoint
     }
     if (lastError?.statusCode == 404) {
-      throw NoWorkingAccountException(); // accounts tried all returned 404 (likely broken auth)
+      // Every account tried was refused, and none proved the endpoint works, so
+      // this request alone cannot tell a broken sign-in from a rotated query id
+      // or a stale transaction key. The persisted flags can: an account is only
+      // ever flagged after some *other* account served the same endpoint. If
+      // they all carry that mark, the accounts really are the problem.
+      final refusedAccounts = accounts.where((a) => refused.contains(a.id));
+      if (refusedAccounts.isNotEmpty && refusedAccounts.every((a) => isNotFoundFlagged(a, now))) {
+        throw NoWorkingAccountException();
+      }
+      // Otherwise, do not flag anything: blaming the accounts would send the
+      // reader off to re-add accounts that are fine.
+      throw EndpointRefusedException(endpoint);
     }
     return lastError!; // surface the real error
   }

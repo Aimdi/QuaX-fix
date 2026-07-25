@@ -1050,5 +1050,7 @@
   "sync_error_unauthorized": "The server rejected those credentials",
   "sync_error_not_found": "Nothing has been uploaded to that URL yet",
   "sync_error_server": "The server could not handle the request",
-  "sync_error_network": "Could not reach the server"
+  "sync_error_network": "Could not reach the server",
+  "endpoint_refused_title": "𝕏 turned this request away",
+  "endpoint_refused_message": "Every account was refused on this part of 𝕏, so this is unlikely to be your accounts. 𝕏 probably changed something; the app repairs itself when it can. Try again shortly."
 }

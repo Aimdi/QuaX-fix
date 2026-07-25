@@ -1050,5 +1050,7 @@
   "sync_error_unauthorized": "El servidor ha rebutjat aquestes credencials",
   "sync_error_not_found": "Encara no s'ha pujat res a aquest URL",
   "sync_error_server": "El servidor no ha pogut processar la petició",
-  "sync_error_network": "No s'ha pogut contactar amb el servidor"
+  "sync_error_network": "No s'ha pogut contactar amb el servidor",
+  "endpoint_refused_title": "𝕏 ha rebutjat aquesta petició",
+  "endpoint_refused_message": "Tots els comptes han estat rebutjats en aquesta part d'𝕏, així que probablement no són els teus comptes. Segurament 𝕏 ha canviat alguna cosa; l'aplicació es repara sola quan pot. Torna-ho a provar d'aquí a una estona."
 }

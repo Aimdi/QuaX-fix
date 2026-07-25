@@ -9,17 +9,20 @@ import 'package:quax/database/entities.dart';
 /// account is "healthy" when it is not flagged not-found (auth broken) and not
 /// currently rate-limited on the target endpoint. Rate-limit state is supplied
 /// via [isRateLimited] so this class stays free of global/in-memory state.
+/// Whether an account is inside its not-found cooldown, i.e. earlier evidence
+/// said its authentication had stopped working.
+bool isNotFoundFlagged(Account account, DateTime now) =>
+    account.lastNotFoundAt?.add(notFoundCooldown).isAfter(now) ?? false;
+
 class AccountSelector {
   final List<Account> accounts;
   final DateTime now;
   final bool Function(Account) isRateLimited;
 
   AccountSelector(this.accounts, this.now, {bool Function(Account)? isRateLimited})
-      : isRateLimited = isRateLimited ?? ((_) => false);
+    : isRateLimited = isRateLimited ?? ((_) => false);
 
-  bool _notFoundFlagged(Account a) => a.lastNotFoundAt?.add(notFoundCooldown).isAfter(now) ?? false;
-
-  bool _healthy(Account a) => !_notFoundFlagged(a) && !isRateLimited(a);
+  bool _healthy(Account a) => !isNotFoundFlagged(a, now) && !isRateLimited(a);
 
   /// Picks an account not already tried this request, preferring healthy ones
   /// but falling back to flagged accounts so a request is always attempted while

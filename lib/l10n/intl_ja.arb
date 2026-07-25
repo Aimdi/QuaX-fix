@@ -1050,5 +1050,7 @@
   "sync_error_unauthorized": "サーバーがこの認証情報を拒否しました",
   "sync_error_not_found": "その URL にはまだ何もアップロードされていません",
   "sync_error_server": "サーバーがリクエストを処理できませんでした",
-  "sync_error_network": "サーバーに接続できませんでした"
+  "sync_error_network": "サーバーに接続できませんでした",
+  "endpoint_refused_title": "𝕏 にこのリクエストを断られました",
+  "endpoint_refused_message": "𝕏 のこの部分ではすべてのアカウントが拒否されたため、アカウント側の問題ではなさそうです。𝕏 が何かを変更した可能性が高く、アプリは可能になり次第自動で修復します。しばらくしてからもう一度お試しください。"
 }

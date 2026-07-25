@@ -1050,5 +1050,7 @@
   "sync_error_unauthorized": "Il server ha rifiutato queste credenziali",
   "sync_error_not_found": "A quell'indirizzo non è ancora stato caricato nulla",
   "sync_error_server": "Il server non è riuscito a gestire la richiesta",
-  "sync_error_network": "Impossibile raggiungere il server"
+  "sync_error_network": "Impossibile raggiungere il server",
+  "endpoint_refused_title": "𝕏 ha respinto questa richiesta",
+  "endpoint_refused_message": "In questa parte di 𝕏 sono stati respinti tutti gli account, quindi difficilmente il problema sono i tuoi. Probabilmente 𝕏 ha cambiato qualcosa; l'app si ripara da sola quando può. Riprova tra poco."
 }

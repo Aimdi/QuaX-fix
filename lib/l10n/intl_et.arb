@@ -1050,5 +1050,7 @@
   "sync_error_unauthorized": "Server lükkas need andmed tagasi",
   "sync_error_not_found": "Sellele aadressile pole veel midagi laaditud",
   "sync_error_server": "Server ei suutnud päringut töödelda",
-  "sync_error_network": "Serverini ei õnnestunud jõuda"
+  "sync_error_network": "Serverini ei õnnestunud jõuda",
+  "endpoint_refused_title": "𝕏 lükkas selle päringu tagasi",
+  "endpoint_refused_message": "Selles 𝕏 osas lükati tagasi kõik kontod, seega asi pole tõenäoliselt sinu kontodes. Ilmselt muutis 𝕏 midagi; rakendus parandab end ise, kui saab. Proovi mõne aja pärast uuesti."
 }

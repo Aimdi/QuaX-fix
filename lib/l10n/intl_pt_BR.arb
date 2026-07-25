@@ -1050,5 +1050,7 @@
   "sync_error_unauthorized": "O servidor recusou essas credenciais",
   "sync_error_not_found": "Ainda não foi enviado nada para esse endereço",
   "sync_error_server": "O servidor não conseguiu processar a requisição",
-  "sync_error_network": "Não foi possível alcançar o servidor"
+  "sync_error_network": "Não foi possível alcançar o servidor",
+  "endpoint_refused_title": "O 𝕏 recusou esta requisição",
+  "endpoint_refused_message": "Todas as contas foram recusadas nesta parte do 𝕏, então dificilmente o problema são suas contas. O 𝕏 provavelmente mudou alguma coisa; o app se conserta sozinho assim que der. Tente de novo daqui a pouco."
 }

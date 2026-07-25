@@ -1050,5 +1050,7 @@
   "sync_error_unauthorized": "Máy chủ đã từ chối thông tin đăng nhập này",
   "sync_error_not_found": "Chưa có gì được tải lên địa chỉ đó",
   "sync_error_server": "Máy chủ không xử lý được yêu cầu",
-  "sync_error_network": "Không thể kết nối tới máy chủ"
+  "sync_error_network": "Không thể kết nối tới máy chủ",
+  "endpoint_refused_title": "𝕏 đã từ chối yêu cầu này",
+  "endpoint_refused_message": "Mọi tài khoản đều bị từ chối ở phần này của 𝕏, nên nhiều khả năng không phải do tài khoản của bạn. Có lẽ 𝕏 đã thay đổi điều gì đó; ứng dụng sẽ tự khắc phục khi có thể. Hãy thử lại sau ít phút."
 }

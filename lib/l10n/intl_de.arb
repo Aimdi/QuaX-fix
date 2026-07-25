@@ -1050,5 +1050,7 @@
   "sync_error_unauthorized": "Der Server hat diese Zugangsdaten abgelehnt",
   "sync_error_not_found": "Unter dieser Adresse wurde noch nichts hochgeladen",
   "sync_error_server": "Der Server konnte die Anfrage nicht verarbeiten",
-  "sync_error_network": "Der Server war nicht erreichbar"
+  "sync_error_network": "Der Server war nicht erreichbar",
+  "endpoint_refused_title": "𝕏 hat diese Anfrage abgewiesen",
+  "endpoint_refused_message": "In diesem Teil von 𝕏 wurden alle Konten abgewiesen, es liegt also vermutlich nicht an deinen Konten. Wahrscheinlich hat 𝕏 etwas geändert; die App repariert sich selbst, sobald sie kann. Versuch es gleich noch einmal."
 }

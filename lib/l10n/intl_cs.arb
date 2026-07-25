@@ -1050,5 +1050,7 @@
   "sync_error_unauthorized": "Server tyto přihlašovací údaje odmítl",
   "sync_error_not_found": "Na tuto adresu zatím nebylo nic nahráno",
   "sync_error_server": "Server nedokázal požadavek zpracovat",
-  "sync_error_network": "Server je nedostupný"
+  "sync_error_network": "Server je nedostupný",
+  "endpoint_refused_title": "𝕏 tento požadavek odmítl",
+  "endpoint_refused_message": "V této části 𝕏 byly odmítnuty všechny účty, takže chyba nejspíš není u vás. 𝕏 pravděpodobně něco změnil; aplikace se opraví sama, jakmile to půjde. Zkuste to za chvíli znovu."
 }

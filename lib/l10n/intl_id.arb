@@ -1050,5 +1050,7 @@
   "sync_error_unauthorized": "Server menolak kredensial tersebut",
   "sync_error_not_found": "Belum ada apa pun yang diunggah ke URL itu",
   "sync_error_server": "Server tidak dapat memproses permintaan",
-  "sync_error_network": "Tidak dapat menghubungi server"
+  "sync_error_network": "Tidak dapat menghubungi server",
+  "endpoint_refused_title": "𝕏 menolak permintaan ini",
+  "endpoint_refused_message": "Semua akun ditolak di bagian 𝕏 ini, jadi kemungkinan besar bukan akun Anda masalahnya. 𝕏 sepertinya mengubah sesuatu; aplikasi memperbaiki dirinya sendiri bila bisa. Coba lagi sebentar lagi."
 }

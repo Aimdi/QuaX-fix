@@ -1050,5 +1050,7 @@
   "sync_error_unauthorized": "El servidor rechazó esas credenciales",
   "sync_error_not_found": "Todavía no se ha subido nada a esa URL",
   "sync_error_server": "El servidor no pudo procesar la petición",
-  "sync_error_network": "No se pudo contactar con el servidor"
+  "sync_error_network": "No se pudo contactar con el servidor",
+  "endpoint_refused_title": "𝕏 ha rechazado esta petición",
+  "endpoint_refused_message": "Todas las cuentas han sido rechazadas en esta parte de 𝕏, así que probablemente no sean tus cuentas. Seguramente 𝕏 ha cambiado algo; la aplicación se repara sola cuando puede. Inténtalo de nuevo en un momento."
 }
