@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit이 예상과 다른 응답을 보냈습니다",
   "plugin_reddit_not_configured": "먼저 Reddit client ID를 입력하세요",
   "plugin_reddit_open_discussion": "토론 열기",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "답글 숨기기",
+  "hide_replies_description": "이 사용자가 다른 사람에게 남긴 답글을 피드에 표시하지 않습니다. 본인의 스레드는 남습니다."
 }

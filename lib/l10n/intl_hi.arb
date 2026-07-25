@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit ने अनपेक्षित उत्तर दिया",
   "plugin_reddit_not_configured": "पहले अपना Reddit client ID जोड़ें",
   "plugin_reddit_open_discussion": "चर्चा खोलें",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "उत्तर छिपाएँ",
+  "hide_replies_description": "इस उपयोगकर्ता के दूसरों को दिए उत्तर आपकी फ़ीड में न दिखाएँ। उनके अपने थ्रेड बने रहेंगे।"
 }

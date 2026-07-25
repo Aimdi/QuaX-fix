@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit hat unerwartet geantwortet",
   "plugin_reddit_not_configured": "Bitte zuerst die Reddit-Client-ID eintragen",
   "plugin_reddit_open_discussion": "Diskussion öffnen",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Antworten ausblenden",
+  "hide_replies_description": "Antworten dieses Nutzers an andere nicht in deinen Feeds anzeigen. Eigene Threads bleiben."
 }

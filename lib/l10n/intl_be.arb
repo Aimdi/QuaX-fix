@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit адказаў нечакана",
   "plugin_reddit_not_configured": "Спачатку дадайце свой client ID Reddit",
   "plugin_reddit_open_discussion": "Адкрыць абмеркаванне",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Схаваць адказы",
+  "hide_replies_description": "Не паказваць у вашых лентах адказы гэтага карыстальніка іншым людзям. Уласныя ланцужкі застаюцца."
 }

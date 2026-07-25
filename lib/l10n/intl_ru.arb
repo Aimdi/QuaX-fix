@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit ответил неожиданным образом",
   "plugin_reddit_not_configured": "Сначала укажите client ID Reddit",
   "plugin_reddit_open_discussion": "Открыть обсуждение",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Скрыть ответы",
+  "hide_replies_description": "Не показывать в лентах ответы этого пользователя другим людям. Его собственные ветки остаются."
 }

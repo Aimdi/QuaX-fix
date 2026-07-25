@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit trả về dữ liệu không như mong đợi",
   "plugin_reddit_not_configured": "Hãy nhập client ID Reddit của bạn trước",
   "plugin_reddit_open_discussion": "Mở thảo luận",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Ẩn trả lời",
+  "hide_replies_description": "Không hiển thị trong nguồn của bạn các trả lời của người này cho người khác. Chuỗi bài của họ vẫn còn."
 }

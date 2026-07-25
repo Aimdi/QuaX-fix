@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit a răspuns ceva neașteptat",
   "plugin_reddit_not_configured": "Adaugă mai întâi client ID-ul Reddit",
   "plugin_reddit_open_discussion": "Deschide discuția",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Ascunde răspunsurile",
+  "hide_replies_description": "Nu arăta în fluxuri răspunsurile acestui utilizator către alte persoane. Propriile fire rămân."
 }

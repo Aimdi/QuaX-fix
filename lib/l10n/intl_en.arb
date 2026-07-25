@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit answered with something unexpected",
   "plugin_reddit_not_configured": "Add your Reddit client ID first",
   "plugin_reddit_open_discussion": "Open the discussion",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Hide replies",
+  "hide_replies_description": "Do not show this user's replies to other people in your feeds. Their own threads stay."
 }

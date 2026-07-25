@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit adkazaŭ niačakana",
   "plugin_reddit_not_configured": "Spačatku dadajcie svoj client ID Reddit",
   "plugin_reddit_open_discussion": "Adkryć abmierkavannie",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Schavać adkazy",
+  "hide_replies_description": "Nie pakazvać u vašych lentach adkazy hetaha karystalnika inšym ludziam. Ułasnyja łancužki zastajucca."
 }

@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit svarte med noe uventet",
   "plugin_reddit_not_configured": "Legg inn Reddit-client ID-en først",
   "plugin_reddit_open_discussion": "Åpne diskusjonen",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Skjul svar",
+  "hide_replies_description": "Ikke vis denne brukerens svar til andre i strømmene dine. Egne tråder blir værende."
 }

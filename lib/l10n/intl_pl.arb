@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit odpowiedział czymś nieoczekiwanym",
   "plugin_reddit_not_configured": "Najpierw podaj client ID Reddita",
   "plugin_reddit_open_discussion": "Otwórz dyskusję",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Ukryj odpowiedzi",
+  "hide_replies_description": "Nie pokazuj w kanałach odpowiedzi tego użytkownika do innych osób. Jego własne wątki zostają."
 }

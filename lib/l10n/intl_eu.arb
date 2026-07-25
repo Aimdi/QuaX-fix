@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Redditek ustekabeko erantzuna eman du",
   "plugin_reddit_not_configured": "Gehitu lehenik zure Reddit client ID-a",
   "plugin_reddit_open_discussion": "Ireki eztabaida",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Ezkutatu erantzunak",
+  "hide_replies_description": "Ez erakutsi zure jarioetan erabiltzaile honek beste pertsonei emandako erantzunak. Bere hariak mantentzen dira."
 }

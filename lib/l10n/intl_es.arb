@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit respondió algo inesperado",
   "plugin_reddit_not_configured": "Añade primero tu client ID de Reddit",
   "plugin_reddit_open_discussion": "Abrir la discusión",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Ocultar respuestas",
+  "hide_replies_description": "No mostrar en tus feeds las respuestas de este usuario a otras personas. Sus propios hilos se mantienen."
 }

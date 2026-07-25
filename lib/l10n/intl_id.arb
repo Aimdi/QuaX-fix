@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit menjawab dengan sesuatu yang tak terduga",
   "plugin_reddit_not_configured": "Tambahkan dulu client ID Reddit Anda",
   "plugin_reddit_open_discussion": "Buka diskusi",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Sembunyikan balasan",
+  "hide_replies_description": "Jangan tampilkan balasan pengguna ini kepada orang lain di feed Anda. Utas miliknya tetap ada."
 }

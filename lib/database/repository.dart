@@ -24,9 +24,10 @@ const String tableSubscriptionGroupMember = 'subscription_group_member';
 const String tableAccounts = 'accounts';
 const String tablePostNotification = 'post_notification';
 const String tableRetweetFilter = 'retweet_filter';
+const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 36;
+const int databaseVersion = 37;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -348,6 +349,15 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
             reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN min_retweets'),
         SqlMigration('ALTER TABLE $tableSubscriptionGroup ADD COLUMN muted_keywords TEXT',
             reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN muted_keywords'),
+      ],
+      // The reply filter was written as 36 on its own branch, before the
+      // custom-feed rules took that number. Two sets of changes cannot share a
+      // version: whoever upgraded on one build would never receive the other.
+      37: [
+        // Per-user "hide replies", the sibling of retweet_filter.
+        SqlMigration(
+            'CREATE TABLE IF NOT EXISTS $tableReplyFilter (user_id VARCHAR PRIMARY KEY, screen_name VARCHAR NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+            reverseSql: 'DROP TABLE $tableReplyFilter'),
       ],
     });
 

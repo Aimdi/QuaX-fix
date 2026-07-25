@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit 回傳了非預期的內容",
   "plugin_reddit_not_configured": "請先填寫 Reddit client ID",
   "plugin_reddit_open_discussion": "開啟討論",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "隱藏回覆",
+  "hide_replies_description": "不在你的資訊流中顯示該使用者對他人的回覆。他自己的討論串仍會保留。"
 }

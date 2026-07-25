@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit から予期しない応答が返りました",
   "plugin_reddit_not_configured": "先に Reddit の client ID を設定してください",
   "plugin_reddit_open_discussion": "ディスカッションを開く",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "返信を非表示",
+  "hide_replies_description": "このユーザーが他の人に返信した投稿をフィードに表示しません。本人のスレッドは残ります。"
 }

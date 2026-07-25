@@ -503,5 +503,7 @@
   "plugin_reddit_error_response": "Reddit ha risposto in modo inatteso",
   "plugin_reddit_not_configured": "Inserisci prima il client ID di Reddit",
   "plugin_reddit_open_discussion": "Apri la discussione",
-  "plugin_reddit_title": "Reddit"
+  "plugin_reddit_title": "Reddit",
+  "hide_replies": "Nascondi le risposte",
+  "hide_replies_description": "Non mostrare nei tuoi feed le risposte di questo utente ad altre persone. I suoi thread restano."
 }
