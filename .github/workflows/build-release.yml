@@ -108,4 +108,9 @@ jobs:
         with:
           tag_name: ${{ inputs.tag }}
           name: ${{ inputs.tag }}
+          # The tag does not exist yet on this path, so the action creates it.
+          # Without target_commitish it anchors the new tag to the repository's
+          # default branch instead of the commit that was just built, and the
+          # tag then ships source that is not what the APKs were compiled from.
+          target_commitish: ${{ github.sha }}
           files: build/app/outputs/release/*.apk
