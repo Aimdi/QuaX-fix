@@ -19,6 +19,8 @@ import 'package:quax/tweet/_like_button.dart';
 import 'package:quax/tweet/quotes_screen.dart';
 import 'package:quax/utils/urls.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:quax/plugins/karakeep/karakeep_save.dart';
+import 'package:quax/plugins/karakeep/karakeep_title.dart';
 
 /// Footer buttons should feel flat: no ripple and no pressed/hover background.
 /// Material's default text button reserves a 64dp minimum width and 16dp of
@@ -279,6 +281,16 @@ class TweetFooterBar extends StatelessWidget {
                   Navigator.pop(sheetContext);
                 }
               }),
+              if (karakeepEnabled(PrefService.of(sheetContext, listen: false)))
+                createSheetButton(
+                  L10n.of(sheetContext).plugin_karakeep_save_action,
+                  Icons.bookmark_add_outlined,
+                  () async {
+                    final url = '$shareBaseUrl/${tweet.user!.screenName}/status/${tweet.idStr}';
+                    Navigator.pop(sheetContext);
+                    await saveToKarakeep(context, url: url, title: karakeepTitleFor(tweet, tweetText));
+                  },
+                ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Divider(thickness: 1.0),

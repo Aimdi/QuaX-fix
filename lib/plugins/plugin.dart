@@ -34,4 +34,7 @@ abstract class QuaxPlugin {
 
   /// Root screen for the home tab (used by [HomeScreen]).
   Widget? homeScreen({required ScrollController scrollController}) => null;
+
+  /// Optional configuration screen, reached from the plugin store row.
+  Widget? settingsScreen(BuildContext context) => null;
 }

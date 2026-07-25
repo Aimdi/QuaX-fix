@@ -27,7 +27,10 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
         itemBuilder: (context, index) {
           final plugin = builtInPlugins[index];
           final enabled = plugin.isEnabled(prefs);
+          // Two independent extras: a plugin can have its own settings screen,
+          // its own optional home tab, either, or neither.
           final tabPref = plugin.homeTabPrefKey;
+          final hasSettings = plugin.settingsScreen(context) != null;
 
           final row = SwitchListTile(
             secondary: Icon(plugin.icon),
@@ -42,16 +45,72 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
             },
           );
 
+          if (tabPref == null && !hasSettings) {
+            return row;
+          }
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              row,
+              // Plugins whose feature is reachable from the Groups tab as well
+              // can give up their own tab.
+              if (tabPref != null)
+                SwitchListTile(
+                  secondary: const SizedBox(width: 24),
+                  title: Text(L10n.of(context).plugin_show_as_tab),
+                  subtitle: Text(L10n.of(context).plugin_show_as_tab_description),
+                  value: plugin.showsHomeTab(prefs),
+                  onChanged: enabled
+                      ? (value) async {
+                          await prefs.set(tabPref, value);
+                          if (!context.mounted) return;
+                          await context.read<HomeModel>().loadPages();
+                          setState(() {});
+                        }
+                      : null,
+                ),
+              // A plugin that needs configuring gets a row of its own, only
+              // usable once it is on.
+              if (hasSettings)
+                ListTile(
+                  enabled: enabled,
+                  leading: const SizedBox(width: 24),
+                  title: Text(L10n.of(context).settings),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => plugin.settingsScreen(context)!),
+                    );
+                    if (mounted) setState(() {});
+                  },
+                ),
+            ],
+          );
+        },
+          );
+
+<<<<<<< HEAD
           if (tabPref == null) {
             return row;
           }
 
           // Plugins whose feature is reachable from the Groups tab as well can
           // give up their own tab.
+=======
+          if (settings == null) {
+            return row;
+          }
+
+          // A plugin that needs configuring gets a row of its own beneath the
+          // switch, only usable once it is on.
+>>>>>>> origin/cursor/karakeep-plugin-c090
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               row,
+<<<<<<< HEAD
               SwitchListTile(
                 secondary: const SizedBox(width: 24),
                 title: Text(L10n.of(context).plugin_show_as_tab),
@@ -65,6 +124,20 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
                         setState(() {});
                       }
                     : null,
+=======
+              ListTile(
+                enabled: enabled,
+                leading: const SizedBox(width: 24),
+                title: Text(L10n.of(context).settings),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => plugin.settingsScreen(context)!),
+                  );
+                  if (mounted) setState(() {});
+                },
+>>>>>>> origin/cursor/karakeep-plugin-c090
               ),
             ],
           );
