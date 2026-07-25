@@ -115,12 +115,26 @@ class _SaveToFolderSheet extends StatelessWidget {
                   ],
                 ),
               ),
-              _FolderTile(
-                  label: L10n.of(context).unfiled,
-                  selected: current == null,
-                  onTap: () => _file(context, null, L10n.of(context).unfiled)),
-              ...folders.map((f) => _FolderTile(
-                  label: f.name, selected: current == f.id, onTap: () => _file(context, f.id, f.name))),
+              // Scrolls rather than overflowing the sheet once there are more
+              // folders than fit (ported from upstream ffea8688).
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _FolderTile(
+                          label: L10n.of(context).unfiled,
+                          selected: current == null,
+                          onTap: () => _file(context, null, L10n.of(context).unfiled)),
+                      ...folders.map((f) => _FolderTile(
+                          label: f.name,
+                          selected: current == f.id,
+                          onTap: () => _file(context, f.id, f.name))),
+                    ],
+                  ),
+                ),
+              ),
               const Divider(),
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24),

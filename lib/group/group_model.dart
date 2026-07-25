@@ -6,6 +6,7 @@ import 'package:flutter_triple/flutter_triple.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/database/repository.dart';
+import 'package:quax/group/custom_feed_rules.dart';
 import 'package:quax/subscriptions/group_mark_style.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
@@ -62,7 +63,10 @@ class GroupModel extends Store<SubscriptionGroupGet> {
             includeRetweets: _includeOverride(group['include_retweets']),
             popular: group['popular'] == 1,
             custom: group['custom'] == 1,
-            contentFilter: group['content_filter'] as String? ?? contentFilterDefault);
+            contentFilter: group['content_filter'] as String? ?? contentFilterDefault,
+            minLikes: (group['min_likes'] as int?) ?? 0,
+            minRetweets: (group['min_retweets'] as int?) ?? 0,
+            mutedKeywords: parseMutedKeywords(group['muted_keywords'] as String?));
       }
 
       var searchSubscriptions = (await database.rawQuery(
@@ -87,7 +91,10 @@ class GroupModel extends Store<SubscriptionGroupGet> {
           includeRetweets: _includeOverride(group['include_retweets']),
           popular: group['popular'] == 1,
           custom: group['custom'] == 1,
-          contentFilter: group['content_filter'] as String? ?? contentFilterDefault);
+          contentFilter: group['content_filter'] as String? ?? contentFilterDefault,
+          minLikes: (group['min_likes'] as int?) ?? 0,
+          minRetweets: (group['min_retweets'] as int?) ?? 0,
+          mutedKeywords: parseMutedKeywords(group['muted_keywords'] as String?));
     });
   }
 
@@ -125,6 +132,27 @@ class GroupModel extends Store<SubscriptionGroupGet> {
           .rawUpdate('UPDATE $tableSubscriptionGroup SET custom = ?, popular = 0 WHERE id = ?', [value, state.id]);
       return state.copyWith(custom: value, popular: false);
     });
+  }
+
+  /// Custom-feed engagement thresholds. 0 turns a threshold off.
+  Future<void> setSubscriptionGroupMinLikes(int value) async {
+    await _updateCustomRule('min_likes', value < 0 ? 0 : value);
+    update(state.copyWith(minLikes: value < 0 ? 0 : value));
+  }
+
+  Future<void> setSubscriptionGroupMinRetweets(int value) async {
+    await _updateCustomRule('min_retweets', value < 0 ? 0 : value);
+    update(state.copyWith(minRetweets: value < 0 ? 0 : value));
+  }
+
+  Future<void> setSubscriptionGroupMutedKeywords(List<String> keywords) async {
+    await _updateCustomRule('muted_keywords', keywords.isEmpty ? null : joinMutedKeywords(keywords));
+    update(state.copyWith(mutedKeywords: keywords));
+  }
+
+  Future<void> _updateCustomRule(String column, Object? value) async {
+    final database = await Repository.writable();
+    await database.update(tableSubscriptionGroup, {column: value}, where: 'id = ?', whereArgs: [state.id]);
   }
 
   Future<void> setSubscriptionGroupContentFilter(String value) async {

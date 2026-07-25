@@ -112,4 +112,21 @@ void main() {
     expect(byId['legacy']!['icon'], '{"pack":"material","key":"star"}');
     await db.close();
   });
+
+  test('migration 36 adds the custom-feed rule columns with inert defaults', () async {
+    await databaseFactory.deleteDatabase(databaseName);
+    await _createV34Fixture();
+
+    await Repository().migrate();
+
+    final db = await databaseFactory.openDatabase(databaseName);
+    final rows = await db.query(tableSubscriptionGroup, where: "id = 'legacy'");
+    final row = rows.first;
+
+    // Existing feeds must behave exactly as before: no threshold, nothing muted.
+    expect(row['min_likes'], 0);
+    expect(row['min_retweets'], 0);
+    expect(row['muted_keywords'], isNull);
+    await db.close();
+  });
 }

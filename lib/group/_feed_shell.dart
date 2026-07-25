@@ -77,7 +77,7 @@ class _GroupFeedShellState extends State<GroupFeedShell> with AutomaticKeepAlive
   // reload the open timeline.
   String _fingerprint(SubscriptionGroupGet group) {
     final members = group.subscriptions.map((s) => '${s.id}:${s.inFeed}').join(',');
-    return '$members|${group.includeReplies}|${group.includeRetweets}|${group.popular}|${group.custom}|${group.contentFilter}';
+    return '$members|${group.includeReplies}|${group.includeRetweets}|${group.popular}|${group.custom}|${group.customRules.cacheKey}';
   }
 
   // Triggered when subscriptions or group memberships change. A single user

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quax/constants.dart';
+import 'package:quax/group/custom_feed_rules.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/subscriptions/group_mark_style.dart';
 import 'package:quax/user.dart';
@@ -325,6 +326,13 @@ class SubscriptionGroupGet {
   bool custom;
   String contentFilter;
 
+  /// Custom-feed thresholds; 0 means the threshold is off.
+  int minLikes;
+  int minRetweets;
+
+  /// Terms whose posts this feed hides.
+  List<String> mutedKeywords;
+
   SubscriptionGroupGet(
       {required this.id,
       required this.name,
@@ -334,7 +342,19 @@ class SubscriptionGroupGet {
       required this.includeRetweets,
       required this.popular,
       this.custom = false,
-      this.contentFilter = contentFilterDefault});
+      this.contentFilter = contentFilterDefault,
+      this.minLikes = 0,
+      this.minRetweets = 0,
+      this.mutedKeywords = const []});
+
+  CustomFeedRules get customRules => custom
+      ? CustomFeedRules(
+          contentFilter: contentFilter,
+          minLikes: minLikes,
+          minRetweets: minRetweets,
+          mutedKeywords: mutedKeywords,
+        )
+      : const CustomFeedRules();
 
   // Store updates must emit a new instance, otherwise listeners never see the
   // change (the store skips identical states) and dependent widgets go stale.
@@ -343,7 +363,10 @@ class SubscriptionGroupGet {
       Object? includeRetweets = _unset,
       bool? popular,
       bool? custom,
-      String? contentFilter}) {
+      String? contentFilter,
+      int? minLikes,
+      int? minRetweets,
+      List<String>? mutedKeywords}) {
     return SubscriptionGroupGet(
         id: id,
         name: name,
@@ -353,7 +376,10 @@ class SubscriptionGroupGet {
         includeRetweets: identical(includeRetweets, _unset) ? this.includeRetweets : includeRetweets as bool?,
         popular: popular ?? this.popular,
         custom: custom ?? this.custom,
-        contentFilter: contentFilter ?? this.contentFilter);
+        contentFilter: contentFilter ?? this.contentFilter,
+        minLikes: minLikes ?? this.minLikes,
+        minRetweets: minRetweets ?? this.minRetweets,
+        mutedKeywords: mutedKeywords ?? this.mutedKeywords);
   }
 }
 

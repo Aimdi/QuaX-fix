@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
 import 'package:quax/constants.dart';
+import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/group/custom_feed_rules.dart';
 import 'package:quax/group/group_model.dart';
 
 /// Full-screen customization for a group's custom feed mode, opened from the
@@ -14,158 +17,318 @@ class GroupCustomSettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(L10n.of(context).custom)),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: ScopedBuilder<GroupModel, SubscriptionGroupGet>(
+        store: model,
+        onState: (_, state) => ListView(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          children: [
+            _ContentFilterSection(model: model, state: state),
+            const SizedBox(height: 12),
+            _EngagementSection(model: model, state: state),
+            const SizedBox(height: 12),
+            _MutedKeywordsSection(model: model, state: state),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Shared frame: a flat surface with a hairline border, a titled header and a
+/// short explanation — no Material tonal cards.
+class _Section extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+  final Widget child;
+
+  const _Section({
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ContentFilterBar(model: model),
+          Row(
+            children: [
+              Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.2,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(description, style: theme.textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+          const SizedBox(height: 14),
+          child,
         ],
       ),
     );
   }
 }
 
-/// Three-position content bar: SFW only / default / NSFW only, on a
-/// green-to-red gradient track. Keeps its position locally so dragging
-/// responds instantly, and persists the choice through the group model.
-class ContentFilterBar extends StatefulWidget {
+/// SFW only / default / NSFW only.
+///
+/// The gradient slider this replaces duplicated the buttons underneath it and
+/// imported a rainbow no theme asked for; a segmented control says the same
+/// thing in the theme's own colours.
+class _ContentFilterSection extends StatelessWidget {
   final GroupModel model;
+  final SubscriptionGroupGet state;
 
-  const ContentFilterBar({super.key, required this.model});
+  const _ContentFilterSection({required this.model, required this.state});
+
+  static const _values = [contentFilterSfw, contentFilterDefault, contentFilterNsfw];
 
   @override
-  State<ContentFilterBar> createState() => _ContentFilterBarState();
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+    final current = _values.contains(state.contentFilter) ? state.contentFilter : contentFilterDefault;
+
+    return _Section(
+      icon: Icons.filter_alt_outlined,
+      title: l10n.content_filter,
+      description: l10n.content_filter_description,
+      child: SizedBox(
+        width: double.infinity,
+        child: SegmentedButton<String>(
+          showSelectedIcon: false,
+          segments: [
+            ButtonSegment(value: contentFilterSfw, label: Text(l10n.content_filter_sfw)),
+            ButtonSegment(value: contentFilterDefault, label: Text(l10n.content_filter_default)),
+            ButtonSegment(value: contentFilterNsfw, label: Text(l10n.content_filter_nsfw)),
+          ],
+          selected: {current},
+          onSelectionChanged: (selection) => model.setSubscriptionGroupContentFilter(selection.first),
+        ),
+      ),
+    );
+  }
 }
 
-class _ContentFilterBarState extends State<ContentFilterBar> {
-  static const _positions = [contentFilterSfw, contentFilterDefault, contentFilterNsfw];
-  static const _colors = [Colors.green, Colors.orange, Colors.red];
+/// Minimum likes and reposts.
+class _EngagementSection extends StatelessWidget {
+  final GroupModel model;
+  final SubscriptionGroupGet state;
 
-  late int _position;
+  const _EngagementSection({required this.model, required this.state});
 
   @override
-  void initState() {
-    super.initState();
-    _position = _positions.indexOf(widget.model.state.contentFilter).clamp(0, 2);
-  }
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
 
-  void _setPosition(int position) {
-    if (position == _position) {
-      return;
-    }
-    setState(() {
-      _position = position;
-    });
-    widget.model.setSubscriptionGroupContentFilter(_positions[position]);
+    return _Section(
+      icon: Icons.trending_up,
+      title: l10n.custom_feed_engagement,
+      description: l10n.custom_feed_engagement_description,
+      child: Column(
+        children: [
+          _ThresholdRow(
+            label: l10n.custom_feed_min_likes,
+            value: state.minLikes,
+            onChanged: model.setSubscriptionGroupMinLikes,
+          ),
+          const SizedBox(height: 12),
+          _ThresholdRow(
+            label: l10n.custom_feed_min_retweets,
+            value: state.minRetweets,
+            onChanged: model.setSubscriptionGroupMinRetweets,
+          ),
+        ],
+      ),
+    );
   }
+}
 
-  Widget _positionChip(String text, int position) {
-    final selected = _position == position;
-    final color = _colors[position];
+/// One threshold as a row of choices, so it is a single tap rather than typing
+/// a number. 0 means the threshold is off.
+class _ThresholdRow extends StatelessWidget {
+  final String label;
+  final int value;
+  final ValueChanged<int> onChanged;
+
+  const _ThresholdRow({required this.label, required this.value, required this.onChanged});
+
+  static const choices = [0, 10, 50, 100, 500, 1000];
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: theme.textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final choice in choices)
+              _Pill(
+                label: choice == 0 ? l10n.custom_feed_threshold_off : '$choice+',
+                selected: value == choice,
+                onTap: () => onChanged(choice),
+              ),
+            // A value from an earlier edit that is not one of the presets stays
+            // visible and selected rather than silently snapping to another.
+            if (!choices.contains(value))
+              _Pill(label: '$value+', selected: true, onTap: () => onChanged(value)),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _Pill extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _Pill({required this.label, required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = Theme.of(context).colorScheme.primary;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
 
     return GestureDetector(
-      onTap: () => _setPosition(position),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+      onTap: onTap,
+      child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: selected ? color.withAlpha(40) : Colors.transparent,
-          border: Border.all(color: selected ? color : Theme.of(context).dividerColor),
+          color: selected ? accent : Colors.transparent,
+          borderRadius: BorderRadius.circular(9999),
+          border: Border.all(color: selected ? accent : Theme.of(context).colorScheme.outlineVariant),
         ),
         child: Text(
-          text,
+          label,
           style: TextStyle(
             fontSize: 13,
-            fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-            color: selected ? color : Theme.of(context).hintColor,
+            fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+            color: selected ? (accent.computeLuminance() > 0.5 ? Colors.black : Colors.white) : onSurface,
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildTrack(BuildContext context) {
-    return SizedBox(
-      height: 56,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Container(
-              height: 14,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7),
-                gradient: const LinearGradient(
-                  colors: [Colors.green, Colors.yellow, Colors.orange, Colors.red],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: _colors[_position].withAlpha(90),
-                    blurRadius: 12,
-                    spreadRadius: 1,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              trackHeight: 14,
-              activeTrackColor: Colors.transparent,
-              inactiveTrackColor: Colors.transparent,
-              activeTickMarkColor: Colors.white70,
-              inactiveTickMarkColor: Colors.white70,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 14, elevation: 4),
-              thumbColor: Colors.white,
-              overlayColor: _colors[_position].withAlpha(50),
-            ),
-            child: Slider(
-              value: _position.toDouble(),
-              max: 2,
-              divisions: 2,
-              onChanged: (value) => _setPosition(value.round()),
-            ),
-          ),
-        ],
-      ),
-    );
+/// Muted keywords for this feed.
+class _MutedKeywordsSection extends StatefulWidget {
+  final GroupModel model;
+  final SubscriptionGroupGet state;
+
+  const _MutedKeywordsSection({required this.model, required this.state});
+
+  @override
+  State<_MutedKeywordsSection> createState() => _MutedKeywordsSectionState();
+}
+
+class _MutedKeywordsSectionState extends State<_MutedKeywordsSection> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _add() async {
+    final terms = parseMutedKeywords(_controller.text);
+    if (terms.isEmpty) {
+      return;
+    }
+
+    final existing = widget.state.mutedKeywords.map((e) => e.toLowerCase()).toSet();
+    final next = [
+      ...widget.state.mutedKeywords,
+      ...terms.where((term) => !existing.contains(term.toLowerCase())),
+    ];
+
+    _controller.clear();
+    await widget.model.setSubscriptionGroupMutedKeywords(next);
+  }
+
+  Future<void> _remove(String term) async {
+    final next = widget.state.mutedKeywords.where((e) => e != term).toList(growable: false);
+    await widget.model.setSubscriptionGroupMutedKeywords(next);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.filter_alt_outlined, size: 20, color: _colors[_position]),
-                const SizedBox(width: 8),
-                Text(L10n.of(context).content_filter, style: Theme.of(context).textTheme.titleMedium),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              L10n.of(context).content_filter_description,
-              style: TextStyle(color: Theme.of(context).hintColor, fontSize: 13),
-            ),
+    final l10n = L10n.of(context);
+    final keywords = widget.state.mutedKeywords;
+
+    return _Section(
+      icon: Icons.speaker_notes_off_outlined,
+      title: l10n.custom_feed_muted_keywords,
+      description: l10n.custom_feed_muted_keywords_description,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  textInputAction: TextInputAction.done,
+                  autocorrect: false,
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 15),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    hintText: l10n.custom_feed_muted_keywords_hint,
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 14),
+                    border: const UnderlineInputBorder(),
+                  ),
+                  onSubmitted: (_) => _add(),
+                ),
+              ),
+              const SizedBox(width: 8),
+              IconButton(
+                icon: const Icon(Icons.add),
+                color: Theme.of(context).colorScheme.primary,
+                onPressed: _add,
+              ),
+            ],
+          ),
+          if (keywords.isNotEmpty) ...[
             const SizedBox(height: 12),
-            _buildTrack(context),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
               children: [
-                _positionChip(L10n.of(context).content_filter_sfw, 0),
-                _positionChip(L10n.of(context).content_filter_default, 1),
-                _positionChip(L10n.of(context).content_filter_nsfw, 2),
+                for (final term in keywords)
+                  InputChip(
+                    label: Text(term),
+                    onDeleted: () => _remove(term),
+                    deleteIcon: const Icon(Icons.close, size: 16),
+                  ),
               ],
             ),
           ],
-        ),
+        ],
       ),
     );
   }

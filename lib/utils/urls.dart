@@ -1,4 +1,7 @@
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:pref/pref.dart';
+import 'package:quax/constants.dart';
 import 'package:quax/profile/profile.dart' show profileTabs;
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -50,8 +53,17 @@ Future<void> openInDefaultBrowser(String url) async {
   await intent.launch();
 }
 
-Future<void> openUri(String uri) async {
-  await launchUrlString(cleanUrl(uri), mode: LaunchMode.externalApplication);
+/// Opens [uri] outside the feed: in an in-app browser view when the reader
+/// asked for that in settings, otherwise in their default browser.
+///
+/// Ported from upstream cb5927c2, keeping this fork's tracking-parameter
+/// stripping.
+Future<void> openUri(BuildContext context, String uri) async {
+  final embedded = PrefService.of(context, listen: false).get(optionOpenLinksInEmbeddedBrowser) == true;
+  await launchUrlString(
+    cleanUrl(uri),
+    mode: embedded ? LaunchMode.inAppBrowserView : LaunchMode.externalApplication,
+  );
 }
 
 sealed class UriParseResult {}
