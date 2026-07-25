@@ -41,9 +41,6 @@ class TweetCard extends StatelessWidget {
   GestureDetector _createCard(String? url, Widget child, BuildContext context) {
     return GestureDetector(
       child: _createBaseCard(child, context),
-<<<<<<< HEAD
-      onTap: () => url == null ? null : openUri(context, url),
-=======
       onTap: () async {
         if (url == null) {
           return;
@@ -52,9 +49,8 @@ class TweetCard extends StatelessWidget {
         if (await openWithPlugins(context, url)) {
           return;
         }
-        await openUri(url);
+        await openUri(context, url);
       },
->>>>>>> origin/cursor/substack-links-inapp-c090
     );
   }
 

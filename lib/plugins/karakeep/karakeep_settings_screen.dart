@@ -156,7 +156,7 @@ class _KarakeepSettingsScreenState extends State<KarakeepSettingsScreen> {
           ],
           const SizedBox(height: 28),
           TextButton.icon(
-            onPressed: () => openUri('https://karakeep.app'),
+            onPressed: () => openUri(context, 'https://karakeep.app'),
             icon: const Icon(Icons.open_in_new, size: 18),
             label: Text(l10n.plugin_karakeep_learn_more),
           ),
