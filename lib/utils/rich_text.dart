@@ -9,6 +9,7 @@ import 'package:quax/search/search.dart';
 import 'package:quax/utils/urls.dart';
 import 'package:quax/utils/iterables.dart';
 import 'package:quax/utils/_entities.dart';
+import 'package:quax/plugins/plugin_links.dart';
 
 // RichText (not sure if it has an official name) is the way urls, mentions, hashtags... are integrated on
 // twitter content (tweets and descriptions).
@@ -178,7 +179,16 @@ List<Entity> _parseEntities(BuildContext context, dynamic newEntities) {
               uri.substring(0, 27) == 'https://x.com/i/web/status/')) {
         return;
       }
+<<<<<<< HEAD
       await openUri(context, uri);
+=======
+      // A plugin may be able to read this link in-app (Substack posts); only
+      // hand it to the browser when none claims it.
+      if (context.mounted && await openWithPlugins(context, uri)) {
+        return;
+      }
+      await openUri(uri);
+>>>>>>> origin/cursor/substack-links-inapp-c090
     }));
   }
 
