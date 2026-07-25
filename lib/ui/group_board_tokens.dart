@@ -1,6 +1,5 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
+import 'package:quax/ui/contrast.dart' as contrast;
 import 'package:quax/ui/x_look_theme.dart';
 
 /// Surface tokens for the group board.
@@ -72,39 +71,13 @@ class GroupBoardTokens {
   /// equivalent of elevation. On pure black this yields X's #16181C-like step.
   static Color _lift(Color surface, Color toward) => Color.alphaBlend(toward.withValues(alpha: 0.055), surface);
 
-  /// WCAG 2.1 relative luminance.
-  static double _luminance(Color c) {
-    double channel(double v) => v <= 0.03928 ? v / 12.92 : math.pow((v + 0.055) / 1.055, 2.4).toDouble();
-    return 0.2126 * channel(c.r) + 0.7152 * channel(c.g) + 0.0722 * channel(c.b);
-  }
-
-  static double contrastRatio(Color a, Color b) {
-    final la = _luminance(a);
-    final lb = _luminance(b);
-    return (math.max(la, lb) + 0.05) / (math.min(la, lb) + 0.05);
-  }
-
-  /// Returns [foreground], or the nearest lighter/darker variant of it that
-  /// reaches [minRatio] against [background].
-  ///
   /// X's own secondary grey (#71767B) only clears 4.5:1 against pure black; on
-  /// a lifted tile — and more so under a group-colour wash — it drops to ~4.2:1.
-  /// Rather than hand-tuning a constant per theme, the metadata colour is
-  /// corrected against the background it is actually painted on, so every
-  /// theme and every group colour satisfies WCAG 2.2 SC 1.4.3 by construction.
-  static Color ensureContrast(Color foreground, Color background, {double minRatio = 4.5}) {
-    if (contrastRatio(foreground, background) >= minRatio) {
-      return foreground;
-    }
+  /// a lifted tile — and more so under a group-colour wash — it drops to ~4.2:1,
+  /// so metadata colours are corrected against the background they land on.
+  /// Kept here as the board's entry points; the maths lives in `ui/contrast.dart`
+  /// because the tweet chrome needs the same correction.
+  static double contrastRatio(Color a, Color b) => contrast.contrastRatio(a, b);
 
-    final target = _luminance(background) > 0.18 ? Colors.black : Colors.white;
-    var candidate = foreground;
-    for (var step = 1; step <= 20; step++) {
-      candidate = Color.lerp(foreground, target, step / 20)!;
-      if (contrastRatio(candidate, background) >= minRatio) {
-        return candidate;
-      }
-    }
-    return target;
-  }
+  static Color ensureContrast(Color foreground, Color background, {double minRatio = 4.5}) =>
+      contrast.ensureContrast(foreground, background, minRatio: minRatio);
 }

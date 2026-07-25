@@ -472,9 +472,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         quotedContent = _buildErrorTweet(L10n.of(context).could_not_retrieve_quoted_tweet);
       }
       quotedTweet = Container(
-        decoration: BoxDecoration(
-        border: Border.all(color: theme.colorScheme.surfaceBright.withAlpha(180)),
-        borderRadius: BorderRadius.circular(kTweetMediaRadius)),
+        decoration: quoteCardDecoration(context),
         clipBehavior: Clip.antiAlias,
         margin: const EdgeInsets.all(8),
         child: quotedContent,
@@ -543,11 +541,14 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       createdAt = tweet.createdAt;
     }
 
+    // A quoted tweet is subordinate to its host, so it gets a smaller avatar
+    // and a denser header — otherwise it reads as another post in the timeline.
+    final avatarSize = isQuotedTweet ? 32.0 : 48.0;
     final plainAvatar = hideAuthorInformation
-        ? const Icon(Icons.account_circle, size: 48)
+        ? Icon(Icons.account_circle, size: avatarSize)
         : ClipRRect(
             borderRadius: BorderRadius.circular(64),
-            child: UserAvatar(uri: tweet.user!.profileImageUrlHttps),
+            child: UserAvatar(uri: tweet.user!.profileImageUrlHttps, size: avatarSize),
           );
 
     final showSubscribeBadge = prefs.get(optionTweetsShowSubscribeBadge) != false;
@@ -636,6 +637,8 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
     final headerTile = ListTile(
       onTap: onTapProfile,
+      dense: isQuotedTweet,
+      visualDensity: isQuotedTweet ? VisualDensity.compact : null,
       title: titleRow,
       subtitle: subtitleRow,
       // Profile picture
@@ -660,7 +663,11 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       TweetCard(tweet: tweet, card: tweet.card),
       birdwatchQuoted,
       article,
-      footerBar,
+      // A quoted tweet shows no action bar: its reply/repost/like counts belong
+      // to the quoted post, not to the one being read, and a second footer row
+      // makes the card look like a separate timeline entry. Tapping the quote
+      // opens it, where the full bar is available.
+      if (!isQuotedTweet) footerBar,
     ];
 
     final isThreadTile = widget.threadConnectTop || widget.threadConnectBottom;
