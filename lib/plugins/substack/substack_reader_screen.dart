@@ -233,7 +233,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
             IconButton(
               tooltip: L10n.of(context).open_in_browser,
               icon: const Icon(Icons.open_in_new),
-              onPressed: () => openUri(_post.canonicalUrl!),
+              onPressed: () => openUri(context, _post.canonicalUrl!),
             ),
           ],
         ],
@@ -256,7 +256,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
           : _paywalled
               ? _PaywallPane(
                   post: _post,
-                  onOpenWeb: _post.canonicalUrl == null ? null : () => openUri(_post.canonicalUrl!),
+                  onOpenWeb: _post.canonicalUrl == null ? null : () => openUri(context, _post.canonicalUrl!),
                 )
               : _empty
                   ? Center(child: Text(L10n.of(context).plugin_substack_no_content))
