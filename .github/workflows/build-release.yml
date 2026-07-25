@@ -27,7 +27,9 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
-          java-version: '21.x'
+          # Pinned exactly, not '21.x': a reproducible build has to name the
+          # JDK that produced it. See docs/reproducible-builds.md.
+          java-version: '21.0.10'
 
       - name: Install and set up Flutter
         uses: subosito/flutter-action@v2
