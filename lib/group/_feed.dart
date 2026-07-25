@@ -123,6 +123,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     var repository = await Repository.readOnly();
     var cached = await readCachedChainsForHashes(repository, widget.chunks.map((e) => e.hash));
     cached = filterHiddenRetweets(cached, await hiddenRetweetScreenNames());
+    cached = filterHiddenReplies(cached, await hiddenReplyScreenNames());
     if (!mounted) return;
     setState(() => _cachedPreview = cached);
   }
@@ -507,6 +508,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     var result = (await Future.wait(futures));
     var threads = _sortChains(dedupeChainsById(result.expand((element) => element).toList()));
     threads = filterHiddenRetweets(threads, await hiddenRetweetScreenNames());
+    threads = filterHiddenReplies(threads, await hiddenReplyScreenNames());
     threads = _applyContentFilter(threads);
 
     if (!mounted) {

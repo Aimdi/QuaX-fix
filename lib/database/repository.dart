@@ -24,9 +24,10 @@ const String tableSubscriptionGroupMember = 'subscription_group_member';
 const String tableAccounts = 'accounts';
 const String tablePostNotification = 'post_notification';
 const String tableRetweetFilter = 'retweet_filter';
+const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 35;
+const int databaseVersion = 36;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -337,6 +338,12 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
           }
           await batch.commit(noResult: true);
         })),
+      ],
+      36: [
+        // Per-user "hide replies", the sibling of retweet_filter.
+        SqlMigration(
+            'CREATE TABLE IF NOT EXISTS $tableReplyFilter (user_id VARCHAR PRIMARY KEY, screen_name VARCHAR NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+            reverseSql: 'DROP TABLE $tableReplyFilter'),
       ],
     });
 
