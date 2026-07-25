@@ -76,9 +76,28 @@ final count = result["legacy"]?["favorite_count"] as int? ?? 0;
 final text = result["data"]["text"] as String;
 ```
 
-`client.dart` wraps `dart_twitter_api` and adds caching via `FFCache`. `client_unauthenticated.dart` uses a hardcoded bearer token from `constants.dart`; `client_regular_account.dart` uses stored OAuth credentials.
+The layer is split by responsibility:
 
-**Account selection strategy.** `_QuackerTwitterClient.fetch()` in `client.dart` does not pick a random account — it asks `AccountSelector` (`account_selector.dart`, a pure/testable policy) for a *healthy* account, then retries on another account on error. Two distinct health signals:
+| File | Responsibility |
+|---|---|
+| `transport.dart` | `QuackerTwitterClient` — the HTTP client every request goes through, owning account rotation and health recording |
+| `endpoints.dart` | Registry of GraphQL operations and their query ids; the only place a query id is written |
+| `endpoint_overrides.dart` | Fetches the published `endpoints.json` so a rotated query id can be repaired without a release |
+| `client.dart` | The `Twitter` API surface — one method per thing the app asks X for |
+| `timeline_parser.dart` | `TimelineParser` — turns timeline JSON into tweet chains |
+| `tweet_models.dart` | `TweetWithCard`, `TweetChain`, `TweetStatus`, `Follows` and their parsers |
+| `errors.dart` | The failure types `ui/errors.dart` renders |
+
+`client.dart` re-exports the models, errors and transport, so importing it alone
+still brings everything into scope. It wraps `dart_twitter_api` and adds caching
+via `FFCache`. `client_unauthenticated.dart` uses a hardcoded bearer token from
+`constants.dart`; `client_regular_account.dart` uses stored OAuth credentials.
+
+**When X changes something**, the file to open is `endpoints.dart` (a rotated
+query id) or `timeline_parser.dart` / `tweet_models.dart` (a reshaped response)
+— not the whole client.
+
+**Account selection strategy.** `QuackerTwitterClient.fetch()` in `transport.dart` does not pick a random account — it asks `AccountSelector` (`account_selector.dart`, a pure/testable policy) for a *healthy* account, then retries on another account on error. Two distinct health signals:
 - **Rate limit (`429`)** is **per-endpoint** (X rate-limits per endpoint, not per account). It is tracked **in memory** by `RateLimitTracker` (`rate_limit_tracker.dart`), keyed by `(accountId, uri.path)`, with the reset time from X's `x-rate-limit-reset` header (else `rateLimitFallback`). Not persisted — windows are short. The selector receives this via an injected `isRateLimited` predicate.
 - **Not-found (`404`)** is **per-account** and **persisted** (auth likely broken): flagged after `notFoundThreshold` consecutive 404s, for `notFoundCooldown`. Helpers `recordNotFound` / `recordAccountSuccess` live in `accounts.dart`; cooldown constants in `constants.dart`.
 

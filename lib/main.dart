@@ -11,6 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:quax/client/accounts.dart';
+import 'package:quax/client/endpoint_overrides.dart';
 import 'package:quax/client/login_webview.dart';
 
 import 'package:quax/constants.dart';
@@ -90,10 +91,7 @@ Future checkForUpdates(context) async {
               title: Text(L10n.of(context).an_update_for_fritter_is_available),
               content: Text(L10n.of(context).view_version_on_github(latestTag)),
               actions: [
-                TextButton(
-                  child: Text(L10n.of(context).dismiss),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
+                TextButton(child: Text(L10n.of(context).dismiss), onPressed: () => Navigator.of(context).pop()),
                 TextButton(
                   child: Text(L10n.of(context).view_on_github),
                   onPressed: () async {
@@ -249,94 +247,113 @@ Future<void> main() async {
 
   setTimeagoLocales();
 
-  final prefService = await PrefServiceShared.init(prefix: 'pref_', defaults: {
-    optionConfirmClose: true,
-    optionDisableAnimations: false,
-    optionTextScaleFactor: 1.0,
-    optionDisableScreenshots: false,
-    optionDownloadPath: '',
-    optionDownloadTreeUri: '',
-    optionDownloadType: optionDownloadTypeAsk,
-    optionHomePages: defaultHomePages.map((e) => e.id).toList(),
-    optionLocale: optionLocaleDefault,
-    optionHomeInitialTab: 'feed',
-    optionHomeDefaultFeedTab: feedTabs[0].id.name,
-    optionImageQuality: 'medium',
-    optionMediaVideoQuality: 'medium',
-    optionMediaDisableAutoload: false,
-    optionMediaQualitySplitMigrated: false,
-    optionMediaGridColumns: 3,
-    optionMediaDefaultMute: true,
-    optionMediaDefaultLoop: false,
-    optionMediaDefaultAutoPlay: false,
-    optionMediaBackgroundPlayback: true,
-    optionMediaAllowBackgroundPlayOtherApps: false,
-    optionMediaVideoPrefetchSeconds: 0,
-    optionNonConfirmationBiasMode: false,
-    optionTweetsShowSubscribeBadge: true,
-    optionZenMode: false,
-    optionZenModePageCap: 5,
-    optionFeedReadingPosition: false,
-    optionGlobalIncludeReplies: true,
-    optionGlobalIncludeRetweets: true,
-    optionThreadedReplies: true,
-    optionMediaGridLayout: mediaGridLayoutMasonry,
-    optionShouldCheckForUpdates: true,
-    optionOpenLinksInEmbeddedBrowser: false,
-    optionCrashReportsEnabled: false,
-    optionCrashGithubRepo: defaultCrashGithubRepo,
-    optionCrashGithubToken: '',
-    optionPluginDeepmarksEnabled: false,
-    optionPluginDeepmarksApiBase: '',
-    optionPluginDeepmarksApiKey: '',
-    optionPluginDeepmarksSecretKey: '',
-    optionPluginKarakeepEnabled: false,
-    optionPluginKarakeepServerUrl: '',
-    optionPluginKarakeepApiKey: '',
-    optionPluginRedditEnabled: false,
-    optionPluginRedditClientId: '',
-    optionPluginRedditSubreddits: '[]',
-    optionPluginSubstackEnabled: false,
-    optionPluginSubstackShowTab: true,
-    optionPluginSubstackPublications: '[]',
-    optionPluginSubstackReadIds: '[]',
-    optionSubscriptionGroupsOrderByAscending: true,
-    optionDisableWarningsForUnrelatedPostsInFeed: false,
-    // Reading is the whole point of the app, so posts are not clipped unless
-    // the reader asks for the compact form in settings.
-    alwaysShowFullTweetContents: true,
-    optionSubscriptionGroupsOrderByField: 'name',
-    optionSubscriptionGroupsColumns: 2,
-    optionSubscriptionOrderByAscending: true,
-    optionSubscriptionOrderByField: 'name',
-    optionSubscriptionOrderCustom: '',
-    optionThemeMode: 'system',
-    optionThemeColor: 'accent',
-    optionThemePreset: themePresetNone,
-    optionThemeTrueBlack: true,
-    optionThemeTrueBlackTweetCards: true,
-    optionShowNavigationLabels: false,
-    optionTweetsHideSensitive: true,
-    optionSavedShowAllTab: true,
-    optionSavedShowUnfiledTab: true,
-    optionSavedShowFavoritesTab: true,
-    optionSavedTabOrder: '',
-    optionSavedFolderHintShown: false,
-    optionLikedFirstToastShown: false,
-    optionUseAbsoluteTimestamp: false,
-    optionDefaultProfileTab: profileTabs[0].id.name,
-    optionUserTrendsLocations: jsonEncode({
-      'active': {'name': 'Worldwide', 'woeid': 1},
-      'locations': [
-        {'name': 'Worldwide', 'woeid': 1}
-      ]
-    }),
-  });
+  final prefService = await PrefServiceShared.init(
+    prefix: 'pref_',
+    defaults: {
+      optionConfirmClose: true,
+      optionDisableAnimations: false,
+      optionTextScaleFactor: 1.0,
+      optionDisableScreenshots: false,
+      optionDownloadPath: '',
+      optionDownloadTreeUri: '',
+      optionDownloadType: optionDownloadTypeAsk,
+      optionHomePages: defaultHomePages.map((e) => e.id).toList(),
+      optionLocale: optionLocaleDefault,
+      optionHomeInitialTab: 'feed',
+      optionHomeDefaultFeedTab: feedTabs[0].id.name,
+      optionImageQuality: 'medium',
+      optionMediaVideoQuality: 'medium',
+      optionMediaDisableAutoload: false,
+      optionMediaQualitySplitMigrated: false,
+      optionMediaGridColumns: 3,
+      optionMediaDefaultMute: true,
+      optionMediaDefaultLoop: false,
+      optionMediaDefaultAutoPlay: false,
+      optionMediaBackgroundPlayback: true,
+      optionMediaAllowBackgroundPlayOtherApps: false,
+      optionMediaVideoPrefetchSeconds: 0,
+      optionNonConfirmationBiasMode: false,
+      optionTweetsShowSubscribeBadge: true,
+      optionZenMode: false,
+      optionZenModePageCap: 5,
+      optionFeedReadingPosition: false,
+      optionGlobalIncludeReplies: true,
+      optionGlobalIncludeRetweets: true,
+      optionThreadedReplies: true,
+      optionMediaGridLayout: mediaGridLayoutMasonry,
+      optionShouldCheckForUpdates: true,
+      optionEndpointRegistryEnabled: true,
+      optionEndpointRegistryUrl: defaultEndpointRegistryUrl,
+      optionEndpointRegistryCache: '',
+      optionEndpointRegistryFetchedAt: '',
+      optionWebDavUrl: '',
+      optionWebDavUsername: '',
+      optionWebDavPassword: '',
+      optionWebDavIncludeAccounts: false,
+      optionWebDavLastSyncAt: '',
+      optionOpenLinksInEmbeddedBrowser: false,
+      optionCrashReportsEnabled: false,
+      optionCrashGithubRepo: defaultCrashGithubRepo,
+      optionCrashGithubToken: '',
+      optionPluginDeepmarksEnabled: false,
+      optionPluginDeepmarksApiBase: '',
+      optionPluginDeepmarksApiKey: '',
+      optionPluginDeepmarksSecretKey: '',
+      optionPluginKarakeepEnabled: false,
+      optionPluginKarakeepServerUrl: '',
+      optionPluginKarakeepApiKey: '',
+      optionPluginRedditEnabled: false,
+      optionPluginRedditClientId: '',
+      optionPluginRedditSubreddits: '[]',
+      optionPluginSubstackEnabled: false,
+      optionPluginSubstackShowTab: true,
+      optionPluginSubstackPublications: '[]',
+      optionPluginSubstackReadIds: '[]',
+      optionSubscriptionGroupsOrderByAscending: true,
+      optionDisableWarningsForUnrelatedPostsInFeed: false,
+      // Reading is the whole point of the app, so posts are not clipped unless
+      // the reader asks for the compact form in settings.
+      alwaysShowFullTweetContents: true,
+      optionSubscriptionGroupsOrderByField: 'name',
+      optionSubscriptionGroupsColumns: 2,
+      optionSubscriptionOrderByAscending: true,
+      optionSubscriptionOrderByField: 'name',
+      optionSubscriptionOrderCustom: '',
+      optionThemeMode: 'system',
+      optionThemeColor: 'accent',
+      optionThemePreset: themePresetNone,
+      optionThemeTrueBlack: true,
+      optionThemeTrueBlackTweetCards: true,
+      optionShowNavigationLabels: false,
+      optionTweetsHideSensitive: true,
+      optionSavedShowAllTab: true,
+      optionSavedShowUnfiledTab: true,
+      optionSavedShowFavoritesTab: true,
+      optionSavedTabOrder: '',
+      optionSavedFolderHintShown: false,
+      optionLikedFirstToastShown: false,
+      optionUseAbsoluteTimestamp: false,
+      optionDefaultProfileTab: profileTabs[0].id.name,
+      optionUserTrendsLocations: jsonEncode({
+        'active': {'name': 'Worldwide', 'woeid': 1},
+        'locations': [
+          {'name': 'Worldwide', 'woeid': 1},
+        ],
+      }),
+    },
+  );
 
   await _migrateMediaQualityPrefs(prefService);
   await _migrateCrashRepoPref(prefService);
 
   CrashReporter.install(prefService);
+
+  // Apply the last known query ids before the first request goes out; the
+  // network refresh runs unawaited so a slow or blocked fetch never delays
+  // startup.
+  final endpointRegistry = EndpointRegistry(prefService);
+  endpointRegistry.applyCached();
+  unawaited(endpointRegistry.refresh());
 
   try {
     // Run the migrations early, so models work. We also do this later on so we can display errors to the user
@@ -352,10 +369,7 @@ Future<void> main() async {
     await groupsModel.reloadGroups();
 
     var homeModel = HomeModel(prefService, groupsModel);
-    await homeModel.loadPages();
-
     var subscriptionsModel = SubscriptionsModel(prefService, groupsModel);
-    await subscriptionsModel.reloadSubscriptions();
 
     var feedSessionCache = FeedSessionCache();
     // Registration order matters: invalidateAll must run before any
@@ -372,17 +386,33 @@ Future<void> main() async {
     final karakeepClient = KarakeepClient();
     final redditClient = RedditClient();
     final redditSubreddits = RedditSubredditsStore(prefService);
-    await redditSubreddits.load();
     final redditFeed = RedditFeedStore(redditClient, redditSubreddits, prefService);
     final substackClient = SubstackClient();
     final substackPublications = SubstackPublicationsStore(prefService);
-    await substackPublications.load();
     final substackFeed = SubstackFeedStore(substackClient, substackPublications);
     final substackAdd = SubstackAddPublicationStore(substackClient);
     final substackRead = SubstackReadStore(prefService);
-    await substackRead.load();
 
-    runApp(PrefService(
+    // Everything above only constructs; the reads all happen here. They were a
+    // chain of awaits, each waiting on the last for no reason — none of them
+    // depends on another's result — so the slowest used to be the sum rather
+    // than the max.
+    //
+    // A disabled plugin's store is skipped entirely: it has no home tab and no
+    // screen, so nothing can read it, and its screen loads the store itself on
+    // mount if the plugin is turned on later.
+    await Future.wait([
+      homeModel.loadPages(),
+      subscriptionsModel.reloadSubscriptions(),
+      if (prefService.get<bool>(optionPluginRedditEnabled) == true) redditSubreddits.load(),
+      if (prefService.get<bool>(optionPluginSubstackEnabled) == true) ...[
+        substackPublications.load(),
+        substackRead.load(),
+      ],
+    ]);
+
+    runApp(
+      PrefService(
         service: prefService,
         child: MultiProvider(
           providers: [
@@ -412,7 +442,9 @@ Future<void> main() async {
             ChangeNotifierProvider(create: (_) => VideoContextState(prefService.get(optionMediaDefaultMute))),
           ],
           child: FritterApp(),
-        )));
+        ),
+      ),
+    );
   } catch (e, stackTrace) {
     log('Unable to start Fritter', error: e, stackTrace: stackTrace);
   }
@@ -561,134 +593,143 @@ class _FritterAppState extends State<FritterApp> {
     final systemScaleFactor = MediaQuery.textScalerOf(context).scale(1.0);
 
     return MediaQuery(
-        data: MediaQuery.of(context).copyWith(
-          textScaler: TextScaler.linear(_textScaleFactor * systemScaleFactor),
-        ),
-        child: DynamicColorBuilder(builder: (lightDynamic, darkDynamic) {
+      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(_textScaleFactor * systemScaleFactor)),
+      child: DynamicColorBuilder(
+        builder: (lightDynamic, darkDynamic) {
           return Portal(
-              child: SecureWidget(
-                  isSecure: _isSecure,
-                  builder: (BuildContext context, a, b) => MaterialApp(
-                        navigatorKey: _navigatorKey,
-                        localizationsDelegates: const [
-                          L10n.delegate,
-                          GlobalMaterialLocalizations.delegate,
-                          GlobalWidgetsLocalizations.delegate,
-                          GlobalCupertinoLocalizations.delegate,
-                        ],
-                        supportedLocales: L10n.delegate.supportedLocales,
-                        locale: _locale,
-                        title: 'QuaX',
-                        theme: _themePreset == themePresetFairyForest
-                            ? fairyForestTheme(pageTransitions)
-                            : _themePreset == themePresetXLookLight
-                                ? xLookLightTheme(pageTransitions)
-                                : _themePreset == themePresetXLookDim
-                                    ? xLookDimTheme(pageTransitions)
-                                    : _themePreset == themePresetXLookLightsOut
-                                        ? xLookLightsOutTheme(pageTransitions)
-                                        : ThemeData(
-                          colorScheme: _themeColor == 'accent'
-                              ? lightDynamic
-                              : ColorScheme.fromSeed(
-                                  seedColor: themeColors[_themeColor]!
-                                      .harmonizeWith(lightDynamic?.primary ?? Colors.transparent),
-                                  brightness: Brightness.light),
-                          pageTransitionsTheme: _disableAnimations == true
-                              ? PageTransitionsTheme(
-                                  builders: {
-                                    TargetPlatform.android: NoAnimationPageTransitionsBuilder(),
-                                    TargetPlatform.iOS: NoAnimationPageTransitionsBuilder(),
-                                  },
-                                )
-                              : null,
-                          useMaterial3: true,
-                        ),
-                        darkTheme: _themePreset == themePresetPitchBlack
-                            ? pitchBlackTheme(pageTransitions)
-                            : _themePreset == themePresetXLookDim
-                                ? xLookDimTheme(pageTransitions)
-                                : _themePreset == themePresetXLookLightsOut
-                                    ? xLookLightsOutTheme(pageTransitions)
-                                    : _themePreset == themePresetXLookLight
-                                        ? xLookLightTheme(pageTransitions)
-                                        : ThemeData(
-                          colorScheme: (_trueBlack == true
-                              ? (_themeColor == 'accent'
+            child: SecureWidget(
+              isSecure: _isSecure,
+              builder: (BuildContext context, a, b) => MaterialApp(
+                navigatorKey: _navigatorKey,
+                localizationsDelegates: const [
+                  L10n.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: L10n.delegate.supportedLocales,
+                locale: _locale,
+                title: 'QuaX',
+                theme: _themePreset == themePresetFairyForest
+                    ? fairyForestTheme(pageTransitions)
+                    : _themePreset == themePresetXLookLight
+                    ? xLookLightTheme(pageTransitions)
+                    : _themePreset == themePresetXLookDim
+                    ? xLookDimTheme(pageTransitions)
+                    : _themePreset == themePresetXLookLightsOut
+                    ? xLookLightsOutTheme(pageTransitions)
+                    : ThemeData(
+                        colorScheme: _themeColor == 'accent'
+                            ? lightDynamic
+                            : ColorScheme.fromSeed(
+                                seedColor: themeColors[_themeColor]!.harmonizeWith(
+                                  lightDynamic?.primary ?? Colors.transparent,
+                                ),
+                                brightness: Brightness.light,
+                              ),
+                        pageTransitionsTheme: _disableAnimations == true
+                            ? PageTransitionsTheme(
+                                builders: {
+                                  TargetPlatform.android: NoAnimationPageTransitionsBuilder(),
+                                  TargetPlatform.iOS: NoAnimationPageTransitionsBuilder(),
+                                },
+                              )
+                            : null,
+                        useMaterial3: true,
+                      ),
+                darkTheme: _themePreset == themePresetPitchBlack
+                    ? pitchBlackTheme(pageTransitions)
+                    : _themePreset == themePresetXLookDim
+                    ? xLookDimTheme(pageTransitions)
+                    : _themePreset == themePresetXLookLightsOut
+                    ? xLookLightsOutTheme(pageTransitions)
+                    : _themePreset == themePresetXLookLight
+                    ? xLookLightTheme(pageTransitions)
+                    : ThemeData(
+                        colorScheme: (_trueBlack == true
+                            ? (_themeColor == 'accent'
                                       ? darkDynamic
                                       : ColorScheme.fromSeed(
-                                          seedColor: themeColors[_themeColor]!
-                                              .harmonizeWith(darkDynamic?.primary ?? Colors.transparent),
-                                          brightness: Brightness.dark))
+                                          seedColor: themeColors[_themeColor]!.harmonizeWith(
+                                            darkDynamic?.primary ?? Colors.transparent,
+                                          ),
+                                          brightness: Brightness.dark,
+                                        ))
                                   ?.copyWith(surface: Colors.black)
-                              : (_themeColor == 'accent'
+                            : (_themeColor == 'accent'
                                   ? darkDynamic
                                   : ColorScheme.fromSeed(
-                                      seedColor: themeColors[_themeColor]!
-                                          .harmonizeWith(darkDynamic?.primary ?? Colors.transparent),
-                                      brightness: Brightness.dark))),
-                          navigationBarTheme:
-                              (_trueBlack == true ? NavigationBarThemeData(backgroundColor: Colors.black) : null),
-                          scaffoldBackgroundColor: (_trueBlack == true ? Colors.black : null),
-                          appBarTheme: (_trueBlack == true ? AppBarThemeData(backgroundColor: Colors.black) : null),
-                          pageTransitionsTheme: _disableAnimations == true
-                              ? PageTransitionsTheme(
-                                  builders: {
-                                    TargetPlatform.android: NoAnimationPageTransitionsBuilder(),
-                                    TargetPlatform.iOS: NoAnimationPageTransitionsBuilder(),
-                                  },
-                                )
-                              : null,
-                          useMaterial3: true,
-                        ),
-                        themeMode: _themePreset == themePresetFairyForest ||
-                                _themePreset == themePresetXLookLight
-                            ? ThemeMode.light
-                            : _themePreset == themePresetPitchBlack ||
-                                    _themePreset == themePresetXLookDim ||
-                                    _themePreset == themePresetXLookLightsOut
-                                ? ThemeMode.dark
-                                : themeMode,
-                        initialRoute: '/',
-                        routes: {
-                          routeHome: (context) => const DefaultPage(),
-                          routeGroup: (context) => const GroupScreen(),
-                          routeProfile: (context) => const ProfileScreen(),
-                          routeSearch: (context) => const ResultsScreen(),
-                          routeSavedFolders: (context) => const SavedFoldersScreen(),
-                          routeSettings: (context) => const SettingsScreen(),
-                          routeSettingsExport: (context) => const SettingsExportScreen(),
-                          routeSettingsHome: (context) => const SettingsHomeFragment(),
-                          routeQuotes: (context) => const QuotesScreen(),
-                          routeStatus: (context) => const StatusScreen(),
-                        },
-                        builder: (context, child) {
-                          if (_checkUpdates && !_updateDialogShown) {
-                            _updateDialogShown = true;
-                            // Use navigatorKey's context for showDialog
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              checkForUpdates(_navigatorKey.currentContext!);
-                            });
-                          }
+                                      seedColor: themeColors[_themeColor]!.harmonizeWith(
+                                        darkDynamic?.primary ?? Colors.transparent,
+                                      ),
+                                      brightness: Brightness.dark,
+                                    ))),
+                        navigationBarTheme: (_trueBlack == true
+                            ? NavigationBarThemeData(backgroundColor: Colors.black)
+                            : null),
+                        scaffoldBackgroundColor: (_trueBlack == true ? Colors.black : null),
+                        appBarTheme: (_trueBlack == true ? AppBarThemeData(backgroundColor: Colors.black) : null),
+                        pageTransitionsTheme: _disableAnimations == true
+                            ? PageTransitionsTheme(
+                                builders: {
+                                  TargetPlatform.android: NoAnimationPageTransitionsBuilder(),
+                                  TargetPlatform.iOS: NoAnimationPageTransitionsBuilder(),
+                                },
+                              )
+                            : null,
+                        useMaterial3: true,
+                      ),
+                themeMode: _themePreset == themePresetFairyForest || _themePreset == themePresetXLookLight
+                    ? ThemeMode.light
+                    : _themePreset == themePresetPitchBlack ||
+                          _themePreset == themePresetXLookDim ||
+                          _themePreset == themePresetXLookLightsOut
+                    ? ThemeMode.dark
+                    : themeMode,
+                initialRoute: '/',
+                routes: {
+                  routeHome: (context) => const DefaultPage(),
+                  routeGroup: (context) => const GroupScreen(),
+                  routeProfile: (context) => const ProfileScreen(),
+                  routeSearch: (context) => const ResultsScreen(),
+                  routeSavedFolders: (context) => const SavedFoldersScreen(),
+                  routeSettings: (context) => const SettingsScreen(),
+                  routeSettingsExport: (context) => const SettingsExportScreen(),
+                  routeSettingsHome: (context) => const SettingsHomeFragment(),
+                  routeQuotes: (context) => const QuotesScreen(),
+                  routeStatus: (context) => const StatusScreen(),
+                },
+                builder: (context, child) {
+                  if (_checkUpdates && !_updateDialogShown) {
+                    _updateDialogShown = true;
+                    // Use navigatorKey's context for showDialog
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      checkForUpdates(_navigatorKey.currentContext!);
+                    });
+                  }
 
-                          if (!_accountDialogShown) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              _accountDialogShown = true;
-                              checkForAccounts(_navigatorKey.currentContext!);
-                            });
-                          }
+                  if (!_accountDialogShown) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _accountDialogShown = true;
+                      checkForAccounts(_navigatorKey.currentContext!);
+                    });
+                  }
 
-                          // Replace the default red screen of death with a slightly friendlier one
-                          ErrorWidget.builder = (FlutterErrorDetails details) => FullPageErrorWidget(
-                                error: details.exception,
-                                stackTrace: details.stack,
-                                prefix: L10n.of(context).something_broke_in_fritter,
-                              );
+                  // Replace the default red screen of death with a slightly friendlier one
+                  ErrorWidget.builder = (FlutterErrorDetails details) => FullPageErrorWidget(
+                    error: details.exception,
+                    stackTrace: details.stack,
+                    prefix: L10n.of(context).something_broke_in_fritter,
+                  );
 
-                          return child ?? Container();
-                        },
-                      )));
-        }));
+                  return child ?? Container();
+                },
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
@@ -700,6 +741,8 @@ class DefaultPage extends StatefulWidget {
 }
 
 class _DefaultPageState extends State<DefaultPage> {
+  static final log = Logger('DefaultPage');
+
   Object? _migrationError;
   StackTrace? _migrationStackTrace;
   StreamSubscription<Uri>? _sub;
@@ -711,15 +754,14 @@ class _DefaultPageState extends State<DefaultPage> {
     }
     switch (parsed) {
       case ProfileUriInfo(screenName: final screenName, profileTabIndex: final tab):
-        Navigator.pushNamed(context, routeProfile,
-            arguments: ProfileScreenArguments.fromScreenName(screenName, tab));
+        Navigator.pushNamed(context, routeProfile, arguments: ProfileScreenArguments.fromScreenName(screenName, tab));
         return;
-      case PostUriInfo(screenName: final screenName, id: final id, direct: final direct, photoNumber: final photoNumber):
-        Navigator.pushNamed(context, routeStatus,
-            arguments: StatusScreenArguments(
-              id: id,
-              username: screenName,
-            ));
+      case PostUriInfo(screenName: final screenName, id: final id):
+        Navigator.pushNamed(
+          context,
+          routeStatus,
+          arguments: StatusScreenArguments(id: id, username: screenName),
+        );
         return;
       case ListUriInfo(id: final id):
         Navigator.push(context, MaterialPageRoute(builder: (_) => ListImportScreen(initialListId: id)));
@@ -735,13 +777,13 @@ class _DefaultPageState extends State<DefaultPage> {
               actions: [
                 TextButton(
                   child: Text(L10n.of(context).report),
-                  onPressed:  () => openUri(context, 'https://github.com/teskann/quax/issues'),
+                  onPressed: () => openUri(context, 'https://github.com/teskann/quax/issues'),
                 ),
                 TextButton(
                   child: Text(L10n.of(context).open_in_browser),
                   onPressed: () {
                     openInDefaultBrowser(link.toString());
-                    if(context.mounted) {
+                    if (context.mounted) {
                       Navigator.of(context).pop();
                     }
                   },
@@ -771,53 +813,58 @@ class _DefaultPageState extends State<DefaultPage> {
     final appLinks = AppLinks();
 
     // Attach a listener to the stream
-    _sub = appLinks.uriLinkStream.listen((link) => handleInitialLink(link), onError: (err) {
-      // TODO: Handle exception by warning the user their action did not succeed
-    });
+    _sub = appLinks.uriLinkStream.listen(
+      (link) => handleInitialLink(link),
+      onError: (err, stackTrace) {
+        // A link that never reaches handleInitialLink leaves the user staring at
+        // whatever was already on screen, with no clue their tap did nothing.
+        log.warning('Unable to handle an incoming link', err, stackTrace);
+
+        if (mounted) {
+          showSnackBar(context, icon: '🔗', message: L10n.of(context).unable_to_open_link);
+        }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     if (_migrationError != null || _migrationStackTrace != null) {
       return ScaffoldErrorWidget(
-          error: _migrationError,
-          stackTrace: _migrationStackTrace,
-          prefix: L10n.of(context).unable_to_run_the_database_migrations);
+        error: _migrationError,
+        stackTrace: _migrationStackTrace,
+        prefix: L10n.of(context).unable_to_run_the_database_migrations,
+      );
     }
 
     return PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, result) async {
-          if (didPop) return;
-          var prefService = PrefService.of(context);
-          if (!prefService.get(optionConfirmClose)) {
-            SystemNavigator.pop();
-            return;
-          }
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        var prefService = PrefService.of(context);
+        if (!prefService.get(optionConfirmClose)) {
+          SystemNavigator.pop();
+          return;
+        }
 
-          final confirmed = await showDialog<bool>(
-            context: context,
-            builder: (c) => AlertDialog(
-              title: Text(L10n.current.are_you_sure),
-              content: Text(L10n.current.confirm_close_fritter),
-              actions: [
-                TextButton(
-                  child: Text(L10n.current.no),
-                  onPressed: () => Navigator.pop(c, false),
-                ),
-                TextButton(
-                  child: Text(L10n.current.yes),
-                  onPressed: () => Navigator.pop(c, true),
-                ),
-              ],
-            ),
-          );
+        final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (c) => AlertDialog(
+            title: Text(L10n.current.are_you_sure),
+            content: Text(L10n.current.confirm_close_fritter),
+            actions: [
+              TextButton(child: Text(L10n.current.no), onPressed: () => Navigator.pop(c, false)),
+              TextButton(child: Text(L10n.current.yes), onPressed: () => Navigator.pop(c, true)),
+            ],
+          ),
+        );
 
-          if (confirmed == true && context.mounted) {
-            SystemNavigator.pop();
-          }
-        },
-        child: const HomeScreen());
+        if (confirmed == true && context.mounted) {
+          SystemNavigator.pop();
+        }
+      },
+      child: const HomeScreen(),
+    );
   }
 
   @override

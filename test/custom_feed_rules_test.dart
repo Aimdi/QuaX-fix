@@ -1,4 +1,3 @@
-import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quax/client/client.dart';
 import 'package:quax/constants.dart';

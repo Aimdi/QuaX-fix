@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:quax/client/client.dart';
+import 'package:quax/constants.dart';
+import 'package:quax/database/repository.dart';
+import 'package:quax/database/timeline_cache.dart';
 import 'package:quax/profile/profile.dart';
 import 'package:quax/tweet/conversation.dart';
 import 'package:quax/ui/errors.dart';
@@ -9,6 +12,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/utils/paging.dart';
 import 'package:pref/pref.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
 class ProfileTweets extends StatefulWidget {
@@ -31,11 +35,14 @@ class ProfileTweets extends StatefulWidget {
 }
 
 class _ProfileTweetsState extends State<ProfileTweets> with AutomaticKeepAliveClientMixin<ProfileTweets> {
+  static final log = Logger('ProfileTweets');
+
   late final CursorPagingController<String, TweetChain> _paging;
   PagingController<int, TweetChain> get _pagingController => _paging.pagingController;
 
   static const int pageSize = 20;
   int loadTweetsCounter = 0;
+  bool _bypassCache = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -60,17 +67,57 @@ class _ProfileTweetsState extends State<ProfileTweets> with AutomaticKeepAliveCl
     return loadTweetsCounter;
   }
 
-  Future<CursorPage<String, TweetChain>> _fetchPage(String? cursor) async {
-    var result = await Twitter.getTweets(
+  Future<TweetStatus> _load(String? cursor) => Twitter.getTweets(
+        widget.user.idStr!,
+        widget.type,
+        widget.pinnedTweets,
+        cursor: cursor,
+        count: pageSize,
+        includeReplies: widget.includeReplies,
+        getTweetsCounter: getLoadTweetsCounter,
+        incrementTweetsCounter: incrementLoadTweetsCounter,
+      );
+
+  /// The first page of a profile, from cache when it is fresh enough, and from
+  /// cache at any age when the request fails. Opening the same profile twice in
+  /// a session used to cost two requests; now the second one paints instantly
+  /// and still shows something while rate limited or offline.
+  ///
+  /// Only the first page is cached — see [TimelineCache].
+  Future<TweetStatus> _loadFirstPage() async {
+    final key = TimelineCache.profileKey(
       widget.user.idStr!,
       widget.type,
-      widget.pinnedTweets,
-      cursor: cursor,
-      count: pageSize,
       includeReplies: widget.includeReplies,
-      getTweetsCounter: getLoadTweetsCounter,
-      incrementTweetsCounter: incrementLoadTweetsCounter,
     );
+    final cache = TimelineCache(await Repository.writable());
+
+    // A pull-to-refresh must reach X; serving the cache would make the gesture
+    // do nothing for the length of the window.
+    if (!_bypassCache) {
+      final cached = await cache.read(key, maxAge: profileCacheMaxAge);
+      if (cached != null) {
+        return cached;
+      }
+    }
+    _bypassCache = false;
+
+    try {
+      final result = await _load(null);
+      await cache.write(key, result);
+      return result;
+    } catch (e) {
+      final stale = await cache.readStale(key);
+      if (stale == null) {
+        rethrow;
+      }
+      log.info('Showing the cached profile timeline for ${widget.user.idStr} after $e');
+      return stale;
+    }
+  }
+
+  Future<CursorPage<String, TweetChain>> _fetchPage(String? cursor) async {
+    var result = cursor == null ? await _loadFirstPage() : await _load(cursor);
 
     // Stop when the cursor doesn't advance (or is gone), keeping the chains.
     final next = result.cursorBottom;
@@ -93,7 +140,10 @@ class _ProfileTweetsState extends State<ProfileTweets> with AutomaticKeepAliveCl
       }
 
       return RefreshIndicator(
-        onRefresh: () async => _pagingController.refresh(),
+        onRefresh: () async {
+          _bypassCache = true;
+          _pagingController.refresh();
+        },
         child: PagingListener<int, TweetChain>(
           controller: _pagingController,
           builder: (context, state, fetchNextPage) => PagedListView<int, TweetChain>(

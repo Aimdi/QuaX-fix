@@ -170,10 +170,50 @@ final Map<String, String> userAgentHeader = {
 const String bearerToken =
     "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA";
 
+// The guest (logged-out) path uses a different bearer from the authenticated
+// one above. It was written out twice inline in client_unauthenticated.dart.
+const String guestBearerToken =
+    "Bearer AAAAAAAAAAAAAAAAAAAAAGHtAgAAAAAA%2Bx7ILXNILCqkSGIzy6faIHZ9s3Q%3DQy97w6SIrzE7lQwPJEYQBsArEE2fC25caFwRBvAGi456G09vGR";
+
+// How long a derived x-client-transaction-id key is trusted. X rotates the home
+// page and on-demand bundle it is built from, and a stale key makes every
+// request 404 — indistinguishable from a rotated query id.
+const Duration transactionKeyLifetime = Duration(hours: 6);
+
+// How long to wait before re-deriving after a failure. Deriving costs two
+// requests to x.com, so a persistent failure (X reshaping its HTML) would
+// otherwise turn every single app request into two more.
+const Duration transactionKeyRetryCooldown = Duration(seconds: 30);
+
 // Account selection strategy: cooldowns and flagging thresholds.
 const Duration rateLimitFallback = Duration(minutes: 15);
 const Duration notFoundCooldown = Duration(hours: 6);
 const int notFoundThreshold = 3;
+
+// Endpoint registry: repairs rotated GraphQL query ids without a new release.
+const optionEndpointRegistryEnabled = 'api.endpoint_registry.enabled';
+const optionEndpointRegistryUrl = 'api.endpoint_registry.url';
+const optionEndpointRegistryCache = 'api.endpoint_registry.cache';
+const optionEndpointRegistryFetchedAt = 'api.endpoint_registry.fetched_at';
+const defaultEndpointRegistryUrl =
+    'https://raw.githubusercontent.com/$githubRepo/master/endpoints.json';
+const Duration endpointRegistryTimeout = Duration(seconds: 10);
+
+// Offline read cache for threads and profile timelines (feed_group_chunk covers
+// group feeds). Short windows: these are re-read within a session far more
+// often than they change, and a stale entry is still served when a request
+// fails outright.
+const Duration threadCacheMaxAge = Duration(minutes: 10);
+const Duration profileCacheMaxAge = Duration(minutes: 15);
+
+// WebDAV sync of the local backup payload to a server the reader controls.
+const optionWebDavUrl = 'sync.webdav.url';
+const optionWebDavUsername = 'sync.webdav.username';
+const optionWebDavPassword = 'sync.webdav.password';
+// Off by default: the backup payload carries X session tokens, and uploading
+// those anywhere has to be a deliberate choice rather than a default.
+const optionWebDavIncludeAccounts = 'sync.webdav.include_accounts';
+const optionWebDavLastSyncAt = 'sync.webdav.last_sync_at';
 
 const routeHome = '/';
 const routeGroup = '/group';

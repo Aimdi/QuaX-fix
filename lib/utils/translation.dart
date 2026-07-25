@@ -6,18 +6,39 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_cache/flutter_cache.dart' as cache;
 import 'package:quax/client/accounts.dart';
 import 'package:quax/client/headers.dart';
-import 'package:quax/utils/misc.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 
-Future<bool> isLanguageSupportedForTranslation(String lang) async {
-  // TODO: Cache this response, per host, for x amount of time
-  var res = await TranslationAPI.getSupportedLanguages();
-  if (res.success) {
-    return findInJSONArray(res.body, 'code', getShortSystemLocale());
-  }
+/// How long a translated post is kept. The key names a single post, so without
+/// an expiry the cache grows with every post ever translated and is never
+/// pruned.
+const Duration translationCacheTtl = Duration(days: 7);
 
-  throw res;
+/// Cache key for one translation.
+///
+/// The target locale is part of the key. It used to be absent, which was
+/// harmless only because the cache was never read — see
+/// [decodeCachedTranslation]. Repairing the read without this would have served
+/// a reader who changed their device language the translation from the old one.
+String translationCacheKey({required String id, required String sourceLanguage, required Locale target}) =>
+    'translation.$sourceLanguage.${target.toLanguageTag()}.$id';
+
+/// A cached translation, or null when there is nothing usable stored.
+///
+/// The guard here used to read `result != null && result == true`, comparing
+/// the cached *string* against a bool. That is always false, so the cache was
+/// written on every translation and read on none: each one re-requested from X
+/// while the entries accumulated on disk, unread.
+TranslationAPIResult? decodeCachedTranslation(Object? cached) {
+  if (cached is! String || cached.isEmpty) {
+    return null;
+  }
+  try {
+    return TranslationAPIResult(success: true, body: jsonDecode(cached));
+  } on FormatException {
+    // Written by an older build, or truncated. Re-requesting is correct.
+    return null;
+  }
 }
 
 class TranslationAPIResult {
@@ -32,20 +53,11 @@ class TranslationAPIResult {
 class TranslationAPI {
   static final log = Logger('TranslationAPI');
 
-  static Future<TranslationAPIResult> getSupportedLanguages() async {
-    var key = 'translation.supported_languages';
-
-    return cacheRequest(key, () async {
-      var response = await http.get(Uri.https('libretranslate.com', '/languages'));
-      return await parseResponse(response, 'Unable to get supported languages');
-    });
-  }
-
   static Future<TranslationAPIResult> translate(
       Locale locale, String id, List<String> text, String sourceLanguage) async {
     var formData = {'id': id, 'dst_lang': locale.toLanguageTag(), 'content_type': 'POST'};
 
-    var key = 'translation.$sourceLanguage.$id';
+    var key = translationCacheKey(id: id, sourceLanguage: sourceLanguage, target: locale);
 
     var res = await cacheRequest(key, () async {
       Future<http.Response> getTranslation() async {
@@ -75,21 +87,18 @@ class TranslationAPI {
 
   static Future<TranslationAPIResult> cacheRequest(
       String key, Future<TranslationAPIResult> Function() makeRequest) async {
-    var result = await cache.load(key);
-    if (result != null && result == true) {
-      return TranslationAPIResult(success: true, body: jsonDecode(result));
+    final cached = decodeCachedTranslation(await cache.load(key));
+    if (cached != null) {
+      return cached;
     }
 
-// Otherwise, make the request
-    var response = await makeRequest();
+    final response = await makeRequest();
     if (response.success) {
-// Cache the response if it's a successful one
-      await cache.write(key, jsonEncode(response.body));
-
-      return TranslationAPIResult(success: true, body: response.body);
+      // Only successes are cached, and only for a while: the key names one post,
+      // so an unbounded cache grows with every post ever translated.
+      await cache.write(key, jsonEncode(response.body), translationCacheTtl.inSeconds);
     }
 
-// Otherwise, we always want to return the error without caching
     return response;
   }
 

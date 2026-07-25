@@ -20,4 +20,12 @@ class RateLimitTracker {
   static void clear(String accountId, String endpoint) {
     _resetByAccountEndpoint[accountId]?.remove(endpoint);
   }
+
+  /// Endpoints still limited for an account, with the time each frees up.
+  /// Windows that have already elapsed are left out, so this reads as the
+  /// account's live state rather than its history.
+  static Map<String, DateTime> activeFor(String accountId, DateTime now) => {
+        for (final entry in (_resetByAccountEndpoint[accountId] ?? const <String, DateTime>{}).entries)
+          if (entry.value.isAfter(now)) entry.key: entry.value,
+      };
 }

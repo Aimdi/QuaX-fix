@@ -27,7 +27,9 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
-          java-version: '21.x'
+          # Pinned exactly, not '21.x': a reproducible build has to name the
+          # JDK that produced it. See docs/reproducible-builds.md.
+          java-version: '21.0.10'
 
       - name: Install and set up Flutter
         uses: subosito/flutter-action@v2
@@ -84,12 +86,17 @@ jobs:
           # Create a directory for our release APKs
           mkdir -pv build/app/outputs/release
 
+          # pubspec keeps the upstream version (4.12.0), so the tag is the only
+          # thing that identifies which release this APK is. The update check
+          # compares against it; without it every launch reports an update.
+          RELEASE_TAG="${{ inputs.tag }}"
+
           # Build our big boy APK, and move it into the release APKs folder
-          flutter build apk --release --no-tree-shake-icons
+          flutter build apk --release --no-tree-shake-icons --dart-define=QUAX_RELEASE_TAG="$RELEASE_TAG"
           mv build/app/outputs/apk/release/*.apk build/app/outputs/release
 
           # Build our ABI-specific APKs and move them into the release APKs folder
-          flutter build apk --release --no-tree-shake-icons --split-per-abi --target-platform=android-x64,android-arm,android-arm64
+          flutter build apk --release --no-tree-shake-icons --dart-define=QUAX_RELEASE_TAG="$RELEASE_TAG" --split-per-abi --target-platform=android-x64,android-arm,android-arm64
           mv build/app/outputs/apk/release/*.apk build/app/outputs/release
         env:
           KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
@@ -101,4 +108,12 @@ jobs:
         with:
           tag_name: ${{ inputs.tag }}
           name: ${{ inputs.tag }}
+          # The tag does not exist yet on this path, so the action creates it.
+          # Without target_commitish it anchors the new tag to the repository's
+          # default branch instead of the commit that was just built, and the
+          # tag then ships source that is not what the APKs were compiled from.
+          target_commitish: ${{ github.sha }}
+          # release.yml ships these notes; without them a dispatched release
+          # publishes with an empty body and no install instructions.
+          body_path: release-notes.md
           files: build/app/outputs/release/*.apk

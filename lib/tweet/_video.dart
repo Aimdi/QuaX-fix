@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_twitter_api/twitter_api.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart' as mk;
@@ -12,6 +13,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/tweet/_video_controls.dart';
 import 'package:quax/tweet/video_audio_focus.dart';
 import 'package:quax/tweet/video_controller_pool.dart';
+import 'package:quax/tweet/video_playback_policy.dart';
 import 'package:quax/tweet/video_quality.dart';
 import 'package:quax/utils/iterables.dart';
 import 'package:provider/provider.dart';
@@ -27,9 +29,11 @@ Future<void> _enterFullscreen(double aspectRatio) async {
     final portrait = aspectRatio < 1.0;
     await Future.wait([
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: []),
-      SystemChrome.setPreferredOrientations(portrait
-          ? [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
-          : [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]),
+      SystemChrome.setPreferredOrientations(
+        portrait
+            ? [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
+            : [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight],
+      ),
     ]);
   } catch (_) {}
 }
@@ -60,8 +64,7 @@ class TweetVideoMetadata {
         .sorted((a, b) => -(a.bitrate!.compareTo(b.bitrate!)))
         .toList();
 
-    var qualities =
-        mp4Variants.map((e) => TweetVideoQuality(e.url!, _qualityLabel(e.url!, e.bitrate))).toList();
+    var qualities = mp4Variants.map((e) => TweetVideoQuality(e.url!, _qualityLabel(e.url!, e.bitrate))).toList();
 
     var mp4Url = qualities.isNotEmpty ? qualities.first.url : null;
     var streamUrl = mp4Url ?? variants[0].url!;
@@ -135,6 +138,8 @@ class _TweetVideoState extends State<TweetVideo> {
   bool _mixWithOthers = false;
   int _autoRetries = 0;
   final Key _visibilityKey = UniqueKey();
+  final Key _creationGateKey = UniqueKey();
+  bool _hasBeenVisible = false;
   double _lastVisibleFraction = 0.0;
   Timer? _pauseTimer;
   StreamSubscription<double>? _muteSub;
@@ -186,8 +191,7 @@ class _TweetVideoState extends State<TweetVideo> {
       }
     }
 
-    await player.setPlaylistMode(
-        (widget.loop || prefLoop) ? mk.PlaylistMode.single : mk.PlaylistMode.none);
+    await player.setPlaylistMode((widget.loop || prefLoop) ? mk.PlaylistMode.single : mk.PlaylistMode.none);
     await player.setVolume(startMuted ? 0.0 : 100.0);
     await player.open(mk.Media(streamUrl), play: widget.alwaysPlay || _userRequestedPlay);
 
@@ -334,10 +338,7 @@ class _TweetVideoState extends State<TweetVideo> {
     setState(() => _subtitlesEnabled = enable);
     if (enable) {
       final subs = pooled.player.state.tracks.subtitle;
-      final track = subs.firstWhere(
-        (t) => t.id != 'no' && t.id != 'auto',
-        orElse: () => mk.SubtitleTrack.auto(),
-      );
+      final track = subs.firstWhere((t) => t.id != 'no' && t.id != 'auto', orElse: () => mk.SubtitleTrack.auto());
       pooled.player.setSubtitleTrack(track);
     } else {
       pooled.player.setSubtitleTrack(mk.SubtitleTrack.no());
@@ -352,13 +353,13 @@ class _TweetVideoState extends State<TweetVideo> {
       controls: widget.disableControls
           ? null
           : (state) => QuaxControls(
-                pooled: pooled,
-                username: widget.username,
-                allowMuting: true,
-                accentColor: accent,
-                subtitlesEnabled: _subtitlesEnabled,
-                onToggleSubtitles: () => _toggleSubtitles(pooled),
-              ),
+              pooled: pooled,
+              username: widget.username,
+              allowMuting: true,
+              accentColor: accent,
+              subtitlesEnabled: _subtitlesEnabled,
+              onToggleSubtitles: () => _toggleSubtitles(pooled),
+            ),
       wakelock: !widget.disableControls,
       pauseUponEnteringBackgroundMode: !prefBackgroundPlayback,
       subtitleViewConfiguration: SubtitleViewConfiguration(visible: _subtitlesEnabled),
@@ -394,7 +395,7 @@ class _TweetVideoState extends State<TweetVideo> {
               alignment: Alignment.center,
               children: [
                 if (widget.metadata.imageUrl != null)
-                  Image.network(widget.metadata.imageUrl!, fit: BoxFit.cover),
+                  ExtendedImage.network(widget.metadata.imageUrl!, cache: true, fit: BoxFit.cover),
                 if (!widget.disableControls) const Center(child: CircularProgressIndicator()),
               ],
             ),
@@ -402,6 +403,31 @@ class _TweetVideoState extends State<TweetVideo> {
         ),
       ],
     );
+  }
+
+  /// The thumbnail X ships with the video, at the video's own aspect ratio, so
+  /// the tile occupies its final size before any player exists.
+  Widget _poster({Widget? child}) {
+    return AspectRatio(
+      aspectRatio: widget.metadata.aspectRatio,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          if (widget.metadata.imageUrl != null)
+            Positioned.fill(
+              child: ExtendedImage.network(widget.metadata.imageUrl!, cache: true, fit: BoxFit.cover),
+            ),
+          ?child,
+        ],
+      ),
+    );
+  }
+
+  void _onCreationGateVisibilityChanged(VisibilityInfo info) {
+    if (_hasBeenVisible || info.visibleFraction <= 0 || !mounted) {
+      return;
+    }
+    setState(() => _hasBeenVisible = true);
   }
 
   @override
@@ -416,27 +442,41 @@ class _TweetVideoState extends State<TweetVideo> {
     final key = _cacheKey;
     final alreadyCached = key != null && (_pool?.contains(key) ?? false);
 
-    if (!prefAutoPlay && !widget.alwaysPlay && !_userRequestedPlay && !alreadyCached) {
+    if (showsPlayButton(
+      autoPlayPref: prefAutoPlay,
+      alwaysPlay: widget.alwaysPlay,
+      userRequestedPlay: _userRequestedPlay,
+      alreadyCached: alreadyCached,
+    )) {
       return GestureDetector(
         onTap: () => setState(() => _userRequestedPlay = true),
-        child: AspectRatio(
-          aspectRatio: widget.metadata.aspectRatio,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              if (widget.metadata.imageUrl != null)
-                Positioned.fill(child: Image.network(widget.metadata.imageUrl!, fit: BoxFit.cover)),
-              FritterCenterPlayButton(
-                backgroundColor: Colors.black54,
-                iconColor: Colors.white,
-                show: true,
-                isPlaying: false,
-                isFinished: false,
-                onPressed: () => setState(() => _userRequestedPlay = true),
-              ),
-            ],
+        child: _poster(
+          child: FritterCenterPlayButton(
+            backgroundColor: Colors.black54,
+            iconColor: Colors.white,
+            show: true,
+            isPlaying: false,
+            isFinished: false,
+            onPressed: () => setState(() => _userRequestedPlay = true),
           ),
         ),
+      );
+    }
+
+    // Autoplaying videos and looping GIFs never reach the tap gate above, so
+    // without this an off-screen tile would allocate a libmpv player and a
+    // native texture purely by being built.
+    if (!shouldCreatePlayer(
+      autoPlayPref: prefAutoPlay,
+      alwaysPlay: widget.alwaysPlay,
+      userRequestedPlay: _userRequestedPlay,
+      alreadyCached: alreadyCached,
+      hasBeenVisible: _hasBeenVisible,
+    )) {
+      return VisibilityDetector(
+        key: _creationGateKey,
+        onVisibilityChanged: _onCreationGateVisibilityChanged,
+        child: _poster(),
       );
     }
 
@@ -452,17 +492,7 @@ class _TweetVideoState extends State<TweetVideo> {
         final hasVideo = pooled != null;
 
         if (isLoading && !hasVideo) {
-          return AspectRatio(
-            aspectRatio: widget.metadata.aspectRatio,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                if (widget.metadata.imageUrl != null)
-                  Positioned.fill(child: Image.network(widget.metadata.imageUrl!, fit: BoxFit.cover)),
-                const CircularProgressIndicator(),
-              ],
-            ),
-          );
+          return _poster(child: const CircularProgressIndicator());
         }
 
         if (hasError && !_firstFrameRendered) {
@@ -492,7 +522,8 @@ class _TweetVideoState extends State<TweetVideo> {
               ? VisibilityDetector(
                   key: _visibilityKey,
                   onVisibilityChanged: (info) => _onVisibilityChanged(info, pooled),
-                  child: _buildVideo(pooled, prefBackgroundPlayback))
+                  child: _buildVideo(pooled, prefBackgroundPlayback),
+                )
               : const SizedBox.shrink(),
         );
       },

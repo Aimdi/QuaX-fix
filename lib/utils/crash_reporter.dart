@@ -218,8 +218,13 @@ Uri? issueApiUri(String repo) {
 }
 
 /// Strip secrets before settings export / backup.
+///
+/// The WebDAV password is stripped for two reasons: a backup file is shared and
+/// inspected, and the synced document is itself written to that server — leaving
+/// the password in would store the server's own credentials on it in plaintext.
 Map<String, dynamic> prefsMapWithoutSecrets(Map<String, dynamic> prefs) {
   final copy = Map<String, dynamic>.from(prefs);
   copy.remove(optionCrashGithubToken);
+  copy.remove(optionWebDavPassword);
   return copy;
 }

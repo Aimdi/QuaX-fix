@@ -32,13 +32,30 @@ class RateLimitedException with SyntheticException implements Exception {
   String toString() => 'Rate limited';
 }
 
-/// Thrown when every account that was actually tried returned a 404, which on X
-/// usually means the accounts are no longer correctly authenticated. Surfaced
-/// with a dedicated, actionable error widget rather than reported to the crash
-/// catcher.
+/// Thrown when an account returned a 404 on an endpoint that another account
+/// served successfully. That contrast is the only reliable evidence the account
+/// itself is at fault, since X answers with 404 for several unrelated reasons.
+/// Surfaced with a dedicated, actionable error widget rather than reported to
+/// the crash catcher.
 class NoWorkingAccountException with SyntheticException implements Exception {
   @override
   String toString() => 'No working account';
+}
+
+/// Thrown when *every* account got a 404 on the same endpoint.
+///
+/// X answers 404 for a rotated GraphQL query id and for a stale
+/// `x-client-transaction-id` just as it does for a broken sign-in. Blaming the
+/// accounts in that case tells the reader to re-add accounts that were never
+/// the problem, so an endpoint that refuses everyone is reported as its own
+/// failure instead.
+class EndpointRefusedException with SyntheticException implements Exception {
+  final String endpoint;
+
+  EndpointRefusedException(this.endpoint);
+
+  @override
+  String toString() => 'Endpoint refused every account: $endpoint';
 }
 
 class ManuallyReportedException {

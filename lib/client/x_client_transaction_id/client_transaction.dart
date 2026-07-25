@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:html/dom.dart' as html_dom;
 import 'package:html/parser.dart' as html_parser;
-import 'package:http/http.dart' as http;
+import 'package:quax/client/http_client.dart';
 
 import 'constants.dart';
 import 'cubic_curve.dart';
@@ -26,12 +26,24 @@ class ClientTransaction {
     required this._randomNumber,
   });
 
+  /// Builds a generator from already-derived parts. Tests use this because
+  /// [initialize] needs two live requests to x.com.
+  ClientTransaction.forTesting({
+    required List<int> keyBytes,
+    required String animationKey,
+    String randomKeyword = defaultKeyword,
+    int randomNumber = additionalRandomNumber,
+  })  : _keyBytes = keyBytes,
+        _animationKey = animationKey,
+        _randomKeyword = randomKeyword,
+        _randomNumber = randomNumber;
+
   /// Fetches x.com and initializes the transaction ID generator.
   static Future<ClientTransaction> initialize({
     String randomKeyword = defaultKeyword,
     int randomNumber = additionalRandomNumber,
   }) async {
-    final homePageResponse = await http.get(
+    final homePageResponse = await xHttpClient.get(
       Uri.https('x.com', '/home'),
       headers: {
         'Accept-Language': 'en-US,en;q=0.9',
@@ -47,7 +59,7 @@ class ClientTransaction {
     final homePageDoc = html_parser.parse(homePageHtml);
 
     final ondemandUrl = _getOndemandFileUrl(homePageHtml);
-    final ondemandResponse = await http.get(Uri.parse(ondemandUrl));
+    final ondemandResponse = await xHttpClient.get(Uri.parse(ondemandUrl));
     final ondemandFileText = ondemandResponse.body;
 
     final (rowIndex, keyBytesIndices) = _getIndices(ondemandFileText);

@@ -131,6 +131,13 @@ dev_dependencies:
   sqflite_common_ffi: ^2.2.0+1
   arb_utils: ^0.11.1
 
+  # Scroll-jank benchmark (test_driver/). Device-only, never part of
+  # `flutter test`, so it costs nothing in CI.
+  integration_test:
+    sdk: flutter
+  flutter_driver:
+    sdk: flutter
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.
