@@ -1,0 +1,45 @@
+/// When a tweet's video is allowed to allocate a player.
+///
+/// Pure and free of Flutter so it can be unit-tested, in the same spirit as
+/// `AccountSelector`. The distinction matters because creating a player is the
+/// expensive half: each one spins a libmpv instance and a native texture, while
+/// building the widget is nearly free.
+library;
+
+/// Whether the widget should show its poster and a tap target instead of a
+/// player. Autoplay, looping GIFs (`alwaysPlay`) and an explicit tap all opt in
+/// to playback; everything else waits for the reader to ask.
+bool showsPlayButton({
+  required bool autoPlayPref,
+  required bool alwaysPlay,
+  required bool userRequestedPlay,
+  required bool alreadyCached,
+}) => !autoPlayPref && !alwaysPlay && !userRequestedPlay && !alreadyCached;
+
+/// Whether to allocate the player now.
+///
+/// Even a tile that has opted in waits until it has been on screen at least
+/// once. Without that, a looping GIF far below the fold allocates libmpv purely
+/// by being built, which is what forced the feed's `cacheExtent` back down: a
+/// larger cache window built more tiles, and each one cost a native player.
+///
+/// [alreadyCached] short-circuits the wait — the pool already holds the player,
+/// so attaching to it costs nothing and delaying would only make a scroll-back
+/// flash its poster again.
+bool shouldCreatePlayer({
+  required bool autoPlayPref,
+  required bool alwaysPlay,
+  required bool userRequestedPlay,
+  required bool alreadyCached,
+  required bool hasBeenVisible,
+}) {
+  if (showsPlayButton(
+    autoPlayPref: autoPlayPref,
+    alwaysPlay: alwaysPlay,
+    userRequestedPlay: userRequestedPlay,
+    alreadyCached: alreadyCached,
+  )) {
+    return false;
+  }
+  return hasBeenVisible || alreadyCached;
+}

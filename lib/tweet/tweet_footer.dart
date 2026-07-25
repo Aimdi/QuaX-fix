@@ -156,13 +156,17 @@ void maybeShowLikeToast(BuildContext context) {
   ));
 }
 
+/// [tooltip] doubles as the button's accessibility label: an icon-only button
+/// without one is announced as an unnamed "button", which is what a screen
+/// reader used to get for every share, save and translate control in a feed.
 IconButton tweetFooterIconButton(BuildContext context, IconData icon,
-    [Color? color, double? fill, VoidCallback? onPressed]) {
+    [Color? color, double? fill, VoidCallback? onPressed, String? tooltip]) {
   return IconButton(
     icon: Icon(icon, fill: fill),
     color: color ?? Theme.of(context).colorScheme.primary,
     iconSize: 20,
     onPressed: onPressed,
+    tooltip: tooltip,
     style: footerButtonStyle,
   );
 }
@@ -217,7 +221,8 @@ class TweetFooterBar extends StatelessWidget {
     final tint = tweetFooterButtonsColorOf(context);
     switch (translationStatus) {
       case TranslationStatus.original:
-        return tweetFooterIconButton(context, Icons.translate, tint, null, () async => onTranslate());
+        return tweetFooterIconButton(
+            context, Icons.translate, tint, null, () async => onTranslate(), L10n.of(context).action_translate_post);
       case TranslationStatus.translating:
         return const Padding(
           padding: EdgeInsets.symmetric(horizontal: 24),
@@ -229,10 +234,11 @@ class TweetFooterBar extends StatelessWidget {
             Icons.translate,
             Colors.red.harmonizeWith(Theme.of(context).colorScheme.primary),
             null,
-            () async => onTranslate());
+            () async => onTranslate(),
+            L10n.of(context).action_translate_post);
       case TranslationStatus.translated:
-        return tweetFooterIconButton(
-            context, Icons.translate, Theme.of(context).colorScheme.primary, null, onShowOriginal);
+        return tweetFooterIconButton(context, Icons.translate, Theme.of(context).colorScheme.primary, null,
+            onShowOriginal, L10n.of(context).action_show_original_post);
     }
   }
 
@@ -396,14 +402,14 @@ class TweetFooterBar extends StatelessWidget {
                 ? tweetFooterIconButton(context, Icons.bookmark, Theme.of(context).colorScheme.primary, 1, () async {
                     await model.deleteSavedTweet(tweet.idStr!);
                     onChanged();
-                  })
+                  }, L10n.of(context).action_unsave_post)
                 : tweetFooterIconButton(context, Icons.bookmark_border, tint, 0, () async {
                     await model.saveTweet(tweet.idStr!, tweet.user?.idStr, tweet.toJson());
                     onChanged();
                     if (context.mounted) {
                       maybeShowFolderHint(context);
                     }
-                  });
+                  }, L10n.of(context).action_save_post);
 
             return GestureDetector(
               onLongPress: () async {
@@ -414,7 +420,8 @@ class TweetFooterBar extends StatelessWidget {
               child: button,
             );
           }),
-          tweetFooterIconButton(context, Icons.share, tint, null, () => _showShareSheet(context)),
+          tweetFooterIconButton(
+              context, Icons.share, tint, null, () => _showShareSheet(context), L10n.of(context).action_share_post),
           if (!isArticle)
             GestureDetector(
               onLongPress: onTranslateLongPress ?? () => onTranslate(),

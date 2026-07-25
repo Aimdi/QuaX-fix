@@ -18,9 +18,24 @@ phone are marked **TBD — device**. Re-run those locally with:
 
 ```bash
 fvm flutter run --profile --trace-startup
-# DevTools timeline: 10s scroll through ~200 posts (16 ms/frame budget)
 fvm flutter build apk --analyze-size
 ```
+
+The scroll numbers no longer need a hand-driven DevTools session. On a phone
+that is already signed in (`scripts/adb_wireless_connect.sh` for a wireless
+one):
+
+```bash
+fvm flutter drive \
+  --driver=test_driver/scroll_perf_test.dart \
+  --target=integration_test/feed_scroll_perf_test.dart \
+  --profile
+```
+
+It flings the feed twenty times and writes `build/feed_scroll_summary.json`
+with build and rasterizer frame times plus missed-budget counts — the numbers
+the two tables below want. Profile mode is not optional; a debug build's frame
+times say nothing about what a reader experiences.
 
 ## Cold start (`--profile --trace-startup`)
 
@@ -57,7 +72,13 @@ These landed before this baseline doc and are **not** double-counted as Phase 2 
 
 1. Cap timeline photo decode via `extended_image` `cacheWidth` (not fullscreen).
 2. `RepaintBoundary` around media / shimmer / skeleton.
-3. Keep `ListView.builder` / `PagedListView`; do **not** raise `cacheExtent` until video creation is visibility-gated.
+3. ~~Keep `ListView.builder` / `PagedListView`; do **not** raise `cacheExtent`
+   until video creation is visibility-gated.~~ **Gated.** `TweetVideo` now waits
+   for the tile to be on screen before allocating a player
+   (`lib/tweet/video_playback_policy.dart`); off-screen autoplay videos and
+   looping GIFs allocate nothing. The `cacheExtent` bump reverted in `d66b60b`
+   can be retried, but measure it — a larger window still builds more tiles and
+   decodes more images.
 4. Skeleton first-page indicator (perceived speed).
 5. Prefer `const` on eligible tweet chrome widgets.
 
