@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Seznam koncových bodů naposledy ověřen {date}",
   "diagnostics_registry_never_checked": "Seznam koncových bodů zatím nebyl ověřen",
   "diagnostics_copy_report": "Zkopírovat hlášení",
-  "diagnostics_report_copied": "Diagnostika zkopírována do schránky"
+  "diagnostics_report_copied": "Diagnostika zkopírována do schránky",
+  "action_share_post": "Sdílet příspěvek",
+  "action_translate_post": "Přeložit příspěvek",
+  "action_show_original_post": "Zobrazit původní příspěvek",
+  "action_save_post": "Uložit příspěvek",
+  "action_unsave_post": "Odebrat z uložených"
 }

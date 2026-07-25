@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Lista punctelor de acces verificată la {date}",
   "diagnostics_registry_never_checked": "Lista punctelor de acces nu a fost verificată niciodată",
   "diagnostics_copy_report": "Copiază raportul",
-  "diagnostics_report_copied": "Diagnosticarea a fost copiată în clipboard"
+  "diagnostics_report_copied": "Diagnosticarea a fost copiată în clipboard",
+  "action_share_post": "Distribuie postarea",
+  "action_translate_post": "Tradu postarea",
+  "action_show_original_post": "Arată postarea originală",
+  "action_save_post": "Salvează postarea",
+  "action_unsave_post": "Elimină din cele salvate"
 }

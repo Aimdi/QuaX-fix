@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Danh sách điểm cuối được kiểm tra lần cuối {date}",
   "diagnostics_registry_never_checked": "Danh sách điểm cuối chưa từng được kiểm tra",
   "diagnostics_copy_report": "Sao chép báo cáo",
-  "diagnostics_report_copied": "Đã sao chép chẩn đoán vào bảng nhớ tạm"
+  "diagnostics_report_copied": "Đã sao chép chẩn đoán vào bảng nhớ tạm",
+  "action_share_post": "Chia sẻ bài đăng",
+  "action_translate_post": "Dịch bài đăng",
+  "action_show_original_post": "Hiện bài đăng gốc",
+  "action_save_post": "Lưu bài đăng",
+  "action_unsave_post": "Bỏ khỏi mục đã lưu"
 }

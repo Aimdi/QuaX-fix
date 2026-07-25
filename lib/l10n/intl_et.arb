@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Lõpp-punktide loendit kontrolliti viimati {date}",
   "diagnostics_registry_never_checked": "Lõpp-punktide loendit pole kunagi kontrollitud",
   "diagnostics_copy_report": "Kopeeri aruanne",
-  "diagnostics_report_copied": "Diagnostika kopeeriti lõikelauale"
+  "diagnostics_report_copied": "Diagnostika kopeeriti lõikelauale",
+  "action_share_post": "Jaga postitust",
+  "action_translate_post": "Tõlgi postitus",
+  "action_show_original_post": "Näita algset postitust",
+  "action_save_post": "Salvesta postitus",
+  "action_unsave_post": "Eemalda salvestatutest"
 }

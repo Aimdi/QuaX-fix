@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Список кінцевих точок перевірено {date}",
   "diagnostics_registry_never_checked": "Список кінцевих точок ще не перевірявся",
   "diagnostics_copy_report": "Скопіювати звіт",
-  "diagnostics_report_copied": "Діагностику скопійовано до буфера обміну"
+  "diagnostics_report_copied": "Діагностику скопійовано до буфера обміну",
+  "action_share_post": "Поділитися дописом",
+  "action_translate_post": "Перекласти допис",
+  "action_show_original_post": "Показати оригінал допису",
+  "action_save_post": "Зберегти допис",
+  "action_unsave_post": "Вилучити зі збережених"
 }

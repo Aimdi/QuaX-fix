@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "端點清單上次檢查於 {date}",
   "diagnostics_registry_never_checked": "端點清單從未檢查過",
   "diagnostics_copy_report": "複製報告",
-  "diagnostics_report_copied": "診斷已複製到剪貼簿"
+  "diagnostics_report_copied": "診斷已複製到剪貼簿",
+  "action_share_post": "分享貼文",
+  "action_translate_post": "翻譯貼文",
+  "action_show_original_post": "顯示原始貼文",
+  "action_save_post": "儲存貼文",
+  "action_unsave_post": "從收藏中移除"
 }

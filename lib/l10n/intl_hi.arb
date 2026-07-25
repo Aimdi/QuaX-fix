@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "एंडपॉइंट सूची की अंतिम जाँच {date}",
   "diagnostics_registry_never_checked": "एंडपॉइंट सूची की कभी जाँच नहीं हुई",
   "diagnostics_copy_report": "रिपोर्ट कॉपी करें",
-  "diagnostics_report_copied": "निदान क्लिपबोर्ड पर कॉपी हो गया"
+  "diagnostics_report_copied": "निदान क्लिपबोर्ड पर कॉपी हो गया",
+  "action_share_post": "पोस्ट साझा करें",
+  "action_translate_post": "पोस्ट का अनुवाद करें",
+  "action_show_original_post": "मूल पोस्ट दिखाएँ",
+  "action_save_post": "पोस्ट सहेजें",
+  "action_unsave_post": "सहेजे गए से हटाएँ"
 }

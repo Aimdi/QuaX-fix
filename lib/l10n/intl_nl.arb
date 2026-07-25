@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Endpointlijst laatst gecontroleerd op {date}",
   "diagnostics_registry_never_checked": "Endpointlijst nog nooit gecontroleerd",
   "diagnostics_copy_report": "Rapport kopiëren",
-  "diagnostics_report_copied": "Diagnose gekopieerd naar het klembord"
+  "diagnostics_report_copied": "Diagnose gekopieerd naar het klembord",
+  "action_share_post": "Bericht delen",
+  "action_translate_post": "Bericht vertalen",
+  "action_show_original_post": "Oorspronkelijk bericht tonen",
+  "action_save_post": "Bericht opslaan",
+  "action_unsave_post": "Uit opgeslagen verwijderen"
 }

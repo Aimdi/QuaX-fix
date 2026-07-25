@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Список конечных точек проверен {date}",
   "diagnostics_registry_never_checked": "Список конечных точек ещё не проверялся",
   "diagnostics_copy_report": "Скопировать отчёт",
-  "diagnostics_report_copied": "Диагностика скопирована в буфер обмена"
+  "diagnostics_report_copied": "Диагностика скопирована в буфер обмена",
+  "action_share_post": "Поделиться постом",
+  "action_translate_post": "Перевести пост",
+  "action_show_original_post": "Показать оригинал поста",
+  "action_save_post": "Сохранить пост",
+  "action_unsave_post": "Удалить из сохранённых"
 }

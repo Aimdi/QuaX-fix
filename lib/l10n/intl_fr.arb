@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Liste des points d'accès vérifiée le {date}",
   "diagnostics_registry_never_checked": "Liste des points d'accès jamais vérifiée",
   "diagnostics_copy_report": "Copier le rapport",
-  "diagnostics_report_copied": "Diagnostic copié dans le presse-papiers"
+  "diagnostics_report_copied": "Diagnostic copié dans le presse-papiers",
+  "action_share_post": "Partager la publication",
+  "action_translate_post": "Traduire la publication",
+  "action_show_original_post": "Afficher la publication d'origine",
+  "action_save_post": "Enregistrer la publication",
+  "action_unsave_post": "Retirer des enregistrements"
 }

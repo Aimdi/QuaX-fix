@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Elenco degli endpoint verificato il {date}",
   "diagnostics_registry_never_checked": "Elenco degli endpoint mai verificato",
   "diagnostics_copy_report": "Copia il rapporto",
-  "diagnostics_report_copied": "Diagnostica copiata negli appunti"
+  "diagnostics_report_copied": "Diagnostica copiata negli appunti",
+  "action_share_post": "Condividi il post",
+  "action_translate_post": "Traduci il post",
+  "action_show_original_post": "Mostra il post originale",
+  "action_save_post": "Salva il post",
+  "action_unsave_post": "Rimuovi dai salvati"
 }

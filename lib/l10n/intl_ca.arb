@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Llista de punts d'accés comprovada el {date}",
   "diagnostics_registry_never_checked": "La llista de punts d'accés no s'ha comprovat mai",
   "diagnostics_copy_report": "Copia l'informe",
-  "diagnostics_report_copied": "Diagnòstic copiat al porta-retalls"
+  "diagnostics_report_copied": "Diagnòstic copiat al porta-retalls",
+  "action_share_post": "Comparteix la publicació",
+  "action_translate_post": "Tradueix la publicació",
+  "action_show_original_post": "Mostra la publicació original",
+  "action_save_post": "Desa la publicació",
+  "action_unsave_post": "Treu dels desats"
 }

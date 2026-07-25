@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Uç nokta listesi en son {date} tarihinde denetlendi",
   "diagnostics_registry_never_checked": "Uç nokta listesi hiç denetlenmedi",
   "diagnostics_copy_report": "Raporu kopyala",
-  "diagnostics_report_copied": "Tanılama panoya kopyalandı"
+  "diagnostics_report_copied": "Tanılama panoya kopyalandı",
+  "action_share_post": "Gönderiyi paylaş",
+  "action_translate_post": "Gönderiyi çevir",
+  "action_show_original_post": "Özgün gönderiyi göster",
+  "action_save_post": "Gönderiyi kaydet",
+  "action_unsave_post": "Kaydedilenlerden kaldır"
 }

@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "エンドポイント一覧の最終確認: {date}",
   "diagnostics_registry_never_checked": "エンドポイント一覧は未確認です",
   "diagnostics_copy_report": "レポートをコピー",
-  "diagnostics_report_copied": "診断をクリップボードにコピーしました"
+  "diagnostics_report_copied": "診断をクリップボードにコピーしました",
+  "action_share_post": "投稿を共有",
+  "action_translate_post": "投稿を翻訳",
+  "action_show_original_post": "元の投稿を表示",
+  "action_save_post": "投稿を保存",
+  "action_unsave_post": "保存から削除"
 }

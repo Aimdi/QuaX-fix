@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Listo de finpunktoj laste kontrolita je {date}",
   "diagnostics_registry_never_checked": "La listo de finpunktoj neniam estis kontrolita",
   "diagnostics_copy_report": "Kopii la raporton",
-  "diagnostics_report_copied": "Diagnozo kopiita al la tondujo"
+  "diagnostics_report_copied": "Diagnozo kopiita al la tondujo",
+  "action_share_post": "Kunhavigi la afiŝon",
+  "action_translate_post": "Traduki la afiŝon",
+  "action_show_original_post": "Montri la originalan afiŝon",
+  "action_save_post": "Konservi la afiŝon",
+  "action_unsave_post": "Forigi el konservitaj"
 }

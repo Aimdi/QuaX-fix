@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Endpunktliste zuletzt geprüft am {date}",
   "diagnostics_registry_never_checked": "Endpunktliste noch nie geprüft",
   "diagnostics_copy_report": "Bericht kopieren",
-  "diagnostics_report_copied": "Diagnose in die Zwischenablage kopiert"
+  "diagnostics_report_copied": "Diagnose in die Zwischenablage kopiert",
+  "action_share_post": "Beitrag teilen",
+  "action_translate_post": "Beitrag übersetzen",
+  "action_show_original_post": "Originalbeitrag anzeigen",
+  "action_save_post": "Beitrag speichern",
+  "action_unsave_post": "Aus Gespeichertem entfernen"
 }

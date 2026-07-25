@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "آخر فحص لقائمة نقاط الوصول: {date}",
   "diagnostics_registry_never_checked": "لم يتم فحص قائمة نقاط الوصول من قبل",
   "diagnostics_copy_report": "نسخ التقرير",
-  "diagnostics_report_copied": "تم نسخ التشخيص إلى الحافظة"
+  "diagnostics_report_copied": "تم نسخ التشخيص إلى الحافظة",
+  "action_share_post": "مشاركة المنشور",
+  "action_translate_post": "ترجمة المنشور",
+  "action_show_original_post": "عرض المنشور الأصلي",
+  "action_save_post": "حفظ المنشور",
+  "action_unsave_post": "إزالة من المحفوظات"
 }

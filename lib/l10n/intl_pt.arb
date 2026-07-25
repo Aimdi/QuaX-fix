@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Lista de pontos de acesso verificada a {date}",
   "diagnostics_registry_never_checked": "Lista de pontos de acesso nunca verificada",
   "diagnostics_copy_report": "Copiar o relatório",
-  "diagnostics_report_copied": "Diagnóstico copiado para a área de transferência"
+  "diagnostics_report_copied": "Diagnóstico copiado para a área de transferência",
+  "action_share_post": "Partilhar a publicação",
+  "action_translate_post": "Traduzir a publicação",
+  "action_show_original_post": "Mostrar a publicação original",
+  "action_save_post": "Guardar a publicação",
+  "action_unsave_post": "Remover dos guardados"
 }

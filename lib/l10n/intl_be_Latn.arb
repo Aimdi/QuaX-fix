@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Spis kančatkovych kropak pravierany {date}",
   "diagnostics_registry_never_checked": "Spis kančatkovych kropak jašče nie praviaraŭsia",
   "diagnostics_copy_report": "Skapijavać spravazdaču",
-  "diagnostics_report_copied": "Dyjahnostyka skapijavana ŭ bufer abmienu"
+  "diagnostics_report_copied": "Dyjahnostyka skapijavana ŭ bufer abmienu",
+  "action_share_post": "Padzialicca dopisam",
+  "action_translate_post": "Pierakłaści dopis",
+  "action_show_original_post": "Pakazać aryhinał dopisu",
+  "action_save_post": "Zachavać dopis",
+  "action_unsave_post": "Vydalić z zachavanych"
 }

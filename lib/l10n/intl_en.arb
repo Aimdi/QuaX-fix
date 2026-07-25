@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Endpoint list last checked {date}",
   "diagnostics_registry_never_checked": "Endpoint list never checked",
   "diagnostics_copy_report": "Copy report",
-  "diagnostics_report_copied": "Diagnostics copied to the clipboard"
+  "diagnostics_report_copied": "Diagnostics copied to the clipboard",
+  "action_share_post": "Share post",
+  "action_translate_post": "Translate post",
+  "action_show_original_post": "Show the original post",
+  "action_save_post": "Save post",
+  "action_unsave_post": "Remove from saved"
 }

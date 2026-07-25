@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "接口列表上次检查于 {date}",
   "diagnostics_registry_never_checked": "接口列表从未检查过",
   "diagnostics_copy_report": "复制报告",
-  "diagnostics_report_copied": "诊断已复制到剪贴板"
+  "diagnostics_report_copied": "诊断已复制到剪贴板",
+  "action_share_post": "分享帖子",
+  "action_translate_post": "翻译帖子",
+  "action_show_original_post": "显示原帖",
+  "action_save_post": "保存帖子",
+  "action_unsave_post": "从收藏中移除"
 }

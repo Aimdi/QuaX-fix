@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "엔드포인트 목록 마지막 확인: {date}",
   "diagnostics_registry_never_checked": "엔드포인트 목록을 확인한 적이 없습니다",
   "diagnostics_copy_report": "보고서 복사",
-  "diagnostics_report_copied": "진단을 클립보드에 복사했습니다"
+  "diagnostics_report_copied": "진단을 클립보드에 복사했습니다",
+  "action_share_post": "게시물 공유",
+  "action_translate_post": "게시물 번역",
+  "action_show_original_post": "원본 게시물 보기",
+  "action_save_post": "게시물 저장",
+  "action_unsave_post": "저장에서 삭제"
 }

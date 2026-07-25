@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Endepunktlisten sist sjekket {date}",
   "diagnostics_registry_never_checked": "Endepunktlisten er aldri sjekket",
   "diagnostics_copy_report": "Kopier rapporten",
-  "diagnostics_report_copied": "Diagnostikk kopiert til utklippstavlen"
+  "diagnostics_report_copied": "Diagnostikk kopiert til utklippstavlen",
+  "action_share_post": "Del innlegget",
+  "action_translate_post": "Oversett innlegget",
+  "action_show_original_post": "Vis det opprinnelige innlegget",
+  "action_save_post": "Lagre innlegget",
+  "action_unsave_post": "Fjern fra lagrede"
 }

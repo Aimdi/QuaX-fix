@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Lista punktów końcowych sprawdzona {date}",
   "diagnostics_registry_never_checked": "Lista punktów końcowych nigdy nie była sprawdzana",
   "diagnostics_copy_report": "Skopiuj raport",
-  "diagnostics_report_copied": "Diagnostyka skopiowana do schowka"
+  "diagnostics_report_copied": "Diagnostyka skopiowana do schowka",
+  "action_share_post": "Udostępnij post",
+  "action_translate_post": "Przetłumacz post",
+  "action_show_original_post": "Pokaż oryginalny post",
+  "action_save_post": "Zapisz post",
+  "action_unsave_post": "Usuń z zapisanych"
 }

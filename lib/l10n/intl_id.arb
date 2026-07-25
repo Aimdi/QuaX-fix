@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Daftar endpoint terakhir diperiksa {date}",
   "diagnostics_registry_never_checked": "Daftar endpoint belum pernah diperiksa",
   "diagnostics_copy_report": "Salin laporan",
-  "diagnostics_report_copied": "Diagnostik disalin ke papan klip"
+  "diagnostics_report_copied": "Diagnostik disalin ke papan klip",
+  "action_share_post": "Bagikan postingan",
+  "action_translate_post": "Terjemahkan postingan",
+  "action_show_original_post": "Tampilkan postingan asli",
+  "action_save_post": "Simpan postingan",
+  "action_unsave_post": "Hapus dari simpanan"
 }

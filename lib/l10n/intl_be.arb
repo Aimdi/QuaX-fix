@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Спіс канчатковых кропак правераны {date}",
   "diagnostics_registry_never_checked": "Спіс канчатковых кропак яшчэ не правяраўся",
   "diagnostics_copy_report": "Скапіяваць справаздачу",
-  "diagnostics_report_copied": "Дыягностыка скапіявана ў буфер абмену"
+  "diagnostics_report_copied": "Дыягностыка скапіявана ў буфер абмену",
+  "action_share_post": "Падзяліцца допісам",
+  "action_translate_post": "Перакласці допіс",
+  "action_show_original_post": "Паказаць арыгінал допісу",
+  "action_save_post": "Захаваць допіс",
+  "action_unsave_post": "Выдаліць з захаваных"
 }

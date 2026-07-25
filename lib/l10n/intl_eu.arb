@@ -1026,5 +1026,10 @@
   "diagnostics_registry_checked": "Amaiera-puntuen zerrenda azkenekoz {date}(e)an egiaztatua",
   "diagnostics_registry_never_checked": "Amaiera-puntuen zerrenda ez da inoiz egiaztatu",
   "diagnostics_copy_report": "Kopiatu txostena",
-  "diagnostics_report_copied": "Diagnostikoa arbelera kopiatu da"
+  "diagnostics_report_copied": "Diagnostikoa arbelera kopiatu da",
+  "action_share_post": "Partekatu argitalpena",
+  "action_translate_post": "Itzuli argitalpena",
+  "action_show_original_post": "Erakutsi jatorrizko argitalpena",
+  "action_save_post": "Gorde argitalpena",
+  "action_unsave_post": "Kendu gordetakoetatik"
 }
