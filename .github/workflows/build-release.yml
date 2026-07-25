@@ -113,4 +113,7 @@ jobs:
           # default branch instead of the commit that was just built, and the
           # tag then ships source that is not what the APKs were compiled from.
           target_commitish: ${{ github.sha }}
+          # release.yml ships these notes; without them a dispatched release
+          # publishes with an empty body and no install instructions.
+          body_path: release-notes.md
           files: build/app/outputs/release/*.apk
