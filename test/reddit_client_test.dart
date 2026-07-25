@@ -115,18 +115,49 @@ void main() {
       expect(client.hasToken, isFalse);
     });
 
-    test('no client id means no request at all', () async {
-      var called = false;
-      final client = RedditClient(httpClient: MockClient((_) async {
-        called = true;
-        return _json(_tokenBody(), 200);
+    // Without a client id the reader used to fail every request. It now reads
+    // the public endpoint, which takes no credentials, so switching the plugin
+    // on is enough to see posts.
+    test('no client id reads the public endpoint, with no token and no auth header', () async {
+      final requested = <http.Request>[];
+      final client = RedditClient(httpClient: MockClient((request) async {
+        requested.add(request);
+        return _json(_listingBody(), 200);
       }));
 
-      await expectLater(
-        client.fetchSubreddit('dartlang', clientId: '  '),
-        throwsA(isA<RedditException>().having((e) => e.kind, 'kind', RedditErrorKind.notConfigured)),
-      );
-      expect(called, isFalse);
+      final listing = await client.fetchSubreddit('dartlang', clientId: '  ');
+
+      expect(requested, hasLength(1), reason: 'no token request, just the listing');
+      expect(requested.single.url.host, 'www.reddit.com');
+      expect(requested.single.url.path, '/r/dartlang/hot.json');
+      expect(requested.single.headers.containsKey('Authorization'), isFalse);
+      expect(requested.single.headers['User-Agent'], RedditClient.userAgent);
+      expect(listing.posts, isNotEmpty);
+    });
+
+    test('an anonymous reader that Reddit refuses is told to set a client id', () async {
+      for (final status in [403, 429]) {
+        final client = RedditClient(httpClient: MockClient((_) async => _json({'error': status}, status)));
+
+        await expectLater(
+          client.fetchSubreddit('dartlang', clientId: ''),
+          throwsA(isA<RedditException>().having((e) => e.kind, 'kind', RedditErrorKind.notConfigured)),
+          reason: 'HTTP $status',
+        );
+      }
+    });
+
+    test('a client id still uses the authenticated host', () async {
+      final requested = <http.Request>[];
+      final client = RedditClient(httpClient: MockClient((request) async {
+        requested.add(request);
+        return _json(request.url.path.contains('access_token') ? _tokenBody() : _listingBody(), 200);
+      }));
+
+      await client.fetchSubreddit('dartlang', clientId: 'id');
+
+      expect(requested.last.url.host, 'oauth.reddit.com');
+      expect(requested.last.headers['Authorization'], startsWith('Bearer '));
     });
 
     test('a rejected client id is reported as unauthorised', () async {

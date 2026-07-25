@@ -1052,5 +1052,6 @@
   "sync_error_server": "O servidor não conseguiu processar a requisição",
   "sync_error_network": "Não foi possível alcançar o servidor",
   "endpoint_refused_title": "O 𝕏 recusou esta requisição",
-  "endpoint_refused_message": "Todas as contas foram recusadas nesta parte do 𝕏, então dificilmente o problema são suas contas. O 𝕏 provavelmente mudou alguma coisa; o app se conserta sozinho assim que der. Tente de novo daqui a pouco."
+  "endpoint_refused_message": "Todas as contas foram recusadas nesta parte do 𝕏, então dificilmente o problema são suas contas. O 𝕏 provavelmente mudou alguma coisa; o app se conserta sozinho assim que der. Tente de novo daqui a pouco.",
+  "show_additional_replies": "Mostrar mais respostas"
 }

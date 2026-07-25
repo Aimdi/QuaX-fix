@@ -145,13 +145,19 @@ String redditSortPath(RedditSort sort) => switch (sort) {
       RedditSort.rising => 'rising',
     };
 
-/// Read-only Reddit client using app-only OAuth, so nobody has to log in.
+/// Read-only Reddit client. Nobody has to log in, and by default nobody has to
+/// configure anything either.
 ///
-/// Reddit stopped serving its `.json` endpoints to unauthenticated clients, so
-/// even an account-free reader needs a token. The `installed_client` grant gives
-/// one without any user account: it authenticates the *app*, identified by a
-/// client id the user creates once, and a device id that deliberately says "do
-/// not track".
+/// Without a client id it reads the public `.json` endpoints, which take no
+/// credentials at all. Reddit throttles those harder and sometimes refuses them
+/// outright, so a client id is still worth setting: it switches the reader to
+/// the `installed_client` grant, which authenticates the *app* — not a user —
+/// with a device id that deliberately says "do not track", and gets the higher,
+/// documented rate limits.
+///
+/// Requiring the client id up front was the wrong default: an unconfigured
+/// reader failed every request rather than trying the endpoint that needs
+/// nothing.
 class RedditClient {
   final http.Client httpClient;
 
@@ -163,6 +169,9 @@ class RedditClient {
 
   static const _tokenEndpoint = 'https://www.reddit.com/api/v1/access_token';
   static const _apiBase = 'https://oauth.reddit.com';
+
+  /// Serves the same listings as [_apiBase] without any credentials.
+  static const _publicBase = 'https://www.reddit.com';
   static const _timeout = Duration(seconds: 20);
 
   /// Reddit asks for a descriptive agent and throttles generic ones harder.
@@ -231,8 +240,16 @@ class RedditClient {
       throw RedditException(RedditErrorKind.notFound, 'Not a subreddit name: $subreddit');
     }
 
-    final token = await _authorize(clientId);
-    final uri = Uri.parse('$_apiBase/r/$name/${redditSortPath(sort)}').replace(queryParameters: {
+    // No client id: read the public endpoint, which needs no credentials, so
+    // the plugin works the moment it is switched on.
+    final anonymous = clientId.trim().isEmpty;
+    final token = anonymous ? null : await _authorize(clientId);
+
+    final path = anonymous
+        ? '$_publicBase/r/$name/${redditSortPath(sort)}.json'
+        : '$_apiBase/r/$name/${redditSortPath(sort)}';
+
+    final uri = Uri.parse(path).replace(queryParameters: {
       'limit': '$limit',
       // Gives real characters instead of HTML entities in titles and text.
       'raw_json': '1',
@@ -240,7 +257,7 @@ class RedditClient {
     });
 
     final response = await _send(() => httpClient.get(uri, headers: {
-          'Authorization': 'Bearer $token',
+          if (token != null) 'Authorization': 'Bearer $token',
           'User-Agent': userAgent,
         }));
 
@@ -249,6 +266,12 @@ class RedditClient {
       forgetToken();
     }
     if (response.statusCode != 200) {
+      // Reddit throttles and sometimes refuses anonymous readers. Setting a
+      // client id is the way out of both, so say that rather than reporting a
+      // block the reader can do nothing about.
+      if (anonymous && const [403, 429].contains(response.statusCode)) {
+        throw RedditException(RedditErrorKind.notConfigured, 'HTTP ${response.statusCode} without a client id');
+      }
       throw _errorFor(response);
     }
 

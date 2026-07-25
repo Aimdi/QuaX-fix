@@ -1052,5 +1052,6 @@
   "sync_error_server": "Le serveur n'a pas pu traiter la demande",
   "sync_error_network": "Impossible de joindre le serveur",
   "endpoint_refused_title": "𝕏 a refusé cette requête",
-  "endpoint_refused_message": "Tous les comptes ont été refusés sur cette partie de 𝕏 : le problème ne vient donc probablement pas de vos comptes. 𝕏 a sans doute changé quelque chose ; l'application se répare d'elle-même dès qu'elle le peut. Réessayez dans un instant."
+  "endpoint_refused_message": "Tous les comptes ont été refusés sur cette partie de 𝕏 : le problème ne vient donc probablement pas de vos comptes. 𝕏 a sans doute changé quelque chose ; l'application se répare d'elle-même dès qu'elle le peut. Réessayez dans un instant.",
+  "show_additional_replies": "Afficher plus de réponses"
 }

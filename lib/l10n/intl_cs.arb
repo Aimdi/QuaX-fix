@@ -1052,5 +1052,6 @@
   "sync_error_server": "Server nedokázal požadavek zpracovat",
   "sync_error_network": "Server je nedostupný",
   "endpoint_refused_title": "𝕏 tento požadavek odmítl",
-  "endpoint_refused_message": "V této části 𝕏 byly odmítnuty všechny účty, takže chyba nejspíš není u vás. 𝕏 pravděpodobně něco změnil; aplikace se opraví sama, jakmile to půjde. Zkuste to za chvíli znovu."
+  "endpoint_refused_message": "V této části 𝕏 byly odmítnuty všechny účty, takže chyba nejspíš není u vás. 𝕏 pravděpodobně něco změnil; aplikace se opraví sama, jakmile to půjde. Zkuste to za chvíli znovu.",
+  "show_additional_replies": "Zobrazit další odpovědi"
 }

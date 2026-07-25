@@ -241,6 +241,37 @@ class TimelineParser {
     return TweetStatus(chains: chains, cursorBottom: cursorBottom, cursorTop: cursorTop);
   }
 
+  /// The cursor behind X's "Show additional replies" prompt — the replies it
+  /// hides by default because it judged them low quality or offensive.
+  ///
+  /// Kept apart from [getCursor] deliberately: `cursor-bottom` is automatic
+  /// paging, whereas this is content the reader has to ask for, so the caller
+  /// must decide whether to follow it rather than have it fetched for them.
+  ///
+  /// The entry id is matched case-insensitively on `showmore` because X has
+  /// spelled this cursor several ways (`cursor-showMore`,
+  /// `cursor-showmorethreads`, `…prompt`). An id we do not recognise yields
+  /// null, which simply leaves the prompt unoffered.
+  static String? getShowMoreCursor(List<dynamic> addEntries) {
+    final entry = addEntries.firstWhereOrNull(
+      (e) => (e?['entryId'] as String?)?.toLowerCase().contains('showmore') ?? false,
+    );
+
+    return entry == null ? null : _cursorValue(entry['content']);
+  }
+
+  /// The three shapes a cursor entry's `content` has taken across X's revisions.
+  static String? _cursorValue(dynamic content) {
+    if (content is! Map<String, dynamic>) {
+      return null;
+    }
+
+    final value = content['value'] ?? content['operation']?['cursor']?['value'] ?? content['itemContent']?['value'];
+
+    // Checked rather than cast: a cast would throw on the day X sends a number.
+    return value is String ? value : null;
+  }
+
   static String? getCursor(List<dynamic> addEntries, List<dynamic> repEntries, String legacyType, String type) {
     String? cursor;
 

@@ -59,13 +59,33 @@ void main() {
       expect(pageAfterNavigationSwipe(current: 3, pageCount: 4, velocity: -800), 3);
     });
 
-    test('a slow drag is ignored, so a mis-tap cannot change tab', () {
+    test('a mis-tap, going nowhere at no speed, cannot change tab', () {
       expect(pageAfterNavigationSwipe(current: 1, pageCount: 4, velocity: -50), 1);
       expect(pageAfterNavigationSwipe(current: 1, pageCount: 4, velocity: 0), 1);
+      expect(pageAfterNavigationSwipe(current: 1, pageCount: 4, velocity: -50, distance: -4), 1);
+    });
+
+    // The bar used to be gated on speed alone, so a deliberate drag — and any
+    // drag paused before the finger lifted, which ends at no speed at all —
+    // did nothing however far it went.
+    test('a slow but long drag counts, even at no speed', () {
+      expect(pageAfterNavigationSwipe(current: 1, pageCount: 4, velocity: 0, distance: -120), 2);
+      expect(pageAfterNavigationSwipe(current: 1, pageCount: 4, velocity: 0, distance: 120), 0);
+    });
+
+    test('a long drag still clamps at the ends', () {
+      expect(pageAfterNavigationSwipe(current: 0, pageCount: 4, velocity: 0, distance: 120), 0);
+      expect(pageAfterNavigationSwipe(current: 3, pageCount: 4, velocity: 0, distance: -120), 3);
+    });
+
+    test('a flick decides the direction when it disagrees with where the finger stopped', () {
+      // Dragged back to the right, then flicked left: the flick is the intent.
+      expect(pageAfterNavigationSwipe(current: 1, pageCount: 4, velocity: -800, distance: 60), 2);
     });
 
     test('a single tab has nowhere to go', () {
       expect(pageAfterNavigationSwipe(current: 0, pageCount: 1, velocity: -800), 0);
+      expect(pageAfterNavigationSwipe(current: 0, pageCount: 1, velocity: 0, distance: -400), 0);
     });
   });
 

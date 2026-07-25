@@ -348,7 +348,12 @@ class TweetStatus {
   // final TweetChain before;
   final String? cursorBottom;
   final String? cursorTop;
+
+  /// Set when X withheld replies behind a "Show additional replies" prompt.
+  /// Following it is the reader's choice, so unlike [cursorBottom] it is never
+  /// paged automatically.
+  final String? cursorShowMore;
   final List<TweetChain> chains;
 
-  TweetStatus({required this.chains, required this.cursorBottom, required this.cursorTop});
+  TweetStatus({required this.chains, required this.cursorBottom, required this.cursorTop, this.cursorShowMore});
 }

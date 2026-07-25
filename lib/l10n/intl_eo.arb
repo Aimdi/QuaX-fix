@@ -1052,5 +1052,6 @@
   "sync_error_server": "La servilo ne povis trakti la peton",
   "sync_error_network": "Ne eblis atingi la servilon",
   "endpoint_refused_title": "𝕏 rifuzis ĉi tiun peton",
-  "endpoint_refused_message": "Ĉiuj kontoj estis rifuzitaj en tiu ĉi parto de 𝕏, do verŝajne ne temas pri viaj kontoj. Plej probable 𝕏 ŝanĝis ion; la aplikaĵo riparas sin mem kiam ĝi povas. Reprovu post momento."
+  "endpoint_refused_message": "Ĉiuj kontoj estis rifuzitaj en tiu ĉi parto de 𝕏, do verŝajne ne temas pri viaj kontoj. Plej probable 𝕏 ŝanĝis ion; la aplikaĵo riparas sin mem kiam ĝi povas. Reprovu post momento.",
+  "show_additional_replies": "Montri pliajn respondojn"
 }

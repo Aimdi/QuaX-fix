@@ -1052,5 +1052,6 @@
   "sync_error_server": "Serverul nu a putut procesa cererea",
   "sync_error_network": "Serverul nu a putut fi contactat",
   "endpoint_refused_title": "𝕏 a refuzat această cerere",
-  "endpoint_refused_message": "Toate conturile au fost refuzate în această parte a 𝕏, așa că probabil nu conturile tale sunt de vină. Cel mai probabil 𝕏 a schimbat ceva; aplicația se repară singură când poate. Încearcă din nou peste puțin timp."
+  "endpoint_refused_message": "Toate conturile au fost refuzate în această parte a 𝕏, așa că probabil nu conturile tale sunt de vină. Cel mai probabil 𝕏 a schimbat ceva; aplicația se repară singură când poate. Încearcă din nou peste puțin timp.",
+  "show_additional_replies": "Afișează mai multe răspunsuri"
 }

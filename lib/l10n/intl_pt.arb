@@ -1052,5 +1052,6 @@
   "sync_error_server": "O servidor não conseguiu processar o pedido",
   "sync_error_network": "Não foi possível contactar o servidor",
   "endpoint_refused_title": "O 𝕏 recusou este pedido",
-  "endpoint_refused_message": "Todas as contas foram recusadas nesta parte do 𝕏, por isso é pouco provável que sejam as tuas contas. O 𝕏 terá mudado alguma coisa; a aplicação repara-se sozinha assim que puder. Tenta novamente dentro de momentos."
+  "endpoint_refused_message": "Todas as contas foram recusadas nesta parte do 𝕏, por isso é pouco provável que sejam as tuas contas. O 𝕏 terá mudado alguma coisa; a aplicação repara-se sozinha assim que puder. Tenta novamente dentro de momentos.",
+  "show_additional_replies": "Mostrar mais respostas"
 }
