@@ -41,6 +41,14 @@ class TweetWithCard extends Tweet {
     return json;
   }
 
+  /// The best tombstone a result that carried no usable tweet can offer:
+  /// X's own explanation when it sent one, the generic string otherwise.
+  factory TweetWithCard.tombstoneFor(dynamic result) {
+    final payload = result is Map<String, dynamic> ? (result['tombstone'] ?? result) : const <String, dynamic>{};
+
+    return TweetWithCard.tombstone(payload);
+  }
+
   factory TweetWithCard.tombstone(dynamic e) {
     var tweetWithCard = TweetWithCard();
     tweetWithCard.idStr = '';
@@ -134,14 +142,11 @@ class TweetWithCard extends Tweet {
       noteEntities = Entities.fromJson(noteResult['entity_set']);
     }
 
-    if (result['tombstone'] != null) {
-      return TweetWithCard.tombstone(result['tombstone']!);
-    }
-
     // Some results (suspended/unavailable/visibility-restricted tweets) carry no
-    // `legacy` payload and no `tombstone`, so there is nothing to build from.
-    if (result['legacy'] == null) {
-      return TweetWithCard.tombstone(result);
+    // `legacy` payload, and some carry an explicit `tombstone`; neither leaves
+    // anything to build a tweet from.
+    if (result['tombstone'] != null || result['legacy'] == null) {
+      return TweetWithCard.tombstoneFor(result);
     }
 
     var tweet = TweetWithCard.fromData(

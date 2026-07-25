@@ -66,18 +66,54 @@ class TimelineParser {
     return unwrapped;
   }
 
-  /// Tweets carried by a conversation entry. Items X has reshaped are skipped
-  /// rather than throwing, so one unreadable reply cannot empty a thread.
+  /// Tweets carried by a conversation entry. A reply X withheld becomes a
+  /// tombstone so the chain keeps its shape, and an item in a shape we do not
+  /// recognise is skipped rather than throwing, so one bad reply cannot empty a
+  /// thread.
   static List<TweetWithCard> _conversationTweets(dynamic entry, {required bool skipPromoted}) {
     final items = entry?['content']?['items'] as List<dynamic>? ?? const [];
 
     return items
         .where((item) => !skipPromoted || isNotPromoted(item))
         .where((item) => item?['item']?['itemContent']?['itemType'] == 'TimelineTweet')
-        .map((item) => _unwrapTweetResult(item?['item']?['itemContent']?['tweet_results']?['result']))
-        .nonNulls
-        .map(TweetWithCard.fromGraphqlJson)
+        .where(_carriesResult)
+        .map(_conversationTweet)
         .toList();
+  }
+
+  /// Whether X answered for this position at all. An entry with no `result` is a
+  /// shape we do not recognise rather than a reply being withheld, so it stays
+  /// skipped — matching how `tweet-` entries are already treated.
+  static bool _carriesResult(dynamic item) {
+    final results = item?['item']?['itemContent']?['tweet_results'];
+
+    return results is Map<String, dynamic> && results.containsKey('result');
+  }
+
+  /// A reply X refused to give us still occupies a position in the thread, so it
+  /// becomes a tombstone rather than disappearing and breaking the chain.
+  static TweetWithCard _conversationTweet(dynamic item) {
+    final rawResult = item?['item']?['itemContent']?['tweet_results']?['result'];
+
+    final result = _unwrapTweetResult(rawResult);
+    if (result != null) {
+      return TweetWithCard.fromGraphqlJson(result);
+    }
+
+    // `conversation.dart` sorts a chain by id, so a tombstone left with the
+    // empty default id would jump to the top of the thread instead of sitting
+    // where the missing reply belongs.
+    return TweetWithCard.tombstoneFor(rawResult)..idStr = _itemTweetId(item) ?? '';
+  }
+
+  /// `conversationthread-1-tweet-2` → `2`; the id of a reply X would not return.
+  static String? _itemTweetId(dynamic item) {
+    const marker = '-tweet-';
+
+    final entryId = item?['entryId'] as String?;
+    final start = entryId?.lastIndexOf(marker) ?? -1;
+
+    return start < 0 ? null : entryId!.substring(start + marker.length);
   }
 
   static List<TweetChain> createTweetChains(List<dynamic> addEntries) {
@@ -109,7 +145,6 @@ class TimelineParser {
       }
 
       if (entryId.startsWith('conversationthread')) {
-        // TODO: This is missing tombstone support
         replies.add(
           TweetChain(
             id: entryId.replaceFirst('conversationthread-', ''),
@@ -160,7 +195,6 @@ class TimelineParser {
       }
 
       if (entryId.startsWith('profile-conversation')) {
-        // TODO: This is missing tombstone support
         replies.add(
           TweetChain(
             id: entryId.replaceFirst('profile-conversation-', ''),
