@@ -19,6 +19,7 @@ import 'package:quax/utils/urls.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:quax/plugins/karakeep/karakeep_save.dart';
 import 'package:quax/plugins/karakeep/karakeep_title.dart';
+import 'package:quax/plugins/deepmarks/deepmarks_save.dart';
 
 /// Footer buttons should feel flat: no ripple and no pressed/hover background.
 const footerButtonStyle = ButtonStyle(
@@ -217,6 +218,16 @@ class TweetFooterBar extends StatelessWidget {
                   Navigator.pop(sheetContext);
                 }
               }),
+              if (deepmarksEnabled(PrefService.of(sheetContext, listen: false)))
+                createSheetButton(
+                  L10n.of(sheetContext).plugin_deepmarks_save_action,
+                  Icons.bookmarks_outlined,
+                  () async {
+                    final url = '$shareBaseUrl/${tweet.user!.screenName}/status/${tweet.idStr}';
+                    Navigator.pop(sheetContext);
+                    await saveToDeepmarks(context, url: url, title: karakeepTitleFor(tweet, tweetText));
+                  },
+                ),
               if (karakeepEnabled(PrefService.of(sheetContext, listen: false)))
                 createSheetButton(
                   L10n.of(sheetContext).plugin_karakeep_save_action,
