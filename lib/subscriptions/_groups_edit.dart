@@ -37,6 +37,13 @@ class SubscriptionGroupEditDialog extends StatefulWidget {
   State<SubscriptionGroupEditDialog> createState() => _SubscriptionGroupEditDialogState();
 }
 
+/// Small, low-contrast styling for the secondary actions in the edit sheet.
+ButtonStyle _discreetActionStyle(BuildContext context) => TextButton.styleFrom(
+      foregroundColor: Theme.of(context).textTheme.bodySmall?.color,
+      textStyle: Theme.of(context).textTheme.bodySmall,
+      visualDensity: VisualDensity.compact,
+    );
+
 class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
@@ -250,33 +257,32 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
     final isPinned = widget.id != null &&
         context.read<GroupsModel>().state.any((g) => g.id == widget.id && g.pinned);
 
-    List<Widget> buttonsLst1 = [
-      TextButton(
-        onPressed: () {
-          setState(() {
-            if (members.isEmpty) {
-              members = subscriptionsModel.state.map((e) => e.id).toSet();
-            } else {
-              members.clear();
-            }
-          });
-        },
-        child: Text(l10n.toggle_all),
-      ),
+    // Group-level actions sit with the group's own fields rather than in the
+    // bottom bar: with pin and merge added to this fork, five buttons plus
+    // Cancel/OK ran off the edge in languages with long words (upstream
+    // 7012ff8f hit the same thing with fewer buttons).
+    final groupActions = <Widget>[
       if (widget.id != null)
-        TextButton(
+        TextButton.icon(
+          style: _discreetActionStyle(context),
+          icon: Icon(isPinned ? Icons.push_pin : Icons.push_pin_outlined, size: 18),
+          label: Text(isPinned ? l10n.unpin : l10n.pin),
           onPressed: () async {
             final groupsModel = context.read<GroupsModel>();
             await groupsModel.toggleGroupPinned(widget.id!, !isPinned);
             if (mounted) setState(() {});
           },
-          child: Text(isPinned ? l10n.unpin : l10n.pin),
         ),
       if (widget.id != null)
-        TextButton(
+        TextButton.icon(
+          style: _discreetActionStyle(context),
+          icon: const Icon(Icons.merge, size: 18),
+          label: Text(l10n.merge_into),
           onPressed: () => _openMergeSheet(context),
-          child: Text(l10n.merge_into),
         ),
+    ];
+
+    List<Widget> buttonsLst1 = [
       TextButton(
         onPressed: id == null ? null : () => openDeleteSubscriptionGroupDialog(id!, name!),
         child: Text(l10n.delete),
@@ -402,6 +408,28 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                           : GroupMarkStyle.auto,
                 },
                 onSelectionChanged: _onMarkStyleSelected,
+              ),
+              // Group actions plus the discreet "toggle all" above the member
+              // list, as upstream did, so the bottom bar stays three buttons.
+              Row(
+                children: [
+                  ...groupActions,
+                  const Spacer(),
+                  TextButton.icon(
+                    style: _discreetActionStyle(context),
+                    icon: const Icon(Icons.checklist, size: 18),
+                    label: Text(l10n.toggle_all),
+                    onPressed: () {
+                      setState(() {
+                        if (members.isEmpty) {
+                          members = subscriptionsModel.state.map((e) => e.id).toSet();
+                        } else {
+                          members.clear();
+                        }
+                      });
+                    },
+                  ),
+                ],
               ),
               Expanded(
                 child: ListView.builder(
