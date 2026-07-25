@@ -27,7 +27,9 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
         itemBuilder: (context, index) {
           final plugin = builtInPlugins[index];
           final enabled = plugin.isEnabled(prefs);
-          return SwitchListTile(
+          final settings = plugin.settingsScreen(context);
+
+          final row = SwitchListTile(
             secondary: Icon(plugin.icon),
             title: Text(plugin.title(context)),
             subtitle: Text(plugin.description(context)),
@@ -38,6 +40,32 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
               await context.read<HomeModel>().loadPages();
               setState(() {});
             },
+          );
+
+          if (settings == null) {
+            return row;
+          }
+
+          // A plugin that needs configuring gets a row of its own beneath the
+          // switch, only usable once it is on.
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              row,
+              ListTile(
+                enabled: enabled,
+                leading: const SizedBox(width: 24),
+                title: Text(L10n.of(context).settings),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => plugin.settingsScreen(context)!),
+                  );
+                  if (mounted) setState(() {});
+                },
+              ),
+            ],
           );
         },
       ),

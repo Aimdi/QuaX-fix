@@ -56,6 +56,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:app_links/app_links.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:quax/plugins/karakeep/karakeep_client.dart';
 
 Future checkForUpdates(context) async {
   Logger.root.info('Checking for updates');
@@ -265,6 +266,9 @@ Future<void> main() async {
     optionCrashReportsEnabled: false,
     optionCrashGithubRepo: defaultCrashGithubRepo,
     optionCrashGithubToken: '',
+    optionPluginKarakeepEnabled: false,
+    optionPluginKarakeepServerUrl: '',
+    optionPluginKarakeepApiKey: '',
     optionPluginSubstackEnabled: false,
     optionPluginSubstackPublications: '[]',
     optionPluginSubstackReadIds: '[]',
@@ -333,6 +337,7 @@ Future<void> main() async {
 
     var trendLocationModel = UserTrendLocationModel(prefService);
 
+    final karakeepClient = KarakeepClient();
     final substackClient = SubstackClient();
     final substackPublications = SubstackPublicationsStore(prefService);
     await substackPublications.load();
@@ -358,6 +363,7 @@ Future<void> main() async {
             Provider(create: (context) => trendLocationModel),
             Provider(create: (context) => TrendLocationsModel()),
             Provider(create: (context) => TrendsModel(trendLocationModel)),
+            Provider(create: (_) => karakeepClient),
             Provider(create: (_) => substackClient),
             Provider(create: (_) => substackPublications),
             Provider(create: (_) => substackFeed),

@@ -33,6 +33,11 @@ const optionDownloadTypeAsk = 'ask';
 const optionLocale = 'locale';
 const optionLocaleDefault = 'system';
 
+const pluginIdKarakeep = 'karakeep';
+const optionPluginKarakeepEnabled = 'plugin.karakeep.enabled';
+const optionPluginKarakeepServerUrl = 'plugin.karakeep.server_url';
+const optionPluginKarakeepApiKey = 'plugin.karakeep.api_key';
+
 const pluginIdSubstack = 'substack';
 const optionPluginSubstackEnabled = 'plugin.substack.enabled';
 const optionPluginSubstackPublications = 'plugin.substack.publications';
