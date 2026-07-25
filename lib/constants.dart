@@ -43,6 +43,10 @@ const pluginIdKarakeep = 'karakeep';
 const optionPluginKarakeepEnabled = 'plugin.karakeep.enabled';
 const optionPluginKarakeepServerUrl = 'plugin.karakeep.server_url';
 const optionPluginKarakeepApiKey = 'plugin.karakeep.api_key';
+const pluginIdReddit = 'reddit';
+const optionPluginRedditEnabled = 'plugin.reddit.enabled';
+const optionPluginRedditClientId = 'plugin.reddit.client_id';
+const optionPluginRedditSubreddits = 'plugin.reddit.subreddits';
 
 const pluginIdSubstack = 'substack';
 const optionPluginSubstackEnabled = 'plugin.substack.enabled';

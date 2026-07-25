@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Перевірити з’єднання",
   "plugin_deepmarks_test_ok": "З’єднано з Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Ключ прийнято, але акаунт ще не має публічних закладок, щоб перевірити ключ підписування",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Додати сабредит",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Створіть «installed app» на reddit.com/prefs/apps і вставте її client ID. Reddit вимагає його навіть без акаунта. Більше нікуди він не надсилається.",
+  "plugin_reddit_description": "Читайте сабредити без акаунта та входу",
+  "plugin_reddit_empty": "Додайте сабредит, щоб почати читати",
+  "plugin_reddit_error_blocked": "Reddit відхилив запит. Зазвичай це означає, що він блокує вашу мережу.",
+  "plugin_reddit_error_client_id": "Reddit відхилив client ID",
+  "plugin_reddit_error_network": "Не вдалося зв’язатися з Reddit",
+  "plugin_reddit_error_not_found": "Такого сабредита немає або він приватний",
+  "plugin_reddit_error_rate_limited": "Занадто багато запитів, спробуйте трохи пізніше",
+  "plugin_reddit_error_response": "Reddit відповів неочікувано",
+  "plugin_reddit_not_configured": "Спочатку вкажіть client ID Reddit",
+  "plugin_reddit_open_discussion": "Відкрити обговорення",
+  "plugin_reddit_title": "Reddit"
 }

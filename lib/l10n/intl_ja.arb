@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "接続をテスト",
   "plugin_deepmarks_test_ok": "Deepmarks に接続しました",
   "plugin_deepmarks_test_ok_unverified": "キーは受理されましたが、署名キーを照合できる公開ブックマークがまだアカウントにありません",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "サブレディットを追加",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "reddit.com/prefs/apps で「installed app」を作成し、その client ID を貼り付けてください。アカウントがなくても Reddit はこれを要求します。ほかへ送信されることはありません。",
+  "plugin_reddit_description": "アカウントもログインもなしでサブレディットを読む",
+  "plugin_reddit_empty": "読み始めるにはサブレディットを追加してください",
+  "plugin_reddit_error_blocked": "Reddit がリクエストを拒否しました。多くの場合、利用中のネットワークを遮断しています。",
+  "plugin_reddit_error_client_id": "Reddit が client ID を拒否しました",
+  "plugin_reddit_error_network": "Reddit に接続できません",
+  "plugin_reddit_error_not_found": "そのサブレディットは存在しないか非公開です",
+  "plugin_reddit_error_rate_limited": "リクエストが多すぎます。しばらくしてから試してください",
+  "plugin_reddit_error_response": "Reddit から予期しない応答が返りました",
+  "plugin_reddit_not_configured": "先に Reddit の client ID を設定してください",
+  "plugin_reddit_open_discussion": "ディスカッションを開く",
+  "plugin_reddit_title": "Reddit"
 }

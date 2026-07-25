@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Uji koneksi",
   "plugin_deepmarks_test_ok": "Terhubung ke Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Kunci diterima, tetapi akun belum punya markah publik untuk memeriksa kunci penanda tangan",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Tambah subreddit",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Buat “installed app” di reddit.com/prefs/apps lalu tempel client ID-nya. Reddit tetap memintanya walau tanpa akun. Tidak dikirim ke tempat lain.",
+  "plugin_reddit_description": "Baca subreddit tanpa akun dan tanpa masuk",
+  "plugin_reddit_empty": "Tambahkan subreddit untuk mulai membaca",
+  "plugin_reddit_error_blocked": "Reddit menolak permintaan. Ini biasanya berarti jaringan Anda diblokir.",
+  "plugin_reddit_error_client_id": "Reddit menolak client ID",
+  "plugin_reddit_error_network": "Tidak dapat menghubungi Reddit",
+  "plugin_reddit_error_not_found": "Subreddit itu tidak ada atau bersifat privat",
+  "plugin_reddit_error_rate_limited": "Terlalu banyak permintaan, coba lagi sebentar",
+  "plugin_reddit_error_response": "Reddit menjawab dengan sesuatu yang tak terduga",
+  "plugin_reddit_not_configured": "Tambahkan dulu client ID Reddit Anda",
+  "plugin_reddit_open_discussion": "Buka diskusi",
+  "plugin_reddit_title": "Reddit"
 }

@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "اختبار الاتصال",
   "plugin_deepmarks_test_ok": "تم الاتصال بـ Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "تم قبول المفتاح، لكن الحساب لا يملك بعد علامة مرجعية عامة للتحقق من مفتاح التوقيع",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "إضافة سبريديت",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "أنشئ «installed app» على reddit.com/prefs/apps والصق مُعرِّف العميل. يطلبه Reddit حتى بدون حساب، ولا يُرسل إلى أي مكان آخر.",
+  "plugin_reddit_description": "اقرأ السبريديت دون حساب ودون تسجيل دخول",
+  "plugin_reddit_empty": "أضف سبريديت لتبدأ القراءة",
+  "plugin_reddit_error_blocked": "رفض Reddit الطلب. غالبًا يعني ذلك أنه يحجب الشبكة التي تستخدمها.",
+  "plugin_reddit_error_client_id": "رفض Reddit مُعرِّف العميل",
+  "plugin_reddit_error_network": "تعذّر الوصول إلى Reddit",
+  "plugin_reddit_error_not_found": "هذا السبريديت غير موجود أو خاص",
+  "plugin_reddit_error_rate_limited": "طلبات كثيرة جدًا، أعد المحاولة قريبًا",
+  "plugin_reddit_error_response": "جاء رد Reddit غير متوقَّع",
+  "plugin_reddit_not_configured": "أضف أولًا مُعرِّف عميل Reddit",
+  "plugin_reddit_open_discussion": "فتح المناقشة",
+  "plugin_reddit_title": "Reddit"
 }

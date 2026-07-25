@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Prova la connessione",
   "plugin_deepmarks_test_ok": "Connesso a Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Chiave accettata, ma l’account non ha ancora segnalibri pubblici con cui verificare la chiave di firma",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Aggiungi subreddit",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Crea una «installed app» su reddit.com/prefs/apps e incolla il suo client ID. Reddit lo richiede anche senza account. Non viene inviato altrove.",
+  "plugin_reddit_description": "Leggi i subreddit senza account né accesso",
+  "plugin_reddit_empty": "Aggiungi un subreddit per iniziare a leggere",
+  "plugin_reddit_error_blocked": "Reddit ha rifiutato la richiesta. Spesso significa che blocca la rete che stai usando.",
+  "plugin_reddit_error_client_id": "Reddit ha rifiutato il client ID",
+  "plugin_reddit_error_network": "Impossibile raggiungere Reddit",
+  "plugin_reddit_error_not_found": "Questo subreddit non esiste o è privato",
+  "plugin_reddit_error_rate_limited": "Troppe richieste, riprova tra poco",
+  "plugin_reddit_error_response": "Reddit ha risposto in modo inatteso",
+  "plugin_reddit_not_configured": "Inserisci prima il client ID di Reddit",
+  "plugin_reddit_open_discussion": "Apri la discussione",
+  "plugin_reddit_title": "Reddit"
 }

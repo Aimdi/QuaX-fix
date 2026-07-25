@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Kiểm tra kết nối",
   "plugin_deepmarks_test_ok": "Đã kết nối tới Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Khóa được chấp nhận, nhưng tài khoản chưa có dấu trang công khai để đối chiếu khóa ký",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Thêm subreddit",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Tạo một “installed app” tại reddit.com/prefs/apps rồi dán client ID của nó. Reddit vẫn yêu cầu dù không có tài khoản. Nó không được gửi tới nơi nào khác.",
+  "plugin_reddit_description": "Đọc subreddit mà không cần tài khoản hay đăng nhập",
+  "plugin_reddit_empty": "Thêm một subreddit để bắt đầu đọc",
+  "plugin_reddit_error_blocked": "Reddit đã từ chối yêu cầu. Thường là do nó chặn mạng bạn đang dùng.",
+  "plugin_reddit_error_client_id": "Reddit đã từ chối client ID",
+  "plugin_reddit_error_network": "Không thể kết nối tới Reddit",
+  "plugin_reddit_error_not_found": "Subreddit này không tồn tại hoặc ở chế độ riêng tư",
+  "plugin_reddit_error_rate_limited": "Quá nhiều yêu cầu, hãy thử lại sau ít phút",
+  "plugin_reddit_error_response": "Reddit trả về dữ liệu không như mong đợi",
+  "plugin_reddit_not_configured": "Hãy nhập client ID Reddit của bạn trước",
+  "plugin_reddit_open_discussion": "Mở thảo luận",
+  "plugin_reddit_title": "Reddit"
 }

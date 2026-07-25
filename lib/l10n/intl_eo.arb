@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Testi konekton",
   "plugin_deepmarks_test_ok": "Konektita al Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Ŝlosilo akceptita, sed la konto ankoraŭ ne havas publikan legosignon por kontroli la subskriban ŝlosilon",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Aldoni subredditon",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Kreu «installed app» ĉe reddit.com/prefs/apps kaj enmetu ĝian client ID. Reddit postulas ĝin ankaŭ sen konto. Ĝi estas sendata nenien alian.",
+  "plugin_reddit_description": "Legu subredditojn sen konto kaj sen ensaluto",
+  "plugin_reddit_empty": "Aldonu subredditon por komenci legi",
+  "plugin_reddit_error_blocked": "Reddit rifuzis la peton. Ofte tio signifas ke ĝi blokas vian reton.",
+  "plugin_reddit_error_client_id": "Reddit malakceptis la client ID",
+  "plugin_reddit_error_network": "Ne eblis atingi Reddit",
+  "plugin_reddit_error_not_found": "Tia subreddit ne ekzistas aŭ estas privata",
+  "plugin_reddit_error_rate_limited": "Tro da petoj; reprovu post momento",
+  "plugin_reddit_error_response": "Reddit respondis ion neatenditan",
+  "plugin_reddit_not_configured": "Unue aldonu vian Reddit-client ID",
+  "plugin_reddit_open_discussion": "Malfermi la diskuton",
+  "plugin_reddit_title": "Reddit"
 }

@@ -234,7 +234,7 @@ class _DeepmarksSettingsScreenState extends State<DeepmarksSettingsScreen> {
           ],
           const SizedBox(height: 28),
           TextButton.icon(
-            onPressed: () => openUri('https://github.com/ostermayer/deepmarks-public'),
+            onPressed: () => openUri(context, 'https://github.com/ostermayer/deepmarks-public'),
             icon: const Icon(Icons.open_in_new, size: 18),
             label: Text(l10n.plugin_deepmarks_learn_more),
           ),

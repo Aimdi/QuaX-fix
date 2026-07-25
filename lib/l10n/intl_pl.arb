@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Sprawdź połączenie",
   "plugin_deepmarks_test_ok": "Połączono z Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Klucz przyjęty, ale konto nie ma jeszcze publicznej zakładki, by sprawdzić klucz podpisujący",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Dodaj subreddit",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Utwórz „installed app” na reddit.com/prefs/apps i wklej jej client ID. Reddit wymaga go nawet bez konta. Nie jest nikomu przekazywany.",
+  "plugin_reddit_description": "Czytaj subreddity bez konta i logowania",
+  "plugin_reddit_empty": "Dodaj subreddit, aby zacząć czytać",
+  "plugin_reddit_error_blocked": "Reddit odrzucił żądanie. Zwykle oznacza to, że blokuje używaną sieć.",
+  "plugin_reddit_error_client_id": "Reddit odrzucił client ID",
+  "plugin_reddit_error_network": "Nie udało się połączyć z Redditem",
+  "plugin_reddit_error_not_found": "Taki subreddit nie istnieje lub jest prywatny",
+  "plugin_reddit_error_rate_limited": "Zbyt wiele żądań, spróbuj za chwilę",
+  "plugin_reddit_error_response": "Reddit odpowiedział czymś nieoczekiwanym",
+  "plugin_reddit_not_configured": "Najpierw podaj client ID Reddita",
+  "plugin_reddit_open_discussion": "Otwórz dyskusję",
+  "plugin_reddit_title": "Reddit"
 }

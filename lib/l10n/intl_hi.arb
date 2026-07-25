@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "कनेक्शन जाँचें",
   "plugin_deepmarks_test_ok": "Deepmarks से जुड़ गया",
   "plugin_deepmarks_test_ok_unverified": "कुंजी स्वीकृत, पर खाते में अभी कोई सार्वजनिक बुकमार्क नहीं है जिससे हस्ताक्षर कुंजी जाँची जाए",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "सबरेडिट जोड़ें",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "reddit.com/prefs/apps पर एक “installed app” बनाएँ और उसका client ID चिपकाएँ। Reddit इसे खाते के बिना भी माँगता है। यह कहीं और नहीं भेजा जाता।",
+  "plugin_reddit_description": "बिना खाते और लॉगिन के सबरेडिट पढ़ें",
+  "plugin_reddit_empty": "पढ़ना शुरू करने के लिए एक सबरेडिट जोड़ें",
+  "plugin_reddit_error_blocked": "Reddit ने अनुरोध अस्वीकार किया। आमतौर पर इसका अर्थ है कि वह आपके नेटवर्क को रोक रहा है।",
+  "plugin_reddit_error_client_id": "Reddit ने client ID अस्वीकार कर दी",
+  "plugin_reddit_error_network": "Reddit तक पहुँच नहीं हो सकी",
+  "plugin_reddit_error_not_found": "ऐसा सबरेडिट नहीं है या वह निजी है",
+  "plugin_reddit_error_rate_limited": "बहुत अधिक अनुरोध, कुछ देर बाद प्रयास करें",
+  "plugin_reddit_error_response": "Reddit ने अनपेक्षित उत्तर दिया",
+  "plugin_reddit_not_configured": "पहले अपना Reddit client ID जोड़ें",
+  "plugin_reddit_open_discussion": "चर्चा खोलें",
+  "plugin_reddit_title": "Reddit"
 }

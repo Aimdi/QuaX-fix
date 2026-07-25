@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Verbindung testen",
   "plugin_deepmarks_test_ok": "Mit Deepmarks verbunden",
   "plugin_deepmarks_test_ok_unverified": "Schlüssel akzeptiert, aber das Konto hat noch kein öffentliches Lesezeichen, um den Signaturschlüssel zu prüfen",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Subreddit hinzufügen",
+  "plugin_reddit_client_id": "Client-ID",
+  "plugin_reddit_client_id_help": "Erstelle unter reddit.com/prefs/apps eine „installed app“ und füge deren Client-ID ein. Reddit verlangt sie auch ohne Konto. Sie wird an niemanden weitergegeben.",
+  "plugin_reddit_description": "Subreddits ohne Konto und ohne Anmeldung lesen",
+  "plugin_reddit_empty": "Füge ein Subreddit hinzu, um zu lesen",
+  "plugin_reddit_error_blocked": "Reddit hat die Anfrage abgelehnt. Meist blockiert es das Netzwerk, in dem du gerade bist.",
+  "plugin_reddit_error_client_id": "Reddit hat die Client-ID abgelehnt",
+  "plugin_reddit_error_network": "Reddit ist nicht erreichbar",
+  "plugin_reddit_error_not_found": "Dieses Subreddit gibt es nicht oder es ist privat",
+  "plugin_reddit_error_rate_limited": "Zu viele Anfragen, bitte kurz warten",
+  "plugin_reddit_error_response": "Reddit hat unerwartet geantwortet",
+  "plugin_reddit_not_configured": "Bitte zuerst die Reddit-Client-ID eintragen",
+  "plugin_reddit_open_discussion": "Diskussion öffnen",
+  "plugin_reddit_title": "Reddit"
 }

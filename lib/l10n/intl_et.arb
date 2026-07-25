@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Testi ühendust",
   "plugin_deepmarks_test_ok": "Deepmarksiga ühendatud",
   "plugin_deepmarks_test_ok_unverified": "Võti võeti vastu, aga kontol pole veel avalikku järjehoidjat, mille vastu allkirjastamisvõtit kontrollida",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Lisa subreddit",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Loo aadressil reddit.com/prefs/apps „installed app“ ja kleebi selle client ID. Reddit nõuab seda ka ilma kontota. Kuhugi mujale seda ei saadeta.",
+  "plugin_reddit_description": "Loe subredditeid ilma konto ja sisselogimiseta",
+  "plugin_reddit_empty": "Lisa subreddit, et lugemist alustada",
+  "plugin_reddit_error_blocked": "Reddit keeldus päringust. Sageli tähendab see, et ta blokeerib sinu võrgu.",
+  "plugin_reddit_error_client_id": "Reddit lükkas client ID tagasi",
+  "plugin_reddit_error_network": "Redditini ei õnnestunud jõuda",
+  "plugin_reddit_error_not_found": "Sellist subredditit pole või see on privaatne",
+  "plugin_reddit_error_rate_limited": "Liiga palju päringuid, proovi veidi hiljem",
+  "plugin_reddit_error_response": "Reddit vastas ootamatult",
+  "plugin_reddit_not_configured": "Lisa esmalt oma Redditi client ID",
+  "plugin_reddit_open_discussion": "Ava arutelu",
+  "plugin_reddit_title": "Reddit"
 }

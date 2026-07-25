@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Verbinding testen",
   "plugin_deepmarks_test_ok": "Verbonden met Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Sleutel geaccepteerd, maar het account heeft nog geen openbare bookmark om de ondertekeningssleutel mee te vergelijken",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Subreddit toevoegen",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Maak een ‘installed app’ op reddit.com/prefs/apps en plak de client ID. Reddit vraagt die ook zonder account. Hij gaat nergens anders naartoe.",
+  "plugin_reddit_description": "Lees subreddits zonder account of inloggen",
+  "plugin_reddit_empty": "Voeg een subreddit toe om te beginnen",
+  "plugin_reddit_error_blocked": "Reddit weigerde het verzoek. Vaak blokkeert het het netwerk dat je gebruikt.",
+  "plugin_reddit_error_client_id": "Reddit weigerde de client ID",
+  "plugin_reddit_error_network": "Kan Reddit niet bereiken",
+  "plugin_reddit_error_not_found": "Dat subreddit bestaat niet of is privé",
+  "plugin_reddit_error_rate_limited": "Te veel verzoeken, probeer het straks opnieuw",
+  "plugin_reddit_error_response": "Reddit antwoordde iets onverwachts",
+  "plugin_reddit_not_configured": "Vul eerst je Reddit client ID in",
+  "plugin_reddit_open_discussion": "Discussie openen",
+  "plugin_reddit_title": "Reddit"
 }

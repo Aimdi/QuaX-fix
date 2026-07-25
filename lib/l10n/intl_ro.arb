@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Testează conexiunea",
   "plugin_deepmarks_test_ok": "Conectat la Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Cheia a fost acceptată, dar contul nu are încă un favorit public cu care să verificăm cheia de semnare",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Adaugă subreddit",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Creează o „installed app” pe reddit.com/prefs/apps și lipește client ID-ul. Reddit îl cere chiar și fără cont. Nu este trimis nicăieri altundeva.",
+  "plugin_reddit_description": "Citește subreddituri fără cont și fără autentificare",
+  "plugin_reddit_empty": "Adaugă un subreddit pentru a începe",
+  "plugin_reddit_error_blocked": "Reddit a refuzat cererea. De obicei asta înseamnă că blochează rețeaua folosită.",
+  "plugin_reddit_error_client_id": "Reddit a respins client ID-ul",
+  "plugin_reddit_error_network": "Reddit nu poate fi contactat",
+  "plugin_reddit_error_not_found": "Acest subreddit nu există sau este privat",
+  "plugin_reddit_error_rate_limited": "Prea multe cereri, încearcă din nou în scurt timp",
+  "plugin_reddit_error_response": "Reddit a răspuns ceva neașteptat",
+  "plugin_reddit_not_configured": "Adaugă mai întâi client ID-ul Reddit",
+  "plugin_reddit_open_discussion": "Deschide discuția",
+  "plugin_reddit_title": "Reddit"
 }

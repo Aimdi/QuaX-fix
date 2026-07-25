@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Bağlantıyı sına",
   "plugin_deepmarks_test_ok": "Deepmarks’a bağlandı",
   "plugin_deepmarks_test_ok_unverified": "Anahtar kabul edildi, ancak hesabın imzalama anahtarını karşılaştıracak herkese açık yer imi yok",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Subreddit ekle",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "reddit.com/prefs/apps adresinde bir “installed app” oluşturup client ID’sini yapıştırın. Reddit bunu hesap olmadan da ister. Başka hiçbir yere gönderilmez.",
+  "plugin_reddit_description": "Hesap ve giriş olmadan subreddit okuyun",
+  "plugin_reddit_empty": "Okumaya başlamak için bir subreddit ekleyin",
+  "plugin_reddit_error_blocked": "Reddit isteği reddetti. Bu genelde kullandığınız ağı engellediği anlamına gelir.",
+  "plugin_reddit_error_client_id": "Reddit client ID’yi reddetti",
+  "plugin_reddit_error_network": "Reddit’e ulaşılamadı",
+  "plugin_reddit_error_not_found": "Böyle bir subreddit yok veya özel",
+  "plugin_reddit_error_rate_limited": "Çok fazla istek, biraz sonra tekrar deneyin",
+  "plugin_reddit_error_response": "Reddit beklenmedik bir yanıt verdi",
+  "plugin_reddit_not_configured": "Önce Reddit client ID’nizi girin",
+  "plugin_reddit_open_discussion": "Tartışmayı aç",
+  "plugin_reddit_title": "Reddit"
 }

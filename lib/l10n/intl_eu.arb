@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Probatu konexioa",
   "plugin_deepmarks_test_ok": "Deepmarks-era konektatuta",
   "plugin_deepmarks_test_ok_unverified": "Gakoa onartu da, baina kontuak ez du oraindik laster-marka publikorik sinadura gakoa egiaztatzeko",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Gehitu subreddita",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Sortu «installed app» bat reddit.com/prefs/apps helbidean eta itsatsi bere client ID-a. Redditek konturik gabe ere eskatzen du. Ez da beste inora bidaltzen.",
+  "plugin_reddit_description": "Irakurri subredditak konturik eta saiorik gabe",
+  "plugin_reddit_empty": "Gehitu subreddit bat irakurtzen hasteko",
+  "plugin_reddit_error_blocked": "Redditek eskaera ukatu du. Askotan erabiltzen duzun sarea blokeatzen duela esan nahi du.",
+  "plugin_reddit_error_client_id": "Redditek client ID-a ez du onartu",
+  "plugin_reddit_error_network": "Ezin izan da Reddit-era iritsi",
+  "plugin_reddit_error_not_found": "Subreddit hori ez dago edo pribatua da",
+  "plugin_reddit_error_rate_limited": "Eskaera gehiegi; saiatu berriro laster",
+  "plugin_reddit_error_response": "Redditek ustekabeko erantzuna eman du",
+  "plugin_reddit_not_configured": "Gehitu lehenik zure Reddit client ID-a",
+  "plugin_reddit_open_discussion": "Ireki eztabaida",
+  "plugin_reddit_title": "Reddit"
 }

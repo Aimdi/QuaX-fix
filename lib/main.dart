@@ -59,6 +59,8 @@ import 'package:app_links/app_links.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quax/plugins/karakeep/karakeep_client.dart';
 import 'package:quax/plugins/deepmarks/deepmarks_client.dart';
+import 'package:quax/plugins/reddit/reddit_client.dart';
+import 'package:quax/plugins/reddit/reddit_store.dart';
 
 Future checkForUpdates(context) async {
   Logger.root.info('Checking for updates');
@@ -290,6 +292,9 @@ Future<void> main() async {
     optionPluginKarakeepEnabled: false,
     optionPluginKarakeepServerUrl: '',
     optionPluginKarakeepApiKey: '',
+    optionPluginRedditEnabled: false,
+    optionPluginRedditClientId: '',
+    optionPluginRedditSubreddits: '[]',
     optionPluginSubstackEnabled: false,
     optionPluginSubstackShowTab: true,
     optionPluginSubstackPublications: '[]',
@@ -364,6 +369,10 @@ Future<void> main() async {
 
     final deepmarksClient = DeepmarksClient();
     final karakeepClient = KarakeepClient();
+    final redditClient = RedditClient();
+    final redditSubreddits = RedditSubredditsStore(prefService);
+    await redditSubreddits.load();
+    final redditFeed = RedditFeedStore(redditClient, redditSubreddits, prefService);
     final substackClient = SubstackClient();
     final substackPublications = SubstackPublicationsStore(prefService);
     await substackPublications.load();
@@ -391,6 +400,9 @@ Future<void> main() async {
             Provider(create: (context) => TrendsModel(trendLocationModel)),
             Provider(create: (_) => deepmarksClient),
             Provider(create: (_) => karakeepClient),
+            Provider(create: (_) => redditClient),
+            Provider(create: (_) => redditSubreddits),
+            Provider(create: (_) => redditFeed),
             Provider(create: (_) => substackClient),
             Provider(create: (_) => substackPublications),
             Provider(create: (_) => substackFeed),

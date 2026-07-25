@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Pravieryć złuczennie",
   "plugin_deepmarks_test_ok": "Złuczana z Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Klucz pryniaty, ale ŭ akaŭncie pakul niama publičnaj zakładki, kab pravieryć klucz padpisannia",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Dadać sabredyt",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Stvarycie «installed app» na reddit.com/prefs/apps i ŭstaŭcie jaje client ID. Reddit patrabuje jaho navat biez akaŭnta. Bolš nikudy jon nie adpraŭlajecca.",
+  "plugin_reddit_description": "Čytajcie sabredyty biez akaŭnta i biez uvachodu",
+  "plugin_reddit_empty": "Dadajcie sabredyt, kab pačać čytać",
+  "plugin_reddit_error_blocked": "Reddit admoviŭ u zapracie. Zvyčajna heta značyć, što jon błakuje vašu sietku.",
+  "plugin_reddit_error_client_id": "Reddit admoviŭ client ID",
+  "plugin_reddit_error_network": "Nie ŭdalosia zviazacca z Reddit",
+  "plugin_reddit_error_not_found": "Takoha sabredyta niama abo jon pryvatny",
+  "plugin_reddit_error_rate_limited": "Zanadta mnoha zapytaŭ, pasprabujcie paźniej",
+  "plugin_reddit_error_response": "Reddit adkazaŭ niačakana",
+  "plugin_reddit_not_configured": "Spačatku dadajcie svoj client ID Reddit",
+  "plugin_reddit_open_discussion": "Adkryć abmierkavannie",
+  "plugin_reddit_title": "Reddit"
 }

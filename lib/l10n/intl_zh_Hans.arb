@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "测试连接",
   "plugin_deepmarks_test_ok": "已连接到 Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "密钥已通过，但账户还没有公开书签可用于核对签名密钥",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "添加 subreddit",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "在 reddit.com/prefs/apps 创建一个「installed app」并粘贴其 client ID。即使没有账号，Reddit 也要求它。它不会被发送到别处。",
+  "plugin_reddit_description": "无需账号、无需登录即可阅读 subreddit",
+  "plugin_reddit_empty": "添加一个 subreddit 开始阅读",
+  "plugin_reddit_error_blocked": "Reddit 拒绝了请求。这通常意味着它屏蔽了你所在的网络。",
+  "plugin_reddit_error_client_id": "Reddit 拒绝了该 client ID",
+  "plugin_reddit_error_network": "无法连接到 Reddit",
+  "plugin_reddit_error_not_found": "该 subreddit 不存在或为私密",
+  "plugin_reddit_error_rate_limited": "请求过多，请稍后再试",
+  "plugin_reddit_error_response": "Reddit 返回了意外的内容",
+  "plugin_reddit_not_configured": "请先填写 Reddit client ID",
+  "plugin_reddit_open_discussion": "打开讨论",
+  "plugin_reddit_title": "Reddit"
 }

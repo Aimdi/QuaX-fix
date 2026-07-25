@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Test tilkoblingen",
   "plugin_deepmarks_test_ok": "Koblet til Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Nøkkelen ble godtatt, men kontoen har ennå ingen offentlige bokmerker å sjekke signeringsnøkkelen mot",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Legg til subreddit",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Opprett en «installed app» på reddit.com/prefs/apps og lim inn client ID-en. Reddit krever den selv uten konto. Den sendes ikke noe annet sted.",
+  "plugin_reddit_description": "Les subreddits uten konto og uten innlogging",
+  "plugin_reddit_empty": "Legg til en subreddit for å begynne å lese",
+  "plugin_reddit_error_blocked": "Reddit avviste forespørselen. Ofte betyr det at det blokkerer nettverket du er på.",
+  "plugin_reddit_error_client_id": "Reddit avviste client ID-en",
+  "plugin_reddit_error_network": "Kunne ikke nå Reddit",
+  "plugin_reddit_error_not_found": "Denne subredditen finnes ikke, eller den er privat",
+  "plugin_reddit_error_rate_limited": "For mange forespørsler, prøv igjen om litt",
+  "plugin_reddit_error_response": "Reddit svarte med noe uventet",
+  "plugin_reddit_not_configured": "Legg inn Reddit-client ID-en først",
+  "plugin_reddit_open_discussion": "Åpne diskusjonen",
+  "plugin_reddit_title": "Reddit"
 }

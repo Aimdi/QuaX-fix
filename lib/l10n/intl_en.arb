@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Test connection",
   "plugin_deepmarks_test_ok": "Connected to Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Key accepted, but the account has no public bookmark yet to check the signing key against",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Add subreddit",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Create an \"installed app\" at reddit.com/prefs/apps and paste its client ID. Reddit needs it even without an account. Nothing is sent anywhere else.",
+  "plugin_reddit_description": "Read subreddits without an account or a login",
+  "plugin_reddit_empty": "Add a subreddit to start reading",
+  "plugin_reddit_error_blocked": "Reddit refused the request. This often means it is blocking the network you are on.",
+  "plugin_reddit_error_client_id": "Reddit rejected the client ID",
+  "plugin_reddit_error_network": "Could not reach Reddit",
+  "plugin_reddit_error_not_found": "No such subreddit, or it is private",
+  "plugin_reddit_error_rate_limited": "Too many requests, try again shortly",
+  "plugin_reddit_error_response": "Reddit answered with something unexpected",
+  "plugin_reddit_not_configured": "Add your Reddit client ID first",
+  "plugin_reddit_open_discussion": "Open the discussion",
+  "plugin_reddit_title": "Reddit"
 }

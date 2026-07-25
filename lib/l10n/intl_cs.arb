@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Otestovat spojení",
   "plugin_deepmarks_test_ok": "Připojeno k Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Klíč přijat, ale účet zatím nemá veřejnou záložku, podle které by šlo podepisovací klíč zkontrolovat",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Přidat subreddit",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Vytvořte na reddit.com/prefs/apps „installed app“ a vložte její client ID. Reddit ho vyžaduje i bez účtu. Nikam jinam se neposílá.",
+  "plugin_reddit_description": "Čtěte subreddity bez účtu a přihlášení",
+  "plugin_reddit_empty": "Přidejte subreddit a začněte číst",
+  "plugin_reddit_error_blocked": "Reddit odmítl požadavek. Většinou to znamená, že blokuje síť, kterou používáte.",
+  "plugin_reddit_error_client_id": "Reddit odmítl client ID",
+  "plugin_reddit_error_network": "Reddit není dostupný",
+  "plugin_reddit_error_not_found": "Takový subreddit neexistuje nebo je privátní",
+  "plugin_reddit_error_rate_limited": "Příliš mnoho požadavků, zkuste to za chvíli",
+  "plugin_reddit_error_response": "Reddit odpověděl nečekaně",
+  "plugin_reddit_not_configured": "Nejdřív zadejte své Reddit client ID",
+  "plugin_reddit_open_discussion": "Otevřít diskusi",
+  "plugin_reddit_title": "Reddit"
 }

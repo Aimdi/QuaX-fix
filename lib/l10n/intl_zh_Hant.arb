@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "測試連線",
   "plugin_deepmarks_test_ok": "已連線到 Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "金鑰已通過，但帳戶尚無公開書籤可核對簽章金鑰",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "新增 subreddit",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "在 reddit.com/prefs/apps 建立一個「installed app」並貼上其 client ID。即使沒有帳號，Reddit 也會要求它。它不會被送往別處。",
+  "plugin_reddit_description": "無需帳號、無需登入即可閱讀 subreddit",
+  "plugin_reddit_empty": "新增一個 subreddit 開始閱讀",
+  "plugin_reddit_error_blocked": "Reddit 拒絕了請求。這通常表示它封鎖了你所在的網路。",
+  "plugin_reddit_error_client_id": "Reddit 拒絕了該 client ID",
+  "plugin_reddit_error_network": "無法連線到 Reddit",
+  "plugin_reddit_error_not_found": "該 subreddit 不存在或為私人",
+  "plugin_reddit_error_rate_limited": "請求過多，請稍後再試",
+  "plugin_reddit_error_response": "Reddit 回傳了非預期的內容",
+  "plugin_reddit_not_configured": "請先填寫 Reddit client ID",
+  "plugin_reddit_open_discussion": "開啟討論",
+  "plugin_reddit_title": "Reddit"
 }

@@ -489,5 +489,19 @@
   "plugin_deepmarks_test": "Probar conexión",
   "plugin_deepmarks_test_ok": "Conectado a Deepmarks",
   "plugin_deepmarks_test_ok_unverified": "Clave aceptada, pero la cuenta aún no tiene marcadores públicos con los que comprobar la clave de firma",
-  "plugin_deepmarks_title": "Deepmarks"
+  "plugin_deepmarks_title": "Deepmarks",
+  "plugin_reddit_add": "Añadir subreddit",
+  "plugin_reddit_client_id": "Client ID",
+  "plugin_reddit_client_id_help": "Crea una «installed app» en reddit.com/prefs/apps y pega su client ID. Reddit la exige incluso sin cuenta. No se envía a ningún otro sitio.",
+  "plugin_reddit_description": "Lee subreddits sin cuenta ni inicio de sesión",
+  "plugin_reddit_empty": "Añade un subreddit para empezar a leer",
+  "plugin_reddit_error_blocked": "Reddit rechazó la petición. Normalmente significa que bloquea la red que usas.",
+  "plugin_reddit_error_client_id": "Reddit rechazó el client ID",
+  "plugin_reddit_error_network": "No se pudo contactar con Reddit",
+  "plugin_reddit_error_not_found": "Ese subreddit no existe o es privado",
+  "plugin_reddit_error_rate_limited": "Demasiadas peticiones, inténtalo en un momento",
+  "plugin_reddit_error_response": "Reddit respondió algo inesperado",
+  "plugin_reddit_not_configured": "Añade primero tu client ID de Reddit",
+  "plugin_reddit_open_discussion": "Abrir la discusión",
+  "plugin_reddit_title": "Reddit"
 }
