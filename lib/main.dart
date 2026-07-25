@@ -813,8 +813,15 @@ class _DefaultPageState extends State<DefaultPage> {
     // Attach a listener to the stream
     _sub = appLinks.uriLinkStream.listen(
       (link) => handleInitialLink(link),
-      onError: (err) {
-        // TODO: Handle exception by warning the user their action did not succeed
+      onError: (err, stackTrace) {
+        // A link that never reaches handleInitialLink leaves the user staring at
+        // whatever was already on screen, with no clue their tap did nothing.
+        log.warning('Unable to handle an incoming link', err, stackTrace);
+
+        final context = _navigatorKey.currentContext;
+        if (context != null && context.mounted) {
+          showSnackBar(context, icon: '🔗', message: L10n.of(context).unable_to_open_link);
+        }
       },
     );
   }
