@@ -40,7 +40,7 @@ class HomeModel extends Store<List<HomePage>> {
 
       final pluginPages = <NavigationPage>[
         for (final plugin in builtInPlugins)
-          if (plugin.isEnabled(prefs))
+          if (plugin.isEnabled(prefs) && plugin.showsHomeTab(prefs))
             NavigationPage(
               plugin.id,
               (c) => plugin.title(c),

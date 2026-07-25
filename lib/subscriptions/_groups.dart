@@ -14,6 +14,8 @@ import 'package:quax/subscriptions/widgets/group_tile.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/ui/x_controls.dart';
 import 'package:provider/provider.dart';
+import 'package:quax/plugins/plugin.dart';
+import 'package:quax/plugins/plugin_registry.dart';
 
 export 'package:quax/subscriptions/_groups_edit.dart'
     show openSubscriptionGroupDialog, SubscriptionGroupEditDialog;
@@ -149,6 +151,27 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
     );
   }
 
+  /// Feeds a plugin provides, listed with the groups so they are reachable from
+  /// where feeds live. Only shown once a plugin has given up its own home tab,
+  /// otherwise the same feed would have two entry points.
+  List<Widget> _pluginFeedRows(BuildContext context) {
+    final prefs = PrefService.of(context);
+
+    return [
+      for (final plugin in builtInPlugins)
+        if (plugin.isEnabled(prefs) && !plugin.showsHomeTab(prefs) && plugin.homeTabPrefKey != null)
+          ListTile(
+            leading: Icon(plugin.icon),
+            title: Text(plugin.title(context)),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => _PluginFeedRoute(plugin: plugin)),
+            ),
+          ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedBuilder<GroupsModel, List<SubscriptionGroup>>.transition(
@@ -176,6 +199,7 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
         return Column(
           children: [
             if (state.length > 5) _buildSearchBar(context),
+            ..._pluginFeedRows(context),
             Expanded(
               child: manualOrder
                   ? _buildReorderableList(context, groups)
@@ -242,5 +266,31 @@ class SubscriptionGroups extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SubscriptionGroupsPage(scrollController: scrollController);
+  }
+}
+
+/// Hosts a plugin's feed screen as a pushed route, for plugins that no longer
+/// occupy a home tab. The screen brings its own app bar.
+class _PluginFeedRoute extends StatefulWidget {
+  final QuaxPlugin plugin;
+
+  const _PluginFeedRoute({required this.plugin});
+
+  @override
+  State<_PluginFeedRoute> createState() => _PluginFeedRouteState();
+}
+
+class _PluginFeedRouteState extends State<_PluginFeedRoute> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.plugin.homeScreen(scrollController: _scrollController) ?? const SizedBox.shrink();
   }
 }
