@@ -170,6 +170,11 @@ final Map<String, String> userAgentHeader = {
 const String bearerToken =
     "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA";
 
+// The guest (logged-out) path uses a different bearer from the authenticated
+// one above. It was written out twice inline in client_unauthenticated.dart.
+const String guestBearerToken =
+    "Bearer AAAAAAAAAAAAAAAAAAAAAGHtAgAAAAAA%2Bx7ILXNILCqkSGIzy6faIHZ9s3Q%3DQy97w6SIrzE7lQwPJEYQBsArEE2fC25caFwRBvAGi456G09vGR";
+
 // How long a derived x-client-transaction-id key is trusted. X rotates the home
 // page and on-demand bundle it is built from, and a stale key makes every
 // request 404 — indistinguishable from a rotated query id.
