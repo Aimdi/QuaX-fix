@@ -170,6 +170,11 @@ final Map<String, String> userAgentHeader = {
 const String bearerToken =
     "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA";
 
+// How long a derived x-client-transaction-id key is trusted. X rotates the home
+// page and on-demand bundle it is built from, and a stale key makes every
+// request 404 — indistinguishable from a rotated query id.
+const Duration transactionKeyLifetime = Duration(hours: 6);
+
 // Account selection strategy: cooldowns and flagging thresholds.
 const Duration rateLimitFallback = Duration(minutes: 15);
 const Duration notFoundCooldown = Duration(hours: 6);

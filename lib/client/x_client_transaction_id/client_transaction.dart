@@ -26,6 +26,18 @@ class ClientTransaction {
     required this._randomNumber,
   });
 
+  /// Builds a generator from already-derived parts. Tests use this because
+  /// [initialize] needs two live requests to x.com.
+  ClientTransaction.forTesting({
+    required List<int> keyBytes,
+    required String animationKey,
+    String randomKeyword = defaultKeyword,
+    int randomNumber = additionalRandomNumber,
+  })  : _keyBytes = keyBytes,
+        _animationKey = animationKey,
+        _randomKeyword = randomKeyword,
+        _randomNumber = randomNumber;
+
   /// Fetches x.com and initializes the transaction ID generator.
   static Future<ClientTransaction> initialize({
     String randomKeyword = defaultKeyword,

@@ -1,5 +1,16 @@
+import 'dart:async';
+
 import 'package:quax/client/x_client_transaction_id/client_transaction.dart';
 import 'package:quax/constants.dart';
+
+/// Whether a derived transaction key may still be used.
+///
+/// X builds the key from its home page and an on-demand bundle, and rotates
+/// both. A process left open for days would otherwise keep signing requests
+/// with a key X no longer recognises — and since X answers an unsigned request
+/// with 404, that failure looks exactly like a rotated query id.
+bool transactionKeyUsable({required DateTime? derivedAt, required DateTime now, required Duration lifetime}) =>
+    derivedAt != null && now.difference(derivedAt) < lifetime;
 
 class TwitterHeaders {
   static final Map<String, String> _baseHeaders = {
@@ -16,15 +27,61 @@ class TwitterHeaders {
     'x-twitter-client-language': 'en',
   };
 
+  /// Seams for tests: deriving the key needs two live requests to x.com.
+  static Future<ClientTransaction> Function() initializer = ClientTransaction.initialize;
+  static DateTime Function() clock = DateTime.now;
+
   static Future<ClientTransaction>? _initFuture;
+  static DateTime? _derivedAt;
+
+  static void resetForTesting() {
+    _initFuture = null;
+    _derivedAt = null;
+    initializer = ClientTransaction.initialize;
+    clock = DateTime.now;
+  }
+
+  static Future<ClientTransaction> _transaction() {
+    final now = clock();
+    final cached = _initFuture;
+    if (cached != null && transactionKeyUsable(derivedAt: _derivedAt, now: now, lifetime: transactionKeyLifetime)) {
+      return cached;
+    }
+
+    final started = initializer();
+    _initFuture = started;
+    _derivedAt = now;
+
+    // Deriving the key does two network requests and parses X's HTML, so it can
+    // fail for entirely transient reasons. Leaving a rejected future cached
+    // would fail *every* later request with that same error for the life of the
+    // process — a blip at startup could only be cleared by force-stopping the
+    // app. Forgetting it lets the next call try again.
+    //
+    // This listener also marks `started` handled, so clearing the cache never
+    // surfaces as an unhandled async error; whoever awaits it still sees the
+    // failure and reports it normally.
+    unawaited(
+      started.then(
+        (_) {},
+        onError: (Object _) {
+          if (identical(_initFuture, started)) {
+            _initFuture = null;
+            _derivedAt = null;
+          }
+        },
+      ),
+    );
+
+    return started;
+  }
 
   static Future<Map<String, String>?> getXClientTransactionIdHeader(Uri? uri) async {
     if (uri == null) {
       return null;
     }
 
-    _initFuture ??= ClientTransaction.initialize();
-    final ct = await _initFuture!;
+    final ct = await _transaction();
     return {'x-client-transaction-id': ct.generateTransactionId('GET', uri.path)};
   }
 
@@ -33,7 +90,7 @@ class TwitterHeaders {
     return {
       ..._baseHeaders,
       if (authHeader != null) ...Map<String, String>.from(authHeader),
-      ...?xClientTransactionIdHeader
+      ...?xClientTransactionIdHeader,
     };
   }
 }
