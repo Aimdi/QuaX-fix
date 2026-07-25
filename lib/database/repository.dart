@@ -26,7 +26,7 @@ const String tablePostNotification = 'post_notification';
 const String tableRetweetFilter = 'retweet_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 35;
+const int databaseVersion = 36;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -337,6 +337,17 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
           }
           await batch.commit(noResult: true);
         })),
+      ],
+      36: [
+        // Custom-feed rules beyond the content filter: engagement thresholds and
+        // muted keywords. 0 / NULL mean "no threshold" and "nothing muted", so
+        // existing feeds behave exactly as before.
+        SqlMigration('ALTER TABLE $tableSubscriptionGroup ADD COLUMN min_likes INTEGER NOT NULL DEFAULT 0',
+            reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN min_likes'),
+        SqlMigration('ALTER TABLE $tableSubscriptionGroup ADD COLUMN min_retweets INTEGER NOT NULL DEFAULT 0',
+            reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN min_retweets'),
+        SqlMigration('ALTER TABLE $tableSubscriptionGroup ADD COLUMN muted_keywords TEXT',
+            reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN muted_keywords'),
       ],
     });
 
