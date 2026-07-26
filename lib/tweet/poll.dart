@@ -15,18 +15,18 @@ class PollChoice {
   const PollChoice({required this.label, required this.count, required this.share});
 }
 
-class Poll {
+class TweetPoll {
   final List<PollChoice> choices;
   final double total;
   final DateTime? endsAt;
 
-  const Poll({required this.choices, required this.total, required this.endsAt});
+  const TweetPoll({required this.choices, required this.total, required this.endsAt});
 
   /// The highest vote count, so the winning bar can be picked out. Zero while
   /// the poll has no votes, which matches no bar.
   double get leadingCount => choices.fold<double>(0, (max, c) => c.count > max ? c.count : max);
 
-  static Poll? fromCard(Map<String, dynamic> card, int numberOfChoices) {
+  static TweetPoll? fromCard(Map<String, dynamic> card, int numberOfChoices) {
     final values = card['binding_values'];
     if (values is! Map) {
       return null;
@@ -51,7 +51,7 @@ class Poll {
     final total = counts.fold<double>(0, (sum, count) => sum + count);
     final endsAtRaw = stringAt('end_datetime_utc');
 
-    return Poll(
+    return TweetPoll(
       choices: [
         for (var i = 0; i < labels.length; i++)
           PollChoice(label: labels[i], count: counts[i], share: total == 0 ? 0 : counts[i] / total)

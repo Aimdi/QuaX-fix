@@ -8,7 +8,7 @@ Map<String, dynamic> _card(Map<String, String> values) => {
 void main() {
   group('reading a poll', () {
     test('shares add up and the leader is the highest count', () {
-      final poll = Poll.fromCard(
+      final poll = TweetPoll.fromCard(
           _card({
             'choice1_label': 'Yes',
             'choice1_count': '30',
@@ -27,7 +27,7 @@ void main() {
     });
 
     test('a poll nobody has voted in divides by nothing', () {
-      final poll = Poll.fromCard(
+      final poll = TweetPoll.fromCard(
           _card({
             'choice1_label': 'Yes',
             'choice1_count': '0',
@@ -42,7 +42,7 @@ void main() {
     });
 
     test('four choices are all read', () {
-      final poll = Poll.fromCard(
+      final poll = TweetPoll.fromCard(
           _card({
             for (var i = 1; i <= 4; i++) ...{'choice${i}_label': 'Option $i', 'choice${i}_count': '$i'}
           }),
@@ -58,16 +58,16 @@ void main() {
     test('a missing choice gives up rather than throwing mid-timeline', () {
       final card = _card({'choice1_label': 'Yes', 'choice1_count': '3'});
 
-      expect(Poll.fromCard(card, 2), isNull);
+      expect(TweetPoll.fromCard(card, 2), isNull);
     });
 
     test('binding values of the wrong shape give up', () {
-      expect(Poll.fromCard({'binding_values': 'nope'}, 2), isNull);
-      expect(Poll.fromCard(const {}, 2), isNull);
+      expect(TweetPoll.fromCard({'binding_values': 'nope'}, 2), isNull);
+      expect(TweetPoll.fromCard(const {}, 2), isNull);
     });
 
     test('an unparseable count is no votes, not a crash', () {
-      final poll = Poll.fromCard(
+      final poll = TweetPoll.fromCard(
           _card({
             'choice1_label': 'Yes',
             'choice1_count': 'lots',
@@ -81,7 +81,7 @@ void main() {
     });
 
     test('an unparseable end date leaves the poll without one', () {
-      final poll = Poll.fromCard(
+      final poll = TweetPoll.fromCard(
           _card({
             'choice1_label': 'Yes',
             'choice1_count': '1',

@@ -236,7 +236,7 @@ class TweetCard extends StatelessWidget {
   }
 
   Widget _createVoteCard(BuildContext context, Map<String, dynamic> card, int numberOfChoices) {
-    final poll = Poll.fromCard(card, numberOfChoices);
+    final poll = TweetPoll.fromCard(card, numberOfChoices);
     if (poll == null) {
       return Container();
     }
