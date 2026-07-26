@@ -209,7 +209,9 @@ class RedditClient {
   final Map<String, String> _cookies = {};
 
   void _rememberCookies(http.Response response, Map<String, String>? sent) {
-    _cookies.addAll(?sent);
+    if (sent != null) {
+      _cookies.addAll(sent);
+    }
 
     final header = response.headers['set-cookie'];
     if (header == null) {
