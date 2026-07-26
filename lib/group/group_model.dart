@@ -109,12 +109,18 @@ class GroupModel extends Store<SubscriptionGroupGet> {
           .map((e) => SubstackSubscription.fromMap(e))
           .toList(growable: false);
 
+      var redditSubscriptions = (await database.rawQuery(
+              'SELECT DISTINCT s.* FROM $tableRedditSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders)',
+              ids))
+          .map((e) => RedditSubscription.fromMap(e))
+          .toList(growable: false);
+
       // TODO: Factory
       return SubscriptionGroupGet(
           id: group['id'] as String,
           name: group['name'] as String,
           icon: group['icon'] as String,
-          subscriptions: [...userSubscriptions, ...searchSubscriptions, ...substackSubscriptions],
+          subscriptions: [...userSubscriptions, ...searchSubscriptions, ...substackSubscriptions, ...redditSubscriptions],
           includeReplies: _includeOverride(group['include_replies']),
           includeRetweets: _includeOverride(group['include_retweets']),
           popular: group['popular'] == 1,

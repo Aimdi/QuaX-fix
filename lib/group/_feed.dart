@@ -15,6 +15,8 @@ import 'package:quax/group/group_screen.dart';
 import 'package:quax/profile/media_grid/media_grid.dart';
 import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:logging/logging.dart';
+import 'package:quax/plugins/reddit/reddit_client.dart';
+import 'package:quax/plugins/reddit/reddit_post_card.dart';
 import 'package:quax/plugins/substack/substack_client.dart';
 import 'package:quax/plugins/substack/substack_post_card.dart';
 import 'package:quax/plugins/substack/substack_store.dart';
@@ -61,6 +63,10 @@ class SubscriptionGroupFeed extends StatefulWidget {
   /// beside the X search rather than inside it.
   final List<SubstackSubscription> publications;
 
+  /// Subreddits in this group, fetched beside the X search for the same reason
+  /// as the publications: their own source, their own pagination.
+  final List<RedditSubscription> subreddits;
+
   const SubscriptionGroupFeed(
       {super.key,
       required this.group,
@@ -70,7 +76,8 @@ class SubscriptionGroupFeed extends StatefulWidget {
       required this.mediaOnly,
       this.cacheKey,
       this.initialPreview,
-      this.publications = const []});
+      this.publications = const [],
+      this.subreddits = const []});
 
   @override
   State<SubscriptionGroupFeed> createState() => _SubscriptionGroupFeedState();
@@ -110,6 +117,42 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   /// by date; scrolling further into X's history does not need more of them,
   /// because a newsletter publishes a handful of posts a week, not a page.
   List<InterleavedItem> _substackItems = const [];
+
+  /// Reddit posts for this group's subreddits, newest first.
+  List<InterleavedItem> _redditItems = const [];
+
+  Future<void> _loadRedditPosts() async {
+    if (widget.subreddits.isEmpty || widget.mediaOnly) {
+      return;
+    }
+
+    final client = context.read<RedditClient>();
+    final prefs = PrefService.of(context, listen: false);
+    final clientId = prefs.get<String>(optionPluginRedditClientId) ?? '';
+    final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
+
+    final items = <InterleavedItem>[];
+    for (final subreddit in widget.subreddits) {
+      try {
+        final listing = await client.fetchSubreddit(subreddit.name,
+            clientId: clientId, limit: 10, preferPublic: preferPublic);
+        for (final post in listing.posts.where((p) => !p.stickied)) {
+          final date = post.createdAt;
+          if (date == null) {
+            continue;
+          }
+          items.add((date: date, build: (context) => RedditPostCard(post: post)));
+        }
+      } catch (e) {
+        // One unreachable subreddit must not empty the feed of the others.
+        _log.warning('Unable to load r/${subreddit.name}: $e');
+      }
+    }
+
+    if (mounted) {
+      setState(() => _redditItems = items);
+    }
+  }
 
   Future<void> _loadSubstackPosts() async {
     if (widget.publications.isEmpty || widget.mediaOnly) {
@@ -173,6 +216,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       _loadPreview();
     }
     _loadSubstackPosts();
+    _loadRedditPosts();
   }
 
   Future<void> _loadPreview() async {
@@ -697,7 +741,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
             emptyMessage: L10n.of(context).could_not_find_any_tweets_from_the_last_7_days,
             isSeen: _tracksReadPosition && _lastSeen != null ? _isSeen : null,
             caughtUpDividerKey: _caughtUpKey,
-            interleaved: _substackItems,
+            interleaved: [..._substackItems, ..._redditItems],
           ),
         ),
       ),

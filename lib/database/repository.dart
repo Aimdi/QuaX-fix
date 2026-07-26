@@ -20,6 +20,7 @@ const String tableSavedTweetFolder = 'saved_tweet_folder';
 const String tableLikedTweet = 'liked_tweet';
 const String tableSearchSubscription = 'search_subscription';
 const String tableSubstackSubscription = 'substack_subscription';
+const String tableRedditSubscription = 'reddit_subscription';
 const String tableSearchSubscriptionGroupMember = 'search_subscription_group_member';
 const String tableSubscription = 'subscription';
 const String tableSubscriptionGroup = 'subscription_group';
@@ -31,7 +32,7 @@ const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 41;
+const int databaseVersion = 42;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -499,6 +500,19 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
     // backup must still be able to finish upgrading. A bare ALTER TABLE would
     // fail on the missing table and block every later migration with it.
     Migration(Operation(_addGroupParentColumn), reverse: Operation(_dropGroupParentColumn)),
+  ],
+  42: [
+    // Subreddits, for the same reason publications got a table in 40: group
+    // membership joins profile ids against subscription tables, and a list in
+    // preferences has no rows to join. The old preference is imported on first
+    // read rather than here, since a migration cannot reach preferences.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableRedditSubscription ('
+      'id VARCHAR PRIMARY KEY, name VARCHAR NOT NULL, '
+      'in_feed INTEGER NOT NULL DEFAULT 1, '
+      'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableRedditSubscription',
+    ),
   ],
 });
 

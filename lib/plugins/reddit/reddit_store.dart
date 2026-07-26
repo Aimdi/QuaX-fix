@@ -3,54 +3,89 @@ import 'dart:convert';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:quax/constants.dart';
+import 'package:quax/database/entities.dart';
+import 'package:quax/database/repository.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:quax/plugins/reddit/reddit_auth.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 
-/// Subreddits the reader follows, kept in preferences — no account, so there is
-/// nothing to sync.
+/// Subreddits the reader follows, kept in the database.
+///
+/// They used to be a JSON list in preferences, which is why a subreddit could
+/// never be a member of a group. Anything still in that list is imported on
+/// first load and the preference cleared.
 class RedditSubredditsStore extends Store<List<String>> {
   final BasePrefService prefs;
 
   RedditSubredditsStore(this.prefs) : super(const []);
 
   Future<void> load() async {
-    await execute(() async => _read());
+    await execute(() async {
+      await _importFromPrefs();
+      return _read();
+    });
   }
 
-  List<String> _read() {
-    final raw = prefs.get<String>(optionPluginRedditSubreddits) ?? '[]';
+  Future<List<String>> _read() async {
+    final database = await Repository.readOnly();
+    final rows = await database.query(tableRedditSubscription, orderBy: 'name COLLATE NOCASE');
+
+    return rows.map((e) => e['name'] as String).toList(growable: false);
+  }
+
+  Future<void> _importFromPrefs() async {
+    final raw = prefs.get<String>(optionPluginRedditSubreddits) ?? '';
+    if (raw.isEmpty) {
+      return;
+    }
+
     try {
       final decoded = jsonDecode(raw);
       if (decoded is List) {
-        return decoded.whereType<String>().toList(growable: false);
+        for (final name in decoded.whereType<String>()) {
+          await _write(name);
+        }
       }
     } catch (_) {
       // A corrupt value should not wedge the plugin shut.
     }
-    return const [];
+    await prefs.set(optionPluginRedditSubreddits, '');
+  }
+
+  Future<void> _write(String name) async {
+    final normalised = normaliseSubreddit(name);
+    if (normalised == null) {
+      return;
+    }
+
+    final database = await Repository.writable();
+    await database.insert(
+      tableRedditSubscription,
+      RedditSubscription(
+        id: normalised.toLowerCase(),
+        name: normalised,
+        createdAt: DateTime.now(),
+        inFeed: true,
+      ).toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<void> add(String subreddit) async {
-    final name = normaliseSubreddit(subreddit);
-    if (name == null) {
-      return;
-    }
     await execute(() async {
-      final existing = _read();
-      if (existing.any((e) => e.toLowerCase() == name.toLowerCase())) {
-        return existing;
-      }
-      final next = [...existing, name];
-      await prefs.set(optionPluginRedditSubreddits, jsonEncode(next));
-      return next;
+      await _write(subreddit);
+      return _read();
     });
   }
 
   Future<void> remove(String subreddit) async {
     await execute(() async {
-      final next = _read().where((e) => e.toLowerCase() != subreddit.toLowerCase()).toList(growable: false);
-      await prefs.set(optionPluginRedditSubreddits, jsonEncode(next));
-      return next;
+      final id = subreddit.toLowerCase();
+      final database = await Repository.writable();
+      await database.delete(tableRedditSubscription, where: 'id = ?', whereArgs: [id]);
+      // A subreddit that is gone should not linger as a member of a group.
+      await database.delete(tableSubscriptionGroupMember, where: 'profile_id = ?', whereArgs: [id]);
+      return _read();
     });
   }
 }

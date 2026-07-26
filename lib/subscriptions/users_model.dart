@@ -46,7 +46,10 @@ class SubscriptionsModel extends Store<List<Subscription>> {
       List<Subscription> publications =
           (await database.query(tableSubstackSubscription)).map((e) => SubstackSubscription.fromMap(e)).toList();
 
-      List<Subscription> lst = [...users, ...searches, ...publications];
+      List<Subscription> subreddits =
+          (await database.query(tableRedditSubscription)).map((e) => RedditSubscription.fromMap(e)).toList();
+
+      List<Subscription> lst = [...users, ...searches, ...publications, ...subreddits];
       if (orderCustom.isEmpty) {
         return lst.sorted((a, b) {
           var one = orderByAscending ? a : b;

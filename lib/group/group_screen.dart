@@ -159,7 +159,9 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
         // searched on X: they have their own source, and leaving them in a
         // search query would put an empty clause in it.
         final publications = members.whereType<SubstackSubscription>().toList(growable: false);
-        final users = members.where((e) => e is! SubstackSubscription).toList(growable: false);
+        final subreddits = members.whereType<RedditSubscription>().toList(growable: false);
+        final users =
+            members.where((e) => e is! SubstackSubscription && e is! RedditSubscription).toList(growable: false);
 
         var chunks = partition(users, 16)
             .map((e) => SubscriptionGroupFeedChunk(e, includeReplies, includeRetweets))
@@ -169,6 +171,7 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
           group: group,
           chunks: chunks,
           publications: publications,
+          subreddits: subreddits,
           includeReplies: includeReplies,
           includeRetweets: includeRetweets,
           mediaOnly: widget.mediaOnly,
