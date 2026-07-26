@@ -159,15 +159,25 @@ void maybeShowLikeToast(BuildContext context) {
 /// [tooltip] doubles as the button's accessibility label: an icon-only button
 /// without one is announced as an unnamed "button", which is what a screen
 /// reader used to get for every share, save and translate control in a feed.
-IconButton tweetFooterIconButton(BuildContext context, IconData icon,
+Widget tweetFooterIconButton(BuildContext context, IconData icon,
     [Color? color, double? fill, VoidCallback? onPressed, String? tooltip]) {
-  return IconButton(
+  final button = IconButton(
     icon: Icon(icon, fill: fill),
     color: color ?? Theme.of(context).colorScheme.primary,
     iconSize: 20,
     onPressed: onPressed,
     tooltip: tooltip,
     style: footerButtonStyle,
+  );
+
+  // A tooltip triggers on long press by default, and that recogniser sits
+  // *inside* the callers' GestureDetectors, so it won the gesture arena and
+  // quietly ate "long press to file a post in a folder". Manual keeps the name
+  // in the semantics tree — which is all the tooltip was added for — without
+  // claiming the gesture.
+  return TooltipTheme(
+    data: const TooltipThemeData(triggerMode: TooltipTriggerMode.manual),
+    child: button,
   );
 }
 
