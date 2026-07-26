@@ -409,6 +409,8 @@
   "subscribe": "Abonnieren",
   "subscription_group_member_count": "{count, plural, one{1 Abo} other{{count} Abos}}",
   "subscription_groups_columns": "Spalten",
+  "subscription_groups_layout_board": "Als Kacheln anzeigen",
+  "subscription_groups_layout_list": "Als Liste anzeigen",
   "subscriptions": "Abos",
   "subtitles": "Untertitel",
   "successfully_saved_the_media": "Datei gespeichert!",

@@ -409,6 +409,8 @@
   "subscribe": "Đăng kí",
   "subscription_group_member_count": "{count, plural, other{{count} đăng ký}}",
   "subscription_groups_columns": "Số cột",
+  "subscription_groups_layout_board": "Hiển thị dạng bảng",
+  "subscription_groups_layout_list": "Hiển thị dạng danh sách",
   "subscriptions": "Người đăng kí",
   "subtitles": "Phụ đề",
   "successfully_saved_the_media": "Đã lưu",

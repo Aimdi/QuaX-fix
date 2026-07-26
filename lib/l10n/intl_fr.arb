@@ -409,6 +409,8 @@
   "subscribe": "S'abonner",
   "subscription_group_member_count": "{count, plural, one{1 abonnement} other{{count} abonnements}}",
   "subscription_groups_columns": "Colonnes",
+  "subscription_groups_layout_board": "Afficher en tableau",
+  "subscription_groups_layout_list": "Afficher en liste",
   "subscriptions": "Abonnements",
   "subtitles": "Sous-titres",
   "successfully_saved_the_media": "Média enregistré avec succès !",

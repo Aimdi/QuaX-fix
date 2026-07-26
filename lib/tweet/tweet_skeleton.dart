@@ -13,13 +13,18 @@ class TweetFeedSkeleton extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.only(top: 4),
       itemCount: count,
-      itemBuilder: (context, index) => const _TweetSkeletonTile(),
+      itemBuilder: (context, index) => const TweetSkeletonTile(),
     );
   }
 }
 
-class _TweetSkeletonTile extends StatelessWidget {
-  const _TweetSkeletonTile();
+/// One placeholder post.
+///
+/// Also used as the footer while the next page loads: the list grows into
+/// something post-shaped instead of a centred spinner that appears, animates
+/// and is then swapped out, which is what made the timeline stall visibly.
+class TweetSkeletonTile extends StatelessWidget {
+  const TweetSkeletonTile({super.key});
 
   @override
   Widget build(BuildContext context) {

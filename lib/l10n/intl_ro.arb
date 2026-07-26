@@ -409,6 +409,8 @@
   "subscribe": "Abonează-te",
   "subscription_group_member_count": "{count, plural, one{1 abonament} few{{count} abonamente} other{{count} de abonamente}}",
   "subscription_groups_columns": "Coloane",
+  "subscription_groups_layout_board": "Afișează ca panou",
+  "subscription_groups_layout_list": "Afișează ca listă",
   "subscriptions": "Abonamente",
   "subtitles": "Subtitrări",
   "successfully_saved_the_media": "Media salvată!",

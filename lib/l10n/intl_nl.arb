@@ -409,6 +409,8 @@
   "subscribe": "Abonneer",
   "subscription_group_member_count": "{count, plural, one{1 abonnement} other{{count} abonnementen}}",
   "subscription_groups_columns": "Kolommen",
+  "subscription_groups_layout_board": "Als bord weergeven",
+  "subscription_groups_layout_list": "Als lijst weergeven",
   "subscriptions": "Abonnementen",
   "subtitles": "Ondertitels",
   "successfully_saved_the_media": "Media opgeslagen!",

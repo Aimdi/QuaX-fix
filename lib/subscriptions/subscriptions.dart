@@ -105,6 +105,12 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
                   context.read<GroupsModel>().changeOrderSubscriptionGroupsBy('created_at');
                 case _SubscriptionsMenuAction.sortGroupsByCustom:
                   context.read<GroupsModel>().changeOrderSubscriptionGroupsBy('position');
+                case _SubscriptionsMenuAction.toggleGroupLayout:
+                  final prefs = PrefService.of(context);
+                  final asList =
+                      prefs.get<String>(optionSubscriptionGroupsLayout) == subscriptionGroupsLayoutList;
+                  prefs.set(optionSubscriptionGroupsLayout,
+                      asList ? subscriptionGroupsLayoutBoard : subscriptionGroupsLayoutList);
                 case _SubscriptionsMenuAction.toggleGroupColumns:
                   final prefs = PrefService.of(context);
                   final current = prefs.get<int>(optionSubscriptionGroupsColumns) ?? 2;
@@ -148,9 +154,20 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
                 ),
                 const PopupMenuDivider(),
                 PopupMenuItem(
-                  value: _SubscriptionsMenuAction.toggleGroupColumns,
-                  child: Text(l10n.subscription_groups_columns),
+                  value: _SubscriptionsMenuAction.toggleGroupLayout,
+                  child: Text(PrefService.of(context).get<String>(optionSubscriptionGroupsLayout) ==
+                          subscriptionGroupsLayoutList
+                      ? l10n.subscription_groups_layout_board
+                      : l10n.subscription_groups_layout_list),
                 ),
+                // Columns only shape the board, so offering them while a list
+                // is on screen is a control that does nothing.
+                if (PrefService.of(context).get<String>(optionSubscriptionGroupsLayout) !=
+                    subscriptionGroupsLayoutList)
+                  PopupMenuItem(
+                    value: _SubscriptionsMenuAction.toggleGroupColumns,
+                    child: Text(l10n.subscription_groups_columns),
+                  ),
                 PopupMenuItem(
                   value: _SubscriptionsMenuAction.toggleGroupsOrder,
                   child: Text(l10n.toggle_sort_direction),
@@ -209,6 +226,7 @@ enum _SubscriptionsMenuAction {
   sortGroupsByName,
   sortGroupsByDate,
   sortGroupsByCustom,
+  toggleGroupLayout,
   toggleGroupColumns,
   toggleGroupsOrder,
   importSubscriptions,

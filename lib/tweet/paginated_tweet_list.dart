@@ -316,6 +316,7 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
               );
             },
             firstPageProgressIndicatorBuilder: (context) => const TweetFeedSkeleton(),
+            newPageProgressIndicatorBuilder: (context) => const TweetSkeletonTile(),
             firstPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
               error: pagingErrorOf(state)?.error,
               stackTrace: pagingErrorOf(state)?.stackTrace,

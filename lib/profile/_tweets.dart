@@ -6,6 +6,7 @@ import 'package:quax/database/repository.dart';
 import 'package:quax/database/timeline_cache.dart';
 import 'package:quax/profile/profile.dart';
 import 'package:quax/tweet/conversation.dart';
+import 'package:quax/tweet/tweet_skeleton.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/user.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -156,6 +157,8 @@ class _ProfileTweetsState extends State<ProfileTweets> with AutomaticKeepAliveCl
                 return TweetConversation(
                     id: chain.id, tweets: chain.tweets, username: widget.user.screenName!, isPinned: chain.isPinned);
               },
+              firstPageProgressIndicatorBuilder: (context) => const TweetFeedSkeleton(),
+              newPageProgressIndicatorBuilder: (context) => const TweetSkeletonTile(),
               firstPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
                 error: pagingErrorOf(state)?.error,
                 stackTrace: pagingErrorOf(state)?.stackTrace,

@@ -409,6 +409,8 @@
   "subscribe": "Langgan",
   "subscription_group_member_count": "{count, plural, other{{count} langganan}}",
   "subscription_groups_columns": "Kolom",
+  "subscription_groups_layout_board": "Tampilkan sebagai papan",
+  "subscription_groups_layout_list": "Tampilkan sebagai daftar",
   "subscriptions": "Langganan",
   "subtitles": "Subtitel",
   "successfully_saved_the_media": "Media disimpan!",

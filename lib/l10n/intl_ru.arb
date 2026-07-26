@@ -409,6 +409,8 @@
   "subscribe": "Читать",
   "subscription_group_member_count": "{count, plural, one{{count} подписка} few{{count} подписки} many{{count} подписок} other{{count} подписки}}",
   "subscription_groups_columns": "Столбцы",
+  "subscription_groups_layout_board": "Показать плиткой",
+  "subscription_groups_layout_list": "Показать списком",
   "subscriptions": "Подписки",
   "subtitles": "Субтитры",
   "successfully_saved_the_media": "Файл сохранён!",

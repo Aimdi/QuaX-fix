@@ -409,6 +409,8 @@
   "subscribe": "सदस्यता लें",
   "subscription_group_member_count": "{count, plural, one{1 सदस्यता} other{{count} सदस्यताएँ}}",
   "subscription_groups_columns": "स्तंभ",
+  "subscription_groups_layout_board": "बोर्ड के रूप में दिखाएँ",
+  "subscription_groups_layout_list": "सूची के रूप में दिखाएँ",
   "subscriptions": "सदस्यताएँ",
   "subtitles": "उपशीर्षक",
   "successfully_saved_the_media": "मीडिया सहेजा गया!",

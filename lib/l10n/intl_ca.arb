@@ -409,6 +409,8 @@
   "subscribe": "Subscriure",
   "subscription_group_member_count": "{count, plural, one{1 subscripció} other{{count} subscripcions}}",
   "subscription_groups_columns": "Columnes",
+  "subscription_groups_layout_board": "Mostra com a tauler",
+  "subscription_groups_layout_list": "Mostra com a llista",
   "subscriptions": "Subscripcions",
   "subtitles": "Subtítols",
   "successfully_saved_the_media": "Suport desat!",

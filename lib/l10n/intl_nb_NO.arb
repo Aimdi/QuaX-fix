@@ -409,6 +409,8 @@
   "subscribe": "Abonnere",
   "subscription_group_member_count": "{count, plural, one{1 abonnement} other{{count} abonnementer}}",
   "subscription_groups_columns": "Kolonner",
+  "subscription_groups_layout_board": "Vis som tavle",
+  "subscription_groups_layout_list": "Vis som liste",
   "subscriptions": "Abonnementer",
   "subtitles": "Undertekster",
   "successfully_saved_the_media": "Media lagret.",

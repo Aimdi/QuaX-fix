@@ -409,6 +409,8 @@
   "subscribe": "訂閱",
   "subscription_group_member_count": "{count, plural, other{{count} 個訂閱}}",
   "subscription_groups_columns": "欄數",
+  "subscription_groups_layout_board": "以格狀顯示",
+  "subscription_groups_layout_list": "以清單顯示",
   "subscriptions": "訂閱",
   "subtitles": "字幕",
   "successfully_saved_the_media": "已成功儲存媒體！",

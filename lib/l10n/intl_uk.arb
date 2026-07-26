@@ -409,6 +409,8 @@
   "subscribe": "Підписатися",
   "subscription_group_member_count": "{count, plural, one{{count} підписка} few{{count} підписки} many{{count} підписок} other{{count} підписки}}",
   "subscription_groups_columns": "Стовпці",
+  "subscription_groups_layout_board": "Показати плиткою",
+  "subscription_groups_layout_list": "Показати списком",
   "subscriptions": "Підписки",
   "subtitles": "Субтитри",
   "successfully_saved_the_media": "Медіа збережено!",

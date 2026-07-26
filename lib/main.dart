@@ -318,6 +318,7 @@ Future<void> main() async {
       alwaysShowFullTweetContents: true,
       optionSubscriptionGroupsOrderByField: 'name',
       optionSubscriptionGroupsColumns: 2,
+      optionSubscriptionGroupsLayout: subscriptionGroupsLayoutBoard,
       optionSubscriptionOrderByAscending: true,
       optionSubscriptionOrderByField: 'name',
       optionSubscriptionOrderCustom: '',

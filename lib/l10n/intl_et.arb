@@ -409,6 +409,8 @@
   "subscribe": "Telli",
   "subscription_group_member_count": "{count, plural, one{1 tellimus} other{{count} tellimust}}",
   "subscription_groups_columns": "Veerud",
+  "subscription_groups_layout_board": "Kuva ruudustikuna",
+  "subscription_groups_layout_list": "Kuva loendina",
   "subscriptions": "Tellimused",
   "subtitles": "Subtiitrid",
   "successfully_saved_the_media": "Salvestasin meedia!",

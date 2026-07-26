@@ -409,6 +409,8 @@
   "subscribe": "Padpisacca",
   "subscription_group_member_count": "{count, plural, one{{count} padpiska} few{{count} padpiski} many{{count} padpisak} other{{count} padpiski}}",
   "subscription_groups_columns": "Slupki",
+  "subscription_groups_layout_board": "Pakazać doškaj",
+  "subscription_groups_layout_list": "Pakazać spisam",
   "subscriptions": "Padpiski",
   "subtitles": "Subtytry",
   "successfully_saved_the_media": "Medyja zachavana!",

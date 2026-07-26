@@ -409,6 +409,8 @@
   "subscribe": "Abone ol",
   "subscription_group_member_count": "{count, plural, one{1 abonelik} other{{count} abonelik}}",
   "subscription_groups_columns": "Sütunlar",
+  "subscription_groups_layout_board": "Pano olarak göster",
+  "subscription_groups_layout_list": "Liste olarak göster",
   "subscriptions": "Abonelikler",
   "subtitles": "Altyazılar",
   "successfully_saved_the_media": "Medya kaydedildi!",

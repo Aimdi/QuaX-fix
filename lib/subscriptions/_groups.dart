@@ -128,7 +128,7 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
     );
   }
 
-  Widget _buildReorderableList(BuildContext context, List<SubscriptionGroup> groups) {
+  Widget _buildReorderableList(BuildContext context, List<SubscriptionGroup> groups, {required bool canReorder}) {
     return ReorderableListView.builder(
       scrollController: widget.scrollController,
       padding: const EdgeInsets.fromLTRB(8, 4, 8, 24),
@@ -139,7 +139,9 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
         return GroupListItem(
           key: ValueKey(group.id),
           group: group,
-          reorderIndex: index,
+          // No handle means no drag: rearranging a name-sorted or filtered list
+          // would write an order the reader cannot see.
+          reorderIndex: canReorder ? index : null,
           onLongPress: () => openSubscriptionGroupDialog(context, group.id, group.name, group.icon),
         );
       },
@@ -191,18 +193,21 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
         final groups = query.isEmpty
             ? state
             : state.where((g) => g.name.toLowerCase().contains(query)).toList(growable: false);
-        // Manual ordering keeps the list form: dragging tiles around a grid is
-        // far fiddlier than dragging rows, and the row carries a drag handle.
-        final manualOrder = context.read<GroupsModel>().orderGroupsBy == 'position' && query.isEmpty;
-        final animate = PrefService.of(context).get<bool>(optionDisableAnimations) != true;
+        final prefs = PrefService.of(context);
+        final animate = prefs.get<bool>(optionDisableAnimations) != true;
+        final asList = prefs.get<String>(optionSubscriptionGroupsLayout) == subscriptionGroupsLayoutList;
+        // Dragging tiles around a grid is far fiddlier than dragging rows, so
+        // only the list carries drag handles — and only when the order it would
+        // rearrange is the one being shown.
+        final canReorder = context.read<GroupsModel>().orderGroupsBy == 'position' && query.isEmpty;
 
         return Column(
           children: [
             if (state.length > 5) _buildSearchBar(context),
             ..._pluginFeedRows(context),
             Expanded(
-              child: manualOrder
-                  ? _buildReorderableList(context, groups)
+              child: asList
+                  ? _buildReorderableList(context, groups, canReorder: canReorder)
                   : _buildBoard(context, groups, animate: animate),
             ),
           ],

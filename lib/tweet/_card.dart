@@ -9,7 +9,9 @@ import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/tweet/_media.dart';
 import 'package:quax/tweet/_video.dart';
+import 'package:quax/tweet/poll.dart';
 import 'package:quax/tweet/tweet_chrome.dart';
+import 'package:quax/ui/x_look_theme.dart';
 import 'package:quax/utils/urls.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
@@ -132,40 +134,56 @@ class TweetCard extends StatelessWidget {
     );
   }
 
-  Container _createVoteBar(BuildContext context, Map<String, dynamic> card, double total, int choiceIndex) {
-    var choiceCount = double.parse(card['binding_values']['choice${choiceIndex}_count']['string_value']);
-    var choicePercent = total == 0 ? 0 : (100 / total) * choiceCount;
+  /// One poll option: a rounded bar filled to its share, the option on the left
+  /// and its percentage on the right.
+  ///
+  /// The old bar was a bare [LinearProgressIndicator] with the label painted
+  /// over it — square, full-bleed and with the percentage crowding the option
+  /// text it ran into.
+  Widget _createVoteBar(BuildContext context, PollChoice choice, bool isLeading) {
+    final theme = Theme.of(context);
+    final tokens = XLookTokens.maybeOf(context);
+    final track = tokens?.divider ?? theme.dividerColor;
+    final fill = isLeading
+        ? theme.colorScheme.primary.withValues(alpha: 0.45)
+        : theme.colorScheme.primary.withValues(alpha: 0.18);
+    final weight = isLeading ? FontWeight.w700 : FontWeight.w400;
 
-    var theme = Theme.of(context);
-    var textColor = theme.brightness == Brightness.light ? Colors.black : Colors.white;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: Stack(alignment: Alignment.center, children: [
-        SizedBox(
-          height: 24,
-          child: LinearProgressIndicator(
-              value: choicePercent / 100,
-              color: theme.brightness == Brightness.light
-                  ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
-                  : Theme.of(context).colorScheme.primary.withValues(alpha: 0.7)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Stack(
+          children: [
+            Container(height: 34, color: track),
+            // The fill is laid out as a fraction of the bar rather than painted
+            // by a progress indicator, so it keeps the rounded ends.
+            Positioned.fill(
+              child: FractionallySizedBox(
+                alignment: Alignment.centerLeft,
+                widthFactor: choice.share.clamp(0.0, 1.0),
+                child: Container(color: fill),
+              ),
+            ),
+            SizedBox(
+              height: 34,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(choice.label,
+                          overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: weight)),
+                    ),
+                    const SizedBox(width: 8),
+                    Text('${(choice.share * 100).round()}%', style: TextStyle(fontWeight: weight)),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-        Container(
-            alignment: Alignment.centerLeft,
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            child: RichText(
-              text: TextSpan(children: [
-                TextSpan(
-                    text: '${choicePercent.toStringAsFixed(1)}% ',
-                    style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
-                TextSpan(
-                    text: card['binding_values']['choice${choiceIndex}_label']['string_value'],
-                    style: TextStyle(
-                      color: textColor,
-                    ))
-              ]),
-            )),
-      ]),
+      ),
     );
   }
 
@@ -217,49 +235,40 @@ class TweetCard extends StatelessWidget {
     }
   }
 
-  Container _createVoteCard(BuildContext context, Map<String, dynamic> card, int numberOfChoices) {
-    var numberFormat = NumberFormat.decimalPattern();
-
-    var total = List.generate(
-            numberOfChoices, (index) => double.parse(card['binding_values']['choice${++index}_count']['string_value']))
-        .reduce((value, element) => value + element);
-
-    String endsAtText;
-
-    var endsAt = DateTime.parse(card['binding_values']['end_datetime_utc']['string_value']);
-    if (endsAt.isBefore(DateTime.now())) {
-      endsAtText = L10n.of(context).ended_timeago_format_endsAt_allowFromNow_true(
-        timeago.format(endsAt, allowFromNow: true, locale: Intl.shortLocale(Intl.getCurrentLocale())),
-      );
-    } else {
-      endsAtText = L10n.of(context).ends_timeago_format_endsAt_allowFromNow_true(
-        timeago.format(endsAt, allowFromNow: true, locale: Intl.shortLocale(Intl.getCurrentLocale())),
-      );
+  Widget _createVoteCard(BuildContext context, Map<String, dynamic> card, int numberOfChoices) {
+    final poll = Poll.fromCard(card, numberOfChoices);
+    if (poll == null) {
+      return Container();
     }
 
+    final numberFormat = NumberFormat.decimalPattern();
+    final endsAt = poll.endsAt;
+    final closed = endsAt != null && endsAt.isBefore(DateTime.now());
+    final relative =
+        endsAt == null ? null : timeago.format(endsAt, allowFromNow: true, locale: Intl.shortLocale(Intl.getCurrentLocale()));
+
     return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            ...List.generate(numberOfChoices, (index) => _createVoteBar(context, card, total, ++index)),
-            Container(
-              alignment: Alignment.centerRight,
-              margin: const EdgeInsets.only(top: 8),
-              child: RichText(
-                text: TextSpan(children: [
-                  TextSpan(
-                    text: L10n.of(context).numberFormat_format_total_votes(
-                      total,
-                      numberFormat.format(total),
-                    ),
-                  ),
-                  const TextSpan(text: ' • '),
-                  TextSpan(text: endsAtText)
-                ]),
-              ),
-            )
-          ],
-        ));
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final choice in poll.choices) _createVoteBar(context, choice, choice.count == poll.leadingCount),
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: DefaultTextStyle.merge(
+              style: Theme.of(context).textTheme.bodySmall!,
+              child: Text([
+                L10n.of(context).numberFormat_format_total_votes(poll.total, numberFormat.format(poll.total)),
+                if (relative != null)
+                  closed
+                      ? L10n.of(context).ended_timeago_format_endsAt_allowFromNow_true(relative)
+                      : L10n.of(context).ends_timeago_format_endsAt_allowFromNow_true(relative),
+              ].join(' • ')),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   String? _findCardUrl(Map<String, dynamic> card) {
@@ -347,11 +356,17 @@ class TweetCard extends StatelessWidget {
               ],
             ),
             context);
+      // The image variants carry the same choice bindings; only the artwork
+      // differs, and it was never shown. They used to fall through to the
+      // default and render nothing at all.
       case 'poll2choice_text_only':
+      case 'poll2choice_image':
         return _createVoteCard(context, card, 2);
       case 'poll3choice_text_only':
+      case 'poll3choice_image':
         return _createVoteCard(context, card, 3);
       case 'poll4choice_text_only':
+      case 'poll4choice_image':
         return _createVoteCard(context, card, 4);
       case 'promo_website':
         // https://twitter.com/CMEGroup/status/1573288572647612416

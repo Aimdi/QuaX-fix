@@ -409,6 +409,8 @@
   "subscribe": "Harpidetu",
   "subscription_group_member_count": "{count, plural, one{Harpidetza 1} other{{count} harpidetza}}",
   "subscription_groups_columns": "Zutabeak",
+  "subscription_groups_layout_board": "Erakutsi taula gisa",
+  "subscription_groups_layout_list": "Erakutsi zerrenda gisa",
   "subscriptions": "Harpidetzak",
   "subtitles": "Azpitituluak",
   "successfully_saved_the_media": "Multimedia gorde da!",

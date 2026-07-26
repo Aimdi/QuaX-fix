@@ -409,6 +409,8 @@
   "subscribe": "订阅",
   "subscription_group_member_count": "{count, plural, other{{count} 个订阅}}",
   "subscription_groups_columns": "列数",
+  "subscription_groups_layout_board": "以网格显示",
+  "subscription_groups_layout_list": "以列表显示",
   "subscriptions": "订阅",
   "subtitles": "字幕",
   "successfully_saved_the_media": "已保存媒体文件！",

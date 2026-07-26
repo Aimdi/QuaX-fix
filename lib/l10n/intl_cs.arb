@@ -409,6 +409,8 @@
   "subscribe": "Odebírat",
   "subscription_group_member_count": "{count, plural, one{1 odběr} few{{count} odběry} many{{count} odběrů} other{{count} odběrů}}",
   "subscription_groups_columns": "Sloupce",
+  "subscription_groups_layout_board": "Zobrazit jako nástěnku",
+  "subscription_groups_layout_list": "Zobrazit jako seznam",
   "subscriptions": "Odběry",
   "subtitles": "Titulky",
   "successfully_saved_the_media": "Média uložena!",

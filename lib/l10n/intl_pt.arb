@@ -409,6 +409,8 @@
   "subscribe": "Inscrever-se",
   "subscription_group_member_count": "{count, plural, one{1 subscrição} other{{count} subscrições}}",
   "subscription_groups_columns": "Colunas",
+  "subscription_groups_layout_board": "Mostrar como quadro",
+  "subscription_groups_layout_list": "Mostrar como lista",
   "subscriptions": "Inscrições",
   "subtitles": "Legendas",
   "successfully_saved_the_media": "Salvou a mídia!",

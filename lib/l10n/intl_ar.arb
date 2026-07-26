@@ -409,6 +409,8 @@
   "subscribe": "الاشتراك",
   "subscription_group_member_count": "{count, plural, zero{لا اشتراكات} one{اشتراك واحد} two{اشتراكان} few{{count} اشتراكات} many{{count} اشتراكًا} other{{count} اشتراك}}",
   "subscription_groups_columns": "الأعمدة",
+  "subscription_groups_layout_board": "عرض كلوحة",
+  "subscription_groups_layout_list": "عرض كقائمة",
   "subscriptions": "الإشتراكات",
   "subtitles": "الترجمة",
   "successfully_saved_the_media": "تم حفظ الوسائط!",

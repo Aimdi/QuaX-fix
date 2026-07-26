@@ -409,6 +409,8 @@
   "subscribe": "Aboni",
   "subscription_group_member_count": "{count, plural, one{1 abono} other{{count} abonoj}}",
   "subscription_groups_columns": "Kolumnoj",
+  "subscription_groups_layout_board": "Montri kiel tabulon",
+  "subscription_groups_layout_list": "Montri kiel liston",
   "subscriptions": "Abonoj",
   "subtitles": "Subtekstoj",
   "successfully_saved_the_media": "Konservis la plurmedion!",

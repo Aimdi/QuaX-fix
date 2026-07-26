@@ -409,6 +409,8 @@
   "subscribe": "Чытаць",
   "subscription_group_member_count": "{count, plural, one{{count} падпіска} few{{count} падпіскі} many{{count} падпісак} other{{count} падпіскі}}",
   "subscription_groups_columns": "Слупкі",
+  "subscription_groups_layout_board": "Паказаць дошкай",
+  "subscription_groups_layout_list": "Паказаць спісам",
   "subscriptions": "Падпіскі",
   "subtitles": "Субтытры",
   "successfully_saved_the_media": "Файл захаваны!",
