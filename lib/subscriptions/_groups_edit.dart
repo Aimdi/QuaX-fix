@@ -181,10 +181,13 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         final l10n = L10n.of(context);
         return AlertDialog(
           title: Text(l10n.choose_icon),
+          // A fixed height rather than shrink-wrapping: the catalogue is long
+          // enough now that wrapping to its content would overflow the dialog
+          // instead of scrolling inside it.
           content: SizedBox(
             width: 320,
+            height: 320,
             child: GridView.builder(
-              shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 5,
                 mainAxisSpacing: 8,

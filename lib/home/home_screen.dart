@@ -353,11 +353,19 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
               })
             .toList(),
         // Tapping the tab you are already on goes back to the top, whichever
-        // tab it is — the Trending tab used to grab the search field instead,
-        // which put a keyboard where a scroll was asked for.
+        // tab it is. The Search tab grabbed its field instead, which put a
+        // keyboard where a scroll was asked for; it now only takes focus once
+        // the list is already at the top, so reaching the search bar is a
+        // deliberate second tap rather than a surprise.
         onDestinationSelected: (index) async {
           if (index == _currentPage) {
-            await scrollToTop(context, _scrollControllers[_currentPage]);
+            final controller = _scrollControllers[_currentPage];
+            final atTop = controller == null || !controller.hasClients || controller.offset <= 0;
+            if (!atTop) {
+              await scrollToTop(context, controller);
+            } else if (widget.pages[index].id == 'trending') {
+              _focusNodes[_currentPage]?.requestFocus();
+            }
             return;
           }
           unfocusPages();
