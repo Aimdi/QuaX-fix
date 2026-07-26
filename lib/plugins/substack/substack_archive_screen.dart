@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/substack/substack_models.dart';
 import 'package:quax/plugins/substack/substack_post_card.dart';
+import 'package:quax/plugins/substack/substack_store.dart';
 import 'package:quax/ui/errors.dart';
 
 class SubstackArchiveScreen extends StatefulWidget {
