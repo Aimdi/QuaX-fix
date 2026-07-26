@@ -197,6 +197,7 @@
   "licenses": "الرخص",
   "light": "فاتح",
   "likes_stay_on_device_notice": "تبقى الإعجابات على هذا الجهاز فقط، ولا يمكن لـ X رؤيتها.",
+  "likes_without_a_group": "بدون مجموعة",
   "list_not_found": "لم يتم العثور على القائمة. ربما حُذفت أو أنها خاصة.",
   "list_url_or_id": "رابط القائمة أو معرّفها",
   "load_media_manually": "تحميل الوسائط يدويًا",

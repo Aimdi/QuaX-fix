@@ -197,6 +197,7 @@
   "licenses": "Litsentsid",
   "light": "Hele teema",
   "likes_stay_on_device_notice": "Meeldimised jäävad ainult sellesse seadmesse. X ei näe neid.",
+  "likes_without_a_group": "Rühmata",
   "list_not_found": "Loendit ei leitud. Võib-olla on see kustutatud või privaatne.",
   "list_url_or_id": "Loendi link või ID",
   "load_media_manually": "Laadi meedia käsitsi",

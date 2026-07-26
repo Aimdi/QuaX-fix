@@ -197,6 +197,7 @@
   "licenses": "Licențe",
   "light": "Luminos",
   "likes_stay_on_device_notice": "Aprecierile rămân pe acest dispozitiv. X nu le poate vedea.",
+  "likes_without_a_group": "Fără grup",
   "list_not_found": "Lista nu a fost găsită. Poate a fost ștearsă sau este privată.",
   "list_url_or_id": "Linkul sau ID-ul listei",
   "load_media_manually": "Încarcă manual conținutul media",

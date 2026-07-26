@@ -197,6 +197,7 @@
   "licenses": "Licenses",
   "light": "Sáng",
   "likes_stay_on_device_notice": "Lượt thích được lưu trên thiết bị này. X không thể thấy chúng.",
+  "likes_without_a_group": "Không thuộc nhóm nào",
   "list_not_found": "Không tìm thấy danh sách. Có thể nó đã bị xóa hoặc ở chế độ riêng tư.",
   "list_url_or_id": "Liên kết hoặc ID danh sách",
   "load_media_manually": "Tải phương tiện thủ công",

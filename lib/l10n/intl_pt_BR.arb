@@ -197,6 +197,7 @@
   "licenses": "Licenças",
   "light": "Claro",
   "likes_stay_on_device_notice": "As curtidas ficam neste dispositivo. O X não consegue vê-las.",
+  "likes_without_a_group": "Sem grupo",
   "list_not_found": "Lista não encontrada. Ela pode ter sido excluída ou é privada.",
   "list_url_or_id": "Link ou ID da lista",
   "load_media_manually": "Carregar mídia manualmente",

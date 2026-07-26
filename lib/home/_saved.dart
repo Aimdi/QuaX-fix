@@ -8,6 +8,8 @@ import 'package:flutter_triple/flutter_triple.dart';
 import 'package:quax/client/client.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
+import 'package:quax/group/group_model.dart';
+import 'package:quax/saved/likes_by_group.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/profile/media_grid/media_grid.dart';
 import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
@@ -40,6 +42,14 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
   bool _searching = false;
   String _query = '';
 
+  /// Whether likes are broken out by the group their author belongs to.
+  bool _likesByGroup = false;
+
+  /// Group membership and group names, read once so the breakdown does not
+  /// query per like.
+  List<SubscriptionGroupMember> _groupMembers = const [];
+  List<SubscriptionGroup> _groups = const [];
+
   /// Focused when the search button opens the field, rather than by `autofocus`.
   ///
   /// This screen is kept alive, so the field's subtree is re-inserted whenever
@@ -57,6 +67,18 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
     context.read<SavedTweetModel>().listSavedTweets();
     context.read<SavedTweetFolderModel>().listFolders();
     context.read<LikedTweetModel>().listLikedTweets();
+    _loadGroupMembership();
+  }
+
+  Future<void> _loadGroupMembership() async {
+    final model = context.read<GroupsModel>();
+    final members = await model.listGroupMembers();
+    if (!mounted) return;
+
+    setState(() {
+      _groupMembers = members;
+      _groups = model.state;
+    });
   }
 
   @override
@@ -290,12 +312,33 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
             highlightColor: Colors.transparent,
           ),
           child: ChoiceChip(
-            label: Text(label),
+            // Likes carry a chevron once they are the chip you are on: tapping
+            // the chip shows them flat, the chevron breaks them out by the
+            // group each author belongs to.
+            label: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(label),
+                if (value == savedTabFavorites && _filter == savedTabFavorites) ...[
+                  const SizedBox(width: 4),
+                  Icon(_likesByGroup ? Icons.expand_less : Icons.expand_more, size: 18),
+                ],
+              ],
+            ),
             selected: _filter == value,
             showCheckmark: false,
             shape: const StadiumBorder(),
             side: BorderSide.none,
-            onSelected: (_) => setState(() => _filter = value),
+            onSelected: (_) => setState(() {
+              // A second tap on the likes chip toggles the breakdown; landing
+              // on it for the first time always shows them flat.
+              if (value == savedTabFavorites && _filter == savedTabFavorites) {
+                _likesByGroup = !_likesByGroup;
+              } else {
+                _likesByGroup = false;
+                _filter = value;
+              }
+            }),
           ),
         ),
       ),
@@ -392,6 +435,38 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
     );
   }
 
+  /// Likes under one heading per group their author belongs to.
+  ///
+  /// One flat list with headings rather than a list of lists: the reader is
+  /// still scrolling their likes, just with the feeds they came from marked.
+  Widget _buildLikesByGroup(List<LikedTweet> likes) {
+    final sections = likesByGroup<LikedTweet>(
+      likes,
+      authorOf: (like) => like.user,
+      members: _groupMembers,
+      groupIds: _groups.map((g) => g.id).toList(growable: false),
+    );
+
+    final nameOf = {for (final group in _groups) group.id: group.name};
+    final rows = <Widget>[];
+    for (final section in sections) {
+      rows.add(Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+        child: Text(
+          section.isUngrouped ? L10n.of(context).likes_without_a_group : nameOf[section.groupId] ?? '',
+          style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w700),
+        ),
+      ));
+      rows.addAll(section.items.map((like) => SavedTweetTile(id: like.id, content: like.content)));
+    }
+
+    return ListView(
+      controller: widget.scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: rows,
+    );
+  }
+
   Widget _buildFavoritesBody() {
     var model = context.read<LikedTweetModel>();
 
@@ -410,6 +485,10 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
         if (_mediaOnly && filtered.isNotEmpty) {
           return _buildMediaGrid(filtered.map((e) => e.content),
               onDelete: (id) => context.read<LikedTweetModel>().unlikeTweet(id));
+        }
+
+        if (_likesByGroup && filtered.isNotEmpty) {
+          return RefreshIndicator(onRefresh: _refresh, child: _buildLikesByGroup(filtered));
         }
 
         return RefreshIndicator(

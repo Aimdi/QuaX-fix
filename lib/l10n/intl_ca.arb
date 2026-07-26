@@ -197,6 +197,7 @@
   "licenses": "Llicències",
   "light": "Clar",
   "likes_stay_on_device_notice": "Els m'agrada es queden en aquest dispositiu. X no els pot veure.",
+  "likes_without_a_group": "Sense grup",
   "list_not_found": "No s'ha trobat la llista. Pot ser que s'hagi suprimit o que sigui privada.",
   "list_url_or_id": "Enllaç o ID de la llista",
   "load_media_manually": "Carregar els mèdia manualment",

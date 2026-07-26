@@ -197,6 +197,7 @@
   "licenses": "Lisenser",
   "light": "Lys",
   "likes_stay_on_device_notice": "Likerklikk lagres på denne enheten. X kan ikke se dem.",
+  "likes_without_a_group": "Uten gruppe",
   "list_not_found": "Fant ikke listen. Den kan ha blitt slettet, eller den er privat.",
   "list_url_or_id": "Listelenke eller ID",
   "load_media_manually": "Last inn medier manuelt",

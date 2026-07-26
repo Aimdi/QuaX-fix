@@ -197,6 +197,7 @@
   "licenses": "Lisensi",
   "light": "Terang",
   "likes_stay_on_device_notice": "Suka disimpan di perangkat ini. X tidak dapat melihatnya.",
+  "likes_without_a_group": "Tanpa grup",
   "list_not_found": "Daftar tidak ditemukan. Mungkin sudah dihapus, atau bersifat privat.",
   "list_url_or_id": "Tautan atau ID daftar",
   "load_media_manually": "Muat media secara manual",

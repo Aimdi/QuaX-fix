@@ -197,6 +197,7 @@
   "licenses": "Lizenzen",
   "light": "Hell",
   "likes_stay_on_device_notice": "„Gefällt mir“-Angaben bleiben auf diesem Gerät. X kann sie nicht sehen.",
+  "likes_without_a_group": "Ohne Gruppe",
   "list_not_found": "Liste nicht gefunden. Sie wurde möglicherweise gelöscht oder ist privat.",
   "list_url_or_id": "Listen-Link oder ID",
   "load_media_manually": "Medien manuell laden",

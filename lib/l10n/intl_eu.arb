@@ -197,6 +197,7 @@
   "licenses": "Lizentziak",
   "light": "Argia",
   "likes_stay_on_device_notice": "Gogokoak gailu honetan gordetzen dira. X-ek ezin ditu ikusi.",
+  "likes_without_a_group": "Talderik gabe",
   "list_not_found": "Ez da zerrenda aurkitu. Baliteke ezabatuta egotea edo pribatua izatea.",
   "list_url_or_id": "Zerrendaren esteka edo IDa",
   "load_media_manually": "Kargatu multimedia eskuz",

@@ -197,6 +197,7 @@
   "licenses": "라이선스",
   "light": "밝음",
   "likes_stay_on_device_notice": "좋아요는 이 기기에만 저장되며 X는 볼 수 없습니다.",
+  "likes_without_a_group": "그룹 없음",
   "list_not_found": "리스트를 찾을 수 없습니다. 삭제되었거나 비공개일 수 있습니다.",
   "list_url_or_id": "리스트 링크 또는 ID",
   "load_media_manually": "미디어 수동으로 불러오기",

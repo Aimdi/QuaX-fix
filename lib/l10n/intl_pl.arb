@@ -197,6 +197,7 @@
   "licenses": "Licencje",
   "light": "Jasny",
   "likes_stay_on_device_notice": "Polubienia pozostają na tym urządzeniu. X ich nie widzi.",
+  "likes_without_a_group": "Bez grupy",
   "list_not_found": "Nie znaleziono listy. Mogła zostać usunięta albo jest prywatna.",
   "list_url_or_id": "Link do listy lub ID",
   "load_media_manually": "Ładuj multimedia ręcznie",

@@ -197,6 +197,7 @@
   "licenses": "Lisanslar",
   "light": "Açık",
   "likes_stay_on_device_notice": "Beğeniler bu cihazda kalır. X bunları göremez.",
+  "likes_without_a_group": "Grupsuz",
   "list_not_found": "Liste bulunamadı. Silinmiş veya gizli olabilir.",
   "list_url_or_id": "Liste bağlantısı veya kimliği",
   "load_media_manually": "Medyayı elle yükle",

@@ -197,6 +197,7 @@
   "licenses": "Licences",
   "light": "Clair",
   "likes_stay_on_device_notice": "Les likes sont stockés sur cet appareil. X ne peut pas les voir.",
+  "likes_without_a_group": "Sans groupe",
   "list_not_found": "Liste introuvable. Elle a peut-être été supprimée, ou elle est privée.",
   "list_url_or_id": "Lien ou identifiant de la liste",
   "load_media_manually": "Charger les médias manuellement",

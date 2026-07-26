@@ -197,6 +197,7 @@
   "licenses": "Licenze",
   "light": "Chiaro",
   "likes_stay_on_device_notice": "I Mi piace restano su questo dispositivo. X non può vederli.",
+  "likes_without_a_group": "Senza gruppo",
   "list_not_found": "Lista non trovata. Potrebbe essere stata eliminata, oppure è privata.",
   "list_url_or_id": "Link o ID della lista",
   "load_media_manually": "Carica i media manualmente",

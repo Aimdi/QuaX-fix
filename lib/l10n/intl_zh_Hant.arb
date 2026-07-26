@@ -197,6 +197,7 @@
   "licenses": "授權",
   "light": "淺色",
   "likes_stay_on_device_notice": "讚僅儲存在此裝置上，X 無法看到。",
+  "likes_without_a_group": "未分組",
   "list_not_found": "找不到清單。它可能已被刪除，或是私人清單。",
   "list_url_or_id": "清單連結或 ID",
   "load_media_manually": "手動載入媒體",

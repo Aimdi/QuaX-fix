@@ -197,6 +197,7 @@
   "licenses": "ライセンス",
   "light": "ライト",
   "likes_stay_on_device_notice": "いいねはこの端末内にのみ保存され、Xからは見えません。",
+  "likes_without_a_group": "グループなし",
   "list_not_found": "リストが見つかりません。削除されたか、非公開の可能性があります。",
   "list_url_or_id": "リストのリンクまたはID",
   "load_media_manually": "メディアを手動で読み込む",

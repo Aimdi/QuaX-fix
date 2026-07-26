@@ -197,6 +197,7 @@
   "licenses": "लाइसेंस",
   "light": "लाइट",
   "likes_stay_on_device_notice": "लाइक इसी डिवाइस पर रहते हैं। X उन्हें नहीं देख सकता।",
+  "likes_without_a_group": "किसी समूह में नहीं",
   "list_not_found": "सूची नहीं मिली। हो सकता है इसे हटा दिया गया हो या यह निजी हो।",
   "list_url_or_id": "सूची का लिंक या ID",
   "load_media_manually": "मीडिया मैन्युअल रूप से लोड करें",

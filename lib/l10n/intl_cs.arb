@@ -197,6 +197,7 @@
   "licenses": "Licence",
   "light": "Světlé",
   "likes_stay_on_device_notice": "Lajky zůstávají jen v tomto zařízení. X je nevidí.",
+  "likes_without_a_group": "Bez skupiny",
   "list_not_found": "Seznam nebyl nalezen. Možná byl smazán, nebo je soukromý.",
   "list_url_or_id": "Odkaz na seznam nebo ID",
   "load_media_manually": "Načítat média ručně",

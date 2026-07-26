@@ -197,6 +197,7 @@
   "licenses": "Licenses",
   "light": "Light",
   "likes_stay_on_device_notice": "Likes stay on this device. X can't see them.",
+  "likes_without_a_group": "Not in a group",
   "list_not_found": "List not found. It may have been deleted, or it is private.",
   "list_url_or_id": "List link or ID",
   "load_media_manually": "Load media manually",

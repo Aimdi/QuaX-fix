@@ -197,6 +197,7 @@
   "licenses": "Licenties",
   "light": "Licht",
   "likes_stay_on_device_notice": "Likes blijven op dit apparaat. X kan ze niet zien.",
+  "likes_without_a_group": "Zonder groep",
   "list_not_found": "Lijst niet gevonden. Mogelijk is deze verwijderd of privé.",
   "list_url_or_id": "Lijstlink of ID",
   "load_media_manually": "Media handmatig laden",
