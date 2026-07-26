@@ -33,9 +33,16 @@ IconData deserializeIconData(String iconData) {
 /// Every group's parent, keyed by group id, for the nesting helpers in
 /// `group_tree.dart`. A group that stands on its own maps to null.
 Future<Map<String, String?>> readGroupParents(DatabaseExecutor database) async {
-  final rows = await database.query(tableSubscriptionGroup, columns: ['id', 'parent_id']);
+  try {
+    final rows = await database.query(tableSubscriptionGroup, columns: ['id', 'parent_id']);
 
-  return {for (final row in rows) row['id'] as String: row['parent_id'] as String?};
+    return {for (final row in rows) row['id'] as String: row['parent_id'] as String?};
+  } catch (e) {
+    // The column is added by a migration that is allowed to fail on a damaged
+    // database. Without it nothing nests, which is the old behaviour — far
+    // better than every group feed refusing to load.
+    return const {};
+  }
 }
 
 class GroupModel extends Store<SubscriptionGroupGet> {

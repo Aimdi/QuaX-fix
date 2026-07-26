@@ -494,10 +494,11 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
     // beside it on the board, and the parent's feed is the union of its own
     // members and its children's. NULL is the existing behaviour: a group that
     // stands on its own.
-    SqlMigration(
-      'ALTER TABLE $tableSubscriptionGroup ADD COLUMN parent_id VARCHAR',
-      reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN parent_id',
-    ),
+    // Applied as an operation rather than plain SQL for the same reason as the
+    // indexes above: a database that lost a table to a partially restored
+    // backup must still be able to finish upgrading. A bare ALTER TABLE would
+    // fail on the missing table and block every later migration with it.
+    Migration(Operation(_addGroupParentColumn), reverse: Operation(_dropGroupParentColumn)),
   ],
 });
 
@@ -515,6 +516,25 @@ const Map<String, String> _indexes = {
   'idx_feed_group_chunk_cursor': '$tableFeedGroupChunk (cursor_id, hash)',
   'idx_subscription_group_member_profile': '$tableSubscriptionGroupMember (profile_id)',
 };
+
+/// Adds the nesting column, tolerating a database whose group table is gone.
+Future<void> _addGroupParentColumn(Database db) async {
+  try {
+    await db.execute('ALTER TABLE $tableSubscriptionGroup ADD COLUMN parent_id VARCHAR');
+  } catch (e) {
+    // Already present, or the table is missing entirely. Neither is worth
+    // stopping the upgrade for: without the column groups simply do not nest.
+    Repository.log.warning('Could not add parent_id to $tableSubscriptionGroup: $e');
+  }
+}
+
+Future<void> _dropGroupParentColumn(Database db) async {
+  try {
+    await db.execute('ALTER TABLE $tableSubscriptionGroup DROP COLUMN parent_id');
+  } catch (e) {
+    Repository.log.warning('Could not drop parent_id from $tableSubscriptionGroup: $e');
+  }
+}
 
 Future<void> _createIndexes(Database db) async {
   for (final entry in _indexes.entries) {
