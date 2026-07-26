@@ -1053,5 +1053,17 @@
   "sync_error_network": "Serverul nu a putut fi contactat",
   "endpoint_refused_title": "𝕏 a refuzat această cerere",
   "endpoint_refused_message": "Toate conturile au fost refuzate în această parte a 𝕏, așa că probabil nu conturile tale sunt de vină. Cel mai probabil 𝕏 a schimbat ceva; aplicația se repară singură când poate. Încearcă din nou peste puțin timp.",
-  "show_additional_replies": "Afișează mai multe răspunsuri"
+  "show_additional_replies": "Afișează mai multe răspunsuri",
+  "theme_background": "Fundal",
+  "theme_background_description": "Cât de întunecată este aplicația",
+  "theme_background_dim": "Estompat",
+  "theme_background_lights_out": "Lumini stinse",
+  "theme_accent": "Culoare de accent",
+  "theme_accent_description": "Pentru linkuri, butoane și fila activă",
+  "colour_blue": "Albastru",
+  "colour_yellow": "Galben",
+  "colour_pink": "Roz",
+  "colour_purple": "Violet",
+  "colour_orange": "Portocaliu",
+  "colour_green": "Verde"
 }

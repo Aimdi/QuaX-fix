@@ -1053,5 +1053,17 @@
   "sync_error_network": "Could not reach the server",
   "endpoint_refused_title": "𝕏 turned this request away",
   "endpoint_refused_message": "Every account was refused on this part of 𝕏, so this is unlikely to be your accounts. 𝕏 probably changed something; the app repairs itself when it can. Try again shortly.",
-  "show_additional_replies": "Show additional replies"
+  "show_additional_replies": "Show additional replies",
+  "theme_background": "Background",
+  "theme_background_description": "How dark the app is",
+  "theme_background_dim": "Dim",
+  "theme_background_lights_out": "Lights out",
+  "theme_accent": "Accent colour",
+  "theme_accent_description": "Used for links, buttons and the selected tab",
+  "colour_blue": "Blue",
+  "colour_yellow": "Yellow",
+  "colour_pink": "Pink",
+  "colour_purple": "Purple",
+  "colour_orange": "Orange",
+  "colour_green": "Green"
 }

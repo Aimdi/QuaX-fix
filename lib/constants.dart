@@ -95,6 +95,37 @@ const themePresetPitchBlack = 'pitch_black';
 const themePresetXLookLight = 'x_look_light';
 const themePresetXLookDim = 'x_look_dim';
 const themePresetXLookLightsOut = 'x_look_lights_out';
+
+/// X Look is the app's design language, chosen on two axes the way X itself
+/// does it: how dark the background is, and which accent colour sits on it.
+const optionXLookBackground = 'theme.x_look.background';
+const optionXLookAccent = 'theme.x_look.accent';
+
+/// Follows the system, so a light phone is not dragged into a black UI.
+const xLookBackgroundSystem = 'system';
+const xLookBackgroundLight = 'light';
+const xLookBackgroundDim = 'dim';
+const xLookBackgroundLightsOut = 'lights_out';
+
+const xLookBackgrounds = [
+  xLookBackgroundSystem,
+  xLookBackgroundLight,
+  xLookBackgroundDim,
+  xLookBackgroundLightsOut,
+];
+
+const xLookAccentBlue = 'blue';
+
+/// X's own accent palette. Every one of these is legible on all three
+/// backgrounds, which is why they are taken as-is rather than generated.
+const xLookAccents = <String, Color>{
+  xLookAccentBlue: Color(0xFF1D9BF0),
+  'yellow': Color(0xFFFFD400),
+  'pink': Color(0xFFF91880),
+  'purple': Color(0xFF7856FF),
+  'orange': Color(0xFFFF7A00),
+  'green': Color(0xFF00BA7C),
+};
 const optionThemeTrueBlack = 'theme.true_black';
 const optionThemeTrueBlackTweetCards = 'theme.true_black_tweet_cards';
 const optionShowNavigationLabels = 'theme.show_navigation_labels';

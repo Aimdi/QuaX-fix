@@ -1053,5 +1053,17 @@
   "sync_error_network": "Не удалось связаться с сервером",
   "endpoint_refused_title": "𝕏 отклонил этот запрос",
   "endpoint_refused_message": "В этой части 𝕏 отклонены все аккаунты, так что дело вряд ли в них. Скорее всего, 𝕏 что-то изменил; приложение чинится само, как только может. Попробуйте ещё раз чуть позже.",
-  "show_additional_replies": "Показать больше ответов"
+  "show_additional_replies": "Показать больше ответов",
+  "theme_background": "Фон",
+  "theme_background_description": "Насколько тёмное оформление",
+  "theme_background_dim": "Приглушённый",
+  "theme_background_lights_out": "Полностью чёрный",
+  "theme_accent": "Акцентный цвет",
+  "theme_accent_description": "Для ссылок, кнопок и активной вкладки",
+  "colour_blue": "Синий",
+  "colour_yellow": "Жёлтый",
+  "colour_pink": "Розовый",
+  "colour_purple": "Фиолетовый",
+  "colour_orange": "Оранжевый",
+  "colour_green": "Зелёный"
 }

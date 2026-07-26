@@ -1053,5 +1053,17 @@
   "sync_error_network": "Impossibile raggiungere il server",
   "endpoint_refused_title": "𝕏 ha respinto questa richiesta",
   "endpoint_refused_message": "In questa parte di 𝕏 sono stati respinti tutti gli account, quindi difficilmente il problema sono i tuoi. Probabilmente 𝕏 ha cambiato qualcosa; l'app si ripara da sola quando può. Riprova tra poco.",
-  "show_additional_replies": "Mostra altre risposte"
+  "show_additional_replies": "Mostra altre risposte",
+  "theme_background": "Sfondo",
+  "theme_background_description": "Quanto è scura l'app",
+  "theme_background_dim": "Attenuato",
+  "theme_background_lights_out": "Luci spente",
+  "theme_accent": "Colore principale",
+  "theme_accent_description": "Per link, pulsanti e la scheda attiva",
+  "colour_blue": "Blu",
+  "colour_yellow": "Giallo",
+  "colour_pink": "Rosa",
+  "colour_purple": "Viola",
+  "colour_orange": "Arancione",
+  "colour_green": "Verde"
 }

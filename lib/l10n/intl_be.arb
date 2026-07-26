@@ -1053,5 +1053,17 @@
   "sync_error_network": "Не ўдалося звязацца з серверам",
   "endpoint_refused_title": "𝕏 адхіліў гэты запыт",
   "endpoint_refused_message": "Усе ўліковыя запісы атрымалі адмову ў гэтай частцы 𝕏, таму справа наўрад ці ў іх. Хутчэй за ўсё 𝕏 нешта змяніў; праграма выпраўляецца сама, калі можа. Паспрабуйце праз хвіліну.",
-  "show_additional_replies": "Паказаць дадатковыя адказы"
+  "show_additional_replies": "Паказаць дадатковыя адказы",
+  "theme_background": "Фон",
+  "theme_background_description": "Наколькі цёмнае афармленне",
+  "theme_background_dim": "Прыглушаны",
+  "theme_background_lights_out": "Цалкам чорны",
+  "theme_accent": "Акцэнтны колер",
+  "theme_accent_description": "Для спасылак, кнопак і актыўнай укладкі",
+  "colour_blue": "Сіні",
+  "colour_yellow": "Жоўты",
+  "colour_pink": "Ружовы",
+  "colour_purple": "Фіялетавы",
+  "colour_orange": "Аранжавы",
+  "colour_green": "Зялёны"
 }

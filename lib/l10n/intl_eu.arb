@@ -1053,5 +1053,17 @@
   "sync_error_network": "Ezin izan da zerbitzarira konektatu",
   "endpoint_refused_title": "𝕏-k eskaera hau ukatu du",
   "endpoint_refused_message": "𝕏-ren zati honetan kontu guztiak ukatu dituzte, beraz ez dira zure kontuak ziurrenik. 𝕏-k zerbait aldatu duela dirudi; aplikazioa bere kabuz konpontzen da ahal duenean. Saiatu berriro pixka bat barru.",
-  "show_additional_replies": "Erakutsi erantzun gehiago"
+  "show_additional_replies": "Erakutsi erantzun gehiago",
+  "theme_background": "Atzeko planoa",
+  "theme_background_description": "Aplikazioa zein ilun dagoen",
+  "theme_background_dim": "Ilundua",
+  "theme_background_lights_out": "Argirik gabe",
+  "theme_accent": "Azentu-kolorea",
+  "theme_accent_description": "Estekak, botoiak eta hautatutako fitxa",
+  "colour_blue": "Urdina",
+  "colour_yellow": "Horia",
+  "colour_pink": "Arrosa",
+  "colour_purple": "Morea",
+  "colour_orange": "Laranja",
+  "colour_green": "Berdea"
 }

@@ -1053,5 +1053,17 @@
   "sync_error_network": "Não foi possível alcançar o servidor",
   "endpoint_refused_title": "O 𝕏 recusou esta requisição",
   "endpoint_refused_message": "Todas as contas foram recusadas nesta parte do 𝕏, então dificilmente o problema são suas contas. O 𝕏 provavelmente mudou alguma coisa; o app se conserta sozinho assim que der. Tente de novo daqui a pouco.",
-  "show_additional_replies": "Mostrar mais respostas"
+  "show_additional_replies": "Mostrar mais respostas",
+  "theme_background": "Fundo",
+  "theme_background_description": "O quão escuro é o aplicativo",
+  "theme_background_dim": "Escurecido",
+  "theme_background_lights_out": "Luzes apagadas",
+  "theme_accent": "Cor de destaque",
+  "theme_accent_description": "Para links, botões e a aba ativa",
+  "colour_blue": "Azul",
+  "colour_yellow": "Amarelo",
+  "colour_pink": "Rosa",
+  "colour_purple": "Roxo",
+  "colour_orange": "Laranja",
+  "colour_green": "Verde"
 }

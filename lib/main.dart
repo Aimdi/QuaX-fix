@@ -45,7 +45,6 @@ import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/trends/trends_model.dart';
 import 'package:quax/tweet/_video.dart';
 import 'package:quax/ui/errors.dart';
-import 'package:quax/ui/theme_presets.dart';
 import 'package:quax/ui/x_look_theme.dart';
 import 'package:quax/utils/crash_reporter.dart';
 import 'package:quax/utils/updates.dart';
@@ -322,6 +321,8 @@ Future<void> main() async {
       optionThemeMode: 'system',
       optionThemeColor: 'accent',
       optionThemePreset: themePresetNone,
+      optionXLookBackground: xLookBackgroundSystem,
+      optionXLookAccent: xLookAccentBlue,
       optionThemeTrueBlack: true,
       optionThemeTrueBlackTweetCards: true,
       optionShowNavigationLabels: false,
@@ -462,11 +463,10 @@ class _FritterAppState extends State<FritterApp> {
 
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>(); // NEW: Navigator key
 
-  String _themeMode = 'system';
-  String _themeColor = 'accent';
   String _themePreset = themePresetNone;
+  String _xLookBackground = xLookBackgroundSystem;
+  String _xLookAccent = xLookAccentBlue;
   bool _disableAnimations = false;
-  bool _trueBlack = true;
   bool _checkUpdates = false;
   bool _updateDialogShown = false;
   bool _accountDialogShown = false;
@@ -499,13 +499,21 @@ class _FritterAppState extends State<FritterApp> {
       }
     }
 
+    // An install from before X Look became the only design language still has
+    // its old preset stored. Carry the three X Look ones across to the matching
+    // background; the retired presets have no equivalent and land on System.
+    final storedPreset = prefService.get<String>(optionThemePreset);
+    if (storedPreset != null && storedPreset != themePresetNone) {
+      prefService.set(optionXLookBackground, xLookBackgroundForPreset(storedPreset));
+      prefService.set(optionThemePreset, themePresetNone);
+    }
+
     // Set any already-enabled preferences
     setState(() {
       setLocale(prefService.get<String>(optionLocale));
-      _themeMode = prefService.get(optionThemeMode);
-      _themeColor = prefService.get(optionThemeColor);
       _themePreset = prefService.get(optionThemePreset);
-      _trueBlack = prefService.get(optionThemeTrueBlack);
+      _xLookBackground = prefService.get(optionXLookBackground);
+      _xLookAccent = prefService.get(optionXLookAccent);
       _disableAnimations = prefService.get(optionDisableAnimations);
       _checkUpdates = prefService.get(optionShouldCheckForUpdates);
       _isSecure = prefService.get(optionDisableScreenshots);
@@ -525,25 +533,34 @@ class _FritterAppState extends State<FritterApp> {
     // Whenever the "true black" preference is toggled, apply the toggle
     prefService.addKeyListener(optionThemeTrueBlack, () {
       setState(() {
-        _trueBlack = prefService.get(optionThemeTrueBlack);
-      });
+        });
     });
 
     prefService.addKeyListener(optionThemeMode, () {
       setState(() {
-        _themeMode = prefService.get(optionThemeMode);
-      });
+        });
     });
 
     prefService.addKeyListener(optionThemeColor, () {
       setState(() {
-        _themeColor = prefService.get(optionThemeColor);
-      });
+        });
     });
 
     prefService.addKeyListener(optionThemePreset, () {
       setState(() {
         _themePreset = prefService.get(optionThemePreset);
+      });
+    });
+
+    prefService.addKeyListener(optionXLookBackground, () {
+      setState(() {
+        _xLookBackground = prefService.get(optionXLookBackground);
+      });
+    });
+
+    prefService.addKeyListener(optionXLookAccent, () {
+      setState(() {
+        _xLookAccent = prefService.get(optionXLookAccent);
       });
     });
 
@@ -562,22 +579,6 @@ class _FritterAppState extends State<FritterApp> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeMode themeMode;
-    switch (_themeMode) {
-      case 'dark':
-        themeMode = ThemeMode.dark;
-        break;
-      case 'light':
-        themeMode = ThemeMode.light;
-        break;
-      case 'system':
-        themeMode = ThemeMode.system;
-        break;
-      default:
-        log.warning('Unknown theme mode preference: $_themeMode');
-        themeMode = ThemeMode.system;
-        break;
-    }
 
     final PageTransitionsTheme? pageTransitions = _disableAnimations == true
         ? PageTransitionsTheme(
@@ -610,82 +611,9 @@ class _FritterAppState extends State<FritterApp> {
                 supportedLocales: L10n.delegate.supportedLocales,
                 locale: _locale,
                 title: 'QuaX',
-                theme: _themePreset == themePresetFairyForest
-                    ? fairyForestTheme(pageTransitions)
-                    : _themePreset == themePresetXLookLight
-                    ? xLookLightTheme(pageTransitions)
-                    : _themePreset == themePresetXLookDim
-                    ? xLookDimTheme(pageTransitions)
-                    : _themePreset == themePresetXLookLightsOut
-                    ? xLookLightsOutTheme(pageTransitions)
-                    : ThemeData(
-                        colorScheme: _themeColor == 'accent'
-                            ? lightDynamic
-                            : ColorScheme.fromSeed(
-                                seedColor: themeColors[_themeColor]!.harmonizeWith(
-                                  lightDynamic?.primary ?? Colors.transparent,
-                                ),
-                                brightness: Brightness.light,
-                              ),
-                        pageTransitionsTheme: _disableAnimations == true
-                            ? PageTransitionsTheme(
-                                builders: {
-                                  TargetPlatform.android: NoAnimationPageTransitionsBuilder(),
-                                  TargetPlatform.iOS: NoAnimationPageTransitionsBuilder(),
-                                },
-                              )
-                            : null,
-                        useMaterial3: true,
-                      ),
-                darkTheme: _themePreset == themePresetPitchBlack
-                    ? pitchBlackTheme(pageTransitions)
-                    : _themePreset == themePresetXLookDim
-                    ? xLookDimTheme(pageTransitions)
-                    : _themePreset == themePresetXLookLightsOut
-                    ? xLookLightsOutTheme(pageTransitions)
-                    : _themePreset == themePresetXLookLight
-                    ? xLookLightTheme(pageTransitions)
-                    : ThemeData(
-                        colorScheme: (_trueBlack == true
-                            ? (_themeColor == 'accent'
-                                      ? darkDynamic
-                                      : ColorScheme.fromSeed(
-                                          seedColor: themeColors[_themeColor]!.harmonizeWith(
-                                            darkDynamic?.primary ?? Colors.transparent,
-                                          ),
-                                          brightness: Brightness.dark,
-                                        ))
-                                  ?.copyWith(surface: Colors.black)
-                            : (_themeColor == 'accent'
-                                  ? darkDynamic
-                                  : ColorScheme.fromSeed(
-                                      seedColor: themeColors[_themeColor]!.harmonizeWith(
-                                        darkDynamic?.primary ?? Colors.transparent,
-                                      ),
-                                      brightness: Brightness.dark,
-                                    ))),
-                        navigationBarTheme: (_trueBlack == true
-                            ? NavigationBarThemeData(backgroundColor: Colors.black)
-                            : null),
-                        scaffoldBackgroundColor: (_trueBlack == true ? Colors.black : null),
-                        appBarTheme: (_trueBlack == true ? AppBarThemeData(backgroundColor: Colors.black) : null),
-                        pageTransitionsTheme: _disableAnimations == true
-                            ? PageTransitionsTheme(
-                                builders: {
-                                  TargetPlatform.android: NoAnimationPageTransitionsBuilder(),
-                                  TargetPlatform.iOS: NoAnimationPageTransitionsBuilder(),
-                                },
-                              )
-                            : null,
-                        useMaterial3: true,
-                      ),
-                themeMode: _themePreset == themePresetFairyForest || _themePreset == themePresetXLookLight
-                    ? ThemeMode.light
-                    : _themePreset == themePresetPitchBlack ||
-                          _themePreset == themePresetXLookDim ||
-                          _themePreset == themePresetXLookLightsOut
-                    ? ThemeMode.dark
-                    : themeMode,
+                theme: xLookThemeData(xLookTokensFor(xLookBackgroundLight, _xLookAccent), pageTransitions),
+                darkTheme: xLookThemeData(xLookDarkTokensFor(_xLookBackground, _xLookAccent), pageTransitions),
+                themeMode: xLookThemeModeFor(_xLookBackground),
                 initialRoute: '/',
                 routes: {
                   routeHome: (context) => const DefaultPage(),

@@ -1053,5 +1053,17 @@
   "sync_error_network": "無法連線到伺服器",
   "endpoint_refused_title": "𝕏 拒絕了這個請求",
   "endpoint_refused_message": "𝕏 的這個部分拒絕了所有帳號，所以多半不是你的帳號有問題。𝕏 很可能改動了什麼；應用程式會在可能時自行修復。請稍後再試。",
-  "show_additional_replies": "顯示更多回覆"
+  "show_additional_replies": "顯示更多回覆",
+  "theme_background": "背景",
+  "theme_background_description": "應用程式的深色程度",
+  "theme_background_dim": "暗色",
+  "theme_background_lights_out": "純黑",
+  "theme_accent": "強調色",
+  "theme_accent_description": "用於連結、按鈕和目前分頁",
+  "colour_blue": "藍色",
+  "colour_yellow": "黃色",
+  "colour_pink": "粉紅色",
+  "colour_purple": "紫色",
+  "colour_orange": "橙色",
+  "colour_green": "綠色"
 }

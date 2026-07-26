@@ -1,6 +1,7 @@
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
+import 'package:quax/constants.dart';
 
 /// X design-language tokens. Chirp is proprietary — we use Inter instead.
 @immutable
@@ -233,3 +234,45 @@ ThemeData xLookLightsOutTheme(PageTransitionsTheme? pageTransitions) =>
 
 bool isXLookPreset(String preset) =>
     preset == 'x_look_light' || preset == 'x_look_dim' || preset == 'x_look_lights_out';
+
+/// The accent for [accent], falling back to X's blue for a value we no longer
+/// recognise rather than leaving the app without a usable colour.
+Color xLookAccentColor(String accent) => xLookAccents[accent] ?? xLookAccents[xLookAccentBlue]!;
+
+/// Tokens for one background, tinted with the chosen accent.
+///
+/// [background] here is a concrete background — pass [xLookBackgroundLight] for
+/// the light theme; use [xLookDarkTokensFor] to resolve the dark one.
+XLookTokens xLookTokensFor(String background, String accent) {
+  final base = switch (background) {
+    xLookBackgroundLight => XLookTokens.light,
+    xLookBackgroundDim => XLookTokens.dim,
+    _ => XLookTokens.lightsOut,
+  };
+
+  return base.copyWith(accent: xLookAccentColor(accent));
+}
+
+/// The dark half of the theme. "System" darkens to Lights Out, which is true
+/// black and the cheapest on an OLED panel; Dim is a deliberate choice.
+XLookTokens xLookDarkTokensFor(String background, String accent) => xLookTokensFor(
+      background == xLookBackgroundDim ? xLookBackgroundDim : xLookBackgroundLightsOut,
+      accent,
+    );
+
+/// Only "System" defers to the phone; every other background names a brightness.
+ThemeMode xLookThemeModeFor(String background) => switch (background) {
+      xLookBackgroundSystem => ThemeMode.system,
+      xLookBackgroundLight => ThemeMode.light,
+      _ => ThemeMode.dark,
+    };
+
+/// Maps a stored theme preset onto the background that replaced it, so an
+/// existing install keeps the look it had. The three retired presets (Standard,
+/// Fairy Forest, Pitch Black) have no X Look equivalent and fall to System.
+String xLookBackgroundForPreset(String? preset) => switch (preset) {
+      themePresetXLookLight => xLookBackgroundLight,
+      themePresetXLookDim => xLookBackgroundDim,
+      themePresetXLookLightsOut => xLookBackgroundLightsOut,
+      _ => xLookBackgroundSystem,
+    };

@@ -1053,5 +1053,17 @@
   "sync_error_network": "De server was niet bereikbaar",
   "endpoint_refused_title": "𝕏 heeft dit verzoek geweigerd",
   "endpoint_refused_message": "Alle accounts werden geweigerd op dit deel van 𝕏, dus het ligt waarschijnlijk niet aan je accounts. 𝕏 heeft vermoedelijk iets gewijzigd; de app herstelt zichzelf zodra dat kan. Probeer het zo meteen opnieuw.",
-  "show_additional_replies": "Meer reacties tonen"
+  "show_additional_replies": "Meer reacties tonen",
+  "theme_background": "Achtergrond",
+  "theme_background_description": "Hoe donker de app is",
+  "theme_background_dim": "Gedimd",
+  "theme_background_lights_out": "Licht uit",
+  "theme_accent": "Accentkleur",
+  "theme_accent_description": "Voor links, knoppen en het actieve tabblad",
+  "colour_blue": "Blauw",
+  "colour_yellow": "Geel",
+  "colour_pink": "Roze",
+  "colour_purple": "Paars",
+  "colour_orange": "Oranje",
+  "colour_green": "Groen"
 }

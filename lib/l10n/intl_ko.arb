@@ -1053,5 +1053,17 @@
   "sync_error_network": "서버에 연결할 수 없습니다",
   "endpoint_refused_title": "𝕏 가 이 요청을 거부했습니다",
   "endpoint_refused_message": "𝕏 의 이 부분에서 모든 계정이 거부되었으므로 계정 문제일 가능성은 낮습니다. 𝕏 가 무언가를 바꾼 것으로 보이며, 앱은 가능해지는 대로 스스로 복구합니다. 잠시 후 다시 시도해 주세요.",
-  "show_additional_replies": "댓글 더 보기"
+  "show_additional_replies": "댓글 더 보기",
+  "theme_background": "배경",
+  "theme_background_description": "앱의 어두운 정도",
+  "theme_background_dim": "딤",
+  "theme_background_lights_out": "라이트 아웃",
+  "theme_accent": "강조 색상",
+  "theme_accent_description": "링크, 버튼, 선택한 탭에 사용",
+  "colour_blue": "파랑",
+  "colour_yellow": "노랑",
+  "colour_pink": "분홍",
+  "colour_purple": "보라",
+  "colour_orange": "주황",
+  "colour_green": "초록"
 }

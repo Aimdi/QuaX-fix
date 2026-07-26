@@ -1053,5 +1053,17 @@
   "sync_error_network": "Fikk ikke kontakt med tjeneren",
   "endpoint_refused_title": "𝕏 avviste denne forespørselen",
   "endpoint_refused_message": "Alle kontoene ble avvist på denne delen av 𝕏, så det er neppe kontoene dine. 𝕏 har trolig endret noe; appen reparerer seg selv når den kan. Prøv igjen om litt.",
-  "show_additional_replies": "Vis flere svar"
+  "show_additional_replies": "Vis flere svar",
+  "theme_background": "Bakgrunn",
+  "theme_background_description": "Hvor mørk appen er",
+  "theme_background_dim": "Dempet",
+  "theme_background_lights_out": "Lyset av",
+  "theme_accent": "Aksentfarge",
+  "theme_accent_description": "For lenker, knapper og den aktive fanen",
+  "colour_blue": "Blå",
+  "colour_yellow": "Gul",
+  "colour_pink": "Rosa",
+  "colour_purple": "Lilla",
+  "colour_orange": "Oransje",
+  "colour_green": "Grønn"
 }
