@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Занадто багато запитів, спробуйте трохи пізніше",
   "plugin_reddit_error_response": "Reddit відповів неочікувано",
   "plugin_reddit_not_configured": "Спочатку вкажіть client ID Reddit",
+  "plugin_reddit_nsfw": "18+",
   "plugin_reddit_open_discussion": "Відкрити обговорення",
   "plugin_reddit_source": "Спосіб читання Reddit",
   "plugin_reddit_source_auto": "Найкращий доступний",

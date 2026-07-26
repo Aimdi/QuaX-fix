@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Liiga palju päringuid, proovi veidi hiljem",
   "plugin_reddit_error_response": "Reddit vastas ootamatult",
   "plugin_reddit_not_configured": "Lisa esmalt oma Redditi client ID",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Ava arutelu",
   "plugin_reddit_source": "Kuidas Redditit loetakse",
   "plugin_reddit_source_auto": "Parim saadaolev",

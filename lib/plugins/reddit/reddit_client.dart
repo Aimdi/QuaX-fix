@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:quax/plugins/reddit/reddit_html.dart';
+import 'package:quax/plugins/reddit/reddit_comments.dart';
 
 /// How a Reddit request failed, in terms the user can act on.
 enum RedditErrorKind {
@@ -387,6 +388,30 @@ class RedditClient {
     }
 
     return RedditListing(posts: listing.posts, after: listing.after);
+  }
+
+  /// The comment thread of a post, scraped from the old site.
+  ///
+  /// Returns the post's own text alongside, because a self post's body is not
+  /// always in the listing that led here.
+  Future<({List<RedditComment> comments, String? selfText})> fetchComments(String permalink) async {
+    final path = permalink.startsWith('/') ? permalink : '/$permalink';
+    final uri = Uri.parse('$_publicFallbackBase$path');
+
+    var response = await _read(uri);
+
+    if (response.statusCode == 200 && isOver18Gate(response.body)) {
+      response = await _read(uri, null, {'over18': '1'});
+    }
+
+    if (response.statusCode == 404) {
+      throw RedditException(RedditErrorKind.notFound, 'No such post: $permalink');
+    }
+    if (response.statusCode != 200) {
+      throw _errorFor(response, uri);
+    }
+
+    return (comments: parseComments(response.body), selfText: parseSelfText(response.body));
   }
 
   static String _publicJsonPath(String base, String name, RedditSort sort) =>

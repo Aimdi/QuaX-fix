@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Zu viele Anfragen, bitte kurz warten",
   "plugin_reddit_error_response": "Reddit hat unerwartet geantwortet",
   "plugin_reddit_not_configured": "Bitte zuerst die Reddit-Client-ID eintragen",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Diskussion öffnen",
   "plugin_reddit_source": "Zugriffsweg",
   "plugin_reddit_source_auto": "Bestmöglich",

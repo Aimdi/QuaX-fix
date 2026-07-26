@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Trop de requêtes, réessayez dans un instant",
   "plugin_reddit_error_response": "Reddit a répondu de façon inattendue",
   "plugin_reddit_not_configured": "Renseignez d’abord votre client ID Reddit",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Ouvrir la discussion",
   "plugin_reddit_source": "Mode de lecture",
   "plugin_reddit_source_auto": "Le meilleur disponible",

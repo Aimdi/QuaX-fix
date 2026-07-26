@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Prea multe cereri, încearcă din nou în scurt timp",
   "plugin_reddit_error_response": "Reddit a răspuns ceva neașteptat",
   "plugin_reddit_not_configured": "Adaugă mai întâi client ID-ul Reddit",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Deschide discuția",
   "plugin_reddit_source": "Cum este citit Reddit",
   "plugin_reddit_source_auto": "Cel mai bun disponibil",

@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Terlalu banyak permintaan, coba lagi sebentar",
   "plugin_reddit_error_response": "Reddit menjawab dengan sesuatu yang tak terduga",
   "plugin_reddit_not_configured": "Tambahkan dulu client ID Reddit Anda",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Buka diskusi",
   "plugin_reddit_source": "Cara membaca Reddit",
   "plugin_reddit_source_auto": "Terbaik yang tersedia",

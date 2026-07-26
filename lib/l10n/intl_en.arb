@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Too many requests, try again shortly",
   "plugin_reddit_error_response": "Reddit answered with something unexpected",
   "plugin_reddit_not_configured": "Add your Reddit client ID first",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Open the discussion",
   "plugin_reddit_source": "How Reddit is read",
   "plugin_reddit_source_auto": "Best available",

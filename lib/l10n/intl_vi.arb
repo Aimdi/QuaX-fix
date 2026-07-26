@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Quá nhiều yêu cầu, hãy thử lại sau ít phút",
   "plugin_reddit_error_response": "Reddit trả về dữ liệu không như mong đợi",
   "plugin_reddit_not_configured": "Hãy nhập client ID Reddit của bạn trước",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Mở thảo luận",
   "plugin_reddit_source": "Cách đọc Reddit",
   "plugin_reddit_source_auto": "Tốt nhất hiện có",

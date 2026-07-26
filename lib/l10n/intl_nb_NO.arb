@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "For mange forespørsler, prøv igjen om litt",
   "plugin_reddit_error_response": "Reddit svarte med noe uventet",
   "plugin_reddit_not_configured": "Legg inn Reddit-client ID-en først",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Åpne diskusjonen",
   "plugin_reddit_source": "Hvordan Reddit leses",
   "plugin_reddit_source_auto": "Best tilgjengelige",

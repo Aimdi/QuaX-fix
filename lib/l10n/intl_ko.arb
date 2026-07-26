@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "요청이 너무 많습니다. 잠시 후 다시 시도하세요",
   "plugin_reddit_error_response": "Reddit이 예상과 다른 응답을 보냈습니다",
   "plugin_reddit_not_configured": "먼저 Reddit client ID를 입력하세요",
+  "plugin_reddit_nsfw": "성인",
   "plugin_reddit_open_discussion": "토론 열기",
   "plugin_reddit_source": "Reddit을 읽는 방법",
   "plugin_reddit_source_auto": "사용 가능한 최선",

@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Çok fazla istek, biraz sonra tekrar deneyin",
   "plugin_reddit_error_response": "Reddit beklenmedik bir yanıt verdi",
   "plugin_reddit_not_configured": "Önce Reddit client ID’nizi girin",
+  "plugin_reddit_nsfw": "18+",
   "plugin_reddit_open_discussion": "Tartışmayı aç",
   "plugin_reddit_source": "Reddit nasıl okunsun",
   "plugin_reddit_source_auto": "Mevcut en iyisi",

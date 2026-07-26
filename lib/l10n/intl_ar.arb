@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "طلبات كثيرة جدًا، أعد المحاولة قريبًا",
   "plugin_reddit_error_response": "جاء رد Reddit غير متوقَّع",
   "plugin_reddit_not_configured": "أضف أولًا مُعرِّف عميل Reddit",
+  "plugin_reddit_nsfw": "للبالغين",
   "plugin_reddit_open_discussion": "فتح المناقشة",
   "plugin_reddit_source": "طريقة القراءة",
   "plugin_reddit_source_auto": "أفضل ما هو متاح",

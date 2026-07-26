@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/constants.dart';
@@ -8,9 +7,9 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/reddit/reddit_auth.dart';
 import 'package:quax/plugins/reddit/reddit_login_webview.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
+import 'package:quax/plugins/reddit/reddit_post_card.dart';
 import 'package:quax/plugins/reddit/reddit_store.dart';
 import 'package:quax/ui/errors.dart';
-import 'package:quax/utils/urls.dart';
 
 String redditErrorMessage(L10n l10n, Object error) {
   if (error is RedditException) {
@@ -339,96 +338,12 @@ class _RedditScreenState extends State<RedditScreen> {
             return ListView.separated(
               controller: widget.scrollController,
               itemCount: posts.length,
-              separatorBuilder: (_, _) => const Divider(height: 1),
-              itemBuilder: (context, index) => _RedditPostTile(post: posts[index]),
+              // The cards carry their own hairline.
+              separatorBuilder: (_, _) => const SizedBox.shrink(),
+              itemBuilder: (context, index) => RedditPostCard(post: posts[index], showSourceBadge: false),
             );
           },
         ),
-      ),
-    );
-  }
-}
-
-class _RedditPostTile extends StatelessWidget {
-  final RedditPost post;
-
-  const _RedditPostTile({required this.post});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final numbers = NumberFormat.compact();
-    final created = post.createdAt;
-    final meta = [
-      'r/${post.subreddit}',
-      '${numbers.format(post.score)} · ${numbers.format(post.commentCount)}',
-      if (created != null) DateFormat.yMMMd().add_Hm().format(created),
-    ].join('  ·  ');
-
-    return ListTile(
-      leading: post.thumbnailUrl == null
-          ? null
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(post.thumbnailUrl!, width: 56, height: 56, fit: BoxFit.cover,
-                  errorBuilder: (_, _, _) => const SizedBox(width: 56, height: 56)),
-            ),
-      title: Text(post.title, maxLines: 3, overflow: TextOverflow.ellipsis),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: Text(meta, style: theme.textTheme.bodySmall),
-      ),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => RedditPostScreen(post: post)),
-      ),
-    );
-  }
-}
-
-/// A post's own text, plus a way out to the discussion or the linked article.
-/// Comments are not implemented yet.
-class RedditPostScreen extends StatelessWidget {
-  final RedditPost post;
-
-  const RedditPostScreen({super.key, required this.post});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = L10n.of(context);
-    final theme = Theme.of(context);
-    final url = post.url;
-    final selfText = post.selfText;
-
-    return Scaffold(
-      appBar: AppBar(title: Text('r/${post.subreddit}')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Text(post.title, style: theme.textTheme.titleLarge),
-          const SizedBox(height: 8),
-          Text(
-            [if (post.author != null) 'u/${post.author}', '${post.score}'].join('  ·  '),
-            style: theme.textTheme.bodySmall,
-          ),
-          if (selfText != null && selfText.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Text(selfText, style: theme.textTheme.bodyMedium),
-          ],
-          const SizedBox(height: 24),
-          if (url != null && !post.isSelf)
-            FilledButton.icon(
-              onPressed: () => openUri(context, url),
-              icon: const Icon(Icons.open_in_new),
-              label: Text(l10n.open_in_browser),
-            ),
-          const SizedBox(height: 8),
-          TextButton.icon(
-            onPressed: () => openUri(context, 'https://www.reddit.com${post.permalink}'),
-            icon: const Icon(Icons.forum_outlined),
-            label: Text(l10n.plugin_reddit_open_discussion),
-          ),
-        ],
       ),
     );
   }

@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Troppe richieste, riprova tra poco",
   "plugin_reddit_error_response": "Reddit ha risposto in modo inatteso",
   "plugin_reddit_not_configured": "Inserisci prima il client ID di Reddit",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Apri la discussione",
   "plugin_reddit_source": "Come viene letto Reddit",
   "plugin_reddit_source_auto": "Il meglio disponibile",

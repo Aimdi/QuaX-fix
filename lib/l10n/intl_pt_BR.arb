@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Muitas solicitações, tente de novo em instantes",
   "plugin_reddit_error_response": "O Reddit respondeu algo inesperado",
   "plugin_reddit_not_configured": "Informe primeiro seu client ID do Reddit",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Abrir a discussão",
   "plugin_reddit_source": "Como o Reddit é lido",
   "plugin_reddit_source_auto": "O melhor disponível",

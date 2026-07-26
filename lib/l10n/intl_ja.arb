@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "リクエストが多すぎます。しばらくしてから試してください",
   "plugin_reddit_error_response": "Reddit から予期しない応答が返りました",
   "plugin_reddit_not_configured": "先に Reddit の client ID を設定してください",
+  "plugin_reddit_nsfw": "閲覧注意",
   "plugin_reddit_open_discussion": "ディスカッションを開く",
   "plugin_reddit_source": "Reddit の読み込み方法",
   "plugin_reddit_source_auto": "利用できる最良の方法",

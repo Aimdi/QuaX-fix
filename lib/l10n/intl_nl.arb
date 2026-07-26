@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Te veel verzoeken, probeer het straks opnieuw",
   "plugin_reddit_error_response": "Reddit antwoordde iets onverwachts",
   "plugin_reddit_not_configured": "Vul eerst je Reddit client ID in",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Discussie openen",
   "plugin_reddit_source": "Hoe Reddit gelezen wordt",
   "plugin_reddit_source_auto": "Best beschikbare",

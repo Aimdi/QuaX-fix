@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Zanadta mnoha zapytaŭ, pasprabujcie paźniej",
   "plugin_reddit_error_response": "Reddit adkazaŭ niačakana",
   "plugin_reddit_not_configured": "Spačatku dadajcie svoj client ID Reddit",
+  "plugin_reddit_nsfw": "18+",
   "plugin_reddit_open_discussion": "Adkryć abmierkavannie",
   "plugin_reddit_source": "Sposab čytannia",
   "plugin_reddit_source_auto": "Najlepšy dastupny",

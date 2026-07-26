@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "बहुत अधिक अनुरोध, कुछ देर बाद प्रयास करें",
   "plugin_reddit_error_response": "Reddit ने अनपेक्षित उत्तर दिया",
   "plugin_reddit_not_configured": "पहले अपना Reddit client ID जोड़ें",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "चर्चा खोलें",
   "plugin_reddit_source": "Reddit कैसे पढ़ा जाए",
   "plugin_reddit_source_auto": "जो सबसे बेहतर उपलब्ध हो",

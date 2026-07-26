@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Eskaera gehiegi; saiatu berriro laster",
   "plugin_reddit_error_response": "Redditek ustekabeko erantzuna eman du",
   "plugin_reddit_not_configured": "Gehitu lehenik zure Reddit client ID-a",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Ireki eztabaida",
   "plugin_reddit_source": "Reddit nola irakurtzen den",
   "plugin_reddit_source_auto": "Eskuragarri dagoen onena",

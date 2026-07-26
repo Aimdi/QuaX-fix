@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Zbyt wiele żądań, spróbuj za chwilę",
   "plugin_reddit_error_response": "Reddit odpowiedział czymś nieoczekiwanym",
   "plugin_reddit_not_configured": "Najpierw podaj client ID Reddita",
+  "plugin_reddit_nsfw": "18+",
   "plugin_reddit_open_discussion": "Otwórz dyskusję",
   "plugin_reddit_source": "Sposób odczytu Reddita",
   "plugin_reddit_source_auto": "Najlepszy dostępny",

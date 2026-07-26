@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Massa peticions, torna-ho a provar aviat",
   "plugin_reddit_error_response": "Reddit ha respost quelcom inesperat",
   "plugin_reddit_not_configured": "Afegeix primer el teu client ID de Reddit",
+  "plugin_reddit_nsfw": "NSFW",
   "plugin_reddit_open_discussion": "Obre la discussió",
   "plugin_reddit_source": "Com es llegeix",
   "plugin_reddit_source_auto": "El millor disponible",

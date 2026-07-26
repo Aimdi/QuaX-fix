@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Слишком много запросов, повторите чуть позже",
   "plugin_reddit_error_response": "Reddit ответил неожиданным образом",
   "plugin_reddit_not_configured": "Сначала укажите client ID Reddit",
+  "plugin_reddit_nsfw": "18+",
   "plugin_reddit_open_discussion": "Открыть обсуждение",
   "plugin_reddit_source": "Способ чтения Reddit",
   "plugin_reddit_source_auto": "Лучший доступный",

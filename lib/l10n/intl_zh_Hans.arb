@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "请求过多，请稍后再试",
   "plugin_reddit_error_response": "Reddit 返回了意外的内容",
   "plugin_reddit_not_configured": "请先填写 Reddit client ID",
+  "plugin_reddit_nsfw": "不宜公开",
   "plugin_reddit_open_discussion": "打开讨论",
   "plugin_reddit_source": "Reddit 的读取方式",
   "plugin_reddit_source_auto": "可用的最佳方式",

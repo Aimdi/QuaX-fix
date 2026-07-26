@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "Příliš mnoho požadavků, zkuste to za chvíli",
   "plugin_reddit_error_response": "Reddit odpověděl nečekaně",
   "plugin_reddit_not_configured": "Nejdřív zadejte své Reddit client ID",
+  "plugin_reddit_nsfw": "18+",
   "plugin_reddit_open_discussion": "Otevřít diskusi",
   "plugin_reddit_source": "Způsob čtení",
   "plugin_reddit_source_auto": "Nejlepší dostupný",

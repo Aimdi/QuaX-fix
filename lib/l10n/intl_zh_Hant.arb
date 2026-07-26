@@ -327,6 +327,7 @@
   "plugin_reddit_error_rate_limited": "請求過多，請稍後再試",
   "plugin_reddit_error_response": "Reddit 回傳了非預期的內容",
   "plugin_reddit_not_configured": "請先填寫 Reddit client ID",
+  "plugin_reddit_nsfw": "不宜公開",
   "plugin_reddit_open_discussion": "開啟討論",
   "plugin_reddit_source": "Reddit 的讀取方式",
   "plugin_reddit_source_auto": "可用的最佳方式",
