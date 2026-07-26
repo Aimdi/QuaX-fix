@@ -1065,5 +1065,17 @@
   "colour_pink": "Hồng",
   "colour_purple": "Tím",
   "colour_orange": "Cam",
-  "colour_green": "Xanh lá"
+  "colour_green": "Xanh lá",
+  "plugin_reddit_sign_in": "Đăng nhập Reddit",
+  "plugin_reddit_sign_out": "Đăng xuất",
+  "plugin_reddit_signed_in": "Đã đăng nhập Reddit",
+  "plugin_reddit_sign_in_failed": "Đăng nhập Reddit thất bại",
+  "plugin_reddit_redirect_uri_help": "Đặt redirect URI của ứng dụng thành {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

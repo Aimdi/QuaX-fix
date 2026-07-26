@@ -1065,5 +1065,17 @@
   "colour_pink": "Розовый",
   "colour_purple": "Фиолетовый",
   "colour_orange": "Оранжевый",
-  "colour_green": "Зелёный"
+  "colour_green": "Зелёный",
+  "plugin_reddit_sign_in": "Войти в Reddit",
+  "plugin_reddit_sign_out": "Выйти",
+  "plugin_reddit_signed_in": "Вход в Reddit выполнен",
+  "plugin_reddit_sign_in_failed": "Не удалось войти в Reddit",
+  "plugin_reddit_redirect_uri_help": "Укажите redirect URI приложения: {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

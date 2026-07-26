@@ -1065,5 +1065,17 @@
   "colour_pink": "Roze",
   "colour_purple": "Paars",
   "colour_orange": "Oranje",
-  "colour_green": "Groen"
+  "colour_green": "Groen",
+  "plugin_reddit_sign_in": "Inloggen bij Reddit",
+  "plugin_reddit_sign_out": "Uitloggen",
+  "plugin_reddit_signed_in": "Ingelogd bij Reddit",
+  "plugin_reddit_sign_in_failed": "Inloggen bij Reddit mislukt",
+  "plugin_reddit_redirect_uri_help": "Stel de redirect-URI van de app in op {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

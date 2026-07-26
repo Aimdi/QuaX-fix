@@ -1065,5 +1065,17 @@
   "colour_pink": "분홍",
   "colour_purple": "보라",
   "colour_orange": "주황",
-  "colour_green": "초록"
+  "colour_green": "초록",
+  "plugin_reddit_sign_in": "Reddit 로그인",
+  "plugin_reddit_sign_out": "로그아웃",
+  "plugin_reddit_signed_in": "Reddit에 로그인됨",
+  "plugin_reddit_sign_in_failed": "Reddit 로그인에 실패했습니다",
+  "plugin_reddit_redirect_uri_help": "앱의 리디렉션 URI를 {uri}로 설정하세요",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

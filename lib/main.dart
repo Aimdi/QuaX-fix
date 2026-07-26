@@ -59,6 +59,7 @@ import 'package:app_links/app_links.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quax/plugins/karakeep/karakeep_client.dart';
 import 'package:quax/plugins/deepmarks/deepmarks_client.dart';
+import 'package:quax/plugins/reddit/reddit_auth.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_store.dart';
 
@@ -305,6 +306,7 @@ Future<void> main() async {
       optionPluginRedditEnabled: false,
       optionPluginRedditClientId: '',
       optionPluginRedditSubreddits: '[]',
+      optionPluginRedditRefreshToken: '',
       optionPluginSubstackEnabled: false,
       optionPluginSubstackShowTab: true,
       optionPluginSubstackPublications: '[]',
@@ -387,8 +389,9 @@ Future<void> main() async {
     final deepmarksClient = DeepmarksClient();
     final karakeepClient = KarakeepClient();
     final redditClient = RedditClient();
+    final redditAuth = RedditAuth();
     final redditSubreddits = RedditSubredditsStore(prefService);
-    final redditFeed = RedditFeedStore(redditClient, redditSubreddits, prefService);
+    final redditFeed = RedditFeedStore(redditClient, redditSubreddits, prefService, auth: redditAuth);
     final substackClient = SubstackClient();
     final substackPublications = SubstackPublicationsStore(prefService);
     final substackFeed = SubstackFeedStore(substackClient, substackPublications);
@@ -434,6 +437,7 @@ Future<void> main() async {
             Provider(create: (_) => deepmarksClient),
             Provider(create: (_) => karakeepClient),
             Provider(create: (_) => redditClient),
+            Provider(create: (_) => redditAuth),
             Provider(create: (_) => redditSubreddits),
             Provider(create: (_) => redditFeed),
             Provider(create: (_) => substackClient),

@@ -1065,5 +1065,17 @@
   "colour_pink": "Pembe",
   "colour_purple": "Mor",
   "colour_orange": "Turuncu",
-  "colour_green": "Yeşil"
+  "colour_green": "Yeşil",
+  "plugin_reddit_sign_in": "Reddit’e giriş yap",
+  "plugin_reddit_sign_out": "Çıkış yap",
+  "plugin_reddit_signed_in": "Reddit’e giriş yapıldı",
+  "plugin_reddit_sign_in_failed": "Reddit girişi başarısız",
+  "plugin_reddit_redirect_uri_help": "Uygulamanın yönlendirme URI’sini {uri} olarak ayarlayın",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

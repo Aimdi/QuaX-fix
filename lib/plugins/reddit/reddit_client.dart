@@ -238,16 +238,18 @@ class RedditClient {
     RedditSort sort = RedditSort.hot,
     int limit = 25,
     String? after,
+    String? userToken,
   }) async {
     final name = normaliseSubreddit(subreddit);
     if (name == null) {
       throw RedditException(RedditErrorKind.notFound, 'Not a subreddit name: $subreddit');
     }
 
-    // No client id: read the public endpoints, which need no credentials, so
-    // the plugin works the moment it is switched on.
-    final anonymous = clientId.trim().isEmpty;
-    final token = anonymous ? null : await _authorize(clientId);
+    // A signed-in reader gets their own account's rate limits, which is the
+    // most reliable route Reddit offers; otherwise app-only auth when a client
+    // id is set, and failing that the public endpoints, which need nothing.
+    final anonymous = userToken == null && clientId.trim().isEmpty;
+    final token = userToken ?? (anonymous ? null : await _authorize(clientId));
 
     final query = {
       'limit': '$limit',

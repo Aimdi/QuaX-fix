@@ -1065,5 +1065,17 @@
   "colour_pink": "Rosa",
   "colour_purple": "Lila",
   "colour_orange": "Taronja",
-  "colour_green": "Verd"
+  "colour_green": "Verd",
+  "plugin_reddit_sign_in": "Inicia la sessió a Reddit",
+  "plugin_reddit_sign_out": "Tanca la sessió",
+  "plugin_reddit_signed_in": "Sessió iniciada a Reddit",
+  "plugin_reddit_sign_in_failed": "Ha fallat l’inici de sessió a Reddit",
+  "plugin_reddit_redirect_uri_help": "Estableix l’URI de redirecció de l’app a {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

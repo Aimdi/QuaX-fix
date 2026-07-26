@@ -1065,5 +1065,17 @@
   "colour_pink": "粉紅色",
   "colour_purple": "紫色",
   "colour_orange": "橙色",
-  "colour_green": "綠色"
+  "colour_green": "綠色",
+  "plugin_reddit_sign_in": "登入 Reddit",
+  "plugin_reddit_sign_out": "登出",
+  "plugin_reddit_signed_in": "已登入 Reddit",
+  "plugin_reddit_sign_in_failed": "登入 Reddit 失敗",
+  "plugin_reddit_redirect_uri_help": "將應用程式的重新導向 URI 設為 {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

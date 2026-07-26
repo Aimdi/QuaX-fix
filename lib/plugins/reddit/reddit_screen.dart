@@ -5,6 +5,8 @@ import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/plugins/reddit/reddit_auth.dart';
+import 'package:quax/plugins/reddit/reddit_login_webview.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_store.dart';
 import 'package:quax/ui/errors.dart';
@@ -68,6 +70,14 @@ class _RedditScreenState extends State<RedditScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(l10n.plugin_reddit_client_id_help, style: Theme.of(dialogContext).textTheme.bodySmall),
+              const SizedBox(height: 8),
+              // Reddit rejects the login unless the registered app carries this
+              // exact redirect, and it is not guessable — so it is stated here
+              // rather than left to be discovered.
+              Text(
+                l10n.plugin_reddit_redirect_uri_help(RedditAuth.redirectUri),
+                style: Theme.of(dialogContext).textTheme.bodySmall,
+              ),
               const SizedBox(height: 12),
               TextField(
                 controller: controller,
@@ -92,6 +102,55 @@ class _RedditScreenState extends State<RedditScreen> {
     await prefs.set(optionPluginRedditClientId, saved);
     context.read<RedditClient>().forgetToken();
     if (mounted) {
+      await context.read<RedditFeedStore>().refresh();
+    }
+  }
+
+  bool get _signedIn => (PrefService.of(context, listen: false).get<String>(optionPluginRedditRefreshToken) ?? '')
+      .isNotEmpty;
+
+  /// Signing in gets the reader their own account's rate limits, which is the
+  /// most reliable route Reddit offers. It still needs a client id: the login
+  /// authorises *this app*, and Reddit has to know which app that is.
+  Future<void> _signIn() async {
+    final prefs = PrefService.of(context, listen: false);
+    final clientId = prefs.get<String>(optionPluginRedditClientId) ?? '';
+    if (clientId.trim().isEmpty) {
+      await _editClientId();
+      return;
+    }
+
+    // Echoed back by Reddit and checked on return, so a code from anywhere
+    // else is refused.
+    final state = DateTime.now().microsecondsSinceEpoch.toRadixString(36);
+    final code = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => RedditLoginWebview(clientId: clientId, state: state)),
+    );
+
+    if (code == null || !mounted) return;
+
+    try {
+      final refreshToken = await context.read<RedditAuth>().exchangeCode(clientId: clientId, code: code);
+      await prefs.set(optionPluginRedditRefreshToken, refreshToken);
+      if (mounted) {
+        setState(() {});
+        // The webview closing is not by itself proof the token was accepted.
+        showSnackBar(context, icon: '✅', message: L10n.of(context).plugin_reddit_signed_in);
+        await context.read<RedditFeedStore>().refresh();
+      }
+    } on RedditException catch (e) {
+      if (mounted) {
+        showSnackBar(context, icon: '🔒', message: '${L10n.of(context).plugin_reddit_sign_in_failed}\n${e.detail}');
+      }
+    }
+  }
+
+  Future<void> _signOut() async {
+    final prefs = PrefService.of(context, listen: false);
+    await prefs.set(optionPluginRedditRefreshToken, '');
+    if (mounted) {
+      setState(() {});
       await context.read<RedditFeedStore>().refresh();
     }
   }
@@ -187,6 +246,11 @@ class _RedditScreenState extends State<RedditScreen> {
             tooltip: l10n.subscriptions,
             icon: const Icon(Icons.list),
             onPressed: _manageSubreddits,
+          ),
+          IconButton(
+            tooltip: _signedIn ? l10n.plugin_reddit_sign_out : l10n.plugin_reddit_sign_in,
+            icon: Icon(_signedIn ? Icons.logout : Icons.login),
+            onPressed: _signedIn ? _signOut : _signIn,
           ),
           IconButton(
             tooltip: l10n.plugin_reddit_client_id,

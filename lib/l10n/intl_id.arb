@@ -1065,5 +1065,17 @@
   "colour_pink": "Merah muda",
   "colour_purple": "Ungu",
   "colour_orange": "Oranye",
-  "colour_green": "Hijau"
+  "colour_green": "Hijau",
+  "plugin_reddit_sign_in": "Masuk ke Reddit",
+  "plugin_reddit_sign_out": "Keluar",
+  "plugin_reddit_signed_in": "Sudah masuk ke Reddit",
+  "plugin_reddit_sign_in_failed": "Gagal masuk ke Reddit",
+  "plugin_reddit_redirect_uri_help": "Atur redirect URI aplikasi ke {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

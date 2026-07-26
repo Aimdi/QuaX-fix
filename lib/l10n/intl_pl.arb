@@ -1065,5 +1065,17 @@
   "colour_pink": "Różowy",
   "colour_purple": "Fioletowy",
   "colour_orange": "Pomarańczowy",
-  "colour_green": "Zielony"
+  "colour_green": "Zielony",
+  "plugin_reddit_sign_in": "Zaloguj się do Reddita",
+  "plugin_reddit_sign_out": "Wyloguj się",
+  "plugin_reddit_signed_in": "Zalogowano do Reddita",
+  "plugin_reddit_sign_in_failed": "Logowanie do Reddita nie powiodło się",
+  "plugin_reddit_redirect_uri_help": "Ustaw URI przekierowania aplikacji na {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

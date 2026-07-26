@@ -1065,5 +1065,17 @@
   "colour_pink": "Roosa",
   "colour_purple": "Lilla",
   "colour_orange": "Oranž",
-  "colour_green": "Roheline"
+  "colour_green": "Roheline",
+  "plugin_reddit_sign_in": "Logi Redditisse sisse",
+  "plugin_reddit_sign_out": "Logi välja",
+  "plugin_reddit_signed_in": "Redditisse sisse logitud",
+  "plugin_reddit_sign_in_failed": "Redditisse sisselogimine ebaõnnestus",
+  "plugin_reddit_redirect_uri_help": "Määra rakenduse ümbersuunamise URI väärtuseks {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -1065,5 +1065,17 @@
   "colour_pink": "Roza",
   "colour_purple": "Purpura",
   "colour_orange": "Oranĝa",
-  "colour_green": "Verda"
+  "colour_green": "Verda",
+  "plugin_reddit_sign_in": "Ensaluti al Reddit",
+  "plugin_reddit_sign_out": "Elsaluti",
+  "plugin_reddit_signed_in": "Ensalutinta al Reddit",
+  "plugin_reddit_sign_in_failed": "Ensaluto al Reddit malsukcesis",
+  "plugin_reddit_redirect_uri_help": "Agordu la alidirektan URI de la aplikaĵo al {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }
