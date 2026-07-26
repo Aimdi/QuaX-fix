@@ -305,6 +305,7 @@ Future<void> main() async {
       optionSeededPluginTabs: <String>[],
       optionPluginRedditEnabled: false,
       optionPluginRedditClientId: '',
+      optionPluginRedditSource: redditSourceAuto,
       optionPluginRedditSubreddits: '[]',
       optionPluginRedditRefreshToken: '',
       optionPluginSubstackEnabled: false,

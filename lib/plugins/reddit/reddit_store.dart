@@ -73,6 +73,7 @@ class RedditFeedStore extends Store<List<RedditPost>> {
   Future<void> refresh({RedditSort sort = RedditSort.hot}) async {
     await execute(() async {
       final clientId = prefs.get<String>(optionPluginRedditClientId) ?? '';
+      final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
       final names = subreddits.state;
       if (names.isEmpty) {
         return const <RedditPost>[];
@@ -83,7 +84,7 @@ class RedditFeedStore extends Store<List<RedditPost>> {
       // is over, so it is dropped and the read falls back to the public route.
       String? userToken;
       final refreshToken = prefs.get<String>(optionPluginRedditRefreshToken) ?? '';
-      if (refreshToken.isNotEmpty) {
+      if (!preferPublic && refreshToken.isNotEmpty) {
         try {
           userToken = await auth.accessToken(clientId: clientId, refreshToken: refreshToken);
         } on RedditException {
@@ -94,7 +95,7 @@ class RedditFeedStore extends Store<List<RedditPost>> {
       final posts = <RedditPost>[];
       for (final name in names) {
         final listing =
-            await client.fetchSubreddit(name, clientId: clientId, sort: sort, limit: 15, userToken: userToken);
+            await client.fetchSubreddit(name, clientId: clientId, sort: sort, limit: 15, userToken: userToken, preferPublic: preferPublic);
         posts.addAll(listing.posts.where((p) => !p.stickied));
       }
 

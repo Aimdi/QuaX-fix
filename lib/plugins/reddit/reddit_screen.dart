@@ -55,6 +55,47 @@ class _RedditScreenState extends State<RedditScreen> {
     });
   }
 
+  /// Which route Reddit is read through.
+  ///
+  /// The client would otherwise decide silently from whatever credentials
+  /// happen to be stored, so a reader who would rather not be identified had no
+  /// way to say so while a sign-in existed.
+  Widget _sourceMenu(BuildContext context) {
+    final prefs = PrefService.of(context);
+    final current = prefs.get<String>(optionPluginRedditSource) ?? redditSourceAuto;
+    final l10n = L10n.of(context);
+
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.alt_route),
+      tooltip: l10n.plugin_reddit_source,
+      initialValue: current,
+      onSelected: (value) async {
+        await prefs.set(optionPluginRedditSource, value);
+        if (mounted) {
+          await context.read<RedditFeedStore>().refresh();
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: redditSourceAuto,
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.plugin_reddit_source_auto),
+            subtitle: Text(l10n.plugin_reddit_source_auto_description),
+          ),
+        ),
+        PopupMenuItem(
+          value: redditSourcePublic,
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.plugin_reddit_source_public),
+            subtitle: Text(l10n.plugin_reddit_source_public_description),
+          ),
+        ),
+      ],
+    );
+  }
+
   Future<void> _editClientId() async {
     final prefs = PrefService.of(context, listen: false);
     final controller = TextEditingController(text: prefs.get<String>(optionPluginRedditClientId) ?? '');
@@ -257,6 +298,7 @@ class _RedditScreenState extends State<RedditScreen> {
             icon: const Icon(Icons.key),
             onPressed: _editClientId,
           ),
+          _sourceMenu(context),
         ],
       ),
       body: RefreshIndicator(

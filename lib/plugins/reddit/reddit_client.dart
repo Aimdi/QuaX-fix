@@ -239,6 +239,7 @@ class RedditClient {
     int limit = 25,
     String? after,
     String? userToken,
+    bool preferPublic = false,
   }) async {
     final name = normaliseSubreddit(subreddit);
     if (name == null) {
@@ -248,7 +249,10 @@ class RedditClient {
     // A signed-in reader gets their own account's rate limits, which is the
     // most reliable route Reddit offers; otherwise app-only auth when a client
     // id is set, and failing that the public endpoints, which need nothing.
-    final anonymous = userToken == null && clientId.trim().isEmpty;
+    //
+    // [preferPublic] overrides all of that: a reader who asked for the
+    // account-free route gets it even when a credential is sitting there.
+    final anonymous = preferPublic || (userToken == null && clientId.trim().isEmpty);
     final token = userToken ?? (anonymous ? null : await _authorize(clientId));
 
     final query = {

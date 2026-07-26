@@ -52,6 +52,13 @@ const pluginIdReddit = 'reddit';
 const optionPluginRedditEnabled = 'plugin.reddit.enabled';
 const optionPluginRedditClientId = 'plugin.reddit.client_id';
 const optionPluginRedditSubreddits = 'plugin.reddit.subreddits';
+// Which route Reddit is read through. `auto` uses the best credential the
+// reader has given; `public` sticks to the account-free endpoints even when a
+// sign-in or client id exists, for readers who would rather not be identified
+// at all.
+const optionPluginRedditSource = 'plugin.reddit.source';
+const redditSourceAuto = 'auto';
+const redditSourcePublic = 'public';
 /// Set once the reader signs in; the only long-lived Reddit credential kept.
 const optionPluginRedditRefreshToken = 'plugin.reddit.refresh_token';
 
