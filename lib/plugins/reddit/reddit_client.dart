@@ -270,9 +270,10 @@ class RedditClient {
       // client id is the way out of both, so say that rather than reporting a
       // block the reader can do nothing about.
       if (anonymous && const [403, 429].contains(response.statusCode)) {
-        throw RedditException(RedditErrorKind.notConfigured, 'HTTP ${response.statusCode} without a client id');
+        throw RedditException(
+            RedditErrorKind.notConfigured, 'HTTP ${response.statusCode} from ${uri.host} without a client id');
       }
-      throw _errorFor(response);
+      throw _errorFor(response, uri);
     }
 
     return _listingFrom(_decode(response));
@@ -330,8 +331,10 @@ class RedditClient {
     throw const RedditException(RedditErrorKind.badResponse, 'Response was not a JSON object');
   }
 
-  RedditException _errorFor(http.Response response) {
-    final detail = 'HTTP ${response.statusCode}';
+  RedditException _errorFor(http.Response response, [Uri? uri]) {
+    // The host tells the anonymous read apart from the authenticated one, which
+    // is the first thing worth knowing when a reader reports a failure.
+    final detail = uri == null ? 'HTTP ${response.statusCode}' : 'HTTP ${response.statusCode} from ${uri.host}';
     return switch (response.statusCode) {
       401 => RedditException(RedditErrorKind.unauthorized, detail),
       403 => RedditException(RedditErrorKind.blocked, detail),
