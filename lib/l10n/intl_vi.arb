@@ -458,6 +458,8 @@
   "threaded_replies": "Trả lời phân luồng",
   "threaded_replies_description": "Hiển thị các trả lời dưới bài đăng đang mở dưới dạng cây thụt lề, mỗi trả lời lồng dưới bài mà nó trả lời.",
   "thumbnail": "Cực nhỏ",
+  "ticker_chart": "Biểu đồ cổ phiếu",
+  "ticker_chart_description": "Hiển thị khi bạn mở một mã cổ phiếu. Biểu đồ tải từ TradingView, thứ duy nhất QuaX lấy ngoài X; tắt đi thì vẫn còn các bài viết.",
   "timed_out": "Hết thời gian",
   "to_import_a_list_enter_its_url_or_id_below": "Để nhập danh sách X làm nhóm theo dõi, hãy nhập liên kết danh sách hoặc ID của nó bên dưới",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Để nhập người đang đăng kí ở tài khoản X, hãy nhập username vào.",

@@ -458,6 +458,8 @@
   "threaded_replies": "Fadenaj respondoj",
   "threaded_replies_description": "Montri respondojn sub malfermita afiŝo kiel deŝovitan arbon, kie ĉiu respondo estas ingita sub tiu, al kiu ĝi respondas.",
   "thumbnail": "Miniaturo",
+  "ticker_chart": "Akcia diagramo",
+  "ticker_chart_description": "Montrata kiam vi malfermas tikeron. Ĝi ŝarĝiĝas de TradingView, la sola afero kiun QuaX prenas ekster X; malŝaltite la afiŝoj restas.",
   "timed_out": "Tempolimiĝis",
   "to_import_a_list_enter_its_url_or_id_below": "Por importi X-liston kiel abongrupon, entajpu sube la ligilon de la listo aŭ ĝian identigilon",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Por importi abonojn el ekzistanta Twitter-konto, enigi vian uzantnomon sube.",

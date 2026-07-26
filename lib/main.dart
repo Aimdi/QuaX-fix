@@ -40,6 +40,7 @@ import 'package:quax/settings/settings.dart';
 import 'package:quax/settings/settings_export_screen.dart';
 import 'package:quax/status.dart';
 import 'package:quax/tweet/quotes_screen.dart';
+import 'package:quax/tweet/ticker_screen.dart';
 import 'package:quax/subscriptions/_import_list.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/trends/trends_model.dart';
@@ -253,6 +254,7 @@ Future<void> main() async {
       optionConfirmClose: true,
       optionDisableAnimations: false,
       optionGestureDoubleTapLike: false,
+      optionTickerChart: true,
       optionTextScaleFactor: 1.0,
       optionDisableScreenshots: false,
       optionDownloadPath: '',
@@ -628,6 +630,7 @@ class _FritterAppState extends State<FritterApp> {
                   routeSettingsExport: (context) => const SettingsExportScreen(),
                   routeSettingsHome: (context) => const SettingsHomeFragment(),
                   routeQuotes: (context) => const QuotesScreen(),
+                  routeTicker: (context) => const TickerScreen(),
                   routeStatus: (context) => const StatusScreen(),
                 },
                 builder: (context, child) {

@@ -458,6 +458,8 @@
   "threaded_replies": "Respostas em árvore",
   "threaded_replies_description": "Mostra as respostas de uma publicação aberta como uma árvore indentada, com cada resposta aninhada sob aquela a que responde.",
   "thumbnail": "Miniatura",
+  "ticker_chart": "Gráfico de bolsa",
+  "ticker_chart_description": "Mostrado ao abrir um ticker. Carrega do TradingView, a única coisa que o QuaX vai buscar fora do X; desligado, ficam as publicações.",
   "timed_out": "Tempo esgotado",
   "to_import_a_list_enter_its_url_or_id_below": "Para importar uma lista do X como grupo de subscrições, introduza abaixo a ligação da lista ou o seu ID",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Para importar assinaturas de uma conta existente do Twitter, digite o seu nome de utilizador abaixo.",

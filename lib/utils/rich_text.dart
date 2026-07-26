@@ -9,6 +9,7 @@ import 'package:quax/search/search.dart';
 import 'package:quax/utils/urls.dart';
 import 'package:quax/utils/iterables.dart';
 import 'package:quax/utils/_entities.dart';
+import 'package:quax/tweet/ticker_screen.dart';
 import 'package:quax/plugins/plugin_links.dart';
 
 // RichText (not sure if it has an official name) is the way urls, mentions, hashtags... are integrated on
@@ -160,9 +161,7 @@ List<Entity> _parseEntities(BuildContext context, dynamic newEntities) {
                   focusInputOnOpen: false, query: '#${hashtag.text}'))));
     }
 
-    // A ticker opens a search for it, which is where the posts about it are.
-    // The price itself would need a market-data service QuaX does not have and
-    // would have to trust, so the card X shows beside it is not reproduced.
+    // A ticker opens its own screen: the chart, and the posts about it.
     for (final symbol in newEntities.symbols ?? []) {
       final text = symbol.text;
       if (text == null || text.isEmpty) {
@@ -171,8 +170,8 @@ List<Entity> _parseEntities(BuildContext context, dynamic newEntities) {
       entities.add(SymbolEntity(
           text: text,
           indices: symbol.indices,
-          onTap: () => Navigator.pushNamed(context, routeSearch,
-              arguments: SearchArguments(1, focusInputOnOpen: false, query: '\$$text'))));
+          onTap: () =>
+              Navigator.pushNamed(context, routeTicker, arguments: TickerScreenArguments(symbol: text))));
     }
 
     for (UserMention mention in newEntities.userMentions ?? []) {

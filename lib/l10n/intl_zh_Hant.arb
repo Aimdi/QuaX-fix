@@ -458,6 +458,8 @@
   "threaded_replies": "巢狀回覆",
   "threaded_replies_description": "在開啟的貼文下以縮排樹狀顯示回覆，每則回覆巢狀於其所回覆的內容下方。",
   "thumbnail": "縮圖",
+  "ticker_chart": "股票圖表",
+  "ticker_chart_description": "開啟股票代碼時顯示。圖表來自 TradingView，是 QuaX 唯一從 X 之外取得的內容；關閉後仍保留相關貼文。",
   "timed_out": "已逾時",
   "to_import_a_list_enter_its_url_or_id_below": "若要將 X 清單匯入為訂閱群組，請在下方輸入清單連結或其 ID",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "若要從現有的 X 帳號匯入訂閱，請在下方輸入您的使用者名稱。",

@@ -458,6 +458,8 @@
   "threaded_replies": "Réponses imbriquées",
   "threaded_replies_description": "Afficher les réponses sous une publication ouverte comme un arbre en retrait, chaque réponse imbriquée sous celle à laquelle elle répond.",
   "thumbnail": "Miniature",
+  "ticker_chart": "Graphique boursier",
+  "ticker_chart_description": "Affiché à l'ouverture d'un ticker. Il vient de TradingView, la seule chose que QuaX charge hors de X ; désactivé, les posts restent.",
   "timed_out": "Délai expiré",
   "to_import_a_list_enter_its_url_or_id_below": "Pour importer une liste X comme groupe d'abonnements, saisissez ci-dessous le lien de la liste ou son identifiant",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Pour importer des abonnements depuis un compte Twitter existant, saisissez votre nom d'utilisateur ci-dessous.",

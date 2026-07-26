@@ -458,6 +458,8 @@
   "threaded_replies": "스레드형 답글",
   "threaded_replies_description": "열린 게시물의 답글을 들여쓰기된 트리로 표시하여, 각 답글이 답한 대상 아래에 중첩되도록 합니다.",
   "thumbnail": "썸네일",
+  "ticker_chart": "주식 차트",
+  "ticker_chart_description": "티커를 열면 표시됩니다. TradingView에서 불러오며, QuaX가 X 밖에서 가져오는 유일한 항목입니다. 꺼도 게시물은 그대로 남습니다.",
   "timed_out": "시간 초과",
   "to_import_a_list_enter_its_url_or_id_below": "X 리스트를 구독 그룹으로 가져오려면 아래에 리스트 링크 또는 ID를 입력하세요",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "기존 X 계정에서 구독을 가져오려면 아래에 사용자 이름을 입력하세요.",

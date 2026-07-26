@@ -458,6 +458,8 @@
   "threaded_replies": "Risposte nidificate",
   "threaded_replies_description": "Mostra le risposte sotto un post aperto come un albero rientrato, con ogni risposta annidata sotto quella a cui risponde.",
   "thumbnail": "Miniatura",
+  "ticker_chart": "Grafico azionario",
+  "ticker_chart_description": "Mostrato all'apertura di un ticker. Arriva da TradingView, l'unica cosa che QuaX carica fuori da X; disattivandolo restano i post.",
   "timed_out": "Tempo scaduto",
   "to_import_a_list_enter_its_url_or_id_below": "Per importare una lista di X come gruppo di iscrizioni, inserisci qui sotto il link della lista o il suo ID",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Per importare le iscrizioni da un account Twitter esistente, inserisci il tuo nome utente qui sotto.",

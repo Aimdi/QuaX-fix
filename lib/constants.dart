@@ -184,6 +184,11 @@ const optionTweetsShowSubscribeBadge = 'tweets.show_subscribe_badge';
 // delay for it.
 const optionGestureDoubleTapLike = 'gestures.double_tap_like';
 
+// The TradingView chart on a ticker screen. It is the one thing QuaX loads
+// from outside X, so it is named plainly and can be switched off; the posts
+// about the ticker do not depend on it.
+const optionTickerChart = 'other.ticker_chart';
+
 const optionZenMode = 'other.zen_mode';
 const optionZenModePageCap = 'other.zen_mode_page_cap';
 const optionFeedReadingPosition = 'feed.reading_position';
@@ -285,4 +290,5 @@ const routeSettings = '/settings';
 const routeSettingsExport = '/settings/export';
 const routeSettingsHome = '/settings/home';
 const routeQuotes = '/quotes';
+const routeTicker = '/ticker';
 const routeStatus = '/status';

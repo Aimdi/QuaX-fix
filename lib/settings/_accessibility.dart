@@ -29,6 +29,13 @@ class SettingsAccessibilityFragment extends StatelessWidget {
             ),
           ),
           PrefSwitch(
+            title: Text(L10n.of(context).ticker_chart),
+            pref: optionTickerChart,
+            subtitle: Text(
+              L10n.of(context).ticker_chart_description,
+            ),
+          ),
+          PrefSwitch(
             title: Text(L10n.of(context).gesture_double_tap_like),
             pref: optionGestureDoubleTapLike,
             subtitle: Text(

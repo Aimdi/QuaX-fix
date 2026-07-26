@@ -458,6 +458,8 @@
   "threaded_replies": "Verschachtelte Antworten",
   "threaded_replies_description": "Antworten unter einem geöffneten Beitrag als eingerückten Baum anzeigen, jede Antwort verschachtelt unter der, auf die sie antwortet.",
   "thumbnail": "Vorschaubild",
+  "ticker_chart": "Aktienchart",
+  "ticker_chart_description": "Wird beim Öffnen eines Tickers gezeigt. Er kommt von TradingView — das Einzige, was QuaX außerhalb von X lädt; ohne ihn bleiben die Beiträge.",
   "timed_out": "Zeit abgelaufen",
   "to_import_a_list_enter_its_url_or_id_below": "Um eine X-Liste als Abo-Gruppe zu importieren, gib unten den Link zur Liste oder ihre ID ein",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Gebe unten deinen Nutzernamen an, um Abonnements von einem bestehenden Twitter-Konto zu importieren.",

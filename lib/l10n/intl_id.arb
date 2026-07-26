@@ -458,6 +458,8 @@
   "threaded_replies": "Balasan berutas",
   "threaded_replies_description": "Tampilkan balasan di bawah postingan yang dibuka sebagai pohon berindentasi, tiap balasan bersarang di bawah yang dijawabnya.",
   "thumbnail": "Keluku",
+  "ticker_chart": "Grafik saham",
+  "ticker_chart_description": "Ditampilkan saat Anda membuka ticker. Dimuat dari TradingView, satu-satunya yang QuaX ambil di luar X; jika dimatikan, posnya tetap ada.",
   "timed_out": "Waktu habis",
   "to_import_a_list_enter_its_url_or_id_below": "Untuk mengimpor daftar X sebagai grup langganan, masukkan tautan daftar atau ID-nya di bawah",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Untuk mengimpor langganan dari akun Twitter yang ada, masukkan nama pengguna Anda di bawah ini.",

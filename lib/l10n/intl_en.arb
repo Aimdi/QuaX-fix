@@ -458,6 +458,8 @@
   "threaded_replies": "Threaded replies",
   "threaded_replies_description": "Show replies under an opened post as an indented tree, with each reply nested under the one it answers.",
   "thumbnail": "Thumbnail",
+  "ticker_chart": "Stock chart",
+  "ticker_chart_description": "Shown when you open a ticker. It loads from TradingView, the one thing QuaX fetches outside X; with it off the posts remain.",
   "timed_out": "Timed out",
   "to_import_a_list_enter_its_url_or_id_below": "To import an X list as a subscription group, enter the list link or its ID below",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "To import subscriptions from an existing X account, enter your username below.",

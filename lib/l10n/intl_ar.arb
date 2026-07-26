@@ -458,6 +458,8 @@
   "threaded_replies": "الردود المتفرعة",
   "threaded_replies_description": "عرض الردود تحت المنشور المفتوح كشجرة متدرجة، مع تداخل كل رد تحت الرد الذي يجيب عنه.",
   "thumbnail": "الصورة المصغرة",
+  "ticker_chart": "مخطط السهم",
+  "ticker_chart_description": "يُعرض عند فتح رمز سهم. يُحمَّل من TradingView، وهو الشيء الوحيد الذي يجلبه QuaX من خارج X؛ عند إيقافه تبقى المنشورات كما هي.",
   "timed_out": "انتهت المهلة",
   "to_import_a_list_enter_its_url_or_id_below": "لاستيراد قائمة X كمجموعة اشتراكات، أدخل رابط القائمة أو معرّفها أدناه",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "لاستيراد الاشتراكات من حساب تويتر موجود، أدخل اسم المستخدم أدناه.",

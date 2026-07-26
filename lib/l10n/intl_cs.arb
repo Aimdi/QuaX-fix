@@ -458,6 +458,8 @@
   "threaded_replies": "Vnořené odpovědi",
   "threaded_replies_description": "Zobrazovat odpovědi u otevřeného příspěvku jako odsazený strom, kde je každá odpověď vnořena pod tu, na kterou reaguje.",
   "thumbnail": "Náhled",
+  "ticker_chart": "Graf akcie",
+  "ticker_chart_description": "Zobrazí se po otevření tickeru. Načítá se z TradingView, jediné, co si QuaX bere mimo X; po vypnutí příspěvky zůstávají.",
   "timed_out": "Vypršel čas",
   "to_import_a_list_enter_its_url_or_id_below": "Chcete-li importovat seznam z X jako skupinu odběrů, zadejte níže odkaz na seznam nebo jeho ID",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Pro import odběrů z existujícího Twitter účtu zadejte níže vaše uživatelské jméno.",
