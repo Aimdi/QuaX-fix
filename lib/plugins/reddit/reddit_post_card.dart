@@ -1,6 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/plugins/reddit/reddit_avatar.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_thread_screen.dart';
 import 'package:quax/tweet/tweet_chrome.dart';
@@ -116,6 +117,8 @@ class RedditPostCard extends StatelessWidget {
           Text('${post.commentCount}'),
           if (post.author != null) ...[
             const SizedBox(width: 14),
+            RedditAvatar(name: post.author, size: 16),
+            const SizedBox(width: 4),
             Flexible(child: Text('u/${post.author}', overflow: TextOverflow.ellipsis)),
           ],
         ],

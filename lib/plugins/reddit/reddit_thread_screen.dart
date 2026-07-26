@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/plugins/reddit/reddit_avatar.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_comments.dart';
 import 'package:quax/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
@@ -118,6 +119,8 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
             style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
             child: Row(
               children: [
+                RedditAvatar(name: post.author, size: 22),
+                const SizedBox(width: 6),
                 if (post.author != null) Text('u/${post.author}'),
                 if (date != null) ...[
                   const SizedBox(width: 8),
@@ -168,6 +171,8 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
               style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
               child: Row(
                 children: [
+                  RedditAvatar(name: comment.author, size: 20),
+                  const SizedBox(width: 6),
                   Flexible(
                     child: Text(
                       comment.author == null ? '' : 'u/${comment.author}',
