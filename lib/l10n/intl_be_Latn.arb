@@ -1053,5 +1053,17 @@
   "sync_error_network": "Nie ŭdałosia zviazacca z serveram",
   "endpoint_refused_title": "𝕏 adchiliŭ hety zapyt",
   "endpoint_refused_message": "Usie ulikovyja zapisy atrymali admovu ŭ hetaj častcy 𝕏, tamu sprava naŭrad ci ŭ ich. Chutčej za ŭsio 𝕏 niešta zmianiŭ; prahrama vypraŭlajecca sama, kali moža. Pasprabujcie praz chvilinu.",
-  "show_additional_replies": "Pakazać dadatkovyja adkazy"
+  "show_additional_replies": "Pakazać dadatkovyja adkazy",
+  "theme_background": "Fon",
+  "theme_background_description": "Nakolki ciomnaje aformlennie",
+  "theme_background_dim": "Pryhlušany",
+  "theme_background_lights_out": "Calkam čorny",
+  "theme_accent": "Akcentny kolier",
+  "theme_accent_description": "Dla spasylak, knopak i aktyŭnaj ukladki",
+  "colour_blue": "Sini",
+  "colour_yellow": "Žoŭty",
+  "colour_pink": "Ružovy",
+  "colour_purple": "Fijaletavy",
+  "colour_orange": "Aranžavy",
+  "colour_green": "Zialiony"
 }

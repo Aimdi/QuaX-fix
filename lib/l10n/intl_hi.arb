@@ -1053,5 +1053,17 @@
   "sync_error_network": "सर्वर तक नहीं पहुँच सके",
   "endpoint_refused_title": "𝕏 ने यह अनुरोध ठुकरा दिया",
   "endpoint_refused_message": "𝕏 के इस हिस्से में सभी खाते अस्वीकार हुए, इसलिए समस्या शायद आपके खातों की नहीं है। संभवतः 𝕏 ने कुछ बदला है; ऐप जब संभव हो खुद ठीक हो जाता है। थोड़ी देर बाद फिर कोशिश करें।",
-  "show_additional_replies": "और उत्तर दिखाएँ"
+  "show_additional_replies": "और उत्तर दिखाएँ",
+  "theme_background": "पृष्ठभूमि",
+  "theme_background_description": "ऐप कितना गहरा है",
+  "theme_background_dim": "मंद",
+  "theme_background_lights_out": "लाइट्स आउट",
+  "theme_accent": "एक्सेंट रंग",
+  "theme_accent_description": "लिंक, बटन और चयनित टैब के लिए",
+  "colour_blue": "नीला",
+  "colour_yellow": "पीला",
+  "colour_pink": "गुलाबी",
+  "colour_purple": "बैंगनी",
+  "colour_orange": "नारंगी",
+  "colour_green": "हरा"
 }

@@ -1053,5 +1053,17 @@
   "sync_error_network": "No s'ha pogut contactar amb el servidor",
   "endpoint_refused_title": "𝕏 ha rebutjat aquesta petició",
   "endpoint_refused_message": "Tots els comptes han estat rebutjats en aquesta part d'𝕏, així que probablement no són els teus comptes. Segurament 𝕏 ha canviat alguna cosa; l'aplicació es repara sola quan pot. Torna-ho a provar d'aquí a una estona.",
-  "show_additional_replies": "Mostra més respostes"
+  "show_additional_replies": "Mostra més respostes",
+  "theme_background": "Fons",
+  "theme_background_description": "Com de fosca és l'aplicació",
+  "theme_background_dim": "Atenuat",
+  "theme_background_lights_out": "Llums apagats",
+  "theme_accent": "Color d'accent",
+  "theme_accent_description": "Per a enllaços, botons i la pestanya activa",
+  "colour_blue": "Blau",
+  "colour_yellow": "Groc",
+  "colour_pink": "Rosa",
+  "colour_purple": "Lila",
+  "colour_orange": "Taronja",
+  "colour_green": "Verd"
 }

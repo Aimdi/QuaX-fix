@@ -45,7 +45,7 @@ Future<void> autoDownloadTweetPhotos({
     return;
   }
 
-  messenger.showSnackBar(SnackBar(content: Text(downloadingLabel)));
+  messenger.showSnackBar(workingSnackBar(downloadingLabel));
   var saved = 0;
   Object? failure;
   for (final media in photos) {

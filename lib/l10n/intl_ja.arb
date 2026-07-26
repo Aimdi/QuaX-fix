@@ -1053,5 +1053,17 @@
   "sync_error_network": "サーバーに接続できませんでした",
   "endpoint_refused_title": "𝕏 にこのリクエストを断られました",
   "endpoint_refused_message": "𝕏 のこの部分ではすべてのアカウントが拒否されたため、アカウント側の問題ではなさそうです。𝕏 が何かを変更した可能性が高く、アプリは可能になり次第自動で修復します。しばらくしてからもう一度お試しください。",
-  "show_additional_replies": "他の返信を表示"
+  "show_additional_replies": "他の返信を表示",
+  "theme_background": "背景",
+  "theme_background_description": "アプリの暗さ",
+  "theme_background_dim": "ダーク",
+  "theme_background_lights_out": "ブラック",
+  "theme_accent": "アクセントカラー",
+  "theme_accent_description": "リンク・ボタン・選択中のタブに使用",
+  "colour_blue": "ブルー",
+  "colour_yellow": "イエロー",
+  "colour_pink": "ピンク",
+  "colour_purple": "パープル",
+  "colour_orange": "オレンジ",
+  "colour_green": "グリーン"
 }

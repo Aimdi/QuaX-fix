@@ -55,4 +55,40 @@ void main() {
     expect(find.byIcon(Icons.bar_chart), findsOneWidget);
     expect(tester.widget<IconButton>(find.byType(IconButton)).tooltip, isNull);
   });
+
+  // Regression: naming these buttons wrapped each one in a Tooltip, whose
+  // long-press trigger sits inside the callers' GestureDetectors and won the
+  // gesture arena. Long-pressing a bookmark stopped opening the folder sheet.
+  testWidgets('a long press reaches the caller instead of being eaten by the tooltip', (tester) async {
+    var longPressed = 0;
+
+    await pump(
+      tester,
+      Builder(
+        builder: (context) => GestureDetector(
+          onLongPress: () => longPressed++,
+          child: tweetFooterIconButton(context, Icons.bookmark_border, null, 0, () {}, 'Save post'),
+        ),
+      ),
+    );
+
+    await tester.longPress(find.byIcon(Icons.bookmark_border));
+    await tester.pumpAndSettle();
+
+    expect(longPressed, 1, reason: 'the folder sheet is opened from a long press on this button');
+  });
+
+  testWidgets('naming the button still survives that fix', (tester) async {
+    final handle = tester.ensureSemantics();
+
+    await pump(
+      tester,
+      Builder(
+        builder: (context) => tweetFooterIconButton(context, Icons.bookmark, null, 1, () {}, 'Remove from saved'),
+      ),
+    );
+
+    expect(tester.getSemantics(find.byType(IconButton)).tooltip, 'Remove from saved');
+    handle.dispose();
+  });
 }

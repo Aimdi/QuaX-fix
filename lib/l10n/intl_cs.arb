@@ -1053,5 +1053,17 @@
   "sync_error_network": "Server je nedostupný",
   "endpoint_refused_title": "𝕏 tento požadavek odmítl",
   "endpoint_refused_message": "V této části 𝕏 byly odmítnuty všechny účty, takže chyba nejspíš není u vás. 𝕏 pravděpodobně něco změnil; aplikace se opraví sama, jakmile to půjde. Zkuste to za chvíli znovu.",
-  "show_additional_replies": "Zobrazit další odpovědi"
+  "show_additional_replies": "Zobrazit další odpovědi",
+  "theme_background": "Pozadí",
+  "theme_background_description": "Jak tmavá je aplikace",
+  "theme_background_dim": "Ztlumené",
+  "theme_background_lights_out": "Zhasnuto",
+  "theme_accent": "Barva zvýraznění",
+  "theme_accent_description": "Pro odkazy, tlačítka a aktivní kartu",
+  "colour_blue": "Modrá",
+  "colour_yellow": "Žlutá",
+  "colour_pink": "Růžová",
+  "colour_purple": "Fialová",
+  "colour_orange": "Oranžová",
+  "colour_green": "Zelená"
 }

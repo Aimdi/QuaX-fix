@@ -1053,5 +1053,17 @@
   "sync_error_network": "Не вдалося зв'язатися із сервером",
   "endpoint_refused_title": "𝕏 відхилив цей запит",
   "endpoint_refused_message": "У цій частині 𝕏 відхилено всі облікові записи, тож річ навряд чи в них. Найімовірніше, 𝕏 щось змінив; застосунок лагодить себе сам, щойно зможе. Спробуйте ще раз трохи згодом.",
-  "show_additional_replies": "Показати більше відповідей"
+  "show_additional_replies": "Показати більше відповідей",
+  "theme_background": "Фон",
+  "theme_background_description": "Наскільки темне оформлення",
+  "theme_background_dim": "Приглушений",
+  "theme_background_lights_out": "Повністю чорний",
+  "theme_accent": "Акцентний колір",
+  "theme_accent_description": "Для посилань, кнопок і активної вкладки",
+  "colour_blue": "Синій",
+  "colour_yellow": "Жовтий",
+  "colour_pink": "Рожевий",
+  "colour_purple": "Фіолетовий",
+  "colour_orange": "Помаранчевий",
+  "colour_green": "Зелений"
 }

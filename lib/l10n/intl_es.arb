@@ -1053,5 +1053,17 @@
   "sync_error_network": "No se pudo contactar con el servidor",
   "endpoint_refused_title": "𝕏 ha rechazado esta petición",
   "endpoint_refused_message": "Todas las cuentas han sido rechazadas en esta parte de 𝕏, así que probablemente no sean tus cuentas. Seguramente 𝕏 ha cambiado algo; la aplicación se repara sola cuando puede. Inténtalo de nuevo en un momento.",
-  "show_additional_replies": "Mostrar más respuestas"
+  "show_additional_replies": "Mostrar más respuestas",
+  "theme_background": "Fondo",
+  "theme_background_description": "Qué tan oscura es la aplicación",
+  "theme_background_dim": "Atenuado",
+  "theme_background_lights_out": "Luces apagadas",
+  "theme_accent": "Color de acento",
+  "theme_accent_description": "Para enlaces, botones y la pestaña activa",
+  "colour_blue": "Azul",
+  "colour_yellow": "Amarillo",
+  "colour_pink": "Rosa",
+  "colour_purple": "Morado",
+  "colour_orange": "Naranja",
+  "colour_green": "Verde"
 }

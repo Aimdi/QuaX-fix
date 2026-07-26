@@ -5,6 +5,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path/path.dart' as path;
 import 'package:pref/pref.dart';
+import 'package:quax/ui/errors.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/tweet/video_controller_pool.dart';
 import 'package:quax/tweet/video_quality.dart';
@@ -725,9 +726,7 @@ Future<void> downloadTweetVideo(BuildContext context, String username, String? d
     fileName,
     prefs: PrefService.of(context),
     onStart: () {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(L10n.of(context).downloading_media),
-      ));
+      showWorkingSnackBar(context, L10n.of(context).downloading_media);
     },
     onSuccess: () {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

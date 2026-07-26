@@ -1053,5 +1053,17 @@
   "sync_error_network": "Ne eblis atingi la servilon",
   "endpoint_refused_title": "𝕏 rifuzis ĉi tiun peton",
   "endpoint_refused_message": "Ĉiuj kontoj estis rifuzitaj en tiu ĉi parto de 𝕏, do verŝajne ne temas pri viaj kontoj. Plej probable 𝕏 ŝanĝis ion; la aplikaĵo riparas sin mem kiam ĝi povas. Reprovu post momento.",
-  "show_additional_replies": "Montri pliajn respondojn"
+  "show_additional_replies": "Montri pliajn respondojn",
+  "theme_background": "Fono",
+  "theme_background_description": "Kiom malhela estas la aplikaĵo",
+  "theme_background_dim": "Malhelega",
+  "theme_background_lights_out": "Lumoj for",
+  "theme_accent": "Akcenta koloro",
+  "theme_accent_description": "Por ligiloj, butonoj kaj la elektita langeto",
+  "colour_blue": "Blua",
+  "colour_yellow": "Flava",
+  "colour_pink": "Roza",
+  "colour_purple": "Purpura",
+  "colour_orange": "Oranĝa",
+  "colour_green": "Verda"
 }

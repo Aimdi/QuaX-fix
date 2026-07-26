@@ -1053,5 +1053,17 @@
   "sync_error_network": "Nie udało się połączyć z serwerem",
   "endpoint_refused_title": "𝕏 odrzucił to żądanie",
   "endpoint_refused_message": "W tej części 𝕏 odrzucono wszystkie konta, więc raczej nie chodzi o twoje konta. 𝕏 prawdopodobnie coś zmienił; aplikacja naprawia się sama, gdy tylko może. Spróbuj ponownie za chwilę.",
-  "show_additional_replies": "Pokaż więcej odpowiedzi"
+  "show_additional_replies": "Pokaż więcej odpowiedzi",
+  "theme_background": "Tło",
+  "theme_background_description": "Jak ciemna jest aplikacja",
+  "theme_background_dim": "Przyciemniony",
+  "theme_background_lights_out": "Zgaszone światła",
+  "theme_accent": "Kolor akcentu",
+  "theme_accent_description": "Dla linków, przycisków i aktywnej karty",
+  "colour_blue": "Niebieski",
+  "colour_yellow": "Żółty",
+  "colour_pink": "Różowy",
+  "colour_purple": "Fioletowy",
+  "colour_orange": "Pomarańczowy",
+  "colour_green": "Zielony"
 }

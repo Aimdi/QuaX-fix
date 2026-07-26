@@ -1053,5 +1053,17 @@
   "sync_error_network": "Impossible de joindre le serveur",
   "endpoint_refused_title": "𝕏 a refusé cette requête",
   "endpoint_refused_message": "Tous les comptes ont été refusés sur cette partie de 𝕏 : le problème ne vient donc probablement pas de vos comptes. 𝕏 a sans doute changé quelque chose ; l'application se répare d'elle-même dès qu'elle le peut. Réessayez dans un instant.",
-  "show_additional_replies": "Afficher plus de réponses"
+  "show_additional_replies": "Afficher plus de réponses",
+  "theme_background": "Arrière-plan",
+  "theme_background_description": "À quel point l'application est sombre",
+  "theme_background_dim": "Tamisé",
+  "theme_background_lights_out": "Noir total",
+  "theme_accent": "Couleur d'accent",
+  "theme_accent_description": "Pour les liens, les boutons et l'onglet actif",
+  "colour_blue": "Bleu",
+  "colour_yellow": "Jaune",
+  "colour_pink": "Rose",
+  "colour_purple": "Violet",
+  "colour_orange": "Orange",
+  "colour_green": "Vert"
 }

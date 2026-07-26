@@ -1053,5 +1053,17 @@
   "sync_error_network": "تعذّر الوصول إلى الخادم",
   "endpoint_refused_title": "رفض 𝕏 هذا الطلب",
   "endpoint_refused_message": "رُفضت جميع الحسابات في هذا الجزء من 𝕏، لذا من غير المرجّح أن تكون المشكلة في حساباتك. على الأرجح غيّر 𝕏 شيئًا ما، والتطبيق يصلح نفسه متى استطاع. أعد المحاولة بعد قليل.",
-  "show_additional_replies": "عرض المزيد من الردود"
+  "show_additional_replies": "عرض المزيد من الردود",
+  "theme_background": "الخلفية",
+  "theme_background_description": "مدى قتامة التطبيق",
+  "theme_background_dim": "خافت",
+  "theme_background_lights_out": "إطفاء الأضواء",
+  "theme_accent": "لون التمييز",
+  "theme_accent_description": "للروابط والأزرار والتبويب النشط",
+  "colour_blue": "أزرق",
+  "colour_yellow": "أصفر",
+  "colour_pink": "وردي",
+  "colour_purple": "بنفسجي",
+  "colour_orange": "برتقالي",
+  "colour_green": "أخضر"
 }

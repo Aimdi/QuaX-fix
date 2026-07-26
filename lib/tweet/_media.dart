@@ -152,9 +152,7 @@ Future<void> downloadMediaItem(BuildContext context, Media media, String usernam
     fileName,
     prefs: PrefService.of(context, listen: false),
     onStart: () {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(L10n.of(context).downloading_media),
-      ));
+      showWorkingSnackBar(context, L10n.of(context).downloading_media);
     },
     onSuccess: () {
       ScaffoldMessenger.of(context).hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
@@ -396,9 +394,7 @@ class _TweetMediaViewState extends State<TweetMediaView> {
                 fileName,
                 prefs: prefs,
                 onStart: () {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(L10n.of(context).downloading_media),
-                  ));
+                  showWorkingSnackBar(context, L10n.of(context).downloading_media);
                 },
                 onSuccess: () {
                   ScaffoldMessenger.of(context).hideCurrentSnackBar(reason: SnackBarClosedReason.hide);

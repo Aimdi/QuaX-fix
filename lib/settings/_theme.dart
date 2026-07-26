@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/utils/iterables.dart';
+
+/// The accent names, kept beside the picker because they exist only for it.
+String xLookAccentName(L10n l10n, String accent) => switch (accent) {
+      'yellow' => l10n.colour_yellow,
+      'pink' => l10n.colour_pink,
+      'purple' => l10n.colour_purple,
+      'orange' => l10n.colour_orange,
+      'green' => l10n.colour_green,
+      _ => l10n.colour_blue,
+    };
 
 class SettingsThemeFragment extends StatelessWidget {
   const SettingsThemeFragment({super.key});
@@ -18,38 +26,40 @@ class SettingsThemeFragment extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: ListView(children: [
           PrefDropdown(
-              fullWidth: false,
-              title: Text(L10n.of(context).theme_preset),
-              subtitle: Text(L10n.of(context).theme_preset_description),
-              pref: optionThemePreset,
-              items: [
-                DropdownMenuItem(value: themePresetNone, child: Text(L10n.of(context).content_filter_default)),
-                const DropdownMenuItem(value: themePresetFairyForest, child: Text('Fairy Forest')),
-                const DropdownMenuItem(value: themePresetPitchBlack, child: Text('Pitch Black')),
-                DropdownMenuItem(value: themePresetXLookLight, child: Text(L10n.of(context).theme_preset_x_look_light)),
-                DropdownMenuItem(value: themePresetXLookDim, child: Text(L10n.of(context).theme_preset_x_look_dim)),
-                DropdownMenuItem(
-                    value: themePresetXLookLightsOut, child: Text(L10n.of(context).theme_preset_x_look_lights_out)),
-              ]),
-          PrefDropdown(fullWidth: false, title: Text(L10n.of(context).theme_mode), pref: optionThemeMode, items: [
-            DropdownMenuItem(
-              value: 'system',
-              child: Text(L10n.of(context).system),
-            ),
-            DropdownMenuItem(
-              value: 'light',
-              child: Text(L10n.of(context).light),
-            ),
-            DropdownMenuItem(
-              value: 'dark',
-              child: Text(L10n.of(context).dark),
-            ),
-          ]),
-          PrefDropdown(title: Text(L10n.of(context).theme), fullWidth: false, pref: optionThemeColor, items: [
-            const DropdownMenuItem(value: 'accent', child: Text('Accent')),
-            ...themeColors.entries.getRange(0, themeColors.values.length - 1).map(
-                (scheme) => DropdownMenuItem(value: scheme.key, child: Text(toBeginningOfSentenceCase(scheme.key)!)))
-          ]),
+            fullWidth: false,
+            title: Text(L10n.of(context).theme_background),
+            subtitle: Text(L10n.of(context).theme_background_description),
+            pref: optionXLookBackground,
+            items: [
+              DropdownMenuItem(value: xLookBackgroundSystem, child: Text(L10n.of(context).system)),
+              DropdownMenuItem(value: xLookBackgroundLight, child: Text(L10n.of(context).light)),
+              DropdownMenuItem(value: xLookBackgroundDim, child: Text(L10n.of(context).theme_background_dim)),
+              DropdownMenuItem(
+                  value: xLookBackgroundLightsOut, child: Text(L10n.of(context).theme_background_lights_out)),
+            ],
+          ),
+          PrefDropdown(
+            fullWidth: false,
+            title: Text(L10n.of(context).theme_accent),
+            subtitle: Text(L10n.of(context).theme_accent_description),
+            pref: optionXLookAccent,
+            items: xLookAccents.entries
+                .map((accent) => DropdownMenuItem(
+                      value: accent.key,
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        // The swatch carries the meaning; the name is there for
+                        // anyone who cannot tell these colours apart.
+                        Container(
+                          width: 16,
+                          height: 16,
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(color: accent.value, shape: BoxShape.circle),
+                        ),
+                        Text(xLookAccentName(L10n.of(context), accent.key)),
+                      ]),
+                    ))
+                .toList(),
+          ),
           PrefSwitch(
             title: Text(L10n.of(context).true_black),
             pref: optionThemeTrueBlack,
