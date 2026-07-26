@@ -16,6 +16,30 @@ const _trackingParams = {'fbclid', 'gclid', 'igshid', 'mc_eid', 'mkt_tok', 'twcl
 const _xTrackingParams = {'s', 't', 'ref_src', 'ref_url'};
 const _xHosts = {'x.com', 'www.x.com', 'twitter.com', 'www.twitter.com', 'mobile.twitter.com'};
 
+/// The article id in an `x.com/i/article/…` link, or null if it is not one.
+///
+/// A link to a long-form X post carries no title, no author and no thumbnail —
+/// nothing a preview could be built from — so it used to render as a truncated
+/// blue URL and nothing else. Recognising it at least lets the post say what
+/// the link is.
+String? articleIdIn(String? url) {
+  if (url == null || url.isEmpty) {
+    return null;
+  }
+
+  final uri = Uri.tryParse(url);
+  if (uri == null || !_xHosts.contains(uri.host)) {
+    return null;
+  }
+
+  final parts = uri.pathSegments.where((e) => e.isNotEmpty).toList(growable: false);
+  if (parts.length < 3 || parts[0] != 'i' || parts[1] != 'article') {
+    return null;
+  }
+
+  return parts[2];
+}
+
 bool _isTrackingParam(String key, bool isXHost) =>
     key.startsWith('utm_') || _trackingParams.contains(key) || (isXHost && _xTrackingParams.contains(key));
 

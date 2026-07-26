@@ -17,6 +17,8 @@ import 'package:quax/tweet/_ExpandableTweetText.dart';
 import 'package:quax/tweet/_card.dart';
 import 'package:quax/tweet/_media.dart';
 import 'package:quax/tweet/tweet_chrome.dart';
+import 'package:quax/tweet/article_link_card.dart';
+import 'package:quax/utils/urls.dart';
 import 'package:quax/tweet/tweet_footer.dart';
 import 'package:quax/article/article.dart';
 import 'package:quax/ui/dates.dart';
@@ -667,9 +669,15 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
           ])
         : null;
 
+    // A link to a long-form X article, which carries nothing a preview could be
+    // built from and so rendered as a bare truncated URL.
+    final articleLink = tweet.article != null ? null : firstArticleLink(tweet.entities?.urls?.map((e) => e.expandedUrl) ?? const []);
+
     final bodyChildren = <Widget>[
       replyToTile,
       if (tweet.article == null) content,
+      if (articleLink != null)
+        ArticleLinkCard(url: articleLink, onTap: () async => await openUri(context, articleLink)),
       media,
       quotedTweet,
       TweetCard(tweet: tweet, card: tweet.card),

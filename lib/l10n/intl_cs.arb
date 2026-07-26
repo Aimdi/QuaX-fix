@@ -28,6 +28,7 @@
   "app_info": "Informace o aplikaci",
   "are_you_sure": "Opravdu?",
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Opravdu chcete odstranit skupinu {name}?",
+  "article_on_x": "Článek na X",
   "auto_download_images": "Automaticky stahovat obrázky",
   "auto_download_images_description": "Uložit obrázky každého příspěvku zařazeného do této složky do složky stahování.",
   "autoplay_videos": "Automatické přehrávání videí",

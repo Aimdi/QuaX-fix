@@ -1,6 +1,7 @@
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:quax/utils/urls.dart';
 
 abstract class Entity {
   List<int>? indices;
@@ -62,6 +63,12 @@ class UrlEntity extends Entity {
 
   @override
   InlineSpan getContent() {
+    // An article link is shown as a card under the text, so leaving the URL in
+    // the text too would say the same thing twice — once unreadably.
+    if (articleIdIn(url.expandedUrl) != null) {
+      return const TextSpan(text: '');
+    }
+
     return TextSpan(
         text: url.displayUrl,
         style: const TextStyle(color: Colors.blue),

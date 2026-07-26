@@ -28,6 +28,7 @@
   "app_info": "App-informasjon",
   "are_you_sure": "Er du sikker?",
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Slett {name}-abonnementsgruppen?",
+  "article_on_x": "Artikkel på X",
   "auto_download_images": "Last ned bilder automatisk",
   "auto_download_images_description": "Lagre bildene fra alle innlegg som legges i denne mappen i nedlastingsmappen din.",
   "autoplay_videos": "Autoavspilling av videoer",

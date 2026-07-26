@@ -28,6 +28,7 @@
   "app_info": "앱 정보",
   "are_you_sure": "확실합니까?",
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "구독 그룹 {name}을(를) 삭제하시겠습니까?",
+  "article_on_x": "X의 아티클",
   "auto_download_images": "이미지 자동 다운로드",
   "auto_download_images_description": "이 폴더에 저장한 게시물의 이미지를 다운로드 폴더에 저장합니다.",
   "autoplay_videos": "동영상 자동 재생",

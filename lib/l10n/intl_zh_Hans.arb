@@ -28,6 +28,7 @@
   "app_info": "应用信息",
   "are_you_sure": "你确定吗？",
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "您确定要删除订阅组 {name} 吗？",
+  "article_on_x": "X 上的文章",
   "auto_download_images": "自动下载图片",
   "auto_download_images_description": "将归入此文件夹的任何帖子的图片保存到你的下载文件夹。",
   "autoplay_videos": "自动播放视频",

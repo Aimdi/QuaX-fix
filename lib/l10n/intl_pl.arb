@@ -28,6 +28,7 @@
   "app_info": "Informacje o aplikacji",
   "are_you_sure": "Czy na pewno?",
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Czy na pewno chcesz usunąć grupę subskrypcji {name}?",
+  "article_on_x": "Artykuł na X",
   "auto_download_images": "Automatycznie pobieraj obrazy",
   "auto_download_images_description": "Zapisuj obrazy każdego wpisu dodanego do tego folderu w folderze pobierania.",
   "autoplay_videos": "Automatyczne odtwarzanie filmów",

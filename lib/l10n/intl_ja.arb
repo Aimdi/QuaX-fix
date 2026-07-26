@@ -28,6 +28,7 @@
   "app_info": "アプリ情報",
   "are_you_sure": "確認",
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "登録グループ{name}を削除してもよろしいですか？",
+  "article_on_x": "X の記事",
   "auto_download_images": "画像を自動ダウンロード",
   "auto_download_images_description": "このフォルダーに保存した投稿の画像を、ダウンロードフォルダーに保存します。",
   "autoplay_videos": "Autoplay videos",

@@ -28,6 +28,7 @@
   "app_info": "Informació de l'app",
   "are_you_sure": "N'estàs segur?",
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Estàs segur que vols suprimir el grup de subscripcions {name}?",
+  "article_on_x": "Article a X",
   "auto_download_images": "Baixa les imatges automàticament",
   "auto_download_images_description": "Desa les imatges de qualsevol publicació desada en aquesta carpeta a la carpeta de baixades.",
   "autoplay_videos": "Reproducció automàtica de vídeos",

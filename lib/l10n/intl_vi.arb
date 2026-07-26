@@ -28,6 +28,7 @@
   "app_info": "Thông tin ứng dụng",
   "are_you_sure": "Bạn có chắc không ",
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Bạn có muốn xóa nhóm {name} đăng kí không ",
+  "article_on_x": "Bài viết trên X",
   "auto_download_images": "Tự động tải ảnh",
   "auto_download_images_description": "Lưu ảnh của mọi bài đăng được xếp vào thư mục này vào thư mục tải xuống của bạn.",
   "autoplay_videos": "Tự động phát video",

@@ -28,6 +28,7 @@
   "app_info": "App-informatie",
   "are_you_sure": "Weet je het zeker?",
   "are_you_sure_you_want_to_delete_the_subscription_group_name_of_group": "Weet je zeker dat je de abonnementsgroep {name} wilt verwijderen?",
+  "article_on_x": "Artikel op X",
   "auto_download_images": "Afbeeldingen automatisch downloaden",
   "auto_download_images_description": "Sla de afbeeldingen van elk bericht in deze map op in je downloadmap.",
   "autoplay_videos": "Automatisch afspelen van video's",
