@@ -37,6 +37,31 @@ class HashtagEntity extends Entity {
   }
 }
 
+/// A cashtag — `$AAPL` — which X sends as a symbol entity.
+///
+/// These were parsed off the wire and then dropped on the floor: the text still
+/// read `$AAPL`, but as plain grey prose with nothing to tap, so a ticker in a
+/// post was a dead end.
+/// Takes the ticker text rather than the API's own symbol class: that class is
+/// named `Symbol`, which `dart:core` already uses.
+class SymbolEntity extends Entity {
+  final String text;
+  final Function onTap;
+
+  SymbolEntity({required this.text, required List<int>? indices, required this.onTap}) : super(indices);
+
+  @override
+  InlineSpan getContent() {
+    return TextSpan(
+        text: '\$$text',
+        style: const TextStyle(color: Colors.blue),
+        recognizer: TapGestureRecognizer()
+          ..onTap = () {
+            onTap();
+          });
+  }
+}
+
 class UserMentionEntity extends Entity {
   final UserMention mention;
   final Function onTap;

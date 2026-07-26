@@ -160,6 +160,21 @@ List<Entity> _parseEntities(BuildContext context, dynamic newEntities) {
                   focusInputOnOpen: false, query: '#${hashtag.text}'))));
     }
 
+    // A ticker opens a search for it, which is where the posts about it are.
+    // The price itself would need a market-data service QuaX does not have and
+    // would have to trust, so the card X shows beside it is not reproduced.
+    for (final symbol in newEntities.symbols ?? []) {
+      final text = symbol.text;
+      if (text == null || text.isEmpty) {
+        continue;
+      }
+      entities.add(SymbolEntity(
+          text: text,
+          indices: symbol.indices,
+          onTap: () => Navigator.pushNamed(context, routeSearch,
+              arguments: SearchArguments(1, focusInputOnOpen: false, query: '\$$text'))));
+    }
+
     for (UserMention mention in newEntities.userMentions ?? []) {
       entities.add(UserMentionEntity(
           mention,
