@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Legg til subreddit",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Opprett en «installed app» på reddit.com/prefs/apps og lim inn client ID-en. Reddit krever den selv uten konto. Den sendes ikke noe annet sted.",
+  "plugin_reddit_client_id_help": "Valgfritt – tillegget virker uten. Oppretter du en \"installed app\" på reddit.com/prefs/apps, gir ID-en høyere grenser og kreves før innlogging. Ingenting sendes andre steder.",
   "plugin_reddit_description": "Les subreddits uten konto og uten innlogging",
   "plugin_reddit_empty": "Legg til en subreddit for å begynne å lese",
   "plugin_reddit_error_blocked": "Reddit avviste forespørselen. Ofte betyr det at det blokkerer nettverket du er på.",

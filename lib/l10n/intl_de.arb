@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Subreddit hinzufügen",
   "plugin_reddit_client_id": "Client-ID",
-  "plugin_reddit_client_id_help": "Erstelle unter reddit.com/prefs/apps eine „installed app“ und füge deren Client-ID ein. Reddit verlangt sie auch ohne Konto. Sie wird an niemanden weitergegeben.",
+  "plugin_reddit_client_id_help": "Optional. Das Plugin funktioniert auch ohne. Legst du auf reddit.com/prefs/apps eine \"installed app\" an, bringt die ID höhere Limits und wird vor dem Anmelden gebraucht. Es geht nichts an Dritte.",
   "plugin_reddit_description": "Subreddits ohne Konto und ohne Anmeldung lesen",
   "plugin_reddit_empty": "Füge ein Subreddit hinzu, um zu lesen",
   "plugin_reddit_error_blocked": "Reddit hat die Anfrage abgelehnt. Meist blockiert es das Netzwerk, in dem du gerade bist.",

@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "إضافة سبريديت",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "أنشئ «installed app» على reddit.com/prefs/apps والصق مُعرِّف العميل. يطلبه Reddit حتى بدون حساب، ولا يُرسل إلى أي مكان آخر.",
+  "plugin_reddit_client_id_help": "اختياري. يعمل المكوّن دون أي معرّف. إن أنشأت \"installed app\" على reddit.com/prefs/apps فسيمنحك المعرّف حدود استخدام أعلى، وهو مطلوب قبل تسجيل الدخول. لا يُرسل شيء إلى أي جهة أخرى.",
   "plugin_reddit_description": "اقرأ السبريديت دون حساب ودون تسجيل دخول",
   "plugin_reddit_empty": "أضف سبريديت لتبدأ القراءة",
   "plugin_reddit_error_blocked": "رفض Reddit الطلب. غالبًا يعني ذلك أنه يحجب الشبكة التي تستخدمها.",

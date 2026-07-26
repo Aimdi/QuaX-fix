@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "新增 subreddit",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "在 reddit.com/prefs/apps 建立一個「installed app」並貼上其 client ID。即使沒有帳號，Reddit 也會要求它。它不會被送往別處。",
+  "plugin_reddit_client_id_help": "選填，不填也能用。若在 reddit.com/prefs/apps 建立 \"installed app\"，其 client ID 可提高請求上限，登入前也需要它。不會傳送到其他任何地方。",
   "plugin_reddit_description": "無需帳號、無需登入即可閱讀 subreddit",
   "plugin_reddit_empty": "新增一個 subreddit 開始閱讀",
   "plugin_reddit_error_blocked": "Reddit 拒絕了請求。這通常表示它封鎖了你所在的網路。",

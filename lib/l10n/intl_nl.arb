@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Subreddit toevoegen",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Maak een ‘installed app’ op reddit.com/prefs/apps en plak de client ID. Reddit vraagt die ook zonder account. Hij gaat nergens anders naartoe.",
+  "plugin_reddit_client_id_help": "Optioneel: de plug-in werkt ook zonder. Maak je een \"installed app\" op reddit.com/prefs/apps, dan geeft de client-ID hogere limieten en is hij nodig om in te loggen. Er gaat niets naar elders.",
   "plugin_reddit_description": "Lees subreddits zonder account of inloggen",
   "plugin_reddit_empty": "Voeg een subreddit toe om te beginnen",
   "plugin_reddit_error_blocked": "Reddit weigerde het verzoek. Vaak blokkeert het het netwerk dat je gebruikt.",

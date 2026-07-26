@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Aldoni subredditon",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Kreu «installed app» ĉe reddit.com/prefs/apps kaj enmetu ĝian client ID. Reddit postulas ĝin ankaŭ sen konto. Ĝi estas sendata nenien alian.",
+  "plugin_reddit_client_id_help": "Nedeviga. La kromaĵo funkcias sen ĝi. Se vi kreas \"installed app\" ĉe reddit.com/prefs/apps, la identigilo donas pli altajn limojn kaj necesas antaŭ ensaluto. Nenio iras aliloken.",
   "plugin_reddit_description": "Legu subredditojn sen konto kaj sen ensaluto",
   "plugin_reddit_empty": "Aldonu subredditon por komenci legi",
   "plugin_reddit_error_blocked": "Reddit rifuzis la peton. Ofte tio signifas ke ĝi blokas vian reton.",

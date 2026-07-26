@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Dadać sabredyt",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Stvarycie «installed app» na reddit.com/prefs/apps i ŭstaŭcie jaje client ID. Reddit patrabuje jaho navat biez akaŭnta. Bolš nikudy jon nie adpraŭlajecca.",
+  "plugin_reddit_client_id_help": "Nieabaviazkova. Plahin pracuje i biez jaho. Kali stvorycie \"installed app\" na reddit.com/prefs/apps, identyfikatar dasć vyšejšyja limity i patrebny pierad uvachodam. Nikudy bolš ničoha nie adpraŭlajecca.",
   "plugin_reddit_description": "Čytajcie sabredyty biez akaŭnta i biez uvachodu",
   "plugin_reddit_empty": "Dadajcie sabredyt, kab pačać čytać",
   "plugin_reddit_error_blocked": "Reddit admoviŭ u zapracie. Zvyčajna heta značyć, što jon błakuje vašu sietku.",

@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Thêm subreddit",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Tạo một “installed app” tại reddit.com/prefs/apps rồi dán client ID của nó. Reddit vẫn yêu cầu dù không có tài khoản. Nó không được gửi tới nơi nào khác.",
+  "plugin_reddit_client_id_help": "Không bắt buộc — plugin vẫn chạy khi để trống. Nếu bạn tạo một \"installed app\" tại reddit.com/prefs/apps, client ID sẽ cho giới hạn cao hơn và cần có trước khi đăng nhập. Không có gì được gửi đi nơi khác.",
   "plugin_reddit_description": "Đọc subreddit mà không cần tài khoản hay đăng nhập",
   "plugin_reddit_empty": "Thêm một subreddit để bắt đầu đọc",
   "plugin_reddit_error_blocked": "Reddit đã từ chối yêu cầu. Thường là do nó chặn mạng bạn đang dùng.",

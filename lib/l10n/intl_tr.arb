@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Subreddit ekle",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "reddit.com/prefs/apps adresinde bir “installed app” oluşturup client ID’sini yapıştırın. Reddit bunu hesap olmadan da ister. Başka hiçbir yere gönderilmez.",
+  "plugin_reddit_client_id_help": "İsteğe bağlı — eklenti onsuz da çalışır. reddit.com/prefs/apps adresinde bir \"installed app\" oluşturursanız, istemci kimliği daha yüksek istek sınırı sağlar ve oturum açmadan önce gerekir. Başka hiçbir yere bir şey gönderilmez.",
   "plugin_reddit_description": "Hesap ve giriş olmadan subreddit okuyun",
   "plugin_reddit_empty": "Okumaya başlamak için bir subreddit ekleyin",
   "plugin_reddit_error_blocked": "Reddit isteği reddetti. Bu genelde kullandığınız ağı engellediği anlamına gelir.",

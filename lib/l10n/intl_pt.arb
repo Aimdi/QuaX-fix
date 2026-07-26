@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Adicionar subreddit",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Crie uma «installed app» em reddit.com/prefs/apps e cole o client ID. O Reddit exige-o mesmo sem conta. Não é enviado para mais nenhum lado.",
+  "plugin_reddit_client_id_help": "Opcional — a extensão funciona sem. Se criar uma \"installed app\" em reddit.com/prefs/apps, o ID dá limites mais altos e é preciso antes de iniciar sessão. Nada é enviado para outro lado.",
   "plugin_reddit_description": "Leia subreddits sem conta nem sessão",
   "plugin_reddit_empty": "Adicione um subreddit para começar a ler",
   "plugin_reddit_error_blocked": "O Reddit recusou o pedido. Muitas vezes significa que está a bloquear a rede que usa.",

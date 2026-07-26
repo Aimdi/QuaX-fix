@@ -178,8 +178,20 @@ class RedditClient {
   static const _publicFallbackBase = 'https://old.reddit.com';
   static const _timeout = Duration(seconds: 20);
 
-  /// Reddit asks for a descriptive agent and throttles generic ones harder.
+  /// For [_apiBase] and the token endpoint. Reddit's API rules ask for exactly
+  /// this shape and throttle generic agents harder.
   static const userAgent = 'android:com.teskann.quax:1.0 (read-only, account-free)';
+
+  /// For [_publicBase] and [_publicFallbackBase], which are the *website*
+  /// rather than the API.
+  ///
+  /// That side sits behind an edge that turns away anything announcing itself
+  /// as a bot, and [userAgent] does exactly that — which is why the public
+  /// route could refuse a reader who had done nothing wrong and had no client
+  /// id to fall back on. A scraper has to look like a browser, which is what
+  /// Stealth sends too.
+  static const publicUserAgent =
+      'Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36';
 
   /// Reddit's documented value for "do not associate this with a device".
   static const deviceId = 'DO_NOT_TRACK_THIS_DEVICE';
@@ -278,11 +290,16 @@ class RedditClient {
     }
 
     if (response.statusCode != 200) {
-      // Both public hosts refused. A client id is the way past that, so say so
-      // rather than reporting a block the reader can do nothing about.
-      if (const [403, 429].contains(response.statusCode)) {
-        throw RedditException(RedditErrorKind.notConfigured,
-            'HTTP ${response.statusCode} from both public hosts without a client id');
+      // Both public hosts refused. This used to be reported as "add a client
+      // id", which was true once and is not now: Reddit turns away almost every
+      // new app registration, so that advice sent readers somewhere they cannot
+      // get to. Report what actually happened instead — a refusal usually
+      // passes, and signing in is the real way around a persistent one.
+      if (response.statusCode == 403) {
+        throw RedditException(RedditErrorKind.blocked, 'HTTP 403 from both public hosts');
+      }
+      if (response.statusCode == 429) {
+        throw RedditException(RedditErrorKind.rateLimited, 'HTTP 429 from both public hosts');
       }
       throw _errorFor(response, Uri.parse(_publicBase));
     }
@@ -293,12 +310,21 @@ class RedditClient {
   static String _publicJsonPath(String base, String name, RedditSort sort) =>
       '$base/r/$name/${redditSortPath(sort)}.json';
 
+  /// Whether [uri] is the website rather than the API, which decides how the
+  /// request has to introduce itself.
+  static bool isPublicHost(Uri uri) => uri.host != Uri.parse(_apiBase).host;
+
   /// One GET, with the token when there is one. A 401 drops the cached token so
   /// the next attempt re-authorises.
   Future<http.Response> _read(Uri uri, [String? token]) async {
+    final public = isPublicHost(uri);
+
     final response = await _send(() => httpClient.get(uri, headers: {
           if (token != null) 'Authorization': 'Bearer $token',
-          'User-Agent': userAgent,
+          'User-Agent': public ? publicUserAgent : userAgent,
+          // The website weighs these too; their absence is another bot tell.
+          if (public) 'Accept': 'application/json, text/plain, */*',
+          if (public) 'Accept-Language': 'en-US,en;q=0.9',
         }));
 
     if (response.statusCode == 401) {

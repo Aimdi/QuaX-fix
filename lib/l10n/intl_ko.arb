@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "서브레딧 추가",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "reddit.com/prefs/apps에서 “installed app”을 만들고 client ID를 붙여 넣으세요. 계정이 없어도 Reddit이 요구합니다. 다른 곳으로 전송되지 않습니다.",
+  "plugin_reddit_client_id_help": "선택 사항입니다. 없어도 플러그인은 동작합니다. reddit.com/prefs/apps에서 \"installed app\"을 만들면 클라이언트 ID가 더 높은 요청 한도를 주며, 로그인하려면 필요합니다. 다른 곳으로는 아무것도 전송되지 않습니다.",
   "plugin_reddit_description": "계정과 로그인 없이 서브레딧 읽기",
   "plugin_reddit_empty": "읽기를 시작하려면 서브레딧을 추가하세요",
   "plugin_reddit_error_blocked": "Reddit이 요청을 거부했습니다. 보통 사용 중인 네트워크를 차단한다는 뜻입니다.",

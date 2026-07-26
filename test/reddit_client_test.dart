@@ -177,15 +177,64 @@ void main() {
       expect(hosts, ['www.reddit.com']);
     });
 
-    test('both public hosts refusing points at the client id', () async {
+    test('both public hosts refusing is reported as a block, not as missing setup', () async {
+      // It used to say "add a client id". Reddit now turns away nearly every
+      // new app registration, so that sent readers somewhere they could not
+      // get to for a refusal that usually passes on its own.
       final client = RedditClient(httpClient: MockClient((_) async => _json({'error': 403}, 403)));
 
       await expectLater(
         client.fetchSubreddit('dartlang', clientId: ''),
         throwsA(isA<RedditException>()
-            .having((e) => e.kind, 'kind', RedditErrorKind.notConfigured)
+            .having((e) => e.kind, 'kind', RedditErrorKind.blocked)
             .having((e) => e.detail, 'detail', contains('both public hosts'))),
       );
+    });
+
+    test('both public hosts throttling is reported as rate limiting', () async {
+      final client = RedditClient(httpClient: MockClient((_) async => _json({'error': 429}, 429)));
+
+      await expectLater(
+        client.fetchSubreddit('dartlang', clientId: ''),
+        throwsA(isA<RedditException>().having((e) => e.kind, 'kind', RedditErrorKind.rateLimited)),
+      );
+    });
+
+    test('the public hosts are asked as a browser, not as an app', () async {
+      // The website sits behind an edge that turns away anything announcing
+      // itself as a bot, which the API-format agent does.
+      final agents = <String?>[];
+      final client = RedditClient(httpClient: MockClient((request) async {
+        agents.add(request.headers['User-Agent']);
+        return _json({
+          'kind': 'Listing',
+          'data': {'after': null, 'children': const []},
+        }, 200);
+      }));
+
+      await client.fetchSubreddit('dartlang', clientId: '');
+
+      expect(agents.single, RedditClient.publicUserAgent);
+      expect(agents.single, startsWith('Mozilla/'));
+      expect(agents.single, isNot(RedditClient.userAgent));
+    });
+
+    test('the API keeps the agent Reddit asks its clients for', () async {
+      final agents = <String?>[];
+      final client = RedditClient(httpClient: MockClient((request) async {
+        agents.add(request.headers['User-Agent']);
+        if (request.url.path.contains('access_token')) {
+          return _json({'access_token': 'tok', 'expires_in': 3600}, 200);
+        }
+        return _json({
+          'kind': 'Listing',
+          'data': {'after': null, 'children': const []},
+        }, 200);
+      }));
+
+      await client.fetchSubreddit('dartlang', clientId: 'my_id');
+
+      expect(agents, everyElement(RedditClient.userAgent));
     });
 
     test('a 404 is not retried: the subreddit is simply not there', () async {

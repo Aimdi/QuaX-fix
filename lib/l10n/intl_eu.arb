@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Gehitu subreddita",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Sortu «installed app» bat reddit.com/prefs/apps helbidean eta itsatsi bere client ID-a. Redditek konturik gabe ere eskatzen du. Ez da beste inora bidaltzen.",
+  "plugin_reddit_client_id_help": "Aukerakoa. Pluginak IDrik gabe funtzionatzen du. reddit.com/prefs/apps helbidean \"installed app\" bat sortzen baduzu, IDak muga altuagoak ematen ditu eta saioa hasi aurretik behar da. Ez da ezer beste inora bidaltzen.",
   "plugin_reddit_description": "Irakurri subredditak konturik eta saiorik gabe",
   "plugin_reddit_empty": "Gehitu subreddit bat irakurtzen hasteko",
   "plugin_reddit_error_blocked": "Redditek eskaera ukatu du. Askotan erabiltzen duzun sarea blokeatzen duela esan nahi du.",

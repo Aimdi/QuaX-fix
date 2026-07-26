@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Přidat subreddit",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Vytvořte na reddit.com/prefs/apps „installed app“ a vložte její client ID. Reddit ho vyžaduje i bez účtu. Nikam jinam se neposílá.",
+  "plugin_reddit_client_id_help": "Volitelné. Zásuvný modul funguje i bez něj. Vytvoříte-li \"installed app\" na reddit.com/prefs/apps, ID přinese vyšší limity a je potřeba před přihlášením. Nikam jinam se nic neposílá.",
   "plugin_reddit_description": "Čtěte subreddity bez účtu a přihlášení",
   "plugin_reddit_empty": "Přidejte subreddit a začněte číst",
   "plugin_reddit_error_blocked": "Reddit odmítl požadavek. Většinou to znamená, že blokuje síť, kterou používáte.",

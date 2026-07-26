@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Tambah subreddit",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Buat “installed app” di reddit.com/prefs/apps lalu tempel client ID-nya. Reddit tetap memintanya walau tanpa akun. Tidak dikirim ke tempat lain.",
+  "plugin_reddit_client_id_help": "Opsional — plugin ini bekerja tanpa itu. Jika Anda membuat \"installed app\" di reddit.com/prefs/apps, client ID-nya memberi batas lebih tinggi dan diperlukan sebelum masuk. Tidak ada yang dikirim ke tempat lain.",
   "plugin_reddit_description": "Baca subreddit tanpa akun dan tanpa masuk",
   "plugin_reddit_empty": "Tambahkan subreddit untuk mulai membaca",
   "plugin_reddit_error_blocked": "Reddit menolak permintaan. Ini biasanya berarti jaringan Anda diblokir.",

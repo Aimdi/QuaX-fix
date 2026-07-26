@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Добавить сабреддит",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Создайте «installed app» на reddit.com/prefs/apps и вставьте её client ID. Reddit требует его даже без аккаунта. Больше никуда он не отправляется.",
+  "plugin_reddit_client_id_help": "Необязательно — плагин работает и без него. Если создать \"installed app\" на reddit.com/prefs/apps, идентификатор даст более высокие лимиты и понадобится перед входом. Больше никуда ничего не отправляется.",
   "plugin_reddit_description": "Читайте сабреддиты без аккаунта и входа",
   "plugin_reddit_empty": "Добавьте сабреддит, чтобы начать читать",
   "plugin_reddit_error_blocked": "Reddit отклонил запрос. Обычно это значит, что он блокирует вашу сеть.",

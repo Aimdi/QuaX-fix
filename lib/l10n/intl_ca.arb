@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Afegeix un subreddit",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Crea una «installed app» a reddit.com/prefs/apps i enganxa el seu client ID. Reddit el demana també sense compte. No s’envia a cap altre lloc.",
+  "plugin_reddit_client_id_help": "Opcional. El connector funciona sense cap ID. Si crees una \"installed app\" a reddit.com/prefs/apps, l'ID et dona límits més alts i cal abans d'iniciar sessió. No s'envia res enlloc més.",
   "plugin_reddit_description": "Llegeix subreddits sense compte ni sessió",
   "plugin_reddit_empty": "Afegeix un subreddit per començar a llegir",
   "plugin_reddit_error_blocked": "Reddit ha refusat la petició. Sovint vol dir que bloqueja la xarxa que fas servir.",

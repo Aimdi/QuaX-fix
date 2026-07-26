@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "サブレディットを追加",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "reddit.com/prefs/apps で「installed app」を作成し、その client ID を貼り付けてください。アカウントがなくても Reddit はこれを要求します。ほかへ送信されることはありません。",
+  "plugin_reddit_client_id_help": "任意です。これがなくてもプラグインは動きます。reddit.com/prefs/apps で「installed app」を作ると、そのクライアント ID でレート制限が緩くなり、ログインの前提にもなります。ほかへは何も送りません。",
   "plugin_reddit_description": "アカウントもログインもなしでサブレディットを読む",
   "plugin_reddit_empty": "読み始めるにはサブレディットを追加してください",
   "plugin_reddit_error_blocked": "Reddit がリクエストを拒否しました。多くの場合、利用中のネットワークを遮断しています。",

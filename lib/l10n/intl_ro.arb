@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Adaugă subreddit",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Creează o „installed app” pe reddit.com/prefs/apps și lipește client ID-ul. Reddit îl cere chiar și fără cont. Nu este trimis nicăieri altundeva.",
+  "plugin_reddit_client_id_help": "Opțional — extensia funcționează și fără. Dacă creezi o \"installed app\" pe reddit.com/prefs/apps, ID-ul oferă limite mai mari și e necesar înainte de autentificare. Nimic nu se trimite în altă parte.",
   "plugin_reddit_description": "Citește subreddituri fără cont și fără autentificare",
   "plugin_reddit_empty": "Adaugă un subreddit pentru a începe",
   "plugin_reddit_error_blocked": "Reddit a refuzat cererea. De obicei asta înseamnă că blochează rețeaua folosită.",

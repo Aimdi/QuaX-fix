@@ -317,7 +317,7 @@
   "plugin_karakeep_title": "Karakeep",
   "plugin_reddit_add": "Lisa subreddit",
   "plugin_reddit_client_id": "Client ID",
-  "plugin_reddit_client_id_help": "Loo aadressil reddit.com/prefs/apps „installed app“ ja kleebi selle client ID. Reddit nõuab seda ka ilma kontota. Kuhugi mujale seda ei saadeta.",
+  "plugin_reddit_client_id_help": "Valikuline. Plugin töötab ka ilma. Kui lood reddit.com/prefs/apps lehel \"installed app\", annab ID kõrgemad piirid ja on vajalik enne sisselogimist. Mujale ei saadeta midagi.",
   "plugin_reddit_description": "Loe subredditeid ilma konto ja sisselogimiseta",
   "plugin_reddit_empty": "Lisa subreddit, et lugemist alustada",
   "plugin_reddit_error_blocked": "Reddit keeldus päringust. Sageli tähendab see, et ta blokeerib sinu võrgu.",
