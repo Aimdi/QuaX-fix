@@ -194,6 +194,21 @@ ThemeData xLookThemeData(XLookTokens tokens, PageTransitionsTheme? pageTransitio
         return IconThemeData(color: selected ? tokens.accent : tokens.secondary, size: 24);
       }),
     ),
+    // Material 3 draws snackbars on inverseSurface, which in a dark app means a
+    // light slab with dark text — the one surface that ignored the theme.
+    snackBarTheme: SnackBarThemeData(
+      // Lights Out makes card and background both pure black, so a snackbar
+      // drawn on either would be invisible against the screen behind it.
+      backgroundColor: tokens.card == tokens.background
+          ? Color.alphaBlend(tokens.onBackground.withValues(alpha: 0.10), tokens.background)
+          : tokens.card,
+      contentTextStyle: TextStyle(fontFamily: 'Inter', fontSize: 15, color: tokens.onBackground),
+      actionTextColor: tokens.accent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: tokens.border),
+      ),
+    ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         backgroundColor: tokens.accent,

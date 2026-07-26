@@ -725,9 +725,7 @@ Future<void> downloadTweetVideo(BuildContext context, String username, String? d
     fileName,
     prefs: PrefService.of(context),
     onStart: () {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(L10n.of(context).downloading_media),
-      ));
+      showWorkingSnackBar(context, L10n.of(context).downloading_media);
     },
     onSuccess: () {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

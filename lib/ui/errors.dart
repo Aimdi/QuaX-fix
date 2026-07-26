@@ -13,6 +13,31 @@ import 'package:quax/client/login_webview.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 
+/// Snackbar for work already under way, with a small spinner in place of an
+/// icon so a slow download does not look like a frozen one.
+///
+/// It stays put until the caller replaces it: the default few seconds would
+/// leave a long download with nothing on screen saying it was still going.
+///
+/// The spinner takes no colour, so it picks up the accent from whichever theme
+/// the snackbar is shown in.
+SnackBar workingSnackBar(String message) => SnackBar(
+      duration: const Duration(minutes: 2),
+      content: Row(
+        children: [
+          const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+          const SizedBox(width: 12),
+          Flexible(child: Text(message, style: const TextStyle(height: 1.5))),
+        ],
+      ),
+    );
+
+void showWorkingSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context)
+    ..clearSnackBars()
+    ..showSnackBar(workingSnackBar(message));
+}
+
 void showSnackBar(BuildContext context, {required String icon, required String message, bool clearBefore = true}) {
   if (clearBefore) {
     ScaffoldMessenger.of(context).clearSnackBars();

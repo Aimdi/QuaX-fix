@@ -74,6 +74,40 @@ void main() {
     });
   });
 
+  group('the snackbar', () {
+    test('never inverts to a light slab in a dark theme', () {
+      for (final background in [xLookBackgroundDim, xLookBackgroundLightsOut]) {
+        final theme = xLookThemeData(xLookTokensFor(background, xLookAccentBlue), null);
+        final snack = theme.snackBarTheme.backgroundColor!;
+
+        expect(snack.computeLuminance(), lessThan(0.5), reason: '$background snackbar must stay dark');
+        _expectReadable(snack, theme.snackBarTheme.contentTextStyle!.color!, reason: background);
+      }
+    });
+
+    test('is visible against the screen behind it, even on pure black', () {
+      final theme = xLookThemeData(xLookTokensFor(xLookBackgroundLightsOut, xLookAccentBlue), null);
+
+      // Lights Out makes card and background both pure black, so an unlifted
+      // snackbar would have no edge at all.
+      expect(theme.snackBarTheme.backgroundColor, isNot(theme.scaffoldBackgroundColor));
+    });
+
+    test('the light theme keeps its dark-on-light the right way round', () {
+      final theme = xLookThemeData(xLookTokensFor(xLookBackgroundLight, xLookAccentBlue), null);
+
+      _expectReadable(theme.snackBarTheme.backgroundColor!, theme.snackBarTheme.contentTextStyle!.color!,
+          reason: 'light');
+    });
+
+    test('the spinner and action text follow the chosen accent', () {
+      for (final accent in xLookAccents.keys) {
+        final theme = xLookThemeData(xLookTokensFor(xLookBackgroundLightsOut, accent), null);
+        expect(theme.snackBarTheme.actionTextColor, xLookAccents[accent], reason: accent);
+      }
+    });
+  });
+
   group('the resulting ThemeData', () {
     test('carries the tokens, so widgets reading XLookTokens still find them', () {
       final theme = xLookThemeData(xLookTokensFor(xLookBackgroundLightsOut, 'green'), null);
@@ -90,3 +124,15 @@ void main() {
     });
   });
 }
+
+/// The snackbar shown after saving an image came out as a light slab with dark
+/// text in a dark app: Material 3 draws snackbars on `inverseSurface`, and the
+/// X Look theme never overrode it.
+void _expectReadable(Color background, Color text, {required String reason}) {
+  final contrast = (background.computeLuminance() + 0.05) / (text.computeLuminance() + 0.05);
+  final ratio = contrast < 1 ? 1 / contrast : contrast;
+
+  // WCAG 2.2 SC 1.4.3 for normal text.
+  expect(ratio, greaterThanOrEqualTo(4.5), reason: reason);
+}
+
