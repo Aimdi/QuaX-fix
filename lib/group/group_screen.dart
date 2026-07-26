@@ -153,7 +153,13 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
 
         // Split the users into chunks, oldest first, to prevent thrashing of all groups when a new user is added
         final filteredUsers = group.id == '-1' ? group.subscriptions.where((elm) => elm.inFeed) : group.subscriptions;
-        final users = filteredUsers.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).toList();
+        final members = filteredUsers.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).toList();
+
+        // Substack publications are members of the group but they are not
+        // searched on X: they have their own source, and leaving them in a
+        // search query would put an empty clause in it.
+        final publications = members.whereType<SubstackSubscription>().toList(growable: false);
+        final users = members.where((e) => e is! SubstackSubscription).toList(growable: false);
 
         var chunks = partition(users, 16)
             .map((e) => SubscriptionGroupFeedChunk(e, includeReplies, includeRetweets))
@@ -162,6 +168,7 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
         return SubscriptionGroupFeed(
           group: group,
           chunks: chunks,
+          publications: publications,
           includeReplies: includeReplies,
           includeRetweets: includeRetweets,
           mediaOnly: widget.mediaOnly,

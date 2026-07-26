@@ -41,7 +41,12 @@ class SubscriptionsModel extends Store<List<Subscription>> {
 
       List<Subscription> searches = (await database.query(tableSearchSubscription)).map((e) => SearchSubscription.fromMap(e)).toList();
 
-      List<Subscription> lst = [...users, ...searches];
+      // Followed Substack publications are subscriptions too, so they appear in
+      // this list and can be picked as group members like anyone else.
+      List<Subscription> publications =
+          (await database.query(tableSubstackSubscription)).map((e) => SubstackSubscription.fromMap(e)).toList();
+
+      List<Subscription> lst = [...users, ...searches, ...publications];
       if (orderCustom.isEmpty) {
         return lst.sorted((a, b) {
           var one = orderByAscending ? a : b;

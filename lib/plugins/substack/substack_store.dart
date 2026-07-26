@@ -1,9 +1,17 @@
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:quax/constants.dart';
+import 'package:quax/database/entities.dart';
+import 'package:quax/database/repository.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:quax/plugins/substack/substack_client.dart';
 import 'package:quax/plugins/substack/substack_models.dart';
 
+/// The publications the reader follows, kept in the database.
+///
+/// They used to live in a preferences blob, which is why they could never join
+/// a subscription group. Anything still in that blob is imported on first load
+/// and the blob cleared, so nobody has to re-add what they already followed.
 class SubstackPublicationsStore extends Store<List<SubstackPublication>> {
   final BasePrefService prefs;
 
@@ -11,26 +19,76 @@ class SubstackPublicationsStore extends Store<List<SubstackPublication>> {
 
   Future<void> load() async {
     await execute(() async {
-      return SubstackPublication.listFromPrefs(prefs.get(optionPluginSubstackPublications));
+      await _importFromPrefs();
+      return _read();
     });
+  }
+
+  Future<List<SubstackPublication>> _read() async {
+    final database = await Repository.readOnly();
+    final rows = await database.query(tableSubstackSubscription, orderBy: 'name COLLATE NOCASE');
+
+    return rows.map(SubstackSubscription.fromMap).map(publicationOf).toList(growable: false);
+  }
+
+  Future<void> _importFromPrefs() async {
+    final raw = prefs.get<String>(optionPluginSubstackPublications) ?? '';
+    if (raw.isEmpty) {
+      return;
+    }
+
+    for (final publication in SubstackPublication.listFromPrefs(raw)) {
+      await _write(publication);
+    }
+    await prefs.set(optionPluginSubstackPublications, '');
+  }
+
+  Future<void> _write(SubstackPublication publication) async {
+    final database = await Repository.writable();
+    await database.insert(
+      tableSubstackSubscription,
+      subscriptionOf(publication).toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<void> add(SubstackPublication publication) async {
     await execute(() async {
-      final next = [...state.where((e) => e.id != publication.id), publication];
-      await prefs.set(optionPluginSubstackPublications, SubstackPublication.listToPrefs(next));
-      return next;
+      await _write(publication);
+      return _read();
     });
   }
 
   Future<void> remove(String id) async {
     await execute(() async {
-      final next = state.where((e) => e.id != id).toList();
-      await prefs.set(optionPluginSubstackPublications, SubstackPublication.listToPrefs(next));
-      return next;
+      final database = await Repository.writable();
+      await database.delete(tableSubstackSubscription, where: 'id = ?', whereArgs: [id]);
+      // A publication that is gone should not linger as a member of a group.
+      await database.delete(tableSubscriptionGroupMember, where: 'profile_id = ?', whereArgs: [id]);
+      return _read();
     });
   }
 }
+
+/// The database row for a publication, and back again.
+///
+/// The plugin thinks in publications and the subscription tables think in
+/// subscriptions; these keep the two from having to know each other's shape.
+SubstackSubscription subscriptionOf(SubstackPublication publication) => SubstackSubscription(
+      id: publication.id,
+      baseUrl: publication.baseUrl,
+      name: publication.name,
+      logoUrl: publication.logoUrl,
+      createdAt: DateTime.now(),
+      inFeed: true,
+    );
+
+SubstackPublication publicationOf(SubstackSubscription subscription) => SubstackPublication(
+      subdomain: subscription.id,
+      baseUrl: subscription.baseUrl,
+      name: subscription.name,
+      logoUrl: subscription.logoUrl,
+    );
 
 class SubstackReadStore extends Store<Set<String>> {
   final BasePrefService prefs;

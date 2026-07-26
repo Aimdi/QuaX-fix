@@ -19,6 +19,7 @@ const String tableSavedTweet = 'saved_tweet';
 const String tableSavedTweetFolder = 'saved_tweet_folder';
 const String tableLikedTweet = 'liked_tweet';
 const String tableSearchSubscription = 'search_subscription';
+const String tableSubstackSubscription = 'substack_subscription';
 const String tableSearchSubscriptionGroupMember = 'search_subscription_group_member';
 const String tableSubscription = 'subscription';
 const String tableSubscriptionGroup = 'subscription_group';
@@ -30,7 +31,7 @@ const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 39;
+const int databaseVersion = 40;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -470,6 +471,23 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
     // profile_id is the *second* column of the group-member composite key, so
     // looking a subscription up by it could not use that index.
     Migration(Operation(_createIndexes), reverse: Operation(_dropIndexes)),
+  ],
+  40: [
+    // Substack publications lived in a preferences blob, which is why they
+    // could not join a subscription group: group membership joins profile ids
+    // against subscription tables, and a blob has no rows to join. They are a
+    // third kind of subscription now, alongside users and saved searches.
+    //
+    // The blob is left where it is; it is imported on first read rather than
+    // migrated here, because the preferences are not reachable from a
+    // migration.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableSubstackSubscription ('
+      'id VARCHAR PRIMARY KEY, base_url VARCHAR NOT NULL, name VARCHAR NOT NULL, '
+      'logo_url VARCHAR, in_feed INTEGER NOT NULL DEFAULT 1, '
+      'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableSubstackSubscription',
+    ),
   ],
 });
 

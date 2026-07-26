@@ -1,12 +1,9 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/substack/substack_models.dart';
-import 'package:quax/plugins/substack/substack_reader_screen.dart';
-import 'package:quax/plugins/substack/substack_store.dart';
-import 'package:quax/ui/dates.dart';
+import 'package:quax/plugins/substack/substack_post_card.dart';
 import 'package:quax/ui/errors.dart';
 
 class SubstackArchiveScreen extends StatefulWidget {
@@ -80,77 +77,12 @@ class _SubstackArchiveScreenState extends State<SubstackArchiveScreen> {
                     ),
                   );
                 }
-                return SubstackPostTile(post: snapshot.posts[index]);
+                return SubstackPostCard(post: snapshot.posts[index], showSourceBadge: false);
               },
             ),
           );
         },
       ),
-    );
-  }
-}
-
-class SubstackPostTile extends StatelessWidget {
-  final SubstackPost post;
-
-  const SubstackPostTile({super.key, required this.post});
-
-  @override
-  Widget build(BuildContext context) {
-    final readStore = context.read<SubstackReadStore>();
-    return ScopedBuilder<SubstackReadStore, Set<String>>(
-      store: readStore,
-      onState: (context, readIds) {
-        final unread = !readIds.contains(post.id);
-        final theme = Theme.of(context);
-        final date = post.publishedAt;
-
-        return ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          leading: post.coverImage == null
-              ? CircleAvatar(
-                  backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                  child: Icon(Icons.article_outlined, color: theme.colorScheme.onSurfaceVariant),
-                )
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: ExtendedImage.network(post.coverImage!, width: 56, height: 56, fit: BoxFit.cover),
-                ),
-          title: Text(
-            post.title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontWeight: unread ? FontWeight.w700 : FontWeight.w400),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 4),
-              Text(
-                [
-                  post.publicationName,
-                  if (date != null) createRelativeDate(date),
-                  if (post.isPaywalled) L10n.of(context).plugin_substack_paywalled,
-                ].join(' · '),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodySmall,
-              ),
-              if (post.excerpt != null) ...[
-                const SizedBox(height: 4),
-                Text(post.excerpt!, maxLines: 2, overflow: TextOverflow.ellipsis),
-              ],
-            ],
-          ),
-          isThreeLine: post.excerpt != null,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => SubstackReaderScreen(post: post)),
-            );
-          },
-        );
-      },
     );
   }
 }

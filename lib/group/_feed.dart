@@ -14,7 +14,12 @@ import 'package:quax/group/feed_session_cache.dart';
 import 'package:quax/group/group_screen.dart';
 import 'package:quax/profile/media_grid/media_grid.dart';
 import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
+import 'package:logging/logging.dart';
+import 'package:quax/plugins/substack/substack_client.dart';
+import 'package:quax/plugins/substack/substack_post_card.dart';
+import 'package:quax/plugins/substack/substack_store.dart';
 import 'package:quax/profile/profile_feed_settings.dart';
+import 'package:quax/tweet/interleaved_items.dart';
 import 'package:quax/tweet/paginated_tweet_list.dart';
 import 'package:quax/tweet/tweet_context_scope.dart';
 import 'package:quax/utils/iterables.dart';
@@ -51,6 +56,11 @@ class SubscriptionGroupFeed extends StatefulWidget {
   // its subscriptions were loading). Refined to this feed's own chunks once read.
   final List<TweetChain>? initialPreview;
 
+  /// Substack publications in this group. They are members like any other, but
+  /// they have their own source and their own pagination, so they are fetched
+  /// beside the X search rather than inside it.
+  final List<SubstackSubscription> publications;
+
   const SubscriptionGroupFeed(
       {super.key,
       required this.group,
@@ -59,7 +69,8 @@ class SubscriptionGroupFeed extends StatefulWidget {
       required this.includeRetweets,
       required this.mediaOnly,
       this.cacheKey,
-      this.initialPreview});
+      this.initialPreview,
+      this.publications = const []});
 
   @override
   State<SubscriptionGroupFeed> createState() => _SubscriptionGroupFeedState();
@@ -88,7 +99,50 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   String? _lastRecordedChainId;
   final GlobalKey _caughtUpKey = GlobalKey();
 
+  static final _log = Logger('SubscriptionGroupFeed');
+
   bool get _usesCache => widget.cacheKey != null;
+
+  /// Substack posts loaded for this group's publications, newest first.
+  ///
+  /// Substack pages by offset and X by cursor, so the two cannot share one
+  /// paginator. These are fetched once per mount and slotted among the chains
+  /// by date; scrolling further into X's history does not need more of them,
+  /// because a newsletter publishes a handful of posts a week, not a page.
+  List<InterleavedItem> _substackItems = const [];
+
+  Future<void> _loadSubstackPosts() async {
+    if (widget.publications.isEmpty || widget.mediaOnly) {
+      return;
+    }
+
+    final client = context.read<SubstackClient>();
+    final items = <InterleavedItem>[];
+
+    for (final publication in widget.publications) {
+      try {
+        final posts = await client.fetchPosts(publicationOf(publication), limit: substackFeedPageSize);
+        for (final post in posts) {
+          final date = post.publishedAt;
+          if (date == null) {
+            continue;
+          }
+          items.add((
+            date: date,
+            build: (context) => SubstackPostCard(post: post, logoUrl: publication.logoUrl),
+          ));
+        }
+      } catch (e) {
+        // One unreachable publication must not empty the whole feed of the
+        // others, nor replace a working timeline with an error screen.
+        _log.warning('Unable to load Substack posts for ${publication.id}: $e');
+      }
+    }
+
+    if (mounted) {
+      setState(() => _substackItems = items);
+    }
+  }
 
   // Chronological feeds only: in popular order a "seen up to" boundary is
   // meaningless, and the media grid shares this loader but shows no divider.
@@ -118,6 +172,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     if (!_feedController.hasItems) {
       _loadPreview();
     }
+    _loadSubstackPosts();
   }
 
   Future<void> _loadPreview() async {
@@ -642,6 +697,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
             emptyMessage: L10n.of(context).could_not_find_any_tweets_from_the_last_7_days,
             isSeen: _tracksReadPosition && _lastSeen != null ? _isSeen : null,
             caughtUpDividerKey: _caughtUpKey,
+            interleaved: _substackItems,
           ),
         ),
       ),

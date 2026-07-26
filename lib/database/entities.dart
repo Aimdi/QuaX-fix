@@ -221,6 +221,58 @@ class UserSubscription extends Subscription {
   }
 }
 
+/// A followed Substack publication.
+///
+/// A third kind of subscription beside users and saved searches, so that a
+/// group can hold one: group membership joins profile ids against subscription
+/// tables, and while publications lived in a preferences blob there was nothing
+/// for a group to join to.
+class SubstackSubscription extends Subscription {
+  /// Where the publication lives, e.g. `https://example.substack.com`.
+  final String baseUrl;
+
+  SubstackSubscription({
+    required super.id,
+    required this.baseUrl,
+    required super.name,
+    required String? logoUrl,
+    required super.createdAt,
+    required super.inFeed,
+  }) : super(screenName: id, verified: false, profileImageUrlHttps: logoUrl);
+
+  String? get logoUrl => profileImageUrlHttps;
+
+  factory SubstackSubscription.fromMap(Map<String, Object?> map) {
+    return SubstackSubscription(
+      id: map['id'] as String,
+      baseUrl: map['base_url'] as String,
+      name: map['name'] as String,
+      logoUrl: map['logo_url'] as String?,
+      createdAt: map['created_at'] == null ? DateTime.now() : DateTime.parse(map['created_at'] as String),
+      inFeed: map['in_feed'] == null || map['in_feed'] == 1,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is SubstackSubscription && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'base_url': baseUrl,
+      'name': name,
+      'logo_url': logoUrl,
+      'in_feed': inFeed ? 1 : 0,
+      'created_at': sqliteDateFormat.format(createdAt),
+    };
+  }
+}
+
 /// One member shown in a group's avatar preview. [avatarUrl] is nullable: a
 /// member with no picture still appears, as a deterministic monogram keyed by
 /// [id].

@@ -70,12 +70,20 @@ class SubstackPost {
   final String publicationBaseUrl;
   final String publicationName;
 
+  /// What kind of post this is: `newsletter`, `podcast`, `video`, …
+  final String? type;
+
+  /// Set when the post is built around a video Substack hosts itself.
+  final bool hasVideoUpload;
+
   const SubstackPost({
     required this.id,
     required this.title,
     required this.slug,
     required this.publicationBaseUrl,
     required this.publicationName,
+    this.type,
+    this.hasVideoUpload = false,
     this.subtitle,
     this.description,
     this.postDate,
@@ -138,10 +146,19 @@ class SubstackPost {
       bodyHtml: includeBody ? json['body_html'] as String? : null,
       audience: json['audience'] as String?,
       authorName: author,
+      type: json['type'] as String?,
+      // Substack has moved this field around, so presence is what is checked
+      // rather than any particular shape of it.
+      hasVideoUpload: json['videoUpload'] != null || json['video_upload'] != null,
       publicationBaseUrl: publicationBaseUrl,
       publicationName: publicationName,
     );
   }
+
+  /// Whether the post leads with a video, which the tile marks and the reader
+  /// plays. A video post used to be indistinguishable from any other, so the
+  /// only clue that there was one was opening it.
+  bool get isVideo => hasVideoUpload || type?.toLowerCase() == 'video';
 
   SubstackPublication get publication => SubstackPublication(
         subdomain: subdomainOf(Uri.parse(publicationBaseUrl)),

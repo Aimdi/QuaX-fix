@@ -6,6 +6,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/substack/substack_add_screen.dart';
 import 'package:quax/plugins/substack/substack_archive_screen.dart';
 import 'package:quax/plugins/substack/substack_models.dart';
+import 'package:quax/plugins/substack/substack_post_card.dart';
 import 'package:quax/plugins/substack/substack_store.dart';
 import 'package:quax/ui/errors.dart';
 
@@ -158,14 +159,15 @@ class _SubstackScreenState extends State<SubstackScreen> {
                   controller: widget.scrollController,
                   padding: const EdgeInsets.only(bottom: 24),
                   itemCount: 1 + snapshot.posts.length + (snapshot.canLoadMore ? 1 : 0),
-                  separatorBuilder: (_, _) => const Divider(height: 1),
+                  // The cards carry their own hairline, as posts do everywhere else.
+                  separatorBuilder: (_, _) => const SizedBox.shrink(),
                   itemBuilder: (context, index) {
                     if (index == 0) {
                       return Column(mainAxisSize: MainAxisSize.min, children: children);
                     }
                     final postIndex = index - 1;
                     if (postIndex < snapshot.posts.length) {
-                      return SubstackPostTile(post: snapshot.posts[postIndex]);
+                      return SubstackPostCard(post: snapshot.posts[postIndex], showSourceBadge: false);
                     }
                     return Padding(
                       padding: const EdgeInsets.all(16),
