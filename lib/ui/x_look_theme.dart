@@ -130,6 +130,16 @@ TextTheme _xLookTextTheme(Brightness brightness, Color onBg, Color secondary) {
       );
 }
 
+/// The fill for a surface that floats above the page — a menu, a dialog, a
+/// sheet, a snackbar.
+///
+/// Lights Out makes card and background both pure black, so anything drawn on
+/// either would dissolve into the screen behind it. Lifting it a little keeps
+/// the edge readable without introducing Material's tonal wash.
+Color _floatingSurface(XLookTokens tokens) => tokens.card == tokens.background
+    ? Color.alphaBlend(tokens.onBackground.withValues(alpha: 0.10), tokens.background)
+    : tokens.card;
+
 ThemeData xLookThemeData(XLookTokens tokens, PageTransitionsTheme? pageTransitions) {
   final isLight = tokens.background.computeLuminance() > 0.5;
   final brightness = isLight ? Brightness.light : Brightness.dark;
@@ -199,14 +209,171 @@ ThemeData xLookThemeData(XLookTokens tokens, PageTransitionsTheme? pageTransitio
     snackBarTheme: SnackBarThemeData(
       // Lights Out makes card and background both pure black, so a snackbar
       // drawn on either would be invisible against the screen behind it.
-      backgroundColor: tokens.card == tokens.background
-          ? Color.alphaBlend(tokens.onBackground.withValues(alpha: 0.10), tokens.background)
-          : tokens.card,
+      backgroundColor: _floatingSurface(tokens),
       contentTextStyle: TextStyle(fontFamily: 'Inter', fontSize: 15, color: tokens.onBackground),
       actionTextColor: tokens.accent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(color: tokens.border),
+      ),
+    ),
+    // Everything below is a surface Material 3 would otherwise draw in its own
+    // language: a tonal elevation wash, tight radii and its own typography.
+    // Left unset they were tinted like X but never shaped like it, which is
+    // what made the menus and the settings panel read as a different app.
+    popupMenuTheme: PopupMenuThemeData(
+      color: _floatingSurface(tokens),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: tokens.border),
+      ),
+      textStyle: TextStyle(fontFamily: 'Inter', fontSize: 15, color: tokens.onBackground),
+    ),
+    menuTheme: MenuThemeData(
+      style: MenuStyle(
+        backgroundColor: WidgetStatePropertyAll(_floatingSurface(tokens)),
+        elevation: const WidgetStatePropertyAll(0),
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: tokens.border),
+        )),
+      ),
+    ),
+    dropdownMenuTheme: DropdownMenuThemeData(
+      textStyle: TextStyle(fontFamily: 'Inter', fontSize: 15, color: tokens.onBackground),
+      menuStyle: MenuStyle(
+        backgroundColor: WidgetStatePropertyAll(_floatingSurface(tokens)),
+        elevation: const WidgetStatePropertyAll(0),
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: tokens.border),
+        )),
+      ),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: _floatingSurface(tokens),
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: tokens.border),
+      ),
+      titleTextStyle: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: tokens.onBackground,
+      ),
+      contentTextStyle: TextStyle(fontFamily: 'Inter', fontSize: 15, color: tokens.onBackground),
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: _floatingSurface(tokens),
+      surfaceTintColor: Colors.transparent,
+      modalBackgroundColor: _floatingSurface(tokens),
+      elevation: 0,
+      modalElevation: 0,
+      showDragHandle: true,
+      dragHandleColor: tokens.border,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+    ),
+    tabBarTheme: TabBarThemeData(
+      dividerColor: tokens.divider,
+      indicatorColor: tokens.accent,
+      labelColor: tokens.onBackground,
+      unselectedLabelColor: tokens.secondary,
+      labelStyle: const TextStyle(fontFamily: 'Inter', fontSize: 15, fontWeight: FontWeight.w700),
+      unselectedLabelStyle: const TextStyle(fontFamily: 'Inter', fontSize: 15, fontWeight: FontWeight.w500),
+    ),
+    dividerTheme: DividerThemeData(color: tokens.divider, thickness: 1, space: 1),
+    listTileTheme: ListTileThemeData(
+      iconColor: tokens.secondary,
+      textColor: tokens.onBackground,
+      subtitleTextStyle: TextStyle(fontFamily: 'Inter', fontSize: 13, color: tokens.secondary),
+    ),
+    chipTheme: ChipThemeData(
+      backgroundColor: Colors.transparent,
+      selectedColor: tokens.accent,
+      side: BorderSide(color: tokens.border),
+      shape: const StadiumBorder(),
+      labelStyle: TextStyle(fontFamily: 'Inter', fontSize: 14, color: tokens.onBackground),
+      showCheckmark: false,
+    ),
+    tooltipTheme: TooltipThemeData(
+      decoration: BoxDecoration(
+        color: _floatingSurface(tokens),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: tokens.border),
+      ),
+      textStyle: TextStyle(fontFamily: 'Inter', fontSize: 13, color: tokens.onBackground),
+    ),
+    inputDecorationTheme: InputDecorationThemeData(
+      filled: true,
+      fillColor: tokens.card == tokens.background ? _floatingSurface(tokens) : tokens.card,
+      hintStyle: TextStyle(fontFamily: 'Inter', color: tokens.secondary),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(24),
+        borderSide: BorderSide(color: tokens.border),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(24),
+        borderSide: BorderSide(color: tokens.border),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(24),
+        borderSide: BorderSide(color: tokens.accent, width: 2),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: tokens.accent,
+        textStyle: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700),
+      ),
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: tokens.accent,
+      foregroundColor: Colors.white,
+      elevation: 2,
+    ),
+    progressIndicatorTheme: ProgressIndicatorThemeData(
+      color: tokens.accent,
+      linearTrackColor: tokens.divider,
+      circularTrackColor: Colors.transparent,
+    ),
+    switchTheme: SwitchThemeData(
+      thumbColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? Colors.white : tokens.secondary),
+      trackColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? tokens.accent : Colors.transparent),
+      trackOutlineColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? tokens.accent : tokens.border),
+    ),
+    checkboxTheme: CheckboxThemeData(
+      fillColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? tokens.accent : Colors.transparent),
+      checkColor: const WidgetStatePropertyAll(Colors.white),
+      side: BorderSide(color: tokens.border, width: 2),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+    ),
+    radioTheme: RadioThemeData(
+      fillColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? tokens.accent : tokens.border),
+    ),
+    sliderTheme: SliderThemeData(
+      activeTrackColor: tokens.accent,
+      inactiveTrackColor: tokens.divider,
+      thumbColor: tokens.accent,
+    ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.selected) ? tokens.accent : Colors.transparent),
+        foregroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.selected) ? Colors.white : tokens.onBackground),
+        side: WidgetStatePropertyAll(BorderSide(color: tokens.border)),
+        shape: const WidgetStatePropertyAll(StadiumBorder()),
       ),
     ),
     filledButtonTheme: FilledButtonThemeData(

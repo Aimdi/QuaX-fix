@@ -27,21 +27,28 @@ import 'package:quax/plugins/deepmarks/deepmarks_save.dart';
 /// Material's default text button reserves a 64dp minimum width and 16dp of
 /// horizontal padding. Seven of those never fit a phone's width, which is what
 /// pushed the view count off the end of the strip.
+/// Horizontal padding either side of a footer glyph.
+const double kFooterButtonPadding = 6;
+
+/// How tall a footer button is. The glyphs are small on purpose, but the thing
+/// you press should not be: 44dp is a finger, 36dp was a guess.
+const double kFooterButtonHeight = 44;
+
 const footerButtonStyle = ButtonStyle(
   overlayColor: WidgetStatePropertyAll(Colors.transparent),
   splashFactory: NoSplash.splashFactory,
-  padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 4)),
-  minimumSize: WidgetStatePropertyAll(Size(0, 36)),
+  padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: kFooterButtonPadding)),
+  minimumSize: WidgetStatePropertyAll(Size(0, kFooterButtonHeight)),
   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
   visualDensity: VisualDensity.compact,
 );
 
 /// Fixed cost of one count action: padding, the 20dp glyph and the gap Material
 /// puts between an icon and its label.
-const double kFooterCountItemBase = 4 + 20 + 8 + 4;
+const double kFooterCountItemBase = kFooterButtonPadding + 20 + 8 + kFooterButtonPadding;
 
-/// One icon-only action (bookmark, share, translate).
-const double kFooterIconItem = 36;
+/// One icon-only action (bookmark, share).
+const double kFooterIconItem = kFooterButtonPadding + 20 + kFooterButtonPadding + 8;
 
 /// Gap between the counts group and the icon group.
 const double kFooterGroupGap = 8;
@@ -92,6 +99,56 @@ FooterFit resolveFooterFit({
 }
 
 enum TranslationStatus { original, translating, translationFailed, translated }
+
+/// The translate control, which lives at the post's top-right rather than in
+/// the footer strip.
+///
+/// It is not an engagement action, and it was the seventh thing competing for a
+/// phone's width down there — the row it left has room for the counts again.
+class TweetTranslateButton extends StatelessWidget {
+  final TranslationStatus status;
+  final VoidCallback onTranslate;
+  final VoidCallback onShowOriginal;
+  final VoidCallback? onLongPress;
+
+  const TweetTranslateButton({
+    super.key,
+    required this.status,
+    required this.onTranslate,
+    required this.onShowOriginal,
+    this.onLongPress,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (status == TranslationStatus.translating) {
+      return const Padding(
+        padding: EdgeInsets.all(8),
+        child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    }
+
+    final theme = Theme.of(context);
+    final (color, tooltip, onPressed) = switch (status) {
+      TranslationStatus.translated => (
+          theme.colorScheme.primary,
+          L10n.of(context).action_show_original_post,
+          onShowOriginal
+        ),
+      TranslationStatus.translationFailed => (
+          Colors.red.harmonizeWith(theme.colorScheme.primary),
+          L10n.of(context).action_translate_post,
+          onTranslate
+        ),
+      _ => (tweetFooterButtonsColorOf(context), L10n.of(context).action_translate_post, onTranslate),
+    };
+
+    return GestureDetector(
+      onLongPress: onLongPress ?? onTranslate,
+      child: tweetFooterIconButton(context, Icons.translate, color, null, onPressed, tooltip),
+    );
+  }
+}
 
 // Memoized footer action tint (HSL round-trip is too expensive per button per frame).
 Color? _buttonsColorCache;
@@ -202,11 +259,7 @@ class TweetFooterBar extends StatelessWidget {
   final Locale locale;
   final NumberFormat numberFormat;
   final bool isArticle;
-  final TranslationStatus translationStatus;
   final VoidCallback onOpenTweet;
-  final Future<void> Function() onTranslate;
-  final VoidCallback onShowOriginal;
-  final VoidCallback? onTranslateLongPress;
   final Future<Uint8List?> Function() onCaptureImage;
   final VoidCallback onChanged;
 
@@ -217,40 +270,11 @@ class TweetFooterBar extends StatelessWidget {
     required this.shareBaseUrl,
     required this.locale,
     required this.numberFormat,
-    required this.translationStatus,
     required this.onOpenTweet,
-    required this.onTranslate,
-    required this.onShowOriginal,
     required this.onCaptureImage,
     required this.onChanged,
-    this.onTranslateLongPress,
     this.isArticle = false,
   });
-
-  Widget _translateButton(BuildContext context) {
-    final tint = tweetFooterButtonsColorOf(context);
-    switch (translationStatus) {
-      case TranslationStatus.original:
-        return tweetFooterIconButton(
-            context, Icons.translate, tint, null, () async => onTranslate(), L10n.of(context).action_translate_post);
-      case TranslationStatus.translating:
-        return const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator()),
-        );
-      case TranslationStatus.translationFailed:
-        return tweetFooterIconButton(
-            context,
-            Icons.translate,
-            Colors.red.harmonizeWith(Theme.of(context).colorScheme.primary),
-            null,
-            () async => onTranslate(),
-            L10n.of(context).action_translate_post);
-      case TranslationStatus.translated:
-        return tweetFooterIconButton(context, Icons.translate, Theme.of(context).colorScheme.primary, null,
-            onShowOriginal, L10n.of(context).action_show_original_post);
-    }
-  }
 
   void _showShareSheet(BuildContext context) {
     ListTile createSheetButton(String title, IconData icon, VoidCallback onTap) => ListTile(
@@ -357,7 +381,9 @@ class TweetFooterBar extends StatelessWidget {
             measure.of(likeLabel),
           ],
           viewsLabelWidth: viewsLabel == null ? null : measure.of(viewsLabel),
-          iconButtons: isArticle ? 2 : 3,
+          // Bookmark and share. Translate used to make a third here, and now
+          // sits in the post header instead.
+          iconButtons: 2,
         );
 
         String label(String? value) => fit.showCounts ? (value ?? '') : '';
@@ -432,11 +458,6 @@ class TweetFooterBar extends StatelessWidget {
           }),
           tweetFooterIconButton(
               context, Icons.share, tint, null, () => _showShareSheet(context), L10n.of(context).action_share_post),
-          if (!isArticle)
-            GestureDetector(
-              onLongPress: onTranslateLongPress ?? () => onTranslate(),
-              child: _translateButton(context),
-            ),
         ];
 
         // Last resort for extreme text scales: shrink the whole strip rather

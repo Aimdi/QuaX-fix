@@ -351,10 +351,18 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       retweetSidebar = Container(color: theme.secondaryHeaderColor, width: 4);
     }
 
+    // "Replying to @someone" belongs under the header and above the text, where
+    // X puts it: above the header it announced a reply before saying whose post
+    // it was, so a conversation read backwards. A quoted post never shows it —
+    // the quote already carries one conversation, and a second one inside the
+    // card made it impossible to tell which post was being read.
     Widget replyToTile = Container();
     var replyTo = tweet.inReplyToScreenName;
-    if (replyTo != null) {
-      replyToTile = _TweetTileLeading(
+    // Mid-thread the post being replied to is already on screen just above,
+    // so naming it again is noise.
+    if (replyTo != null && !isQuotedTweet && !widget.threadConnectTop) {
+      replyToTile = _ReplyingToLine(
+        screenName: replyTo,
         onTap: () {
           var replyToId = tweet.inReplyToStatusIdStr;
           if (replyToId == null) {
@@ -368,11 +376,6 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                 arguments: StatusScreenArguments(id: replyToId, username: replyTo));
           }
         },
-        icon: Icons.reply,
-        children: [
-          TextSpan(text: '${L10n.of(context).replying_to} ', style: theme.textTheme.bodySmall),
-          TextSpan(text: '@$replyTo', style: theme.textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
-        ],
       );
     }
 
@@ -499,6 +502,24 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
     final locale = _effectiveLocale();
 
+    // The post's top-right, next to the timestamp — not in the footer strip,
+    // which is for engagement and was one control too wide on a phone.
+    final translateButton = tweet.article != null
+        ? null
+        : TweetTranslateButton(
+            status: _translationStatus,
+            onTranslate: () => onClickTranslate(context, locale),
+            onShowOriginal: onClickShowOriginal,
+            onLongPress: () {
+              final broadcast = _translationBroadcast;
+              if (broadcast != null) {
+                broadcast.requestAll();
+              } else {
+                onClickTranslate(context, locale);
+              }
+            },
+          );
+
     final footerBar = TweetFooterBar(
       tweet: tweet,
       tweetText: tweetText,
@@ -506,18 +527,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       locale: locale,
       numberFormat: _numberFormat,
       isArticle: tweet.article != null,
-      translationStatus: _translationStatus,
       onOpenTweet: () => onClickOpenTweet(tweet),
-      onTranslate: () => onClickTranslate(context, locale),
-      onShowOriginal: onClickShowOriginal,
-      onTranslateLongPress: () {
-        final broadcast = _translationBroadcast;
-        if (broadcast != null) {
-          broadcast.requestAll();
-        } else {
-          onClickTranslate(context, locale);
-        }
-      },
       onCaptureImage: captureWidget,
       onChanged: () {
         if (mounted) setState(() {});
@@ -643,6 +653,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       subtitle: subtitleRow,
       // Profile picture
       leading: avatar,
+      trailing: isQuotedTweet ? null : translateButton,
     );
 
     final pinnedBadge = isPinned
@@ -657,6 +668,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         : null;
 
     final bodyChildren = <Widget>[
+      replyToTile,
       if (tweet.article == null) content,
       media,
       quotedTweet,
@@ -679,24 +691,30 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   retweetBanner,
-                  if (!widget.threadConnectTop) replyToTile,
                   ?pinnedBadge,
                   ?threadBadge,
                   _buildThreadBody(
                       theme,
                       avatar,
-                      InkWell(
-                        onTap: onTapProfile,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              DefaultTextStyle.merge(style: theme.textTheme.bodyLarge, child: titleRow),
-                              DefaultTextStyle.merge(style: theme.textTheme.bodyMedium, child: subtitleRow),
-                            ],
+                      Row(
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: onTapProfile,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 12),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    DefaultTextStyle.merge(style: theme.textTheme.bodyLarge, child: titleRow),
+                                    DefaultTextStyle.merge(style: theme.textTheme.bodyMedium, child: subtitleRow),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                          if (translateButton != null) Padding(padding: const EdgeInsets.only(right: 8), child: translateButton),
+                        ],
                       ),
                       bodyChildren,
                       indentBody: widget.threadConnectBottom,
@@ -718,7 +736,6 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         retweetBanner,
-                        replyToTile,
                         ?pinnedBadge,
                         ?threadBadge,
                         headerTile,
@@ -825,6 +842,38 @@ class TweetHasNoContentException {
   @override
   String toString() {
     return 'The tweet has no content {id: $id}';
+  }
+}
+
+/// "Replying to @someone", sitting between the header and the text.
+///
+/// No icon and no indent of its own: it lines up with the post's text so it
+/// reads as part of the post rather than as a banner above it, which is what
+/// made a reply hard to tell apart from the post it answered.
+class _ReplyingToLine extends StatelessWidget {
+  final String screenName;
+  final VoidCallback onTap;
+
+  const _ReplyingToLine({required this.screenName, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final base = theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 4),
+      child: GestureDetector(
+        onTap: onTap,
+        child: RichText(
+          text: TextSpan(style: base, children: [
+            TextSpan(text: '${L10n.of(context).replying_to} '),
+            TextSpan(text: '@$screenName', style: base.copyWith(color: theme.colorScheme.primary)),
+          ]),
+        ),
+      ),
+    );
   }
 }
 
