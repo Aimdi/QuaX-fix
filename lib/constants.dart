@@ -80,6 +80,13 @@ const optionDisableWarningsForUnrelatedPostsInFeed = 'disable_warnings_for_unrel
 
 const alwaysShowFullTweetContents = 'always_show_full_tweet_contents';
 
+// An OpenAI-compatible or Anthropic endpoint the reader supplies themselves.
+// Stored on the device like every other credential here; QuaX calls it only
+// when a feature asks it to.
+const optionAiBaseUrl = 'ai.base_url';
+const optionAiApiKey = 'ai.api_key';
+const optionAiModel = 'ai.model';
+
 const optionSubscriptionGroupsOrderByAscending = 'subscription_groups.order_by.ascending';
 const optionSubscriptionGroupsOrderByField = 'subscription_groups.order_by.field';
 // How many tile columns the groups board shows (2 = bold, 3 = compact).

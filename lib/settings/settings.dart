@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/settings/_about.dart';
+import 'package:quax/settings/_ai.dart';
 import 'package:quax/settings/_accessibility.dart';
 import 'package:quax/settings/_account.dart';
 import 'package:quax/settings/_data.dart';
@@ -162,6 +163,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const SettingsPluginStoreFragment()),
+            ),
+          ),
+          ListTile(
+            title: Text(L10n.of(context).ai_provider),
+            leading: Icon(Icons.auto_awesome_outlined),
+            subtitle: Text(
+              L10n.of(context).ai_provider_description,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsAiFragment()),
             ),
           ),
           ListTile(
