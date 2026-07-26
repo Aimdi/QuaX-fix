@@ -459,7 +459,7 @@
   "threaded_replies_description": "在打开的帖子下以缩进树状显示回复，每条回复嵌套在其所回复的内容下方。",
   "thumbnail": "缩略图",
   "ticker_chart": "股票图表",
-  "ticker_chart_description": "打开股票代码时显示。图表来自 TradingView，是 QuaX 唯一从 X 之外获取的内容；关闭后仍保留相关帖子。",
+  "ticker_chart_description": "打开股票代码时显示。价格由 QuaX 自行从无需账号的公开服务获取；关闭后不会发出任何请求，帖子照常显示。",
   "timed_out": "超时",
   "to_import_a_list_enter_its_url_or_id_below": "要将 X 列表导入为订阅分组，请在下方输入列表链接或其 ID",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "要从现有的 Twitter 账号导入订阅，请在下方输入您的用户名。",

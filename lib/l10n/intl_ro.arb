@@ -459,7 +459,7 @@
   "threaded_replies_description": "Afișează răspunsurile la o postare deschisă ca un arbore indentat, fiecare răspuns imbricat sub cel la care răspunde.",
   "thumbnail": "Miniatură",
   "ticker_chart": "Grafic bursier",
-  "ticker_chart_description": "Apare când deschizi un ticker. Se încarcă de la TradingView, singurul lucru pe care QuaX îl ia din afara X; dezactivat, rămân postările.",
+  "ticker_chart_description": "Apare când deschizi un ticker. QuaX ia singur cotațiile de la un serviciu public fără cont; dezactivat nu face nicio cerere și rămân postările.",
   "timed_out": "Timp de așteptare depășit",
   "to_import_a_list_enter_its_url_or_id_below": "Pentru a importa o listă X ca grup de abonamente, introdu mai jos linkul listei sau ID-ul ei",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Pentru a importa abonamente dintr-un cont X existent, introduceți numele de utilizator mai jos.",

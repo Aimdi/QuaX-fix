@@ -459,7 +459,7 @@
   "threaded_replies_description": "Mostra les respostes d'una publicació oberta com un arbre amb sagnat, amb cada resposta imbricada sota la que respon.",
   "thumbnail": "Miniatura",
   "ticker_chart": "Gràfic borsari",
-  "ticker_chart_description": "Es mostra en obrir un tíquer. Es carrega de TradingView, l'única cosa que QuaX demana fora de X; si el desactives, les publicacions es mantenen.",
+  "ticker_chart_description": "Es mostra en obrir un tíquer. QuaX obté els preus d'un servei públic sense compte; desactivat no fa cap petició i les publicacions es mantenen.",
   "timed_out": "Temps excedit",
   "to_import_a_list_enter_its_url_or_id_below": "Per importar una llista d'X com a grup de subscripcions, introdueix a sota l'enllaç de la llista o el seu ID",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Per importar subscripcions des d'un compte de Twitter existent, introduïu el vostre nom d'usuari a continuació.",

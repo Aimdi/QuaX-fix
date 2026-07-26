@@ -459,7 +459,7 @@
   "threaded_replies_description": "Kuva avatud postituse vastused taandega puuna, kus iga vastus on pesastatud selle alla, millele see vastab.",
   "thumbnail": "Pisipildid",
   "ticker_chart": "Aktsia graafik",
-  "ticker_chart_description": "Kuvatakse tickeri avamisel. Laaditakse TradingView'st, ainus asi, mille QuaX väljastpoolt X-i toob; välja lülitatuna jäävad postitused alles.",
+  "ticker_chart_description": "Kuvatakse tickeri avamisel. QuaX toob hinnad ise avalikust teenusest, mis kontot ei nõua; välja lülitatuna päringut ei tehta ja postitused jäävad alles.",
   "timed_out": "Päring aegus",
   "to_import_a_list_enter_its_url_or_id_below": "X-i loendi importimiseks tellimuste rühmana sisesta allpool loendi link või selle ID",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Olemasoleva Twitteri konto tellimuste impordiks palun sisesta alljärgnevalt oma kasutajanimi.",

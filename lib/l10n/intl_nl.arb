@@ -459,7 +459,7 @@
   "threaded_replies_description": "Toon reacties onder een geopend bericht als een ingesprongen boom, met elke reactie genest onder de reactie waarop deze antwoordt.",
   "thumbnail": "Miniatuur",
   "ticker_chart": "Aandelengrafiek",
-  "ticker_chart_description": "Verschijnt wanneer je een ticker opent. Hij komt van TradingView, het enige dat QuaX buiten X ophaalt; uitgeschakeld blijven de berichten over.",
+  "ticker_chart_description": "Verschijnt wanneer je een ticker opent. QuaX haalt de koersen zelf op bij een openbare dienst zonder account; uitgeschakeld gaat er niets uit en blijven de berichten over.",
   "timed_out": "Wachttijd versterken",
   "to_import_a_list_enter_its_url_or_id_below": "Voer hieronder de link of het ID van de X-lijst in om deze als abonnementengroep te importeren",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Om abonnementen te importeren van een bestaand X-account, voer je gebruikersnaam in.",

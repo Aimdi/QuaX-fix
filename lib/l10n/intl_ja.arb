@@ -459,7 +459,7 @@
   "threaded_replies_description": "開いた投稿の返信を、返信先の下に入れ子にしたインデント付きのツリーで表示します。",
   "thumbnail": "サムネイル",
   "ticker_chart": "株価チャート",
-  "ticker_chart_description": "ティッカーを開いたときに表示されます。TradingView から読み込まれ、QuaX が X の外に取りにいく唯一のものです。オフにしても投稿は残ります。",
+  "ticker_chart_description": "ティッカーを開いたときに表示されます。価格はアカウント不要の公開サービスから QuaX 自身が取得します。オフにすると通信は発生せず、投稿だけが残ります。",
   "timed_out": "タイムアウト",
   "to_import_a_list_enter_its_url_or_id_below": "Xのリストを購読グループとしてインポートするには、リストのリンクまたはIDを以下に入力してください",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Twitterアカウントから登録アカウントをインポートするには、以下にユーザー名を入力してください。",

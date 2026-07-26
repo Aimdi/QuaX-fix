@@ -459,7 +459,7 @@
   "threaded_replies_description": "Açılan bir gönderinin yanıtlarını, her yanıt cevapladığı yanıtın altına yerleşecek şekilde girintili bir ağaç olarak göster.",
   "thumbnail": "Küçük resim",
   "ticker_chart": "Hisse grafiği",
-  "ticker_chart_description": "Bir hisse kodu açtığınızda görünür. TradingView'dan yüklenir; QuaX'in X dışından aldığı tek şeydir. Kapalıyken gönderiler kalır.",
+  "ticker_chart_description": "Bir hisse kodu açtığınızda görünür. QuaX fiyatları hesap gerektirmeyen açık bir servisten kendisi alır; kapalıyken hiçbir istek gönderilmez, gönderiler kalır.",
   "timed_out": "Zaman aşımına uğradı",
   "to_import_a_list_enter_its_url_or_id_below": "Bir X listesini abonelik grubu olarak içe aktarmak için aşağıya listenin bağlantısını veya kimliğini girin",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Mevcut bir Twitter hesabından abonelikleri içe aktarmak için aşağıya kullanıcı adınızı girin.",

@@ -459,7 +459,7 @@
   "threaded_replies_description": "Erakutsi irekitako argitalpen baten erantzunak koska duen zuhaitz gisa, erantzun bakoitza erantzuten dionaren azpian kateatuta.",
   "thumbnail": "Miniatura",
   "ticker_chart": "Burtsako grafikoa",
-  "ticker_chart_description": "Ticker bat irekitzean agertzen da. TradingView-tik kargatzen da, QuaX-ek X-etik kanpo eskatzen duen gauza bakarra; itzalita argitalpenak gelditzen dira.",
+  "ticker_chart_description": "Ticker bat irekitzean agertzen da. QuaX-ek berak hartzen ditu prezioak konturik behar ez duen zerbitzu publiko batetik; itzalita ez du eskaerarik egiten eta argitalpenak gelditzen dira.",
   "timed_out": "Denbora agortuta",
   "to_import_a_list_enter_its_url_or_id_below": "X zerrenda bat harpidetza talde gisa inportatzeko, sartu behean zerrendaren esteka edo IDa",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Lehendik dagoen Twitter kontu batetik harpidetzak inportatzeko, idatzi zure erabiltzaile-izena behean.",

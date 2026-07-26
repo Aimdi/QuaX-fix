@@ -459,7 +459,7 @@
   "threaded_replies_description": "Vis svar under et åpnet innlegg som et innrykket tre, der hvert svar ligger nøstet under det det svarer på.",
   "thumbnail": "Miniatyrbilde",
   "ticker_chart": "Aksjediagram",
-  "ticker_chart_description": "Vises når du åpner en ticker. Den lastes fra TradingView, det eneste QuaX henter utenfor X; slått av blir innleggene igjen.",
+  "ticker_chart_description": "Vises når du åpner en ticker. QuaX henter kursene selv fra en offentlig tjeneste uten konto; slått av sendes ingen forespørsel og innleggene blir igjen.",
   "timed_out": "Tidsavbrudd",
   "to_import_a_list_enter_its_url_or_id_below": "For å importere en X-liste som abonnementsgruppe, skriv inn lenken til listen eller dens ID nedenfor",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Skriv inn brukernavnet ditt nedenfor hvis du vil importere abonnementer fra en eksisterende Twitter-konto.",

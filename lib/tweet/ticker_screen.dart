@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
 import 'package:quax/client/client.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/tweet/paginated_tweet_list.dart';
+import 'package:quax/tweet/ticker/ticker_chart.dart';
+import 'package:quax/tweet/ticker/ticker_client.dart';
+import 'package:quax/tweet/ticker/ticker_quote.dart';
 import 'package:quax/tweet/tweet_context_scope.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class TickerScreenArguments {
   /// The ticker without its `$`, e.g. `AAPL`.
@@ -17,29 +20,12 @@ class TickerScreenArguments {
   String toString() => 'TickerScreenArguments{symbol: $symbol}';
 }
 
-/// The chart TradingView serves for a symbol.
+/// A ticker: what the symbol has done lately, and the posts talking about it.
 ///
-/// Kept as a plain function so the URL is written in one place and can be
-/// checked without a WebView.
-Uri tradingViewChartUrl(String symbol, {required bool dark}) {
-  return Uri.https('s.tradingview.com', '/widgetembed/', {
-    'symbol': symbol.toUpperCase(),
-    'interval': 'D',
-    'theme': dark ? 'dark' : 'light',
-    'style': '1',
-    'hide_side_toolbar': '1',
-    'hide_legend': '0',
-    'withdateranges': '1',
-    'saveimage': '0',
-  });
-}
-
-/// A ticker: the chart, and the posts talking about it.
-///
-/// The chart is the one thing in QuaX that loads from somewhere other than X.
-/// It is a TradingView embed, so opening this screen tells TradingView which
-/// symbol was asked for — which is why it has a switch of its own, and why the
-/// posts below it work perfectly well with the chart turned off.
+/// The chart is drawn from price data QuaX fetches itself rather than embedded
+/// from anyone — no third-party page, no scripts, nothing that could carry a
+/// tracker into the app. The price service is still an outside request though,
+/// so it has a switch, and with it off the posts work exactly as before.
 class TickerScreen extends StatelessWidget {
   const TickerScreen({super.key});
 
@@ -61,7 +47,11 @@ class _TickerScreen extends StatefulWidget {
 
 class _TickerScreenState extends State<_TickerScreen> {
   final TweetFeedController _feed = TweetFeedController();
-  WebViewController? _chart;
+  final TickerClient _client = TickerClient();
+
+  TickerQuote? _quote;
+  bool _quoteFailed = false;
+  bool _loadingQuote = false;
 
   @override
   void dispose() {
@@ -69,35 +59,105 @@ class _TickerScreenState extends State<_TickerScreen> {
     super.dispose();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_quote == null && !_quoteFailed && !_loadingQuote && _chartEnabled) {
+      _loadQuote();
+    }
+  }
+
+  bool get _chartEnabled => PrefService.of(context).get<bool>(optionTickerChart) == true;
+
+  Future<void> _loadQuote() async {
+    setState(() => _loadingQuote = true);
+    try {
+      final quote = await _client.fetchQuote(widget.symbol);
+      if (mounted) {
+        setState(() {
+          _quote = quote;
+          _loadingQuote = false;
+        });
+      }
+    } on TickerException {
+      // A missing price is not worth an error screen: the posts below are the
+      // reason the ticker was tapped, and they are unaffected.
+      if (mounted) {
+        setState(() {
+          _quoteFailed = true;
+          _loadingQuote = false;
+        });
+      }
+    }
+  }
+
   Future<TweetPageResult> _loadPage(String? cursor) async {
     final result = await Twitter.searchTweets('\$${widget.symbol}', true, cursor: cursor);
     return (chains: result.chains, nextCursor: result.cursorBottom);
   }
 
-  /// Built on first paint rather than in initState: the chart follows the
-  /// theme, which is not readable until the widget has a context.
-  WebViewController _chartController(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
+  Widget _quoteHeader(BuildContext context, TickerQuote quote) {
+    final theme = Theme.of(context);
+    final price = quote.price ?? quote.points.last.close;
+    final percent = quote.changePercent;
+    final up = quote.isUp ?? true;
+    final money = NumberFormat.decimalPatternDigits(decimalDigits: 2);
 
-    return _chart ??= WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Theme.of(context).scaffoldBackgroundColor)
-      ..loadRequest(tradingViewChartUrl(widget.symbol, dark: dark));
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          Text(money.format(price), style: theme.textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w700)),
+          if (quote.currency != null) ...[
+            const SizedBox(width: 4),
+            Text(quote.currency!, style: theme.textTheme.bodySmall),
+          ],
+          const Spacer(),
+          if (percent != null)
+            Text(
+              '${up ? '+' : ''}${percent.toStringAsFixed(2)}%',
+              style: theme.textTheme.titleMedium!.copyWith(
+                fontWeight: FontWeight.w700,
+                color: up ? const Color(0xFF00BA7C) : const Color(0xFFF4212E),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget? _chartSection(BuildContext context) {
+    if (!_chartEnabled || _quoteFailed) {
+      return null;
+    }
+
+    final quote = _quote;
+    if (quote == null) {
+      return const SizedBox(height: 200, child: Center(child: CircularProgressIndicator()));
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _quoteHeader(context, quote),
+        const SizedBox(height: 8),
+        TickerChart(quote: quote),
+        const SizedBox(height: 8),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final showChart = PrefService.of(context).get<bool>(optionTickerChart) == true;
+    final chart = _chartSection(context);
 
     return Scaffold(
       appBar: AppBar(title: Text('\$${widget.symbol.toUpperCase()}')),
       body: Column(
         children: [
-          if (showChart)
-            SizedBox(
-              height: 320,
-              child: WebViewWidget(controller: _chartController(context)),
-            ),
+          if (chart != null) chart,
           Expanded(
             child: TweetContextScope(
               child: PaginatedTweetList(

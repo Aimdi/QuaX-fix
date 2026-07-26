@@ -459,7 +459,7 @@
   "threaded_replies_description": "Pokazuj odpowiedzi pod otwartym wpisem jako wcięte drzewo, z każdą odpowiedzią zagnieżdżoną pod tą, na którą odpowiada.",
   "thumbnail": "Miniatury",
   "ticker_chart": "Wykres giełdowy",
-  "ticker_chart_description": "Pokazywany po otwarciu tickera. Ładuje się z TradingView, jedynej rzeczy, po którą QuaX sięga poza X; po wyłączeniu zostają same wpisy.",
+  "ticker_chart_description": "Pokazywany po otwarciu tickera. QuaX sam pobiera notowania z publicznej usługi bez konta; po wyłączeniu nie wysyła żadnego zapytania, a wpisy zostają.",
   "timed_out": "Przekroczono limit czasu",
   "to_import_a_list_enter_its_url_or_id_below": "Aby zaimportować listę z X jako grupę subskrypcji, wpisz poniżej link do listy lub jej ID",
   "to_import_subscriptions_from_an_existing_twitter_account_enter_your_username_below": "Aby zaimportować subskrypcje z istniejącego konta na Twitterze, wprowadź poniżej swoją nazwę użytkownika.",
