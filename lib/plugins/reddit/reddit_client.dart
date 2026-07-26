@@ -172,6 +172,10 @@ class RedditClient {
 
   /// Serves the same listings as [_apiBase] without any credentials.
   static const _publicBase = 'https://www.reddit.com';
+
+  /// Served and throttled separately from [_publicBase], so it is worth a
+  /// second try when that one refuses.
+  static const _publicFallbackBase = 'https://old.reddit.com';
   static const _timeout = Duration(seconds: 20);
 
   /// Reddit asks for a descriptive agent and throttles generic ones harder.
@@ -240,43 +244,65 @@ class RedditClient {
       throw RedditException(RedditErrorKind.notFound, 'Not a subreddit name: $subreddit');
     }
 
-    // No client id: read the public endpoint, which needs no credentials, so
+    // No client id: read the public endpoints, which need no credentials, so
     // the plugin works the moment it is switched on.
     final anonymous = clientId.trim().isEmpty;
     final token = anonymous ? null : await _authorize(clientId);
 
-    final path = anonymous
-        ? '$_publicBase/r/$name/${redditSortPath(sort)}.json'
-        : '$_apiBase/r/$name/${redditSortPath(sort)}';
-
-    final uri = Uri.parse(path).replace(queryParameters: {
+    final query = {
       'limit': '$limit',
       // Gives real characters instead of HTML entities in titles and text.
       'raw_json': '1',
       if (after != null && after.isNotEmpty) 'after': after,
-    });
+    };
 
+    if (!anonymous) {
+      final uri = Uri.parse('$_apiBase/r/$name/${redditSortPath(sort)}').replace(queryParameters: query);
+      return _listingFrom(_decode(await _read(uri, token)));
+    }
+
+    // www refusing an anonymous reader does not mean old. will: they are served
+    // separately and throttled separately, which is why Stealth keeps both.
+    // Trying the second costs one request on a page that was failing anyway.
+    var response = await _read(Uri.parse(_publicJsonPath(_publicBase, name, sort)).replace(queryParameters: query));
+
+    if (const [403, 429].contains(response.statusCode)) {
+      response =
+          await _read(Uri.parse(_publicJsonPath(_publicFallbackBase, name, sort)).replace(queryParameters: query));
+    }
+
+    if (response.statusCode != 200) {
+      // Both public hosts refused. A client id is the way past that, so say so
+      // rather than reporting a block the reader can do nothing about.
+      if (const [403, 429].contains(response.statusCode)) {
+        throw RedditException(RedditErrorKind.notConfigured,
+            'HTTP ${response.statusCode} from both public hosts without a client id');
+      }
+      throw _errorFor(response, Uri.parse(_publicBase));
+    }
+
+    return _listingFrom(_decode(response));
+  }
+
+  static String _publicJsonPath(String base, String name, RedditSort sort) =>
+      '$base/r/$name/${redditSortPath(sort)}.json';
+
+  /// One GET, with the token when there is one. A 401 drops the cached token so
+  /// the next attempt re-authorises.
+  Future<http.Response> _read(Uri uri, [String? token]) async {
     final response = await _send(() => httpClient.get(uri, headers: {
           if (token != null) 'Authorization': 'Bearer $token',
           'User-Agent': userAgent,
         }));
 
     if (response.statusCode == 401) {
-      // The cached token was rejected; drop it so the next attempt re-authorises.
       forgetToken();
     }
-    if (response.statusCode != 200) {
-      // Reddit throttles and sometimes refuses anonymous readers. Setting a
-      // client id is the way out of both, so say that rather than reporting a
-      // block the reader can do nothing about.
-      if (anonymous && const [403, 429].contains(response.statusCode)) {
-        throw RedditException(
-            RedditErrorKind.notConfigured, 'HTTP ${response.statusCode} from ${uri.host} without a client id');
-      }
+    if (token != null && response.statusCode != 200) {
       throw _errorFor(response, uri);
     }
 
-    return _listingFrom(_decode(response));
+    return response;
   }
 
   /// Confirms a client id works, used by the settings screen.

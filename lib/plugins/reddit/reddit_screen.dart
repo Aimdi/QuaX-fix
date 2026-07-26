@@ -215,6 +215,17 @@ class _RedditScreenState extends State<RedditScreen> {
                   Icon(Icons.forum_outlined, size: 48, color: Theme.of(context).colorScheme.outline),
                   const SizedBox(height: 16),
                   Text(l10n.plugin_reddit_empty, textAlign: TextAlign.center),
+                  const SizedBox(height: 16),
+                  // Telling the reader to add a subreddit and then leaving the
+                  // only control in the app bar is how this screen managed to
+                  // look broken when it was merely empty.
+                  Center(
+                    child: FilledButton.icon(
+                      onPressed: _addSubreddit,
+                      icon: const Icon(Icons.add),
+                      label: Text(l10n.plugin_reddit_add),
+                    ),
+                  ),
                 ],
               );
             }
