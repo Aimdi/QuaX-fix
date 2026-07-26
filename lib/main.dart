@@ -459,11 +459,9 @@ class FritterApp extends StatefulWidget {
 }
 
 class _FritterAppState extends State<FritterApp> {
-  static final log = Logger('_MyAppState');
 
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>(); // NEW: Navigator key
 
-  String _themePreset = themePresetNone;
   String _xLookBackground = xLookBackgroundSystem;
   String _xLookAccent = xLookAccentBlue;
   bool _disableAnimations = false;
@@ -511,7 +509,6 @@ class _FritterAppState extends State<FritterApp> {
     // Set any already-enabled preferences
     setState(() {
       setLocale(prefService.get<String>(optionLocale));
-      _themePreset = prefService.get(optionThemePreset);
       _xLookBackground = prefService.get(optionXLookBackground);
       _xLookAccent = prefService.get(optionXLookAccent);
       _disableAnimations = prefService.get(optionDisableAnimations);
@@ -546,11 +543,6 @@ class _FritterAppState extends State<FritterApp> {
         });
     });
 
-    prefService.addKeyListener(optionThemePreset, () {
-      setState(() {
-        _themePreset = prefService.get(optionThemePreset);
-      });
-    });
 
     prefService.addKeyListener(optionXLookBackground, () {
       setState(() {
