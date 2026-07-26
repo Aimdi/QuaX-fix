@@ -131,18 +131,25 @@ void main() {
       expect(requested.single.url.host, 'www.reddit.com');
       expect(requested.single.url.path, '/r/dartlang/hot.json');
       expect(requested.single.headers.containsKey('Authorization'), isFalse);
-      expect(requested.single.headers['User-Agent'], RedditClient.userAgent);
+      // The website, not the API: it has to look like a browser to be served.
+      expect(requested.single.headers['User-Agent'], RedditClient.publicUserAgent);
       expect(listing.posts, isNotEmpty);
     });
 
-    test('an anonymous reader that Reddit refuses is told to set a client id', () async {
-      for (final status in [403, 429]) {
-        final client = RedditClient(httpClient: MockClient((_) async => _json({'error': status}, status)));
+    test('an anonymous reader that Reddit refuses is told what happened', () async {
+      // This used to report "add a client id". Reddit now rejects nearly every
+      // new app registration, so that named a remedy the reader cannot obtain
+      // for a refusal that usually passes on its own.
+      const expected = {403: RedditErrorKind.blocked, 429: RedditErrorKind.rateLimited};
+
+      for (final entry in expected.entries) {
+        final client =
+            RedditClient(httpClient: MockClient((_) async => _json({'error': entry.key}, entry.key)));
 
         await expectLater(
           client.fetchSubreddit('dartlang', clientId: ''),
-          throwsA(isA<RedditException>().having((e) => e.kind, 'kind', RedditErrorKind.notConfigured)),
-          reason: 'HTTP $status',
+          throwsA(isA<RedditException>().having((e) => e.kind, 'kind', entry.value)),
+          reason: 'HTTP ${entry.key}',
         );
       }
     });
