@@ -31,7 +31,7 @@ const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 40;
+const int databaseVersion = 41;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -487,6 +487,16 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
       'logo_url VARCHAR, in_feed INTEGER NOT NULL DEFAULT 1, '
       'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
       reverseSql: 'DROP TABLE $tableSubstackSubscription',
+    ),
+  ],
+  41: [
+    // Groups of groups. A group with a parent is shown inside it rather than
+    // beside it on the board, and the parent's feed is the union of its own
+    // members and its children's. NULL is the existing behaviour: a group that
+    // stands on its own.
+    SqlMigration(
+      'ALTER TABLE $tableSubscriptionGroup ADD COLUMN parent_id VARCHAR',
+      reverseSql: 'ALTER TABLE $tableSubscriptionGroup DROP COLUMN parent_id',
     ),
   ],
 });

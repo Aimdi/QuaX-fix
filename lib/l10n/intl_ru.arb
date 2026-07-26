@@ -226,6 +226,8 @@
   "mute_video_description": "Отключать ли звук видео по умолчанию",
   "mute_videos": "Отключить звук видео",
   "name": "Имя",
+  "nest_inside_group": "Поместить в группу",
+  "nest_inside_nothing": "Нет (отдельная группа)",
   "never_show_again": "Больше не показывать",
   "next": "Далее",
   "no": "Нет",

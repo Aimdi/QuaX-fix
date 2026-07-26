@@ -226,6 +226,8 @@
   "mute_video_description": "Ці трэба выключаць гук відэа па змаўчанні",
   "mute_videos": "Выключыць гук відэа",
   "name": "Імя",
+  "nest_inside_group": "Змясціць у групу",
+  "nest_inside_nothing": "Нічога (асобная група)",
   "never_show_again": "Больш не паказваць",
   "next": "Далей",
   "no": "Не",

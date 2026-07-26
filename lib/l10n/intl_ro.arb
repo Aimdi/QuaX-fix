@@ -226,6 +226,8 @@
   "mute_video_description": "Dacă videoclipurile trebuie silențiate implicit",
   "mute_videos": "Silențiați videoclipurile",
   "name": "Nume",
+  "nest_inside_group": "Pune într-un grup",
+  "nest_inside_nothing": "Niciunul (grup de sine stătător)",
   "never_show_again": "Nu mai arăta",
   "next": "Înainte",
   "no": "Nu",

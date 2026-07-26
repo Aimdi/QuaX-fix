@@ -296,6 +296,9 @@ class SubscriptionGroup with ToMappable {
   final String? emoji;
   final int markStyle;
 
+  /// The group this one sits inside, or null when it stands on its own.
+  final String? parentId;
+
   // Not persisted: a few members for the tile's avatar preview, populated by
   // GroupsModel.reloadGroups.
   final List<GroupMemberPreview> memberPreviews;
@@ -312,6 +315,7 @@ class SubscriptionGroup with ToMappable {
       this.pinned = false,
       this.emoji,
       this.markStyle = 0,
+      this.parentId,
       this.memberPreviews = const []});
 
   SubscriptionGroup withMemberPreviews(List<GroupMemberPreview> previews) => SubscriptionGroup(
@@ -324,6 +328,7 @@ class SubscriptionGroup with ToMappable {
       pinned: pinned,
       emoji: emoji,
       markStyle: markStyle,
+      parentId: parentId,
       memberPreviews: previews);
 
   factory SubscriptionGroup.fromMap(Map<String, Object?> json) {
@@ -342,7 +347,8 @@ class SubscriptionGroup with ToMappable {
         createdAt: DateTime.parse(json['created_at'] as String),
         pinned: json['pinned'] == 1,
         emoji: json['emoji'] as String?,
-        markStyle: GroupMarkStyle.coerce(json['mark_style']));
+        markStyle: GroupMarkStyle.coerce(json['mark_style']),
+        parentId: json['parent_id'] as String?);
   }
 
   @override
@@ -356,6 +362,7 @@ class SubscriptionGroup with ToMappable {
       'pinned': pinned ? 1 : 0,
       'emoji': emoji,
       'mark_style': markStyle,
+      'parent_id': parentId,
     };
   }
 }

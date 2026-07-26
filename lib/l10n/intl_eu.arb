@@ -226,6 +226,8 @@
   "mute_video_description": "Bideoak lehenespenez isilarazi behar diren ala ez",
   "mute_videos": "Isilarazi bideoak",
   "name": "Izena",
+  "nest_inside_group": "Jarri talde baten barruan",
+  "nest_inside_nothing": "Bat ere ez (talde independentea)",
   "never_show_again": "Ez erakutsi gehiago",
   "next": "Hurrengoa",
   "no": "Ez",

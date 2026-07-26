@@ -226,6 +226,8 @@
   "mute_video_description": "Of video's standaard gedempt moeten zijn",
   "mute_videos": "Video's dempen",
   "name": "Naam",
+  "nest_inside_group": "In groep plaatsen",
+  "nest_inside_nothing": "Geen (losse groep)",
   "never_show_again": "Nooit meer tonen",
   "next": "Volgende",
   "no": "Nee",

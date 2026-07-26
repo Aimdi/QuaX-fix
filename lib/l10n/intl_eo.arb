@@ -226,6 +226,8 @@
   "mute_video_description": "Ĉu videoj mutiĝu defaŭlte",
   "mute_videos": "Mutigi videojn",
   "name": "Nomo",
+  "nest_inside_group": "Meti en grupon",
+  "nest_inside_nothing": "Neniu (memstara grupo)",
   "never_show_again": "Neniam montri denove",
   "next": "Sekven",
   "no": "Ne",

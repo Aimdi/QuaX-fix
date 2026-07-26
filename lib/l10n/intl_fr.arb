@@ -226,6 +226,8 @@
   "mute_video_description": "Si les vidéos doivent être mises en sourdine par défaut",
   "mute_videos": "Mettre les vidéos en sourdine",
   "name": "Nom",
+  "nest_inside_group": "Placer dans un groupe",
+  "nest_inside_nothing": "Aucun (groupe indépendant)",
   "never_show_again": "Ne plus afficher",
   "next": "Suivant",
   "no": "Non",

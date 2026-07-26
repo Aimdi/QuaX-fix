@@ -226,6 +226,8 @@
   "mute_video_description": "Si los videos deben silenciarse de forma predeterminada",
   "mute_videos": "Silenciar videos",
   "name": "Nombre",
+  "nest_inside_group": "Poner dentro de un grupo",
+  "nest_inside_nothing": "Ninguno (grupo independiente)",
   "never_show_again": "No mostrar nunca más",
   "next": "Siguiente",
   "no": "No",

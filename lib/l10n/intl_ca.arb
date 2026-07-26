@@ -226,6 +226,8 @@
   "mute_video_description": "Si els vídeos s'han de silenciar per defecte",
   "mute_videos": "Silencia els vídeos",
   "name": "Nom",
+  "nest_inside_group": "Posa dins d'un grup",
+  "nest_inside_nothing": "Cap (grup independent)",
   "never_show_again": "No mostris mai més",
   "next": "Següent",
   "no": "No",

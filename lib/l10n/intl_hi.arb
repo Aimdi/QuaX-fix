@@ -226,6 +226,8 @@
   "mute_video_description": "वीडियो डिफ़ॉल्ट रूप से म्यूट होने चाहिए",
   "mute_videos": "वीडियो म्यूट करें",
   "name": "नाम",
+  "nest_inside_group": "समूह के भीतर रखें",
+  "nest_inside_nothing": "कोई नहीं (स्वतंत्र समूह)",
   "never_show_again": "फिर कभी न दिखाएं",
   "next": "अगला",
   "no": "नहीं",

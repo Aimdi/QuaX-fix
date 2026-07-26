@@ -3,6 +3,7 @@ import 'package:flutter_material_color_picker/flutter_material_color_picker.dart
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
+import 'package:quax/group/group_tree.dart';
 import 'package:quax/subscriptions/group_identity.dart';
 import 'package:quax/subscriptions/group_mark_style.dart';
 import 'package:quax/subscriptions/users_model.dart';
@@ -107,6 +108,48 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
 
     if (target == null || !context.mounted) return;
     await groupsModel.mergeGroups(widget.id!, target.id);
+    if (context.mounted) Navigator.pop(context);
+  }
+
+  /// Chooses the group this one sits inside, the way a browser nests tab
+  /// groups. The parent's feed becomes the union of both.
+  ///
+  /// Groups that would close a loop are left out of the list rather than
+  /// offered and then refused.
+  Future<void> _openNestSheet(BuildContext context) async {
+    final groupsModel = context.read<GroupsModel>();
+    final parents = {for (final g in groupsModel.state) g.id: g.parentId};
+    final candidates = groupsModel.state
+        .where((g) => !wouldNestInsideItself(widget.id!, g.id, parents))
+        .toList(growable: false);
+    final current = parents[widget.id!];
+
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.north),
+              title: Text(L10n.of(sheetContext).nest_inside_nothing),
+              selected: current == null,
+              onTap: () => Navigator.pop(sheetContext, ''),
+            ),
+            for (final g in candidates)
+              ListTile(
+                leading: GroupMark.forGroup(g, size: 32),
+                title: Text(g.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                selected: current == g.id,
+                onTap: () => Navigator.pop(sheetContext, g.id),
+              ),
+          ],
+        ),
+      ),
+    );
+
+    if (choice == null || !context.mounted) return;
+    await groupsModel.setGroupParent(widget.id!, choice.isEmpty ? null : choice);
     if (context.mounted) Navigator.pop(context);
   }
 
@@ -282,6 +325,13 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
           icon: const Icon(Icons.merge, size: 18),
           label: Text(l10n.merge_into),
           onPressed: () => _openMergeSheet(context),
+        ),
+      if (widget.id != null)
+        TextButton.icon(
+          style: _discreetActionStyle(context),
+          icon: const Icon(Icons.folder_outlined, size: 18),
+          label: Text(l10n.nest_inside_group),
+          onPressed: () => _openNestSheet(context),
         ),
     ];
 

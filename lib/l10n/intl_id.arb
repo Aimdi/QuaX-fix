@@ -226,6 +226,8 @@
   "mute_video_description": "Apakah video harus dibisukan secara default",
   "mute_videos": "Bisukan video",
   "name": "Nama",
+  "nest_inside_group": "Taruh di dalam grup",
+  "nest_inside_nothing": "Tidak ada (grup tersendiri)",
   "never_show_again": "Jangan tampilkan lagi",
   "next": "Berikutnya",
   "no": "Tidak",

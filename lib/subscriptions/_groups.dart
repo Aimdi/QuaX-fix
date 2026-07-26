@@ -8,6 +8,7 @@ import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/group/group_screen.dart';
+import 'package:quax/group/group_tree.dart';
 import 'package:quax/subscriptions/_group_list_item.dart';
 import 'package:quax/subscriptions/_groups_edit.dart';
 import 'package:quax/subscriptions/widgets/group_tile.dart';
@@ -190,9 +191,18 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
         }
 
         final query = _searchController.text.toLowerCase();
-        final groups = query.isEmpty
+        var groups = query.isEmpty
             ? state
             : state.where((g) => g.name.toLowerCase().contains(query)).toList(growable: false);
+
+        // A nested group is shown inside its parent, not beside it — except
+        // while searching, when the reader is looking for a particular group
+        // and should find it wherever it lives.
+        final parents = {for (final g in state) g.id: g.parentId};
+        if (query.isEmpty) {
+          final visible = topLevelGroups(groups.map((g) => g.id), parents).toSet();
+          groups = groups.where((g) => visible.contains(g.id)).toList(growable: false);
+        }
         final prefs = PrefService.of(context);
         final animate = prefs.get<bool>(optionDisableAnimations) != true;
         final asList = prefs.get<String>(optionSubscriptionGroupsLayout) == subscriptionGroupsLayoutList;

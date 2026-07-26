@@ -226,6 +226,8 @@
   "mute_video_description": "Domyślnie wyciszaj wideo",
   "mute_videos": "Wyciszaj wideo",
   "name": "Nazwa",
+  "nest_inside_group": "Umieść w grupie",
+  "nest_inside_nothing": "Brak (osobna grupa)",
   "never_show_again": "Nigdy nie pokazuj ponownie",
   "next": "Dalej",
   "no": "Nie",

@@ -226,6 +226,8 @@
   "mute_video_description": "是否应默认将视频静音",
   "mute_videos": "将视频静音",
   "name": "取个名字",
+  "nest_inside_group": "放入分组",
+  "nest_inside_nothing": "无（独立分组）",
   "never_show_again": "不再显示",
   "next": "下一条",
   "no": "不",

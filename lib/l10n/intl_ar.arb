@@ -226,6 +226,8 @@
   "mute_video_description": "لتحديد ما إذا كان يجب كتم مقاطع الفيديو افتراضيًا",
   "mute_videos": "كتم صوت مقاطع الفيديو",
   "name": "الاسم",
+  "nest_inside_group": "وضع داخل مجموعة",
+  "nest_inside_nothing": "لا شيء (مجموعة مستقلة)",
   "never_show_again": "عدم الإظهار مجدداً",
   "next": "التالي",
   "no": "لا",

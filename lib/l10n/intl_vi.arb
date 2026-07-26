@@ -226,6 +226,8 @@
   "mute_video_description": "Khi phát video thì âm lượng sẽ để ở mức im lặng",
   "mute_videos": "Video không âm thanh",
   "name": "Tên",
+  "nest_inside_group": "Đặt vào trong nhóm",
+  "nest_inside_nothing": "Không có (nhóm riêng)",
   "never_show_again": "Không bao giờ hiện lại",
   "next": "Tiếp theo",
   "no": "Không",

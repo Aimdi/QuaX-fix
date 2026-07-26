@@ -226,6 +226,8 @@
   "mute_video_description": "Ob Videos standardmäßig stumm sein sollen",
   "mute_videos": "Videos stumm schalten",
   "name": "Name",
+  "nest_inside_group": "In Gruppe einordnen",
+  "nest_inside_nothing": "Keine (eigenständige Gruppe)",
   "never_show_again": "Nicht mehr anzeigen",
   "next": "Weiter",
   "no": "Nein",

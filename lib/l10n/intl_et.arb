@@ -226,6 +226,8 @@
   "mute_video_description": "Kas videoteheli peaks esitamisel olema vaikimisi summutatud",
   "mute_videos": "Summuta videote heli",
   "name": "Nimi",
+  "nest_inside_group": "Pane rühma sisse",
+  "nest_inside_nothing": "Puudub (omaette rühm)",
   "never_show_again": "Ära näita enam",
   "next": "Järgmine",
   "no": "Ei",

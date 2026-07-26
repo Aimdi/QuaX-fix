@@ -226,6 +226,8 @@
   "mute_video_description": "Om videoer skal dempes som standard",
   "mute_videos": "Demp videoer",
   "name": "Navn",
+  "nest_inside_group": "Legg inn i gruppe",
+  "nest_inside_nothing": "Ingen (egen gruppe)",
   "never_show_again": "Aldri vis igjen",
   "next": "Neste",
   "no": "Nei",

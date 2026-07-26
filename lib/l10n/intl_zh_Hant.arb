@@ -226,6 +226,8 @@
   "mute_video_description": "影片是否應預設為靜音",
   "mute_videos": "影片靜音",
   "name": "名稱",
+  "nest_inside_group": "放入群組",
+  "nest_inside_nothing": "無（獨立群組）",
   "never_show_again": "不再顯示",
   "next": "下一步",
   "no": "否",

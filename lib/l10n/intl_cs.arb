@@ -226,6 +226,8 @@
   "mute_video_description": "Zda mají být videa ve výchozím nastavení ztlumena",
   "mute_videos": "Ztlumit videa",
   "name": "Název",
+  "nest_inside_group": "Vložit do skupiny",
+  "nest_inside_nothing": "Žádná (samostatná skupina)",
   "never_show_again": "Nikdy nezobrazovat",
   "next": "Další",
   "no": "Ne",

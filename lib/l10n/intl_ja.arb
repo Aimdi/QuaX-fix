@@ -226,6 +226,8 @@
   "mute_video_description": "Whether videos should be muted by default",
   "mute_videos": "Mute videos",
   "name": "グループ名",
+  "nest_inside_group": "グループの中に入れる",
+  "nest_inside_nothing": "なし（独立したグループ）",
   "never_show_again": "Never show again",
   "next": "次へ",
   "no": "いいえ",

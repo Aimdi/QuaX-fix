@@ -7,6 +7,7 @@ import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/database/repository.dart';
 import 'package:quax/group/custom_feed_rules.dart';
+import 'package:quax/group/group_tree.dart';
 import 'package:quax/subscriptions/group_mark_style.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
@@ -27,6 +28,14 @@ IconData deserializeIconData(String iconData) {
 
   // Use this as a default;
   return Icons.rss_feed;
+}
+
+/// Every group's parent, keyed by group id, for the nesting helpers in
+/// `group_tree.dart`. A group that stands on its own maps to null.
+Future<Map<String, String?>> readGroupParents(DatabaseExecutor database) async {
+  final rows = await database.query(tableSubscriptionGroup, columns: ['id', 'parent_id']);
+
+  return {for (final row in rows) row['id'] as String: row['parent_id'] as String?};
 }
 
 class GroupModel extends Store<SubscriptionGroupGet> {
@@ -69,21 +78,27 @@ class GroupModel extends Store<SubscriptionGroupGet> {
             mutedKeywords: parseMutedKeywords(group['muted_keywords'] as String?));
       }
 
+      // A group's feed is its own members plus everything nested inside it, so
+      // the membership queries ask for a set of group ids rather than one.
+      final parents = await readGroupParents(database);
+      final ids = groupAndDescendants(id, parents).toList(growable: false);
+      final placeholders = List.filled(ids.length, '?').join(', ');
+
       var searchSubscriptions = (await database.rawQuery(
-              'SELECT s.* FROM $tableSearchSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id = ?',
-              [id]))
+              'SELECT DISTINCT s.* FROM $tableSearchSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders)',
+              ids))
           .map((e) => SearchSubscription.fromMap(e))
           .toList(growable: false);
 
       var userSubscriptions = (await database.rawQuery(
-              'SELECT s.* FROM $tableSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id = ?',
-              [id]))
+              'SELECT DISTINCT s.* FROM $tableSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders)',
+              ids))
           .map((e) => UserSubscription.fromMap(e))
           .toList(growable: false);
 
       var substackSubscriptions = (await database.rawQuery(
-              'SELECT s.* FROM $tableSubstackSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id = ?',
-              [id]))
+              'SELECT DISTINCT s.* FROM $tableSubstackSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders)',
+              ids))
           .map((e) => SubstackSubscription.fromMap(e))
           .toList(growable: false);
 
@@ -217,7 +232,7 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
           : 'g.$orderGroupsBy $orderByDirection';
 
       var query =
-          "SELECT g.id, g.name, g.icon, g.color, g.created_at, g.pinned, g.emoji, g.mark_style, COUNT(gm.profile_id) AS number_of_members FROM $tableSubscriptionGroup g LEFT JOIN $tableSubscriptionGroupMember gm ON gm.group_id = g.id WHERE g.id != '-1' GROUP BY g.id ORDER BY g.pinned DESC, $orderBy";
+          "SELECT g.id, g.name, g.icon, g.color, g.created_at, g.pinned, g.emoji, g.mark_style, g.parent_id, COUNT(gm.profile_id) AS number_of_members FROM $tableSubscriptionGroup g LEFT JOIN $tableSubscriptionGroupMember gm ON gm.group_id = g.id WHERE g.id != '-1' GROUP BY g.id ORDER BY g.pinned DESC, $orderBy";
 
       var groups = (await database.rawQuery(query)).map((e) => SubscriptionGroup.fromMap(e)).toList(growable: false);
       var previews = await _loadMemberPreviews(database);
@@ -434,6 +449,26 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
     var database = await Repository.writable();
     await database.update(tableSubscriptionGroup, {'pinned': pinned ? 1 : 0}, where: 'id = ?', whereArgs: [id]);
     await reloadGroups();
+  }
+
+  /// Nests [id] inside [parentId], or lifts it back to the top with null.
+  ///
+  /// A nesting that would put a group inside itself — directly or round a chain
+  /// of parents — is refused rather than stored, because the feed that resolved
+  /// it would never finish.
+  Future<bool> setGroupParent(String id, String? parentId) async {
+    var database = await Repository.writable();
+
+    if (parentId != null) {
+      final parents = await readGroupParents(database);
+      if (wouldNestInsideItself(id, parentId, parents)) {
+        return false;
+      }
+    }
+
+    await database.update(tableSubscriptionGroup, {'parent_id': parentId}, where: 'id = ?', whereArgs: [id]);
+    await reloadGroups();
+    return true;
   }
 
   /// Persists a manual order: each group's position becomes its index in [ids].

@@ -226,6 +226,8 @@
   "mute_video_description": "Videoların öntanımlı olarak sesinin kapatılıp kapatılmayacağı",
   "mute_videos": "Videoların sesini kapat",
   "name": "Ad",
+  "nest_inside_group": "Bir grubun içine koy",
+  "nest_inside_nothing": "Yok (kendi başına bir grup)",
   "never_show_again": "Bir daha gösterme",
   "next": "İleri",
   "no": "Hayır",

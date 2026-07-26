@@ -226,6 +226,8 @@
   "mute_video_description": "기본적으로 동영상 음소거 여부",
   "mute_videos": "동영상 음소거",
   "name": "이름",
+  "nest_inside_group": "그룹 안에 넣기",
+  "nest_inside_nothing": "없음 (독립된 그룹)",
   "never_show_again": "다시 표시하지 않기",
   "next": "다음",
   "no": "아니오",

@@ -226,6 +226,8 @@
   "mute_video_description": "Чи повинні відео бути без звуку за замовчуванням",
   "mute_videos": "Вимкнути звук відео",
   "name": "Ім'я",
+  "nest_inside_group": "Помістити в групу",
+  "nest_inside_nothing": "Немає (окрема група)",
   "never_show_again": "Більше не показувати",
   "next": "Далі",
   "no": "Ні",
