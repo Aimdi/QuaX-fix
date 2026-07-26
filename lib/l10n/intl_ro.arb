@@ -1065,5 +1065,17 @@
   "colour_pink": "Roz",
   "colour_purple": "Violet",
   "colour_orange": "Portocaliu",
-  "colour_green": "Verde"
+  "colour_green": "Verde",
+  "plugin_reddit_sign_in": "Conectare la Reddit",
+  "plugin_reddit_sign_out": "Deconectare",
+  "plugin_reddit_signed_in": "Conectat la Reddit",
+  "plugin_reddit_sign_in_failed": "Conectarea la Reddit a eșuat",
+  "plugin_reddit_redirect_uri_help": "Setați URI-ul de redirecționare al aplicației la {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

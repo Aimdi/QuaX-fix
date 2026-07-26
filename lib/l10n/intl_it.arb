@@ -1065,5 +1065,17 @@
   "colour_pink": "Rosa",
   "colour_purple": "Viola",
   "colour_orange": "Arancione",
-  "colour_green": "Verde"
+  "colour_green": "Verde",
+  "plugin_reddit_sign_in": "Accedi a Reddit",
+  "plugin_reddit_sign_out": "Esci",
+  "plugin_reddit_signed_in": "Connesso a Reddit",
+  "plugin_reddit_sign_in_failed": "Accesso a Reddit non riuscito",
+  "plugin_reddit_redirect_uri_help": "Imposta l’URI di reindirizzamento dell’app su {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

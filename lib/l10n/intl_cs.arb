@@ -1065,5 +1065,17 @@
   "colour_pink": "Růžová",
   "colour_purple": "Fialová",
   "colour_orange": "Oranžová",
-  "colour_green": "Zelená"
+  "colour_green": "Zelená",
+  "plugin_reddit_sign_in": "Přihlásit se k Redditu",
+  "plugin_reddit_sign_out": "Odhlásit se",
+  "plugin_reddit_signed_in": "Přihlášeno k Redditu",
+  "plugin_reddit_sign_in_failed": "Přihlášení k Redditu selhalo",
+  "plugin_reddit_redirect_uri_help": "Nastavte přesměrovací URI aplikace na {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

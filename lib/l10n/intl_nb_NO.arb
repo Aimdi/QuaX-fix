@@ -1065,5 +1065,17 @@
   "colour_pink": "Rosa",
   "colour_purple": "Lilla",
   "colour_orange": "Oransje",
-  "colour_green": "Grønn"
+  "colour_green": "Grønn",
+  "plugin_reddit_sign_in": "Logg inn på Reddit",
+  "plugin_reddit_sign_out": "Logg ut",
+  "plugin_reddit_signed_in": "Logget inn på Reddit",
+  "plugin_reddit_sign_in_failed": "Innlogging på Reddit mislyktes",
+  "plugin_reddit_redirect_uri_help": "Sett appens omdirigerings-URI til {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

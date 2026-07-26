@@ -1065,5 +1065,17 @@
   "colour_pink": "Ružovy",
   "colour_purple": "Fijaletavy",
   "colour_orange": "Aranžavy",
-  "colour_green": "Zialiony"
+  "colour_green": "Zialiony",
+  "plugin_reddit_sign_in": "Uvajsci ŭ Reddit",
+  "plugin_reddit_sign_out": "Vyjsci",
+  "plugin_reddit_signed_in": "Uvajšli ŭ Reddit",
+  "plugin_reddit_sign_in_failed": "Nie ŭdalosia ŭvajsci ŭ Reddit",
+  "plugin_reddit_redirect_uri_help": "Paznačcie redirect URI dadatku: {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -52,6 +52,8 @@ const pluginIdReddit = 'reddit';
 const optionPluginRedditEnabled = 'plugin.reddit.enabled';
 const optionPluginRedditClientId = 'plugin.reddit.client_id';
 const optionPluginRedditSubreddits = 'plugin.reddit.subreddits';
+/// Set once the reader signs in; the only long-lived Reddit credential kept.
+const optionPluginRedditRefreshToken = 'plugin.reddit.refresh_token';
 
 const pluginIdSubstack = 'substack';
 const optionPluginSubstackEnabled = 'plugin.substack.enabled';

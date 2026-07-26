@@ -1065,5 +1065,17 @@
   "colour_pink": "وردي",
   "colour_purple": "بنفسجي",
   "colour_orange": "برتقالي",
-  "colour_green": "أخضر"
+  "colour_green": "أخضر",
+  "plugin_reddit_sign_in": "تسجيل الدخول إلى Reddit",
+  "plugin_reddit_sign_out": "تسجيل الخروج",
+  "plugin_reddit_signed_in": "تم تسجيل الدخول إلى Reddit",
+  "plugin_reddit_sign_in_failed": "فشل تسجيل الدخول إلى Reddit",
+  "plugin_reddit_redirect_uri_help": "اضبط عنوان إعادة التوجيه للتطبيق على {uri}",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

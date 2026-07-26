@@ -1065,5 +1065,17 @@
   "colour_pink": "ピンク",
   "colour_purple": "パープル",
   "colour_orange": "オレンジ",
-  "colour_green": "グリーン"
+  "colour_green": "グリーン",
+  "plugin_reddit_sign_in": "Redditにログイン",
+  "plugin_reddit_sign_out": "ログアウト",
+  "plugin_reddit_signed_in": "Redditにログイン済み",
+  "plugin_reddit_sign_in_failed": "Redditへのログインに失敗しました",
+  "plugin_reddit_redirect_uri_help": "アプリのリダイレクトURIを {uri} に設定してください",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

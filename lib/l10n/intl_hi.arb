@@ -1065,5 +1065,17 @@
   "colour_pink": "गुलाबी",
   "colour_purple": "बैंगनी",
   "colour_orange": "नारंगी",
-  "colour_green": "हरा"
+  "colour_green": "हरा",
+  "plugin_reddit_sign_in": "Reddit में साइन इन करें",
+  "plugin_reddit_sign_out": "साइन आउट",
+  "plugin_reddit_signed_in": "Reddit में साइन इन किया गया",
+  "plugin_reddit_sign_in_failed": "Reddit साइन इन विफल",
+  "plugin_reddit_redirect_uri_help": "ऐप का रीडायरेक्ट URI {uri} पर सेट करें",
+  "@plugin_reddit_redirect_uri_help": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
 }

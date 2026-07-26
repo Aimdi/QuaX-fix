@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:quax/constants.dart';
+import 'package:quax/plugins/reddit/reddit_auth.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 
 /// Subreddits the reader follows, kept in preferences — no account, so there is
@@ -63,8 +64,11 @@ class RedditFeedStore extends Store<List<RedditPost>> {
   final RedditClient client;
   final RedditSubredditsStore subreddits;
   final BasePrefService prefs;
+  final RedditAuth auth;
 
-  RedditFeedStore(this.client, this.subreddits, this.prefs) : super(const []);
+  RedditFeedStore(this.client, this.subreddits, this.prefs, {RedditAuth? auth})
+      : auth = auth ?? RedditAuth(),
+        super(const []);
 
   Future<void> refresh({RedditSort sort = RedditSort.hot}) async {
     await execute(() async {
@@ -74,9 +78,23 @@ class RedditFeedStore extends Store<List<RedditPost>> {
         return const <RedditPost>[];
       }
 
+      // Signed in: one access token for the whole refresh, rather than one per
+      // subreddit. A refresh token Reddit no longer accepts means the session
+      // is over, so it is dropped and the read falls back to the public route.
+      String? userToken;
+      final refreshToken = prefs.get<String>(optionPluginRedditRefreshToken) ?? '';
+      if (refreshToken.isNotEmpty) {
+        try {
+          userToken = await auth.accessToken(clientId: clientId, refreshToken: refreshToken);
+        } on RedditException {
+          await prefs.set(optionPluginRedditRefreshToken, '');
+        }
+      }
+
       final posts = <RedditPost>[];
       for (final name in names) {
-        final listing = await client.fetchSubreddit(name, clientId: clientId, sort: sort, limit: 15);
+        final listing =
+            await client.fetchSubreddit(name, clientId: clientId, sort: sort, limit: 15, userToken: userToken);
         posts.addAll(listing.posts.where((p) => !p.stickied));
       }
 
