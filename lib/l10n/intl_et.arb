@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Nendelt kontodelt",
   "general": "Üldised seadistused",
+  "gesture_double_tap_like": "Topeltpuudutus meeldimiseks",
+  "gesture_double_tap_like_description": "Vaikimisi väljas: iga üksik puudutus ootab, kas järgneb teine, nii et postituse avamine on veidi aeglasem.",
   "group_mark_style_auto": "Auto",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Ikoon",

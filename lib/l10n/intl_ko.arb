@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "다음 계정에서 작성",
   "general": "일반",
+  "gesture_double_tap_like": "두 번 눌러 좋아요",
+  "gesture_double_tap_like_description": "기본값은 꺼짐입니다. 켜면 한 번 누를 때마다 두 번째 입력을 기다리므로 게시물을 여는 속도가 조금 느려집니다.",
   "group_mark_style_auto": "자동",
   "group_mark_style_emoji": "이모지",
   "group_mark_style_icon": "아이콘",

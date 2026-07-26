@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Від цих акаунтів",
   "general": "Головне",
+  "gesture_double_tap_like": "Подвійний дотик — подобається",
+  "gesture_double_tap_like_description": "Типово вимкнено: кожен одиночний дотик очікує можливого другого, тож допис відкривається трохи повільніше.",
   "group_mark_style_auto": "Авто",
   "group_mark_style_emoji": "Емодзі",
   "group_mark_style_icon": "Значок",

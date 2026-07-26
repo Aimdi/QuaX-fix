@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "来自这些账号",
   "general": "通用",
+  "gesture_double_tap_like": "双击点赞",
+  "gesture_double_tap_like_description": "默认关闭：开启后每次单击都要等待是否还有第二次，打开帖子会略慢一些。",
   "group_mark_style_auto": "自动",
   "group_mark_style_emoji": "表情",
   "group_mark_style_icon": "图标",

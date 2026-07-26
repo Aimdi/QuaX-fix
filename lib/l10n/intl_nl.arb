@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Van deze accounts",
   "general": "Algemeen",
+  "gesture_double_tap_like": "Dubbeltik om te liken",
+  "gesture_double_tap_like_description": "Standaard uit: elke enkele tik wacht af of er een tweede volgt, waardoor een bericht openen iets trager aanvoelt.",
   "group_mark_style_auto": "Auto",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Pictogram",

@@ -27,6 +27,13 @@ class SettingsAccessibilityFragment extends StatelessWidget {
             subtitle: Text(
               L10n.of(context).disable_animations_description,
             ),
+          ),
+          PrefSwitch(
+            title: Text(L10n.of(context).gesture_double_tap_like),
+            pref: optionGestureDoubleTapLike,
+            subtitle: Text(
+              L10n.of(context).gesture_double_tap_like_description,
+            ),
           )
         ]),
       ),

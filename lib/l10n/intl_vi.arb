@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Từ những tài khoản này",
   "general": "Chung",
+  "gesture_double_tap_like": "Chạm hai lần để thích",
+  "gesture_double_tap_like_description": "Mặc định tắt: khi bật, mỗi lần chạm đơn sẽ chờ xem có lần chạm thứ hai không, nên mở bài viết chậm hơn một chút.",
   "group_mark_style_auto": "Tự động",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Biểu tượng",

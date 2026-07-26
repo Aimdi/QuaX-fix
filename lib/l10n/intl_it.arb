@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Da questi account",
   "general": "Generale",
+  "gesture_double_tap_like": "Doppio tocco per mettere mi piace",
+  "gesture_double_tap_like_description": "Disattivato di default: ogni tocco singolo attende un eventuale secondo, quindi aprire un post risulta un po' più lento.",
   "group_mark_style_auto": "Auto",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Icona",

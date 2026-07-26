@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Kontu hauetatik",
   "general": "Orokorra",
+  "gesture_double_tap_like": "Sakatu birritan atsegin emateko",
+  "gesture_double_tap_like_description": "Lehenetsita itzalita: sakatze bakoitzak bigarren bat datorren zain egoten da, beraz argitalpen bat irekitzea pixka bat motelagoa da.",
   "group_mark_style_auto": "Auto",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Ikonoa",

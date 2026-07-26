@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Şu hesaplardan",
   "general": "Genel",
+  "gesture_double_tap_like": "Beğenmek için çift dokunma",
+  "gesture_double_tap_like_description": "Varsayılan olarak kapalı: açıkken her tek dokunuş ikinci bir dokunuşu bekler, bu yüzden gönderi açmak biraz yavaşlar.",
   "group_mark_style_auto": "Otomatik",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Simge",

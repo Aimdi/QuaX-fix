@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "來自這些帳號",
   "general": "一般",
+  "gesture_double_tap_like": "輕點兩下按讚",
+  "gesture_double_tap_like_description": "預設關閉：開啟後每次單擊都要等待是否還有第二次，開啟貼文會稍慢一些。",
   "group_mark_style_auto": "自動",
   "group_mark_style_emoji": "表情",
   "group_mark_style_icon": "圖示",

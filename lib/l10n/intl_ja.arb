@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "次のアカウントが送信",
   "general": "一般",
+  "gesture_double_tap_like": "ダブルタップでいいね",
+  "gesture_double_tap_like_description": "既定ではオフです。オンにすると、シングルタップのたびに二度目を待つため、投稿を開く動作がわずかに遅く感じられます。",
   "group_mark_style_auto": "自動",
   "group_mark_style_emoji": "絵文字",
   "group_mark_style_icon": "アイコン",

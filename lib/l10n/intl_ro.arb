@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "De la aceste conturi",
   "general": "General",
+  "gesture_double_tap_like": "Dublu tap pentru apreciere",
+  "gesture_double_tap_like_description": "Dezactivat implicit: fiecare atingere simplă așteaptă o eventuală a doua, așa că deschiderea unei postări durează puțin mai mult.",
   "group_mark_style_auto": "Auto",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Pictogramă",

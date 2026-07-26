@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Ад гэтых акаўнтаў",
   "general": "Асноўныя",
+  "gesture_double_tap_like": "Двойны дотык — падабаецца",
+  "gesture_double_tap_like_description": "Выключана па змаўчанні: кожны адзінарны дотык чакае магчымага другога, таму пост адкрываецца крыху пазней.",
   "group_mark_style_auto": "Аўта",
   "group_mark_style_emoji": "Эмодзі",
   "group_mark_style_icon": "Значок",

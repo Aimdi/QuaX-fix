@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Dari akun ini",
   "general": "Umum",
+  "gesture_double_tap_like": "Ketuk dua kali untuk menyukai",
+  "gesture_double_tap_like_description": "Nonaktif secara bawaan: setiap ketukan tunggal menunggu kemungkinan ketukan kedua, sehingga membuka pos terasa sedikit lebih lambat.",
   "group_mark_style_auto": "Otomatis",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Ikon",

@@ -17,6 +17,7 @@ import 'package:quax/tweet/_ExpandableTweetText.dart';
 import 'package:quax/tweet/_card.dart';
 import 'package:quax/tweet/_media.dart';
 import 'package:quax/tweet/tweet_chrome.dart';
+import 'package:quax/saved/liked_tweet_model.dart';
 import 'package:quax/tweet/article_link_card.dart';
 import 'package:quax/utils/urls.dart';
 import 'package:quax/tweet/tweet_footer.dart';
@@ -734,7 +735,10 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     return RepaintBoundary(
             key: _globalKey,
             child: Column(children: [
-              tweetFlatCard(
+              _withDoubleTapToLike(
+                context,
+                tweet,
+                tweetFlatCard(
                 color: tweetCardColor(context),
                 child: Row(
                   children: [
@@ -752,6 +756,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                     ))
                   ],
                 ),
+              ),
               ),
               if (addSeparator)
                 tweetHairlineDivider(context)
@@ -851,6 +856,38 @@ class TweetHasNoContentException {
   String toString() {
     return 'The tweet has no content {id: $id}';
   }
+}
+
+/// Wraps a post so a double-tap likes it, when the reader has asked for that.
+///
+/// Returns [child] untouched while the gesture is off, which is the point of
+/// the setting: a double-tap recogniser makes every single tap wait to see
+/// whether a second one follows, and that delay would otherwise be paid by
+/// everyone opening a post.
+///
+/// Deliberately not a swipe. A horizontal drag on a post would win the gesture
+/// arena against the page view underneath it, and swiping between tabs would
+/// stop working in exactly the place people swipe most.
+Widget _withDoubleTapToLike(BuildContext context, TweetWithCard tweet, Widget child) {
+  final enabled = PrefService.of(context, listen: false).get<bool>(optionGestureDoubleTapLike) == true;
+  final id = tweet.idStr;
+  if (!enabled || id == null) {
+    return child;
+  }
+
+  return GestureDetector(
+    onDoubleTap: () async {
+      final model = context.read<LikedTweetModel>();
+      if (model.isLiked(id)) {
+        return;
+      }
+      await model.likeTweet(id, tweet.user?.idStr, tweet.toJson());
+      if (context.mounted) {
+        maybeShowLikeToast(context);
+      }
+    },
+    child: child,
+  );
 }
 
 /// "Replying to @someone", sitting between the header and the text.

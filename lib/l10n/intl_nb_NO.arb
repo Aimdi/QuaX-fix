@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Fra disse kontoene",
   "general": "Generelt",
+  "gesture_double_tap_like": "Dobbelttrykk for å like",
+  "gesture_double_tap_like_description": "Av som standard: hvert enkelttrykk venter på et mulig andre trykk, så det tar litt lengre tid å åpne et innlegg.",
   "group_mark_style_auto": "Auto",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Ikon",

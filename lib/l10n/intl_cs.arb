@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Od těchto účtů",
   "general": "Obecné",
+  "gesture_double_tap_like": "Dvojitým klepnutím dát to se mi líbí",
+  "gesture_double_tap_like_description": "Ve výchozím stavu vypnuto: každé jednoduché klepnutí čeká, zda nepřijde druhé, takže otevření příspěvku chvíli trvá.",
   "group_mark_style_auto": "Auto",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Ikona",

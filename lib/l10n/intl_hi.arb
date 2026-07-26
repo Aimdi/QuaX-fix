@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "इन खातों से",
   "general": "सामान्य",
+  "gesture_double_tap_like": "पसंद करने के लिए दो बार टैप करें",
+  "gesture_double_tap_like_description": "डिफ़ॉल्ट रूप से बंद: चालू होने पर हर सिंगल टैप दूसरे टैप का इंतज़ार करता है, इसलिए पोस्ट खुलने में थोड़ी देर लगती है।",
   "group_mark_style_auto": "स्वतः",
   "group_mark_style_emoji": "इमोजी",
   "group_mark_style_icon": "आइकन",

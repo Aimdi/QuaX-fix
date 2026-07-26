@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "D'aquests comptes",
   "general": "General",
+  "gesture_double_tap_like": "Doble toc per fer m'agrada",
+  "gesture_double_tap_like_description": "Desactivat per defecte: cada toc simple espera per si en ve un segon, així que obrir una publicació triga una mica més.",
   "group_mark_style_auto": "Auto",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Icona",

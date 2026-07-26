@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Von diesen Konten",
   "general": "Allgemein",
+  "gesture_double_tap_like": "Doppeltippen zum Liken",
+  "gesture_double_tap_like_description": "Standardmäßig aus: Jeder einzelne Tipp wartet dann kurz auf einen zweiten, wodurch das Öffnen eines Beitrags etwas träger wird.",
   "group_mark_style_auto": "Auto",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Symbol",

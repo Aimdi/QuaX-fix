@@ -178,6 +178,12 @@ const optionUserTrendsLocations = 'trends.locations';
 
 const optionNonConfirmationBiasMode = 'other.improve_non_confirmation_bias';
 const optionTweetsShowSubscribeBadge = 'tweets.show_subscribe_badge';
+// Double-tapping a post likes it. Off by default, and deliberately so: a
+// double-tap handler makes every single tap wait to see whether a second one
+// is coming, so a reader who does not want the gesture should not pay the
+// delay for it.
+const optionGestureDoubleTapLike = 'gestures.double_tap_like';
+
 const optionZenMode = 'other.zen_mode';
 const optionZenModePageCap = 'other.zen_mode_page_cap';
 const optionFeedReadingPosition = 'feed.reading_position';

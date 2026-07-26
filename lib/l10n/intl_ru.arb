@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "От этих аккаунтов",
   "general": "Основные",
+  "gesture_double_tap_like": "Двойное нажатие — нравится",
+  "gesture_double_tap_like_description": "По умолчанию выключено: каждое одиночное нажатие ждёт возможного второго, поэтому пост открывается чуть медленнее.",
   "group_mark_style_auto": "Авто",
   "group_mark_style_emoji": "Эмодзи",
   "group_mark_style_icon": "Значок",

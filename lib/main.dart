@@ -252,6 +252,7 @@ Future<void> main() async {
     defaults: {
       optionConfirmClose: true,
       optionDisableAnimations: false,
+      optionGestureDoubleTapLike: false,
       optionTextScaleFactor: 1.0,
       optionDisableScreenshots: false,
       optionDownloadPath: '',

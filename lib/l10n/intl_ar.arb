@@ -163,6 +163,8 @@
   "fritter": "فريتر",
   "from_these_accounts": "من هذه الحسابات",
   "general": "العامة",
+  "gesture_double_tap_like": "النقر المزدوج للإعجاب",
+  "gesture_double_tap_like_description": "مطفأ افتراضيًا: عند تفعيله تنتظر كل نقرة مفردة لمعرفة ما إذا كانت ستتبعها ثانية، فيصبح فتح المنشور أبطأ قليلًا.",
   "group_mark_style_auto": "تلقائي",
   "group_mark_style_emoji": "إيموجي",
   "group_mark_style_icon": "أيقونة",

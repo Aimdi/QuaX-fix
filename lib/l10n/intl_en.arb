@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "From these accounts",
   "general": "General",
+  "gesture_double_tap_like": "Double-tap to like",
+  "gesture_double_tap_like_description": "Off by default: with it on, every single tap waits to see whether a second one follows, so opening a post feels a little slower.",
   "group_mark_style_auto": "Auto",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Icon",

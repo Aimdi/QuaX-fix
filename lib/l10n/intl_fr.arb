@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "De ces comptes",
   "general": "Général",
+  "gesture_double_tap_like": "Double appui pour aimer",
+  "gesture_double_tap_like_description": "Désactivé par défaut : chaque appui simple attend un éventuel second, l'ouverture d'un post devient donc un peu plus lente.",
   "group_mark_style_auto": "Auto",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Icône",

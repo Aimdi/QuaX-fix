@@ -163,6 +163,8 @@
   "fritter": "QuaX",
   "from_these_accounts": "Dessas contas",
   "general": "Geral",
+  "gesture_double_tap_like": "Toque duas vezes para curtir",
+  "gesture_double_tap_like_description": "Desativado por padrão: cada toque simples espera por um possível segundo, então abrir um post fica um pouco mais lento.",
   "group_mark_style_auto": "Auto",
   "group_mark_style_emoji": "Emoji",
   "group_mark_style_icon": "Ícone",
