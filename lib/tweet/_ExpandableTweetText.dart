@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:quax/generated/l10n.dart';
 
+/// The line cap a post has to break before it is worth collapsing.
+///
+/// A classic post is 280 characters, which already wraps past eight lines in
+/// the width a post card leaves for text — so the old cap of eight collapsed
+/// ordinary posts, and "show more" appeared on almost everything. Sixteen
+/// reaches roughly twice that, which is long-form territory.
+const int kTweetTextMaxLines = 16;
+
 class ExpandableTweetText extends StatefulWidget {
   final List<InlineSpan> textSpans;
   final VoidCallback? onTap;
@@ -10,7 +18,7 @@ class ExpandableTweetText extends StatefulWidget {
     super.key,
     required this.textSpans,
     this.onTap,
-    this.maxLines = 8,
+    this.maxLines = kTweetTextMaxLines,
   });
 
   @override

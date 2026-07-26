@@ -17,6 +17,7 @@ import 'package:quax/search/search.dart';
 import 'package:quax/subscriptions/subscriptions.dart';
 import 'package:quax/trends/trends_screen.dart';
 import 'package:quax/ui/errors.dart';
+import 'package:quax/ui/scroll_to_top.dart';
 import 'package:quax/ui/x_look_theme.dart';
 
 typedef NavigationTitleBuilder = String Function(BuildContext context);
@@ -84,8 +85,6 @@ class _HomeScreenState extends State<_HomeScreen> {
       _pages = pages;
     });
   }
-
-  final trendsFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -209,12 +208,16 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
   /// How far the current drag across the navigation bar has travelled.
   double _dragDistance = 0;
 
-  void unfocusOtherPages(){
-    _focusNodes.forEach((index, focusNode) {
-      if(index != _currentPage) {
-        focusNode.unfocus();
-      }
-    });
+  /// Drops focus everywhere before a tab change.
+  ///
+  /// Sparing the page being left kept its search field focused, and tabs are
+  /// kept alive — swiping back re-attached a still-focused field and the
+  /// keyboard came up on its own.
+  void unfocusPages() {
+    for (final focusNode in _focusNodes.values) {
+      focusNode.unfocus();
+    }
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   @override
@@ -237,11 +240,14 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
         _scrollControllers[k]?.dispose();
         _scrollControllers.remove(k);
       });
+      _focusNodes.keys.where((k) => k >= widget.pages.length).toList().forEach((k) {
+        _focusNodes[k]?.dispose();
+        _focusNodes.remove(k);
+      });
       // Create controllers for new pages.
       for (int i = 0; i < widget.pages.length; i++) {
-        if (!_scrollControllers.containsKey(i)) {
-          _scrollControllers[i] = ScrollController();
-        }
+        _scrollControllers.putIfAbsent(i, () => ScrollController());
+        _focusNodes.putIfAbsent(i, () => FocusNode());
       }
     }
   }
@@ -264,7 +270,7 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
       return;
     }
 
-    unfocusOtherPages();
+    unfocusPages();
     if (widget.prefs.get<bool>(optionDisableAnimations) == true) {
       _pageController.jumpToPage(target);
     } else {
@@ -346,20 +352,15 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
                 );
               })
             .toList(),
+        // Tapping the tab you are already on goes back to the top, whichever
+        // tab it is — the Trending tab used to grab the search field instead,
+        // which put a keyboard where a scroll was asked for.
         onDestinationSelected: (index) async {
           if (index == _currentPage) {
-            final tappedId = widget.pages[index].id;
-            if (tappedId == "feed" || tappedId.startsWith("group-")) {
-              final scrollController = _scrollControllers[_currentPage];
-              if (scrollController != null) {
-                await scrollController.animateTo(0, duration: const Duration(seconds: 1), curve: Curves.easeInOut);
-              }
-            }
-            if (tappedId == "trending") {
-              _focusNodes[_currentPage]!.requestFocus();
-            }
+            await scrollToTop(context, _scrollControllers[_currentPage]);
+            return;
           }
-          unfocusOtherPages();
+          unfocusPages();
           _pageController.jumpToPage(index);
         },
         ),
@@ -378,7 +379,7 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
       return;
     }
 
-    unfocusOtherPages();
+    unfocusPages();
     if (widget.prefs.get<bool>(optionDisableAnimations) == true) {
       _pageController.jumpToPage(target);
     } else {
@@ -391,6 +392,9 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
     _pageController.dispose();
     for (final controller in _scrollControllers.values) {
       controller.dispose();
+    }
+    for (final focusNode in _focusNodes.values) {
+      focusNode.dispose();
     }
     super.dispose();
   }

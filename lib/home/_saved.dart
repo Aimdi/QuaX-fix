@@ -40,6 +40,13 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
   bool _searching = false;
   String _query = '';
 
+  /// Focused when the search button opens the field, rather than by `autofocus`.
+  ///
+  /// This screen is kept alive, so the field's subtree is re-inserted whenever
+  /// the folder strip or a filter chip rebuilds — with `autofocus` that raised
+  /// the keyboard again each time, unasked.
+  final FocusNode _searchFocusNode = FocusNode();
+
   @override
   bool get wantKeepAlive => true;
 
@@ -50,6 +57,12 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
     context.read<SavedTweetModel>().listSavedTweets();
     context.read<SavedTweetFolderModel>().listFolders();
     context.read<LikedTweetModel>().listLikedTweets();
+  }
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    super.dispose();
   }
 
   // If the selected tab is no longer reachable (folder deleted elsewhere, or its
@@ -133,7 +146,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       child: TextField(
-        autofocus: true,
+        focusNode: _searchFocusNode,
         decoration: InputDecoration(
           hintText: L10n.of(context).search_saved_posts,
           prefixIcon: const Icon(Icons.search),
@@ -435,8 +448,11 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
                   tooltip: L10n.current.search_saved_posts,
                   onPressed: () => setState(() {
                     _searching = !_searching;
-                    if (!_searching) {
+                    if (_searching) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) => _searchFocusNode.requestFocus());
+                    } else {
                       _query = '';
+                      _searchFocusNode.unfocus();
                     }
                   }),
                 ),

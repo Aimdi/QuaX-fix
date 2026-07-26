@@ -91,12 +91,56 @@ MediaGridItem? _itemFor(Media m, String tweetId, String username, int mediaIndex
   }
 }
 
+/// Which media a grid shows.
+///
+/// Animated GIFs are served as video by X and play like one, so they belong
+/// with the videos rather than in a category of their own.
+enum MediaFilter {
+  all,
+  photos,
+  videos;
+
+  bool accepts(MediaGridItem item) => switch (this) {
+        MediaFilter.all => true,
+        MediaFilter.photos => item is PhotoGridItem,
+        MediaFilter.videos => item is VideoGridItem || item is GifGridItem,
+      };
+}
+
 CursorPage<String, MediaGridItem> mediaPageFromStatus(TweetStatus status, String? cursor) {
   final next = status.cursorBottom;
-  if (next == cursor) {
-    return (items: const <MediaGridItem>[], nextCursor: null);
+  // X repeats the bottom cursor once a timeline has no more pages. That does
+  // mark the end, but the page it arrived with still holds real media —
+  // discarding it lost the last screenful of a profile's media.
+  final atEnd = next == null || next == cursor;
+  return (items: mediaItemsFromChains(status.chains), nextCursor: atEnd ? null : next);
+}
+
+/// A page of tweets and where the next one starts.
+typedef ChainPage = ({List<TweetChain> chains, String? nextCursor});
+
+/// Loads media pages until one carries something.
+///
+/// Media posts are sparse: a page of twenty text posts maps to no media at all,
+/// and an empty page is how the paging controller is told a feed has ended. So
+/// a few more pages are pulled before giving that answer.
+Future<CursorPage<String, MediaGridItem>> mediaPageWithLookahead(
+  String? cursor,
+  Future<ChainPage> Function(String? cursor) fetch,
+  List<MediaGridItem> Function(List<TweetChain> chains) itemsOf, {
+  int maxLookahead = 4,
+}) async {
+  var result = await fetch(cursor);
+  var items = itemsOf(result.chains);
+
+  var lookahead = 0;
+  while (items.isEmpty && result.chains.isNotEmpty && result.nextCursor != null && lookahead < maxLookahead) {
+    result = await fetch(result.nextCursor);
+    items = itemsOf(result.chains);
+    lookahead++;
   }
-  return (items: mediaItemsFromChains(status.chains), nextCursor: next);
+
+  return (items: items, nextCursor: result.nextCursor);
 }
 
 List<MediaGridItem> mediaItemsFromChains(List<TweetChain> chains) {

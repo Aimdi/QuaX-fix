@@ -13,23 +13,38 @@ import 'package:quax/utils/paging.dart';
 class ProfileMediaGrid extends StatefulWidget {
   final UserWithExtra user;
   final BasePrefService pref;
+  final MediaFilter filter;
 
-  const ProfileMediaGrid({super.key, required this.user, required this.pref});
+  const ProfileMediaGrid({super.key, required this.user, required this.pref, this.filter = MediaFilter.all});
 
   @override
   State<ProfileMediaGrid> createState() => _ProfileMediaGridState();
 }
 
 class _ProfileMediaGridState extends State<ProfileMediaGrid> {
-  late final CursorPagingController<String, MediaGridItem> _paging;
+  late CursorPagingController<String, MediaGridItem> _paging;
 
   static const int pageSize = 20;
   int loadTweetsCounter = 0;
+
+  /// Successive media pages overlap at their boundaries, so an entry already
+  /// shown must not come round again.
+  final Set<String> _seen = {};
 
   @override
   void initState() {
     super.initState();
     _paging = CursorPagingController<String, MediaGridItem>(_fetchPage);
+  }
+
+  @override
+  void didUpdateWidget(covariant ProfileMediaGrid oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.filter != oldWidget.filter) {
+      _paging.dispose();
+      _seen.clear();
+      _paging = CursorPagingController<String, MediaGridItem>(_fetchPage);
+    }
   }
 
   @override
@@ -47,6 +62,14 @@ class _ProfileMediaGridState extends State<ProfileMediaGrid> {
   }
 
   Future<CursorPage<String, MediaGridItem>> _fetchPage(String? cursor) async {
+    if (cursor == null) {
+      _seen.clear();
+    }
+
+    return mediaPageWithLookahead(cursor, _chainsAfter, _unseenItems);
+  }
+
+  Future<ChainPage> _chainsAfter(String? cursor) async {
     var result = await Twitter.getTweets(
       widget.user.idStr!,
       'media',
@@ -58,7 +81,15 @@ class _ProfileMediaGridState extends State<ProfileMediaGrid> {
       incrementTweetsCounter: incrementLoadTweetsCounter,
     );
 
-    return mediaPageFromStatus(result, cursor);
+    final page = mediaPageFromStatus(result, cursor);
+    return (chains: result.chains, nextCursor: page.nextCursor);
+  }
+
+  List<MediaGridItem> _unseenItems(List<TweetChain> chains) {
+    return mediaItemsFromChains(chains)
+        .where(widget.filter.accepts)
+        .where((m) => _seen.add('${m.tweetId}/${m.mediaIndex}'))
+        .toList();
   }
 
   @override

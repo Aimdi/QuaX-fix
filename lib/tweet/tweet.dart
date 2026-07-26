@@ -492,7 +492,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
             child: ExpandableTweetText(
               textSpans: displayRichText(_displayParts),
               onTap: () => !widget.tweetOpened ? onClickOpenTweet(tweet) : null,
-              maxLines: PrefService.of(context).get(alwaysShowFullTweetContents) ? null : 8,
+              maxLines: PrefService.of(context).get(alwaysShowFullTweetContents) ? null : kTweetTextMaxLines,
             ),
           ));
     }

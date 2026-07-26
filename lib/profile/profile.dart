@@ -7,6 +7,7 @@ import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/profile/_follows.dart';
 import 'package:quax/profile/_media_grid.dart';
+import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:quax/profile/_saved.dart';
 import 'package:quax/profile/_tweets.dart';
 import 'package:quax/profile/profile_feed_settings.dart';
@@ -118,6 +119,8 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
   final GlobalKey<NestedScrollViewState> nestedScrollViewKey = GlobalKey();
 
   late TabController _tabController;
+
+  MediaFilter _mediaFilter = MediaFilter.all;
 
   bool _showBackToTopButton = false;
 
@@ -283,7 +286,17 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
                           unselectedLabelColor: theme.colorScheme.onSurfaceVariant,
                           tabs: [
                             for (final (i, t) in profileTabs.indexed)
-                              Tab(child: _ProfileTabLabel(tab: t, selected: _tabController.index == i)),
+                              Tab(
+                                  child: _ProfileTabLabel(
+                                tab: t,
+                                selected: _tabController.index == i,
+                                trailing: t.id == ProfileTabs.media
+                                    ? _MediaFilterButton(
+                                        value: _mediaFilter,
+                                        onChanged: (filter) => setState(() => _mediaFilter = filter),
+                                      )
+                                    : null,
+                              )),
                           ],
                           dividerColor: theme.colorScheme.surfaceBright.withAlpha(150),
                         ),
@@ -610,7 +623,7 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
                     includeReplies: true,
                     pinnedTweets: widget.profile.pinnedTweets,
                     pref: prefs),
-                ProfileMediaGrid(user: user, pref: prefs),
+                ProfileMediaGrid(user: user, pref: prefs, filter: _mediaFilter),
                 ProfileSaved(user: user),
               ],
             ),
@@ -645,8 +658,9 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
 class _ProfileTabLabel extends StatelessWidget {
   final NavigationTab tab;
   final bool selected;
+  final Widget? trailing;
 
-  const _ProfileTabLabel({required this.tab, required this.selected});
+  const _ProfileTabLabel({required this.tab, required this.selected, this.trailing});
 
   @override
   Widget build(BuildContext context) {
@@ -661,8 +675,48 @@ class _ProfileTabLabel extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontWeight: FontWeight.w700)),
           ),
+          if (trailing != null) trailing!,
         ],
       ],
+    );
+  }
+}
+
+/// The chevron on the selected Media tab, which opens the photos/videos filter.
+///
+/// It is its own tap target rather than a second meaning for the tab itself:
+/// tapping the tab still returns the grid to the top, as every other tab does.
+class _MediaFilterButton extends StatelessWidget {
+  final MediaFilter value;
+  final ValueChanged<MediaFilter> onChanged;
+
+  const _MediaFilterButton({required this.value, required this.onChanged});
+
+  String _labelFor(BuildContext context, MediaFilter filter) => switch (filter) {
+        MediaFilter.all => L10n.of(context).all,
+        MediaFilter.photos => L10n.of(context).photos,
+        MediaFilter.videos => L10n.of(context).videos,
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<MediaFilter>(
+      initialValue: value,
+      onSelected: onChanged,
+      tooltip: L10n.of(context).media,
+      padding: EdgeInsets.zero,
+      itemBuilder: (context) => [
+        for (final filter in MediaFilter.values)
+          PopupMenuItem(value: filter, child: Text(_labelFor(context, filter))),
+      ],
+      child: Padding(
+        padding: const EdgeInsets.only(left: 2),
+        child: Icon(
+          Icons.expand_more,
+          size: 18,
+          color: value == MediaFilter.all ? null : Theme.of(context).colorScheme.primary,
+        ),
+      ),
     );
   }
 }

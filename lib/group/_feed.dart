@@ -580,24 +580,13 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   }
 
   /// Loads a page for the media grid: same pages as the tweet list, mapped to
-  /// their media entries. Media posts can be sparse, so when a page maps to
-  /// nothing, look a few pages ahead before returning an empty page — which
-  /// the controller treats as the end of the feed.
+  /// their media entries.
   Future<CursorPage<String, MediaGridItem>> _loadMediaPage(String? cursor) async {
     if (cursor == null) {
       _seenMediaKeys.clear();
     }
 
-    var result = await _listTweets(cursor);
-    var items = _unseenMediaItems(result.chains);
-    var lookahead = 0;
-    while (items.isEmpty && result.chains.isNotEmpty && result.nextCursor != null && lookahead < 4) {
-      result = await _listTweets(result.nextCursor);
-      items = _unseenMediaItems(result.chains);
-      lookahead++;
-    }
-
-    return (items: items, nextCursor: result.nextCursor);
+    return mediaPageWithLookahead(cursor, _listTweets, _unseenMediaItems);
   }
 
   // Successive search windows overlap at their boundaries, so keep only media
