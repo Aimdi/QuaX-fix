@@ -66,12 +66,33 @@ class HomeModel extends Store<List<HomePage>> {
         pages.add(HomePage(id, true, page));
       }
 
+      // Switching a plugin on should put its tab in the bar. Only Substack did
+      // that, so enabling any other plugin registered a tab and then left it
+      // hidden behind Settings > Home pages, looking like nothing had happened.
+      //
+      // Seeded once, and remembered: a tab the reader then removes has to stay
+      // removed rather than coming back on the next launch.
+      final seeded = prefs.getStringList(optionSeededPluginTabs) ?? const <String>[];
+      final newlySeeded = <String>[];
+
       for (var page in available) {
         if (saved.contains(page.id)) {
           continue;
         }
-        final autoSelect = page.id == pluginIdSubstack && prefs.get(optionPluginSubstackEnabled) == true;
+
+        // `available` only carries plugin pages for plugins that are enabled
+        // and want a tab, so being a plugin at all is enough here. Groups are
+        // deliberately excluded: they are not tabs the reader asked for.
+        final autoSelect = pluginById(page.id) != null && !seeded.contains(page.id);
+        if (autoSelect) {
+          newlySeeded.add(page.id);
+        }
+
         pages.add(HomePage(page.id, autoSelect, page));
+      }
+
+      if (newlySeeded.isNotEmpty) {
+        await prefs.set(optionSeededPluginTabs, [...seeded, ...newlySeeded]);
       }
 
       final selectedIds = pages.where((e) => e.selected).map((e) => e.id).toList();

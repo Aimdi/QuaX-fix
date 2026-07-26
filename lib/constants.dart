@@ -11,6 +11,8 @@ const optionHelloLastBuild = 'hello.last_build';
 const optionHomePages = 'home.pages';
 const optionHomeInitialTab = 'home.initial_tab';
 const optionHomeDefaultFeedTab = 'home.default_feed_tab';
+/// Plugin tabs already offered to the bar once, so removing one sticks.
+const optionSeededPluginTabs = 'plugins.seeded_tabs';
 
 const optionImageQuality = 'media.size';
 const optionMediaVideoQuality = 'media.video_quality';
