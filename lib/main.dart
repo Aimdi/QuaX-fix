@@ -301,6 +301,7 @@ Future<void> main() async {
       optionPluginKarakeepEnabled: false,
       optionPluginKarakeepServerUrl: '',
       optionPluginKarakeepApiKey: '',
+      optionSeededPluginTabs: <String>[],
       optionPluginRedditEnabled: false,
       optionPluginRedditClientId: '',
       optionPluginRedditSubreddits: '[]',
