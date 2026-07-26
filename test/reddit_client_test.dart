@@ -147,6 +147,61 @@ void main() {
       }
     });
 
+    // www refusing an anonymous reader does not mean old. will: the two are
+    // served and throttled separately.
+    test('a refusal from www is retried against old.reddit.com', () async {
+      final hosts = <String>[];
+      final client = RedditClient(httpClient: MockClient((request) async {
+        hosts.add(request.url.host);
+        if (request.url.host == 'www.reddit.com') {
+          return _json({'error': 403}, 403);
+        }
+        return _json(_listingBody(), 200);
+      }));
+
+      final listing = await client.fetchSubreddit('dartlang', clientId: '');
+
+      expect(hosts, ['www.reddit.com', 'old.reddit.com']);
+      expect(listing.posts, isNotEmpty);
+    });
+
+    test('a working www is not retried, so the extra request is only paid on failure', () async {
+      final hosts = <String>[];
+      final client = RedditClient(httpClient: MockClient((request) async {
+        hosts.add(request.url.host);
+        return _json(_listingBody(), 200);
+      }));
+
+      await client.fetchSubreddit('dartlang', clientId: '');
+
+      expect(hosts, ['www.reddit.com']);
+    });
+
+    test('both public hosts refusing points at the client id', () async {
+      final client = RedditClient(httpClient: MockClient((_) async => _json({'error': 403}, 403)));
+
+      await expectLater(
+        client.fetchSubreddit('dartlang', clientId: ''),
+        throwsA(isA<RedditException>()
+            .having((e) => e.kind, 'kind', RedditErrorKind.notConfigured)
+            .having((e) => e.detail, 'detail', contains('both public hosts'))),
+      );
+    });
+
+    test('a 404 is not retried: the subreddit is simply not there', () async {
+      final hosts = <String>[];
+      final client = RedditClient(httpClient: MockClient((request) async {
+        hosts.add(request.url.host);
+        return _json({'error': 404}, 404);
+      }));
+
+      await expectLater(
+        client.fetchSubreddit('dartlang', clientId: ''),
+        throwsA(isA<RedditException>().having((e) => e.kind, 'kind', RedditErrorKind.notFound)),
+      );
+      expect(hosts, ['www.reddit.com']);
+    });
+
     test('a client id still uses the authenticated host', () async {
       final requested = <http.Request>[];
       final client = RedditClient(httpClient: MockClient((request) async {

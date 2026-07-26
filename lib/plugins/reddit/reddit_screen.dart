@@ -12,7 +12,7 @@ import 'package:quax/utils/urls.dart';
 
 String redditErrorMessage(L10n l10n, Object error) {
   if (error is RedditException) {
-    return switch (error.kind) {
+    final explanation = switch (error.kind) {
       RedditErrorKind.notConfigured => l10n.plugin_reddit_not_configured,
       RedditErrorKind.unauthorized => l10n.plugin_reddit_error_client_id,
       RedditErrorKind.blocked => l10n.plugin_reddit_error_blocked,
@@ -21,6 +21,11 @@ String redditErrorMessage(L10n l10n, Object error) {
       RedditErrorKind.badResponse => l10n.plugin_reddit_error_response,
       RedditErrorKind.network => l10n.plugin_reddit_error_network,
     };
+
+    // The translated sentence says what to do; the detail says what actually
+    // happened. Without it a refusal, a timeout and a reshaped response all
+    // read the same, and "it doesn't work" is all anyone can report back.
+    return error.detail.isEmpty ? explanation : '$explanation\n\n${error.detail}';
   }
   return '$error';
 }
@@ -210,6 +215,17 @@ class _RedditScreenState extends State<RedditScreen> {
                   Icon(Icons.forum_outlined, size: 48, color: Theme.of(context).colorScheme.outline),
                   const SizedBox(height: 16),
                   Text(l10n.plugin_reddit_empty, textAlign: TextAlign.center),
+                  const SizedBox(height: 16),
+                  // Telling the reader to add a subreddit and then leaving the
+                  // only control in the app bar is how this screen managed to
+                  // look broken when it was merely empty.
+                  Center(
+                    child: FilledButton.icon(
+                      onPressed: _addSubreddit,
+                      icon: const Icon(Icons.add),
+                      label: Text(l10n.plugin_reddit_add),
+                    ),
+                  ),
                 ],
               );
             }
