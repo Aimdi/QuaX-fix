@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:quax/plugins/reddit/reddit_html.dart';
 
 /// How a Reddit request failed, in terms the user can act on.
 enum RedditErrorKind {
@@ -199,6 +200,33 @@ class RedditClient {
   String? _token;
   DateTime? _tokenExpiry;
 
+  /// Cookies the public hosts have set, kept for the life of the client.
+  ///
+  /// A client that never carries a cookie looks like a fresh stranger on every
+  /// request, which is one of the cheapest bot tells there is. This also holds
+  /// the `over18` consent once it has been given, so the gate is answered once
+  /// rather than on every subreddit.
+  final Map<String, String> _cookies = {};
+
+  void _rememberCookies(http.Response response, Map<String, String>? sent) {
+    _cookies.addAll(?sent);
+
+    final header = response.headers['set-cookie'];
+    if (header == null) {
+      return;
+    }
+
+    // Several cookies arrive comma-joined; only the name=value head of each
+    // matters, the attributes after the first `;` do not.
+    for (final piece in header.split(RegExp(r',(?=[^;]+=)'))) {
+      final pair = piece.split(';').first.trim();
+      final equals = pair.indexOf('=');
+      if (equals > 0) {
+        _cookies[pair.substring(0, equals).trim()] = pair.substring(equals + 1).trim();
+      }
+    }
+  }
+
   /// Whether a usable token is already cached.
   bool get hasToken => _token != null && (_tokenExpiry?.isAfter(_now()) ?? false);
 
@@ -279,9 +307,18 @@ class RedditClient {
       return _listingFrom(_decode(await _read(uri, token)));
     }
 
-    // www refusing an anonymous reader does not mean old. will: they are served
-    // separately and throttled separately, which is why Stealth keeps both.
-    // Trying the second costs one request on a page that was failing anyway.
+    // The old site's HTML first, which is the route that still works without an
+    // account: Reddit shut unauthenticated `.json` down, so asking for JSON now
+    // gets refused however the request is dressed. Stealth scrapes this page
+    // for the same reason.
+    final scraped = await _scrapeListing(name, sort, query);
+    if (scraped != null) {
+      return scraped;
+    }
+
+    // JSON second, in case the deprecation is not yet total for this reader or
+    // Reddit walks part of it back. www and old are served and throttled
+    // separately, so both are worth a try.
     var response = await _read(Uri.parse(_publicJsonPath(_publicBase, name, sort)).replace(queryParameters: query));
 
     if (const [403, 429].contains(response.statusCode)) {
@@ -307,6 +344,49 @@ class RedditClient {
     return _listingFrom(_decode(response));
   }
 
+  /// Reads a listing off old.reddit's HTML, or null if that page could not be
+  /// used — the caller then falls back to JSON rather than giving up.
+  ///
+  /// The over-18 gate is answered with a cookie rather than a login: Reddit
+  /// wants consent recorded, not an account, and `over18=1` is what its own
+  /// form sets.
+  Future<RedditListing?> _scrapeListing(String name, RedditSort sort, Map<String, String> query) async {
+    final uri = Uri.parse('$_publicFallbackBase/r/$name/${redditSortPath(sort)}')
+        .replace(queryParameters: {...query}..remove('raw_json'));
+
+    late http.Response response;
+    try {
+      response = await _read(uri);
+    } on RedditException {
+      return null;
+    }
+
+    if (response.statusCode != 200) {
+      return null;
+    }
+
+    if (isOver18Gate(response.body)) {
+      // Consent is a cookie; ask again carrying it.
+      try {
+        response = await _read(uri, null, {'over18': '1'});
+      } on RedditException {
+        return null;
+      }
+      if (response.statusCode != 200 || isOver18Gate(response.body)) {
+        return null;
+      }
+    }
+
+    final listing = parseListing(response.body);
+    // An empty page is indistinguishable from markup this parser no longer
+    // understands, so it is treated as a failure and JSON gets its turn.
+    if (listing.posts.isEmpty) {
+      return null;
+    }
+
+    return RedditListing(posts: listing.posts, after: listing.after);
+  }
+
   static String _publicJsonPath(String base, String name, RedditSort sort) =>
       '$base/r/$name/${redditSortPath(sort)}.json';
 
@@ -316,16 +396,21 @@ class RedditClient {
 
   /// One GET, with the token when there is one. A 401 drops the cached token so
   /// the next attempt re-authorises.
-  Future<http.Response> _read(Uri uri, [String? token]) async {
+  Future<http.Response> _read(Uri uri, [String? token, Map<String, String>? cookies]) async {
     final public = isPublicHost(uri);
+    final jar = {..._cookies, ...?cookies};
 
     final response = await _send(() => httpClient.get(uri, headers: {
           if (token != null) 'Authorization': 'Bearer $token',
           'User-Agent': public ? publicUserAgent : userAgent,
           // The website weighs these too; their absence is another bot tell.
-          if (public) 'Accept': 'application/json, text/plain, */*',
+          if (public) 'Accept': 'text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
           if (public) 'Accept-Language': 'en-US,en;q=0.9',
+          if (public && jar.isNotEmpty)
+            'Cookie': jar.entries.map((e) => '${e.key}=${e.value}').join('; '),
         }));
+
+    _rememberCookies(response, cookies);
 
     if (response.statusCode == 401) {
       forgetToken();

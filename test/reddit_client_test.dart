@@ -39,6 +39,28 @@ Map<String, dynamic> _listingBody({String? after, List<Map<String, dynamic>>? ch
       },
     };
 
+/// A listing shaped like old.reddit's, which is what the anonymous path now
+/// reads. Only the `data-*` attributes the parser uses are here.
+const _listingHtml = '''
+<!doctype html><html><body><div class="content" role="main"><div id="siteTable">
+  <div class=" thing id-t3_abc123 link " data-fullname="t3_abc123" data-subreddit="dartlang"
+       data-author="someone" data-score="412" data-comments-count="37"
+       data-timestamp="1769000000000" data-permalink="/r/dartlang/comments/abc123/dart_4_is_out/"
+       data-url="https://dart.dev/blog" data-domain="dart.dev" data-nsfw="false">
+    <a class="title" href="https://dart.dev/blog">Dart 4 is out</a>
+  </div>
+</div></div></body></html>
+''';
+
+/// Reddit's age gate, which wants a cookie rather than an account.
+const _over18Gate = '''
+<!doctype html><html><body><div class="content">
+  <form action="/over18?dest=%2Fr%2Fdartlang" method="post">
+    <input type="hidden" name="over18" value="yes">
+  </form>
+</div></body></html>
+''';
+
 void main() {
   group('normaliseSubreddit', () {
     test('accepts the shapes people paste', () {
@@ -116,23 +138,61 @@ void main() {
     });
 
     // Without a client id the reader used to fail every request. It now reads
-    // the public endpoint, which takes no credentials, so switching the plugin
-    // on is enough to see posts.
-    test('no client id reads the public endpoint, with no token and no auth header', () async {
+    // the public web, which takes no credentials, so switching the plugin on is
+    // enough to see posts.
+    test('no client id scrapes old.reddit first, with no token and no auth header', () async {
       final requested = <http.Request>[];
       final client = RedditClient(httpClient: MockClient((request) async {
         requested.add(request);
-        return _json(_listingBody(), 200);
+        return http.Response(_listingHtml, 200, headers: {'content-type': 'text/html'});
       }));
 
       final listing = await client.fetchSubreddit('dartlang', clientId: '  ');
 
-      expect(requested, hasLength(1), reason: 'no token request, just the listing');
-      expect(requested.single.url.host, 'www.reddit.com');
-      expect(requested.single.url.path, '/r/dartlang/hot.json');
+      expect(requested, hasLength(1), reason: 'no token request, and the HTML answered');
+      expect(requested.single.url.host, 'old.reddit.com');
+      expect(requested.single.url.path, '/r/dartlang/hot');
       expect(requested.single.headers.containsKey('Authorization'), isFalse);
       // The website, not the API: it has to look like a browser to be served.
       expect(requested.single.headers['User-Agent'], RedditClient.publicUserAgent);
+      expect(listing.posts.single.id, 'abc123');
+    });
+
+    test('unreadable HTML falls back to the JSON endpoints rather than giving up', () async {
+      // Reddit deprecated unauthenticated .json, so HTML leads — but if that
+      // page changes shape, the old route is still worth asking.
+      final urls = <Uri>[];
+      final client = RedditClient(httpClient: MockClient((request) async {
+        urls.add(request.url);
+        if (request.url.path.endsWith('.json')) {
+          return _json(_listingBody(), 200);
+        }
+        return http.Response('<html><body>nothing familiar</body></html>', 200);
+      }));
+
+      final listing = await client.fetchSubreddit('dartlang', clientId: '');
+
+      expect(urls.first.host, 'old.reddit.com');
+      expect(urls.any((u) => u.path == '/r/dartlang/hot.json'), isTrue);
+      expect(listing.posts, isNotEmpty);
+    });
+
+    test('the over-18 gate is answered with a cookie, not a login', () async {
+      final cookies = <String?>[];
+      var served = 0;
+      final client = RedditClient(httpClient: MockClient((request) async {
+        cookies.add(request.headers['Cookie']);
+        served++;
+        if (served == 1) {
+          return http.Response(_over18Gate, 200);
+        }
+        return http.Response(_listingHtml, 200);
+      }));
+
+      final listing = await client.fetchSubreddit('dartlang', clientId: '');
+
+      expect(cookies.first, isNull);
+      expect(cookies[1], contains('over18=1'));
       expect(listing.posts, isNotEmpty);
     });
 
@@ -157,9 +217,12 @@ void main() {
     // www refusing an anonymous reader does not mean old. will: the two are
     // served and throttled separately.
     test('a refusal from www is retried against old.reddit.com', () async {
-      final hosts = <String>[];
+      final urls = <Uri>[];
       final client = RedditClient(httpClient: MockClient((request) async {
-        hosts.add(request.url.host);
+        urls.add(request.url);
+        if (!request.url.path.endsWith('.json')) {
+          return http.Response('', 403); // the scrape is refused
+        }
         if (request.url.host == 'www.reddit.com') {
           return _json({'error': 403}, 403);
         }
@@ -168,20 +231,20 @@ void main() {
 
       final listing = await client.fetchSubreddit('dartlang', clientId: '');
 
-      expect(hosts, ['www.reddit.com', 'old.reddit.com']);
+      expect(urls.map((u) => u.host), ['old.reddit.com', 'www.reddit.com', 'old.reddit.com']);
       expect(listing.posts, isNotEmpty);
     });
 
-    test('a working www is not retried, so the extra request is only paid on failure', () async {
-      final hosts = <String>[];
+    test('a page that scrapes is not asked for twice', () async {
+      final urls = <Uri>[];
       final client = RedditClient(httpClient: MockClient((request) async {
-        hosts.add(request.url.host);
-        return _json(_listingBody(), 200);
+        urls.add(request.url);
+        return http.Response(_listingHtml, 200);
       }));
 
       await client.fetchSubreddit('dartlang', clientId: '');
 
-      expect(hosts, ['www.reddit.com']);
+      expect(urls, hasLength(1), reason: 'the JSON fallback is only paid on failure');
     });
 
     test('both public hosts refusing is reported as a block, not as missing setup', () async {
@@ -221,9 +284,9 @@ void main() {
 
       await client.fetchSubreddit('dartlang', clientId: '');
 
-      expect(agents.single, RedditClient.publicUserAgent);
-      expect(agents.single, startsWith('Mozilla/'));
-      expect(agents.single, isNot(RedditClient.userAgent));
+      expect(agents, everyElement(RedditClient.publicUserAgent));
+      expect(agents.first, startsWith('Mozilla/'));
+      expect(agents.first, isNot(RedditClient.userAgent));
     });
 
     test('the API keeps the agent Reddit asks its clients for', () async {
@@ -255,7 +318,10 @@ void main() {
         client.fetchSubreddit('dartlang', clientId: ''),
         throwsA(isA<RedditException>().having((e) => e.kind, 'kind', RedditErrorKind.notFound)),
       );
-      expect(hosts, ['www.reddit.com']);
+      // The scrape is tried and gives up quietly; the JSON leg then reports the
+      // 404 without asking the second host, since a missing subreddit is
+      // missing on both.
+      expect(hosts, ['old.reddit.com', 'www.reddit.com']);
     });
 
     test('a client id still uses the authenticated host', () async {
