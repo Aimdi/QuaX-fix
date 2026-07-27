@@ -1200,5 +1200,11 @@
   "speech_playing": "Lettura ad alta voce",
   "@speech_playing": {},
   "speech_stop": "Interrompi",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Browser per i link",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "In quale browser si aprono i link quando non si aprono nell’app",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Predefinito di sistema",
+  "@option_external_browser_system": {}
 }

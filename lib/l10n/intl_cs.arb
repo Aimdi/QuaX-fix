@@ -1200,5 +1200,11 @@
   "speech_playing": "Čte nahlas",
   "@speech_playing": {},
   "speech_stop": "Zastavit",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Prohlížeč pro odkazy",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "Ve kterém prohlížeči se otevírají odkazy, když se neotevírají v aplikaci",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Výchozí systémový",
+  "@option_external_browser_system": {}
 }

@@ -1200,5 +1200,11 @@
   "speech_playing": "Se citește cu voce tare",
   "@speech_playing": {},
   "speech_stop": "Oprește",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Browser pentru linkuri",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "În ce browser se deschid linkurile când nu se deschid în aplicație",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Implicit de sistem",
+  "@option_external_browser_system": {}
 }

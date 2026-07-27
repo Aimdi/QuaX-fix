@@ -112,6 +112,10 @@ const githubRepo = 'Aimdi/QuaX-fix';
 const optionConfirmClose = 'confirm_close';
 const optionOpenLinksInEmbeddedBrowser = 'open_links_in_embedded_browser';
 
+/// Package name of the browser external links are handed to. Empty means
+/// whatever Android would have picked.
+const optionExternalBrowser = 'external_browser';
+
 /// Marks that links have been switched to the in-app browser once. The default
 /// alone does not reach an install that already stored the old one, which is
 /// every install this has ever run on.

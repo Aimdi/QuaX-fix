@@ -1200,5 +1200,11 @@
   "speech_playing": "ज़ोर से पढ़ा जा रहा है",
   "@speech_playing": {},
   "speech_stop": "रोकें",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "लिंक के लिए ब्राउज़र",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "ऐप में न खुलने वाले लिंक किस ब्राउज़र में खुलें",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "सिस्टम डिफ़ॉल्ट",
+  "@option_external_browser_system": {}
 }

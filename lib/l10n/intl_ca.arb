@@ -1200,5 +1200,11 @@
   "speech_playing": "Llegint en veu alta",
   "@speech_playing": {},
   "speech_stop": "Atura",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Navegador per als enllaços",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "En quin navegador s’obren els enllaços quan no s’obren a l’app",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Predeterminat del sistema",
+  "@option_external_browser_system": {}
 }

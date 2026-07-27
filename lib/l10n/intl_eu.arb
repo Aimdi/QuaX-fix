@@ -1200,5 +1200,11 @@
   "speech_playing": "Ozen irakurtzen",
   "@speech_playing": {},
   "speech_stop": "Gelditu",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Estekentzako nabigatzailea",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "Zein nabigatzailetan irekitzen diren estekak aplikazioan irekitzen ez direnean",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Sistemaren lehenetsia",
+  "@option_external_browser_system": {}
 }

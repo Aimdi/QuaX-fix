@@ -1200,5 +1200,11 @@
   "speech_playing": "Wird vorgelesen",
   "@speech_playing": {},
   "speech_stop": "Stopp",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Browser für Links",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "In welchem Browser Links geöffnet werden, wenn sie nicht in der App geöffnet werden",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Systemstandard",
+  "@option_external_browser_system": {}
 }

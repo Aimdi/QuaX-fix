@@ -1200,5 +1200,11 @@
   "speech_playing": "Leser høyt",
   "@speech_playing": {},
   "speech_stop": "Stopp",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Nettleser for lenker",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "Hvilken nettleser lenker åpnes i når de ikke åpnes i appen",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Systemstandard",
+  "@option_external_browser_system": {}
 }

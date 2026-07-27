@@ -26,6 +26,7 @@ class MainActivity : FlutterActivity() {
                 when (call.method) {
                     "scanMediaFile" -> scanMediaFile(call, result)
                     "getDefaultBrowser" -> getDefaultBrowser(result)
+                    "listBrowsers" -> listBrowsers(result)
                     "pickDownloadDirectory" -> pickDownloadDirectory(result)
                     "hasDownloadDirectoryAccess" -> hasDownloadDirectoryAccess(call, result)
                     "saveToDownloadDirectory" -> saveToDownloadDirectory(call, result)
@@ -51,6 +52,34 @@ class MainActivity : FlutterActivity() {
         }
         val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
         result.success(resolveInfo?.activityInfo?.packageName)
+    }
+
+    /**
+     * Every app that can open an https link, so the reader can name one.
+     *
+     * The system default is whatever Android was last told; someone who keeps
+     * a hardened browser for links off a feed had no way to say so short of
+     * changing that default for everything.
+     *
+     * Visible because the manifest already declares the matching <queries>
+     * entries; without those, package visibility would hide all of them.
+     */
+    private fun listBrowsers(result: MethodChannel.Result) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://example.com"))
+        val browsers = packageManager
+            .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+            .map {
+                mapOf(
+                    "package" to it.activityInfo.packageName,
+                    "label" to it.loadLabel(packageManager).toString(),
+                )
+            }
+            // One app can offer several matching activities; the reader is
+            // choosing an app, not an activity.
+            .distinctBy { it["package"] }
+            .sortedBy { it["label"]?.lowercase() }
+
+        result.success(browsers)
     }
 
     /**

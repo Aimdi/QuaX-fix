@@ -1200,5 +1200,11 @@
   "speech_playing": "Lecture à voix haute",
   "@speech_playing": {},
   "speech_stop": "Arrêter",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Navigateur pour les liens",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "Le navigateur dans lequel s’ouvrent les liens qui ne s’ouvrent pas dans l’app",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Par défaut du système",
+  "@option_external_browser_system": {}
 }

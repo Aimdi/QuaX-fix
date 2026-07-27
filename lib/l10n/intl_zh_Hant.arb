@@ -1200,5 +1200,11 @@
   "speech_playing": "正在朗讀",
   "@speech_playing": {},
   "speech_stop": "停止",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "開啟連結的瀏覽器",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "不在應用程式內開啟的連結要用哪個瀏覽器開啟",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "系統預設",
+  "@option_external_browser_system": {}
 }

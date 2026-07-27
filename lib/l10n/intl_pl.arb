@@ -1200,5 +1200,11 @@
   "speech_playing": "Czyta na głos",
   "@speech_playing": {},
   "speech_stop": "Zatrzymaj",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Przeglądarka dla linków",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "W której przeglądarce otwierają się linki, gdy nie otwierają się w aplikacji",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Domyślna systemowa",
+  "@option_external_browser_system": {}
 }

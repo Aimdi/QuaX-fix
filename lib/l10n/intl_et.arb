@@ -1200,5 +1200,11 @@
   "speech_playing": "Loeb ette",
   "@speech_playing": {},
   "speech_stop": "Peata",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Linkide brauser",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "Millises brauseris avanevad lingid, kui need ei avane rakenduses",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Süsteemi vaikeväärtus",
+  "@option_external_browser_system": {}
 }

@@ -1200,5 +1200,11 @@
   "speech_playing": "Wordt voorgelezen",
   "@speech_playing": {},
   "speech_stop": "Stoppen",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Browser voor links",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "In welke browser links openen wanneer ze niet in de app openen",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Systeemstandaard",
+  "@option_external_browser_system": {}
 }

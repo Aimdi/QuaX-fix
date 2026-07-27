@@ -1200,5 +1200,11 @@
   "speech_playing": "읽어 주는 중",
   "@speech_playing": {},
   "speech_stop": "중지",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "링크를 열 브라우저",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "앱에서 열지 않는 링크를 어떤 브라우저로 열지",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "시스템 기본값",
+  "@option_external_browser_system": {}
 }

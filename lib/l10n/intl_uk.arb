@@ -1200,5 +1200,11 @@
   "speech_playing": "Читає вголос",
   "@speech_playing": {},
   "speech_stop": "Зупинити",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Браузер для посилань",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "У якому браузері відкриваються посилання, коли вони не відкриваються в застосунку",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Системний за умовчанням",
+  "@option_external_browser_system": {}
 }

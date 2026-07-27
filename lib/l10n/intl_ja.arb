@@ -1200,5 +1200,11 @@
   "speech_playing": "読み上げ中",
   "@speech_playing": {},
   "speech_stop": "停止",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "リンクを開くブラウザ",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "アプリ内で開かないリンクをどのブラウザで開くか",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "システムの既定",
+  "@option_external_browser_system": {}
 }

@@ -1200,5 +1200,11 @@
   "speech_playing": "Reading aloud",
   "@speech_playing": {},
   "speech_stop": "Stop",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Browser for links",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "Which browser links open in when they are not opened in the app",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "System default",
+  "@option_external_browser_system": {}
 }

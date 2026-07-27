@@ -1200,5 +1200,11 @@
   "speech_playing": "Čytaje ŭsłuch",
   "@speech_playing": {},
   "speech_stop": "Spynić",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Braŭzer dla spasyłak",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "U jakim braŭzery adkryvajucca spasyłki, kali jany nie adkryvajucca ŭ prahramie",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Sistemny pradvyznačany",
+  "@option_external_browser_system": {}
 }

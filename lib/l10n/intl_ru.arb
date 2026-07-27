@@ -1200,5 +1200,11 @@
   "speech_playing": "Читает вслух",
   "@speech_playing": {},
   "speech_stop": "Остановить",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Браузер для ссылок",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "В каком браузере открываются ссылки, если они не открываются в приложении",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Системный по умолчанию",
+  "@option_external_browser_system": {}
 }

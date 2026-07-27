@@ -1200,5 +1200,11 @@
   "speech_playing": "Đang đọc to",
   "@speech_playing": {},
   "speech_stop": "Dừng",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Trình duyệt cho liên kết",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "Liên kết mở trong trình duyệt nào khi không mở trong ứng dụng",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Mặc định hệ thống",
+  "@option_external_browser_system": {}
 }

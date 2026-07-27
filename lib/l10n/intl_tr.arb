@@ -1200,5 +1200,11 @@
   "speech_playing": "Sesli okunuyor",
   "@speech_playing": {},
   "speech_stop": "Durdur",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Bağlantılar için tarayıcı",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "Uygulamada açılmayan bağlantıların hangi tarayıcıda açılacağı",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Sistem varsayılanı",
+  "@option_external_browser_system": {}
 }

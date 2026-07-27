@@ -1200,5 +1200,11 @@
   "speech_playing": "A ler em voz alta",
   "@speech_playing": {},
   "speech_stop": "Parar",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Navegador para as ligações",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "Em que navegador abrem as ligações quando não abrem na aplicação",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Predefinição do sistema",
+  "@option_external_browser_system": {}
 }

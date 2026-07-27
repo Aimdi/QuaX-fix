@@ -1200,5 +1200,11 @@
   "speech_playing": "قراءة بصوت عالٍ",
   "@speech_playing": {},
   "speech_stop": "إيقاف",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "متصفح الروابط",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "المتصفح الذي تُفتح فيه الروابط عندما لا تُفتح داخل التطبيق",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "الإعداد الافتراضي للنظام",
+  "@option_external_browser_system": {}
 }

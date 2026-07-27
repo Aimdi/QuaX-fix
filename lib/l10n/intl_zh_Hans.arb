@@ -1200,5 +1200,11 @@
   "speech_playing": "正在朗读",
   "@speech_playing": {},
   "speech_stop": "停止",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "打开链接的浏览器",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "不在应用内打开的链接使用哪个浏览器打开",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "系统默认",
+  "@option_external_browser_system": {}
 }

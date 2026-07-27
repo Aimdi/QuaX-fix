@@ -1200,5 +1200,11 @@
   "speech_playing": "Voĉlegado",
   "@speech_playing": {},
   "speech_stop": "Haltu",
-  "@speech_stop": {}
+  "@speech_stop": {},
+  "option_external_browser_label": "Retumilo por ligiloj",
+  "@option_external_browser_label": {},
+  "option_external_browser_description": "En kiu retumilo malfermiĝas ligiloj kiam ili ne malfermiĝas en la aplikaĵo",
+  "@option_external_browser_description": {},
+  "option_external_browser_system": "Sistema aprioro",
+  "@option_external_browser_system": {}
 }

@@ -307,6 +307,7 @@ Future<void> main() async {
       optionWebDavIncludeAccounts: false,
       optionWebDavLastSyncAt: '',
       optionOpenLinksInEmbeddedBrowser: true,
+      optionExternalBrowser: '',
       optionEmbeddedBrowserReset: false,
       optionCrashReportsEnabled: false,
       optionCrashGithubRepo: defaultCrashGithubRepo,
