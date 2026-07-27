@@ -24,12 +24,20 @@ void main() {
   });
 
   group('laying media out along a row', () {
-    test('one photo takes the full width and keeps its shape', () {
+    // A picture with nothing beside it is not a card in a row. Clamping it into
+    // the row's range put tall photos inside black bars, with the rounded
+    // corners landing on the bars instead of the picture.
+    test('one photo takes the full width and keeps its own shape, unclamped', () {
       final layout = mediaStripLayout(width: 400, aspects: [0.5]);
 
       expect(layout.widths, [400]);
-      expect(layout.height, closeTo(400 / kMediaMinAspect, 0.001),
-          reason: 'cropped to the tallest allowed rather than running off the screen');
+      expect(layout.height, closeTo(800, 0.001), reason: 'its own 1:2, not the row\'s tallest allowed');
+    });
+
+    test('a single photo with no usable size falls back to a square', () {
+      expect(singleMediaAspect(0), 1);
+      expect(singleMediaAspect(double.nan), 1);
+      expect(singleMediaAspect(1.7), 1.7);
     });
 
     test('several share one height', () {

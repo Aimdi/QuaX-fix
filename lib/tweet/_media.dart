@@ -250,7 +250,7 @@ class _TweetMediaState extends State<TweetMedia> {
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
             child: AspectRatio(
-              aspectRatio: clampMediaAspect(_aspects().single),
+              aspectRatio: singleMediaAspect(_aspects().single),
               child: _card(context, 0, fit: BoxFit.contain, showCounter: false),
             ),
           ),

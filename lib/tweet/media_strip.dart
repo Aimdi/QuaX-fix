@@ -26,6 +26,14 @@ const double kMediaStripHeightFactor = 0.62;
 /// next one showing rather than a full-width card that looks like the only one.
 const double kMediaCardMaxWidthFactor = 0.86;
 
+/// The shape one picture on its own is shown at: its own.
+///
+/// Not clamped, unlike a card in a row. A row has to agree on a height, so a
+/// shape too far outside the range would make every other card a sliver — but a
+/// picture with nothing beside it has nothing to agree with, and forcing it into
+/// that range puts a tall photo inside bars that are not part of it.
+double singleMediaAspect(double aspect) => (!aspect.isFinite || aspect <= 0) ? 1 : aspect;
+
 double clampMediaAspect(double aspect) {
   if (!aspect.isFinite || aspect <= 0) {
     return 1;
@@ -48,7 +56,7 @@ MediaStripLayout mediaStripLayout({required double width, required List<double> 
   }
 
   if (aspects.length == 1) {
-    return (height: width / clampMediaAspect(aspects.single), widths: [width]);
+    return (height: width / singleMediaAspect(aspects.single), widths: [width]);
   }
 
   final height = width * kMediaStripHeightFactor;
