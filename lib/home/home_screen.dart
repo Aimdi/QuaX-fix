@@ -6,13 +6,11 @@ import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
-import 'package:quax/home/edge_swipe.dart';
 import 'package:quax/group/group_screen.dart';
 import 'package:quax/home/_feed.dart';
 import 'package:quax/home/_missing.dart';
 import 'package:quax/home/_saved.dart';
 import 'package:quax/home/home_model.dart';
-import 'package:quax/home/top_swipe_area.dart';
 import 'package:quax/plugins/plugin_registry.dart';
 import 'package:quax/search/search.dart';
 import 'package:quax/subscriptions/subscriptions.dart';
@@ -257,26 +255,7 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
 
-    return HomePageSwiper(
-      movePage: _movePage,
-      child: _buildScaffold(context, l10n),
-    );
-  }
-
-  /// Moves [direction] pages along, for a tab whose own content swallowed the
-  /// swipe. Clamped, so the ends stay put rather than wrapping.
-  void _movePage(int direction) {
-    final target = _currentPage + direction;
-    if (target < 0 || target >= widget.pages.length) {
-      return;
-    }
-
-    unfocusPages();
-    if (widget.prefs.get<bool>(optionDisableAnimations) == true) {
-      _pageController.jumpToPage(target);
-    } else {
-      _pageController.animateToPage(target, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
-    }
+    return _buildScaffold(context, l10n);
   }
 
   Widget _buildScaffold(BuildContext context, L10n l10n) {
@@ -300,22 +279,17 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
       ),
       body: PageView(
         controller: _pageController,
+        // Tabs change from the bar and nowhere else. A drag anywhere in a page
+        // used to change them too, which meant every horizontal gesture in the
+        // app — a media carousel, a nested tab view, a slider — was competing
+        // with the pager for the same finger.
+        physics: const NeverScrollableScrollPhysics(),
         onPageChanged: (page) {
           setState(() {
             _currentPage = page;
           });
         },
-        // Every page gets the top strip, so the swipe works on the bar of
-        // whichever tab is showing rather than only the ones that happen to
-        // let the drag through.
-        children: widget
-            .builder(_scrollControllers, _focusNodes)
-            .map((page) => TopSwipeArea(
-                  movePage: _movePage,
-                  directionOf: _swipeDirection,
-                  child: page,
-                ))
-            .toList(growable: false),
+        children: widget.builder(_scrollControllers, _focusNodes),
       ),
       // Swiping the bar itself always changes tab, which swiping the page
       // cannot promise: the Subscriptions tab holds its own Groups/People tab
@@ -386,19 +360,6 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
       ),
     );
   }
-
-  /// Which way a finished drag means to go: -1, 0 or +1.
-  ///
-  /// Both ends of the screen ask the same question of the same rule, so a swipe
-  /// that changes tab along the bottom changes it along the top too.
-  int _swipeDirection(double velocity, double distance) =>
-      pageAfterNavigationSwipe(
-        current: _currentPage,
-        pageCount: widget.pages.length,
-        velocity: velocity,
-        distance: distance,
-      ) -
-      _currentPage;
 
   void _swipeNavigationBar(double velocity, double distance) {
     final target = pageAfterNavigationSwipe(
