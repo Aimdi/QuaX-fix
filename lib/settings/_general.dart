@@ -121,7 +121,9 @@ class SettingsGeneralFragment extends StatelessWidget {
                 L10n.of(context).default_feed_tab_description,
               ),
               pref: optionHomeDefaultFeedTab,
-              items: feedTabs
+              // The same list the switcher shows, so a default cannot be set
+              // to a feed that is turned off.
+              items: availableFeedTabs(PrefService.of(context))
                   .map((e) => DropdownMenuItem(value: e.id.name, child: Text(e.titleBuilder(context))))
                   .toList()),
           PrefDropdown(

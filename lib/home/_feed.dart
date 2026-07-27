@@ -8,10 +8,11 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/_feed_shell.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/group/group_screen.dart';
+import 'package:quax/plugins/reddit/reddit_feed_list.dart';
 
 typedef FeedTabTitleBuilder = String Function(BuildContext context);
 
-enum FeedTab { following, foryou }
+enum FeedTab { following, foryou, reddit }
 
 class FeedTabOption {
   final FeedTab id;
@@ -23,7 +24,17 @@ class FeedTabOption {
 final List<FeedTabOption> feedTabs = [
   FeedTabOption(FeedTab.following, (c) => L10n.of(c).following),
   FeedTabOption(FeedTab.foryou, (c) => L10n.of(c).foryou),
+  FeedTabOption(FeedTab.reddit, (c) => L10n.of(c).plugin_reddit_title),
 ];
+
+/// The feeds the switcher currently offers.
+///
+/// Reddit is one of them only while its plugin is on — an entry that led to an
+/// empty screen would be worse than no entry, and the choice is stored by name
+/// so turning the plugin off simply stops offering it.
+List<FeedTabOption> availableFeedTabs(BasePrefService prefs) => feedTabs
+    .where((e) => e.id != FeedTab.reddit || prefs.get<bool>(optionPluginRedditEnabled) == true)
+    .toList(growable: false);
 
 FeedTab feedTabFromId(String? id) =>
     FeedTab.values.firstWhere((e) => e.name == id, orElse: () => FeedTab.following);
@@ -46,7 +57,12 @@ class _FeedScreenState extends State<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     final BasePrefService prefs = PrefService.of(context);
-    final tab = _tab ??= feedTabFromId(prefs.get<String>(optionHomeDefaultFeedTab));
+    final available = availableFeedTabs(prefs);
+    var tab = _tab ??= feedTabFromId(prefs.get<String>(optionHomeDefaultFeedTab));
+    // The plugin can be turned off while its feed is the one being shown.
+    if (!available.any((e) => e.id == tab)) {
+      tab = _tab = FeedTab.following;
+    }
 
     return GroupFeedShell(
       scrollController: widget.scrollController,
@@ -59,7 +75,7 @@ class _FeedScreenState extends State<FeedScreen> {
           enabledBorder: InputBorder.none,
         ),
         dropdownMenuEntries:
-            feedTabs.map((e) => DropdownMenuEntry(value: e.id, label: e.titleBuilder(context))).toList(),
+            available.map((e) => DropdownMenuEntry(value: e.id, label: e.titleBuilder(context))).toList(),
         onSelected: (value) {
           setState(() => _tab = value!);
         },
@@ -72,11 +88,10 @@ class _FeedScreenState extends State<FeedScreen> {
           showMore: tab == FeedTab.following,
         );
       },
-      bodyBuilder: (context) {
-        if (tab == FeedTab.following) {
-          return SubscriptionGroupScreenContent(id: widget.id);
-        }
-        return ForYouTweets(_feedController, type: 'profile', includeReplies: false, pref: prefs);
+      bodyBuilder: (context) => switch (tab) {
+        FeedTab.following => SubscriptionGroupScreenContent(id: widget.id),
+        FeedTab.reddit => RedditFeedList(scrollController: widget.scrollController),
+        FeedTab.foryou => ForYouTweets(_feedController, type: 'profile', includeReplies: false, pref: prefs),
       },
     );
   }

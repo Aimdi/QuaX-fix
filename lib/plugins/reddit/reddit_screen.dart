@@ -7,7 +7,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/reddit/reddit_auth.dart';
 import 'package:quax/plugins/reddit/reddit_login_webview.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_post_card.dart';
+import 'package:quax/plugins/reddit/reddit_feed_list.dart';
 import 'package:quax/plugins/reddit/reddit_search_screen.dart';
 import 'package:quax/plugins/reddit/reddit_sort_sheet.dart';
 import 'package:quax/plugins/reddit/reddit_store.dart';
@@ -45,18 +45,6 @@ class RedditScreen extends StatefulWidget {
 }
 
 class _RedditScreenState extends State<RedditScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final subs = context.read<RedditSubredditsStore>();
-      await subs.load();
-      if (mounted) {
-        await context.read<RedditFeedStore>().refresh();
-      }
-    });
-  }
-
   /// Which route Reddit is read through.
   ///
   /// The client would otherwise decide silently from whatever credentials
@@ -311,7 +299,6 @@ class _RedditScreenState extends State<RedditScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
-    final feed = context.read<RedditFeedStore>();
 
     return Scaffold(
       appBar: AppBar(
@@ -345,50 +332,9 @@ class _RedditScreenState extends State<RedditScreen> {
           _sourceMenu(context),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: feed.refresh,
-        child: ScopedBuilder<RedditFeedStore, List<RedditPost>>.transition(
-          store: feed,
-          onError: (_, error) => FullPageErrorWidget(
-            error: error,
-            stackTrace: null,
-            prefix: redditErrorMessage(l10n, error!),
-            onRetry: feed.refresh,
-          ),
-          onLoading: (_) => const Center(child: CircularProgressIndicator()),
-          onState: (_, posts) {
-            if (posts.isEmpty) {
-              return ListView(
-                controller: widget.scrollController,
-                padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
-                children: [
-                  Icon(Icons.forum_outlined, size: 48, color: Theme.of(context).colorScheme.outline),
-                  const SizedBox(height: 16),
-                  Text(l10n.plugin_reddit_empty, textAlign: TextAlign.center),
-                  const SizedBox(height: 16),
-                  // Telling the reader to add a subreddit and then leaving the
-                  // only control in the app bar is how this screen managed to
-                  // look broken when it was merely empty.
-                  Center(
-                    child: FilledButton.icon(
-                      onPressed: _addSubreddit,
-                      icon: const Icon(Icons.add),
-                      label: Text(l10n.plugin_reddit_add),
-                    ),
-                  ),
-                ],
-              );
-            }
-
-            return ListView.separated(
-              controller: widget.scrollController,
-              itemCount: posts.length,
-              // The cards carry their own hairline.
-              separatorBuilder: (_, _) => const SizedBox.shrink(),
-              itemBuilder: (context, index) => RedditPostCard(post: posts[index], showSourceBadge: false),
-            );
-          },
-        ),
+      body: RedditFeedList(
+        scrollController: widget.scrollController,
+        onAddSubreddit: _addSubreddit,
       ),
     );
   }
