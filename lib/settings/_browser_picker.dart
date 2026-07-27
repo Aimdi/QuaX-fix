@@ -55,16 +55,18 @@ class _BrowserPickerTileState extends State<BrowserPickerTile> {
     final browsers = _browsers;
     final enabled = prefs.get(optionOpenLinksInEmbeddedBrowser) != true;
 
-    if (browsers == null || browsers.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    // Shown even when the platform lists nothing back. Hiding the row made a
+    // failure to read the list indistinguishable from the setting not
+    // existing — and "system default" is a real answer either way, so there is
+    // always something here to choose.
+    final options = browsers ?? const <InstalledBrowser>[];
 
     return ListTile(
       enabled: enabled,
       title: Text(l10n.option_external_browser_label),
       subtitle: Text(l10n.option_external_browser_description),
       trailing: DropdownButton<String?>(
-        value: _selected(prefs, browsers),
+        value: _selected(prefs, options),
         onChanged: enabled
             ? (value) async {
                 await prefs.set(optionExternalBrowser, value ?? systemDefaultBrowser);
@@ -73,7 +75,7 @@ class _BrowserPickerTileState extends State<BrowserPickerTile> {
             : null,
         items: [
           DropdownMenuItem(value: null, child: Text(l10n.option_external_browser_system)),
-          for (final browser in browsers)
+          for (final browser in options)
             DropdownMenuItem(
               value: browser.package,
               child: Text(browser.label, overflow: TextOverflow.ellipsis),
