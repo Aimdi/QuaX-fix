@@ -517,16 +517,17 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                 },
                 onSelectionChanged: _onMarkStyleSelected,
               ),
-              // Group actions plus the discreet "toggle all" above the member
-              // list, as upstream did, so the bottom bar stays three buttons.
-              Row(
+              // A Wrap, not a Row. Five buttons in one row ran off the edge in
+              // German — and a Row does not shrink, it clips: the two that
+              // matter most were simply not on screen. Filling the group is why
+              // this sheet is open, so it leads and is the only filled button.
+              Wrap(
+                spacing: 4,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  ...groupActions,
-                  const Spacer(),
-                  TextButton.icon(
-                    style: _discreetActionStyle(context),
+                  FilledButton.tonalIcon(
                     icon: const Icon(Icons.person_add_alt, size: 18),
-                    label: Text(l10n.add_to_group),
+                    label: Text(l10n.add_to_group, maxLines: 1, overflow: TextOverflow.ellipsis),
                     onPressed: _addMembers,
                   ),
                   TextButton.icon(
@@ -543,6 +544,7 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                       });
                     },
                   ),
+                  ...groupActions,
                 ],
               ),
               Expanded(
