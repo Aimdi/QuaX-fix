@@ -145,6 +145,12 @@ Future<void> showGroupSwitcher(
                   final isCombined = alsoRead.contains(group.id) && !isCurrent;
 
                   return ListTile(
+                    // Groups being read together wear their own colour, not one
+                    // shared highlight: which four are combined is the thing
+                    // worth seeing, and four identical orange rows do not say
+                    // it. The colour is already how a group is recognised in
+                    // the mark beside it.
+                    selectedColor: readableGroupColor(group, Theme.of(context)),
                     leading: GroupMark.forGroup(group, size: 36),
                     title: Text(group.name, maxLines: 1, overflow: TextOverflow.ellipsis),
                     subtitle: Text(L10n.of(context).subscription_group_member_count(group.numberOfMembers)),
