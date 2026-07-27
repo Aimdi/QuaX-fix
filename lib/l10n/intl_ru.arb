@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "Платно",
   "plugin_substack_paywalled_description": "Этот пост закрыт paywall Substack. Откройте его в браузере, если у вас есть доступ.",
   "plugin_substack_paywalled_title": "Только для подписчиков",
-  "plugin_substack_share": "Поделиться ссылкой",
+  "share_link": "Поделиться ссылкой",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Слушать",
   "plugin_substack_tts_stop": "Остановить",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "Поиск в Reddit",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "Сабреддиты",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "Пользователи",
+  "@plugin_reddit_search_users": {}
 }

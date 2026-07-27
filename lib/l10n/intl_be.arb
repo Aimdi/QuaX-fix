@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "Платна",
   "plugin_substack_paywalled_description": "Гэты пост закрыты paywall Substack. Адкрыйце яго ў браўзеры, калі ў вас ёсць доступ.",
   "plugin_substack_paywalled_title": "Толькі для падпісчыкаў",
-  "plugin_substack_share": "Падзяліцца спасылкай",
+  "share_link": "Падзяліцца спасылкай",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Слухаць",
   "plugin_substack_tts_stop": "Спыніць",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "Пошук у Reddit",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "Сабрэдыты",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "Карыстальнікі",
+  "@plugin_reddit_search_users": {}
 }

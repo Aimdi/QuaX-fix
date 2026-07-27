@@ -226,7 +226,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
             ),
           if (_post.canonicalUrl != null) ...[
             IconButton(
-              tooltip: L10n.of(context).plugin_substack_share,
+              tooltip: L10n.of(context).share_link,
               icon: const Icon(Icons.share_outlined),
               onPressed: _share,
             ),

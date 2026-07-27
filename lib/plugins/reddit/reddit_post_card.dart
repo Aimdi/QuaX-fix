@@ -3,6 +3,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/reddit/reddit_avatar.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_post_media.dart';
+import 'package:quax/plugins/reddit/reddit_post_sheet.dart';
 import 'package:quax/plugins/reddit/reddit_thread_screen.dart';
 import 'package:quax/tweet/tweet_chrome.dart';
 import 'package:quax/tweet/tweet_footer.dart';
@@ -37,6 +38,9 @@ class RedditPostCard extends StatelessWidget {
       children: [
         InkWell(
           onTap: () => _open(context),
+          // Everywhere else the post can lead. A long press is where Android
+          // readers look for it, and the author line offers it outright.
+          onLongPress: () => openRedditPostSheet(context, post),
           child: Padding(
             padding: const EdgeInsets.only(top: 12),
             child: Column(
@@ -125,7 +129,13 @@ class _RedditPostHeader extends StatelessWidget {
         children: [
           // A deleted account has no name to show; the row simply starts with
           // the badge rather than announcing the absence.
-          if (author != null) Flexible(child: Text('u/$author', overflow: TextOverflow.ellipsis)),
+          if (author != null)
+            Flexible(
+              child: GestureDetector(
+                onTap: () => openRedditPostSheet(context, post),
+                child: Text('u/$author', overflow: TextOverflow.ellipsis),
+              ),
+            ),
           if (showSourceBadge) ...[
             if (author != null) const SizedBox(width: 6),
             _RedditBadge(label: L10n.of(context).plugin_reddit_title),
@@ -166,7 +176,7 @@ class _RedditPostFooter extends StatelessWidget {
           const Spacer(),
           IconButton(
             tooltip: L10n.of(context).open_in_browser,
-            onPressed: () => openUri(context, 'https://www.reddit.com${post.permalink}'),
+            onPressed: () => openUri(context, redditPostUrl(post)),
             icon: Icon(Icons.open_in_new, size: 18, color: muted),
           ),
         ],

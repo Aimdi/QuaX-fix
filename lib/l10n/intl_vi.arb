@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "Trả phí",
   "plugin_substack_paywalled_description": "Bài này nằm sau paywall Substack. Mở trên trình duyệt nếu bạn có quyền truy cập.",
   "plugin_substack_paywalled_title": "Bài chỉ dành cho người đăng ký",
-  "plugin_substack_share": "Chia sẻ liên kết",
+  "share_link": "Chia sẻ liên kết",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Nghe",
   "plugin_substack_tts_stop": "Dừng",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "Tìm kiếm trên Reddit",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "Subreddit",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "Người dùng",
+  "@plugin_reddit_search_users": {}
 }

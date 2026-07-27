@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "Pagenda",
   "plugin_substack_paywalled_description": "Tiu afiŝo estas malantaŭ Substack-pagomuro. Malfermu ĝin en retumilo se vi havas aliron.",
   "plugin_substack_paywalled_title": "Nur por abonantoj",
-  "plugin_substack_share": "Kunhavigi ligilon",
+  "share_link": "Kunhavigi ligilon",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Aŭskulti",
   "plugin_substack_tts_stop": "Haltigi",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "Serĉi en Reddit",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "Subredditoj",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "Uzantoj",
+  "@plugin_reddit_search_users": {}
 }

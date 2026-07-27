@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "Ücretli",
   "plugin_substack_paywalled_description": "Bu yazı Substack ödeme duvarının arkasında. Erişiminiz varsa tarayıcıda açın.",
   "plugin_substack_paywalled_title": "Yalnızca abonelere özel yazı",
-  "plugin_substack_share": "Bağlantıyı paylaş",
+  "share_link": "Bağlantıyı paylaş",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Dinle",
   "plugin_substack_tts_stop": "Durdur",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "Reddit'te ara",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "Subredditler",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "Kullanıcılar",
+  "@plugin_reddit_search_users": {}
 }

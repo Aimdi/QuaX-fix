@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "유료",
   "plugin_substack_paywalled_description": "이 글은 Substack 유료 벽 뒤에 있습니다. 권한이 있으면 브라우저에서 여세요.",
   "plugin_substack_paywalled_title": "구독자 전용 글",
-  "plugin_substack_share": "링크 공유",
+  "share_link": "링크 공유",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "듣기",
   "plugin_substack_tts_stop": "중지",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "Reddit 검색",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "서브레딧",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "사용자",
+  "@plugin_reddit_search_users": {}
 }

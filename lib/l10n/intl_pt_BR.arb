@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "Pago",
   "plugin_substack_paywalled_description": "Este post está atrás de um paywall do Substack. Abra no navegador se você tiver acesso.",
   "plugin_substack_paywalled_title": "Post só para assinantes",
-  "plugin_substack_share": "Compartilhar link",
+  "share_link": "Compartilhar link",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Ouvir",
   "plugin_substack_tts_stop": "Parar de ouvir",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "Pesquisar no Reddit",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "Subreddits",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "Usuários",
+  "@plugin_reddit_search_users": {}
 }

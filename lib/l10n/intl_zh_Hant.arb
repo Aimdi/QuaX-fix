@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "付費",
   "plugin_substack_paywalled_description": "這篇文章在 Substack 付費牆之後。如果有權限，請在瀏覽器中開啟。",
   "plugin_substack_paywalled_title": "訂閱者專屬文章",
-  "plugin_substack_share": "分享連結",
+  "share_link": "分享連結",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "朗讀",
   "plugin_substack_tts_stop": "停止朗讀",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "搜尋 Reddit",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "子版塊",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "使用者",
+  "@plugin_reddit_search_users": {}
 }

@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "Placené",
   "plugin_substack_paywalled_description": "Tento příspěvek je za paywallem Substack. Otevřete ho v prohlížeči, pokud máte přístup.",
   "plugin_substack_paywalled_title": "Pouze pro předplatitele",
-  "plugin_substack_share": "Sdílet odkaz",
+  "share_link": "Sdílet odkaz",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Poslouchat",
   "plugin_substack_tts_stop": "Zastavit",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "Hledat na Redditu",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "Subreddity",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "Uživatelé",
+  "@plugin_reddit_search_users": {}
 }

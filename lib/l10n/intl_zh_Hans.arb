@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "付费",
   "plugin_substack_paywalled_description": "这篇文章在 Substack 付费墙之后。如果有权限，请在浏览器中打开。",
   "plugin_substack_paywalled_title": "订阅者专属文章",
-  "plugin_substack_share": "分享链接",
+  "share_link": "分享链接",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "朗读",
   "plugin_substack_tts_stop": "停止朗读",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "搜索 Reddit",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "子版块",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "用户",
+  "@plugin_reddit_search_users": {}
 }

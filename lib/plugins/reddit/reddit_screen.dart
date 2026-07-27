@@ -8,6 +8,7 @@ import 'package:quax/plugins/reddit/reddit_auth.dart';
 import 'package:quax/plugins/reddit/reddit_login_webview.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_post_card.dart';
+import 'package:quax/plugins/reddit/reddit_search_screen.dart';
 import 'package:quax/plugins/reddit/reddit_store.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/ui/errors.dart';
@@ -62,19 +63,12 @@ class _RedditScreenState extends State<RedditScreen> {
   /// way to say so while a sign-in existed.
   Widget _sourceMenu(BuildContext context) {
     final prefs = PrefService.of(context);
-    final current = prefs.get<String>(optionPluginRedditSource) ?? redditSourceAuto;
     final l10n = L10n.of(context);
 
     return PopupMenuButton<String>(
-      icon: const Icon(Icons.alt_route),
+      icon: const Icon(Icons.more_vert),
       tooltip: l10n.plugin_reddit_source,
-      initialValue: current,
-      onSelected: (value) async {
-        await prefs.set(optionPluginRedditSource, value);
-        if (mounted) {
-          await context.read<RedditFeedStore>().refresh();
-        }
-      },
+      onSelected: (value) => _onMenuSelected(value, prefs),
       itemBuilder: (context) => [
         PopupMenuItem(
           value: redditSourceAuto,
@@ -92,8 +86,43 @@ class _RedditScreenState extends State<RedditScreen> {
             subtitle: Text(l10n.plugin_reddit_source_public_description),
           ),
         ),
+        const PopupMenuDivider(),
+        PopupMenuItem(
+          value: _menuSignIn,
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(_signedIn ? Icons.logout : Icons.login),
+            title: Text(_signedIn ? l10n.plugin_reddit_sign_out : l10n.plugin_reddit_sign_in),
+          ),
+        ),
+        PopupMenuItem(
+          value: _menuClientId,
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.key),
+            title: Text(l10n.plugin_reddit_client_id),
+          ),
+        ),
       ],
     );
+  }
+
+  /// Values the menu uses for the actions that are not a source choice.
+  static const _menuSignIn = '_signIn';
+  static const _menuClientId = '_clientId';
+
+  Future<void> _onMenuSelected(String value, BasePrefService prefs) async {
+    if (value == _menuSignIn) {
+      return _signedIn ? _signOut() : _signIn();
+    }
+    if (value == _menuClientId) {
+      return _editClientId();
+    }
+
+    await prefs.set(optionPluginRedditSource, value);
+    if (mounted) {
+      await context.read<RedditFeedStore>().refresh();
+    }
   }
 
   Future<void> _editClientId() async {
@@ -288,6 +317,12 @@ class _RedditScreenState extends State<RedditScreen> {
         title: Text(l10n.plugin_reddit_title),
         actions: [
           IconButton(
+            tooltip: l10n.plugin_reddit_search_hint,
+            icon: const Icon(Icons.search),
+            onPressed: () => Navigator.push(
+                context, MaterialPageRoute(builder: (_) => const RedditSearchScreen())),
+          ),
+          IconButton(
             tooltip: l10n.plugin_reddit_add,
             icon: const Icon(Icons.add),
             onPressed: _addSubreddit,
@@ -296,16 +331,6 @@ class _RedditScreenState extends State<RedditScreen> {
             tooltip: l10n.subscriptions,
             icon: const Icon(Icons.list),
             onPressed: _manageSubreddits,
-          ),
-          IconButton(
-            tooltip: _signedIn ? l10n.plugin_reddit_sign_out : l10n.plugin_reddit_sign_in,
-            icon: Icon(_signedIn ? Icons.logout : Icons.login),
-            onPressed: _signedIn ? _signOut : _signIn,
-          ),
-          IconButton(
-            tooltip: l10n.plugin_reddit_client_id,
-            icon: const Icon(Icons.key),
-            onPressed: _editClientId,
           ),
           _sourceMenu(context),
         ],

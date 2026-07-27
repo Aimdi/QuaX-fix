@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "Betaald",
   "plugin_substack_paywalled_description": "Dit bericht zit achter een Substack-paywall. Open het in een browser als je toegang hebt.",
   "plugin_substack_paywalled_title": "Alleen voor abonnees",
-  "plugin_substack_share": "Link delen",
+  "share_link": "Link delen",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Beluisteren",
   "plugin_substack_tts_stop": "Stoppen",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "Zoeken op Reddit",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "Subreddits",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "Gebruikers",
+  "@plugin_reddit_search_users": {}
 }

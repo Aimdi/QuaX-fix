@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "सशुल्क",
   "plugin_substack_paywalled_description": "यह पोस्ट Substack पेवॉल के पीछे है। यदि आपके पास पहुँच है तो ब्राउज़र में खोलें।",
   "plugin_substack_paywalled_title": "केवल सब्सक्राइबरों के लिए पोस्ट",
-  "plugin_substack_share": "लिंक साझा करें",
+  "share_link": "लिंक साझा करें",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "सुनें",
   "plugin_substack_tts_stop": "रोकें",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "Reddit पर खोजें",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "सबरेडिट",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "उपयोगकर्ता",
+  "@plugin_reddit_search_users": {}
 }

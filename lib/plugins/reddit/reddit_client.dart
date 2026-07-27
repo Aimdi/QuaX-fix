@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:quax/plugins/reddit/reddit_html.dart';
 import 'package:quax/plugins/reddit/reddit_comments.dart';
 import 'package:quax/plugins/reddit/reddit_media_urls.dart';
+import 'package:quax/plugins/reddit/reddit_search_html.dart';
 
 /// How a Reddit request failed, in terms the user can act on.
 enum RedditErrorKind {
@@ -410,6 +411,72 @@ class RedditClient {
     }
 
     return RedditListing(posts: listing.posts, after: listing.after);
+  }
+
+  /// Posts matching [query], across Reddit or within one subreddit.
+  Future<List<RedditPost>> searchPosts(String query, {String? subreddit, RedditSort sort = RedditSort.hot}) async {
+    final name = subreddit == null ? null : normaliseSubreddit(subreddit);
+    final path = name == null ? '/search' : '/r/$name/search';
+
+    final body = await _scrape(Uri.parse('$_publicFallbackBase$path').replace(queryParameters: {
+      'q': query,
+      'sort': sort == RedditSort.newest ? 'new' : 'relevance',
+      't': 'all',
+      if (name != null) 'restrict_sr': 'on',
+    }));
+
+    return body == null ? const [] : parseSearchPosts(body);
+  }
+
+  Future<List<RedditSubredditResult>> searchSubreddits(String query) async {
+    final body = await _scrape(
+        Uri.parse('$_publicFallbackBase/subreddits/search').replace(queryParameters: {'q': query}));
+
+    return body == null ? const [] : parseSubredditResults(body);
+  }
+
+  Future<List<RedditUserResult>> searchUsers(String query) async {
+    final body = await _scrape(
+        Uri.parse('$_publicFallbackBase/search').replace(queryParameters: {'q': query, 'type': 'user'}));
+
+    return body == null ? const [] : parseUserResults(body);
+  }
+
+  /// One account's posts. Comments on the same page have no title and are
+  /// skipped by the listing parser, which is the behaviour we want here.
+  Future<RedditListing> fetchUserPosts(String user, {String? after}) async {
+    final name = user.replaceFirst(RegExp(r'^/?u(?:ser)?/', caseSensitive: false), '').trim();
+    if (name.isEmpty) {
+      throw RedditException(RedditErrorKind.notFound, 'Not a username: $user');
+    }
+
+    final body = await _scrape(Uri.parse('$_publicFallbackBase/user/$name/submitted').replace(queryParameters: {
+      'limit': '25',
+      if (after != null && after.isNotEmpty) 'after': after,
+    }));
+
+    if (body == null) {
+      throw RedditException(RedditErrorKind.notFound, 'No such account: $name');
+    }
+
+    final listing = parseListing(body);
+    return RedditListing(posts: listing.posts, after: listing.after);
+  }
+
+  /// One page of old.reddit, with the over-18 gate answered, or null when the
+  /// page could not be read at all.
+  Future<String?> _scrape(Uri uri) async {
+    var response = await _read(uri);
+
+    if (response.statusCode == 200 && isOver18Gate(response.body)) {
+      response = await _read(uri, null, {'over18': '1'});
+    }
+
+    if (response.statusCode != 200) {
+      throw _errorFor(response, uri);
+    }
+
+    return isOver18Gate(response.body) ? null : response.body;
   }
 
   /// The comment thread of a post, scraped from the old site.

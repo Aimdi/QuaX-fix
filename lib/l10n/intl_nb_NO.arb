@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "Betalt",
   "plugin_substack_paywalled_description": "Dette innlegget er bak en Substack-betalingsmur. Åpne det i en nettleser hvis du har tilgang.",
   "plugin_substack_paywalled_title": "Kun for abonnenter",
-  "plugin_substack_share": "Del lenke",
+  "share_link": "Del lenke",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Lytt",
   "plugin_substack_tts_stop": "Stopp",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "Søk på Reddit",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "Subreddits",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "Brukere",
+  "@plugin_reddit_search_users": {}
 }

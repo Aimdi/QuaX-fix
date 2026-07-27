@@ -4,6 +4,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/reddit/reddit_avatar.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_comments.dart';
+import 'package:quax/plugins/reddit/reddit_listing_screen.dart';
 import 'package:quax/plugins/reddit/reddit_post_media.dart';
 import 'package:quax/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
 import 'package:quax/ui/dates.dart';
@@ -168,12 +169,20 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
                   RedditAvatar(name: comment.author, size: 20),
                   const SizedBox(width: 6),
                   Flexible(
-                    child: Text(
-                      comment.author == null ? '' : 'u/${comment.author}',
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: comment.isSubmitter ? theme.colorScheme.primary : null,
+                    child: GestureDetector(
+                      // A name in a thread is a way to the rest of what they
+                      // posted, the same as it is on the card.
+                      onTap: comment.author == null
+                          ? null
+                          : () => Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => RedditListingScreen.user(comment.author!))),
+                      child: Text(
+                        comment.author == null ? '' : 'u/${comment.author}',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: comment.isSubmitter ? theme.colorScheme.primary : null,
+                        ),
                       ),
                     ),
                   ),

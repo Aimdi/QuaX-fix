@@ -357,7 +357,7 @@
   "plugin_substack_paywalled": "Ordainpekoa",
   "plugin_substack_paywalled_description": "Mezu hau Substackeko ordainketa-hormaren atzean dago. Ireki nabigatzailean sarbidea baduzu.",
   "plugin_substack_paywalled_title": "Harpidedunentzako soilik",
-  "plugin_substack_share": "Partekatu esteka",
+  "share_link": "Partekatu esteka",
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Entzun",
   "plugin_substack_tts_stop": "Gelditu",
@@ -870,7 +870,7 @@
   "@plugin_substack_paywalled": {},
   "@plugin_substack_paywalled_description": {},
   "@plugin_substack_paywalled_title": {},
-  "@plugin_substack_share": {},
+  "@share_link": {},
   "@plugin_substack_title": {},
   "@plugin_substack_tts_listen": {},
   "@plugin_substack_tts_stop": {},
@@ -1102,5 +1102,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "plugin_reddit_search_hint": "Bilatu Redditen",
+  "@plugin_reddit_search_hint": {},
+  "plugin_reddit_search_subreddits": "Subredditak",
+  "@plugin_reddit_search_subreddits": {},
+  "plugin_reddit_search_users": "Erabiltzaileak",
+  "@plugin_reddit_search_users": {}
 }
