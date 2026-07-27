@@ -23,6 +23,9 @@ class RedditPlugin extends QuaxPlugin {
   IconData get icon => Icons.forum_outlined;
 
   @override
+  String? get homeTabPrefKey => optionPluginRedditShowTab;
+
+  @override
   String title(BuildContext context) => L10n.of(context).plugin_reddit_title;
 
   @override

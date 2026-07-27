@@ -3,6 +3,7 @@ import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/home/home_model.dart';
+import 'package:quax/constants.dart';
 import 'package:quax/plugins/plugin_registry.dart';
 
 /// Lists built-in plugins and lets the user enable / disable them.
@@ -64,6 +65,15 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
                   onChanged: enabled
                       ? (value) async {
                           await prefs.set(tabPref, value);
+                          // Asking for the tab back has to actually bring it
+                          // back: the page list only auto-selects a plugin tab
+                          // it has never seeded, so that memory is cleared here
+                          // or the switch would turn on and nothing appear.
+                          if (value) {
+                            final seeded = prefs.getStringList(optionSeededPluginTabs) ?? const <String>[];
+                            await prefs.set(
+                                optionSeededPluginTabs, seeded.where((e) => e != plugin.id).toList());
+                          }
                           if (!context.mounted) return;
                           await context.read<HomeModel>().loadPages();
                           setState(() {});

@@ -315,6 +315,7 @@ Future<void> main() async {
       optionPluginRedditEnabled: false,
       optionPluginRedditClientId: '',
       optionPluginRedditInHomeFeed: false,
+      optionPluginRedditShowTab: false,
       optionPluginRedditSort: 'hot',
       optionPluginRedditSource: redditSourceAuto,
       optionPluginRedditSubreddits: '[]',

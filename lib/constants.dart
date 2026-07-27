@@ -65,6 +65,11 @@ const optionPluginRedditRefreshToken = 'plugin.reddit.refresh_token';
 /// Whether followed subreddits also appear in Following and For you.
 const optionPluginRedditInHomeFeed = 'plugin.reddit.in_home_feed';
 
+/// Whether Reddit keeps a tab of its own in the bottom bar. It does not need
+/// one: it is an entry in the home feed switcher and a row in Groups, so a
+/// third way in only costs a slot in a bar that has five.
+const optionPluginRedditShowTab = 'plugin.reddit.show_tab';
+
 /// Which order subreddit listings are read in, shared by every screen that
 /// shows them so the choice is made once.
 const optionPluginRedditSort = 'plugin.reddit.sort';
