@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:quax/plugins/bpc/bpc_ext_fetch.dart';
 import 'package:quax/plugins/bpc/bpc_links.dart';
 import 'package:quax/plugins/bpc/bpc_strategy.dart';
 
@@ -89,6 +90,9 @@ class BpcSiteRule {
     }
     return null;
   }
+
+  /// Effective Referer header (`google` → `https://www.google.com/`, etc.).
+  String? get resolvedReferer => resolveBpcReferer(referer);
 
   /// Whether this URL's resource request should be blocked (paywall script).
   bool blocksUrl(String url) {

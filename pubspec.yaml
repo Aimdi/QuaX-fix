@@ -154,6 +154,7 @@ flutter:
     - assets/fonts/Inter-OFL.txt
     - assets/bpc/site_rules.json
     - assets/bpc/unhide.js
+    - assets/bpc/ft_assist.js
     - assets/bpc/cs/runtime_shim.js
     - assets/bpc/cs/purify.min.js
     - assets/bpc/cs/contentScript.js

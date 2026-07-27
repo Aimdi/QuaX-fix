@@ -10,12 +10,13 @@ The uploaded `bpc.crx` is **Bypass Paywalls Clean** 4.4.0.0
 | Chrome (BPC) | QuaX rewrite |
 |---|---|
 | `declarativeNetRequest` script blocks | `shouldInterceptRequest` via `flutter_inappwebview` |
-| UA / Referer rewrites | Per-site rule from `site_rules.json` |
+| UA / Referer rewrites | Per-site rule from `site_rules.json` (`google` → `https://www.google.com/`) |
 | Cookie clearing | `CookieManager.deleteAllCookies` when the rule asks |
 | `contentScript.js` + `cs_local/*` | Bundled as assets, injected at document-start |
 | `chrome.runtime` messaging | `assets/bpc/cs/runtime_shim.js` + Dart `bpcRuntime` handler |
 | `bg2csData` from background.js | Built in Dart from the site rule (`toBg2csData`) |
-| `getExtSrc` / `getExtFetch` (archive / JSON) | Dart `http.get`, result delivered via `__bpcDeliver` |
+| `getExtSrc` / `getExtFetch` (archive / JSON) | Dart fetch with archive `TEXT-BLOCK` follow; result returned from `callHandler` (large HTML) |
+| FT.com Cloudflare / barrier | `assets/bpc/ft_assist.js` re-triggers `getArchive` when the page stays locked |
 
 ## In-app engine (default)
 

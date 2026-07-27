@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:quax/plugins/bpc/bpc_cs_locale.dart';
 import 'package:quax/plugins/bpc/bpc_domains.dart';
+import 'package:quax/plugins/bpc/bpc_ext_fetch.dart';
 import 'package:quax/plugins/bpc/bpc_links.dart';
 import 'package:quax/plugins/bpc/bpc_plugin.dart';
 import 'package:quax/plugins/bpc/bpc_rules.dart';
@@ -21,6 +22,59 @@ void main() {
       expect(isBpcClaimableUrl('https://x.com/someone/status/1'), isFalse);
       expect(isBpcClaimableUrl('https://twitter.com/someone'), isFalse);
       expect(isBpcClaimableUrl('mailto:editor@nytimes.com'), isFalse);
+    });
+  });
+
+  group('resolveBpcReferer', () {
+    test('maps BPC aliases like Chrome background.js', () {
+      expect(resolveBpcReferer('google'), bpcGoogleReferer);
+      expect(resolveBpcReferer('facebook'), 'https://www.facebook.com/');
+      expect(resolveBpcReferer('twitter'), 'https://t.co/');
+      expect(resolveBpcReferer('https://www.drudgereport.com/'), 'https://www.drudgereport.com/');
+      expect(resolveBpcReferer(null), isNull);
+    });
+
+    test('ft.com rule resolves google referer', () {
+      const rule = BpcSiteRule(domain: 'ft.com', referer: 'google', dropCookies: ['*']);
+      expect(rule.resolvedReferer, bpcGoogleReferer);
+    });
+  });
+
+  group('fetchBpcExtSrc', () {
+    test('follows archive TEXT-BLOCK search hits to the snapshot', () async {
+      final client = MockClient((request) async {
+        if (request.url.toString().contains('/https://www.ft.com/')) {
+          return http.Response(
+            '<html><div class="TEXT-BLOCK"><a href="https://archive.ph/abc123">snap</a></div></html>',
+            200,
+          );
+        }
+        if (request.url.toString() == 'https://archive.ph/abc123') {
+          return http.Response(
+            '<html><div style="article-body">Full FT article</div></html>',
+            200,
+          );
+        }
+        return http.Response('missing', 404);
+      });
+
+      final result = await fetchBpcExtSrc(
+        requestUrl: 'https://archive.ph/https://www.ft.com/content/abc',
+        articleUrl: 'https://www.ft.com/content/abc',
+        client: client,
+      );
+      expect(result.urlSrc, 'https://archive.ph/abc123');
+      expect(result.html, contains('Full FT article'));
+    });
+
+    test('returns empty html when archive responds non-OK so the CS can show fail links', () async {
+      final client = MockClient((_) async => http.Response('rate limited', 429));
+      final result = await fetchBpcExtSrc(
+        requestUrl: 'https://archive.ph/https://www.ft.com/content/abc',
+        articleUrl: 'https://www.ft.com/content/abc',
+        client: client,
+      );
+      expect(result.html, isEmpty);
     });
   });
 

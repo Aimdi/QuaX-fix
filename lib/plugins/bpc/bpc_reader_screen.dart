@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as http;
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/bpc/bpc_cs_locale.dart';
+import 'package:quax/plugins/bpc/bpc_ext_fetch.dart';
 import 'package:quax/plugins/bpc/bpc_rules.dart';
 import 'package:quax/plugins/bpc/bpc_strategy.dart';
 import 'package:quax/utils/urls.dart';
@@ -85,10 +87,11 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
     final purify = await rootBundle.loadString('assets/bpc/cs/purify.min.js');
     final content = await rootBundle.loadString('assets/bpc/cs/contentScript.js');
     final local = await rootBundle.loadString(bpcCsLocalAssetFor(articleUrl));
+    final ftAssist = await rootBundle.loadString('assets/bpc/ft_assist.js');
     final unhide = await rootBundle.loadString('assets/bpc/unhide.js');
 
     // document_start: beat paywall scripts that our interceptor may miss.
-    // document_end: generic unhide as a second pass.
+    // document_end: FT assist + generic unhide as a second pass.
     return [
       UserScript(
         source: shim,
@@ -111,6 +114,12 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
       UserScript(
         source: local,
         injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
+        forMainFrameOnly: true,
+        groupName: 'bpc',
+      ),
+      UserScript(
+        source: ftAssist,
+        injectionTime: UserScriptInjectionTime.AT_DOCUMENT_END,
         forMainFrameOnly: true,
         groupName: 'bpc',
       ),
@@ -141,85 +150,79 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
     } catch (_) {}
   }
 
-  Future<void> _onRuntimeMessage(List<dynamic> args) async {
-    if (args.isEmpty) return;
+  Future<Map<String, dynamic>?> _onRuntimeMessage(List<dynamic> args) async {
+    if (args.isEmpty) return null;
     final raw = args.first;
-    if (raw is! Map) return;
+    if (raw is! Map) return null;
     final msg = Map<String, dynamic>.from(raw);
     final request = msg['request'] as String?;
     final data = msg['data'];
     final controller = _controller;
-    if (controller == null || request == null) return;
+    if (controller == null || request == null) return null;
 
     if (request == 'refreshCurrentTab') {
       await controller.reload();
-      return;
+      return null;
     }
     if (request == 'clear_cookies_domain') {
       await CookieManager.instance().deleteAllCookies();
-      return;
+      return null;
     }
     if (request == 'getExtSrc' && data is Map) {
-      await _fetchExtSrc(controller, Map<String, dynamic>.from(data));
-      return;
+      return _fetchExtSrc(Map<String, dynamic>.from(data));
     }
     if (request == 'getExtFetch' && data is Map) {
-      await _fetchExtFetch(controller, Map<String, dynamic>.from(data));
+      return _fetchExtFetch(Map<String, dynamic>.from(data));
     }
+    return null;
   }
 
-  Future<void> _fetchExtSrc(
-    InAppWebViewController controller,
-    Map<String, dynamic> data,
-  ) async {
-    final url = data['url'] as String?;
-    if (url == null) return;
-    try {
-      final response = await http.get(Uri.parse(url), headers: {
-        'User-Agent': _userAgent ?? bpcGooglebotUserAgent,
-        'Referer': bpcGoogleReferer,
-      });
-      final payload = jsonEncode({
-        'msg': 'showExtSrc',
-        'data': {
-          'url': _articleUrl,
-          'url_src': url,
-          'html': response.body,
-          'selector': data['selector'],
-          'selector_source': data['selector_source'],
-          'selector_archive': data['selector_archive'],
-          'text_fail': data['text_fail'],
-        },
-      });
-      await controller.evaluateJavascript(
-        source: 'window.__bpcDeliver && window.__bpcDeliver($payload);',
-      );
-    } catch (_) {}
+  Future<Map<String, dynamic>> _fetchExtSrc(Map<String, dynamic> data) async {
+    final url = data['url'] as String? ?? '';
+    final result = url.isEmpty
+        ? BpcExtSrcResult(url: _articleUrl, urlSrc: url, html: '')
+        : await fetchBpcExtSrc(
+            requestUrl: url,
+            articleUrl: _articleUrl,
+            userAgent: bpcArchiveUserAgent,
+          );
+    // Returned to the runtime shim (avoids evaluateJavascript size limits).
+    return {
+      'msg': 'showExtSrc',
+      'data': {
+        'url': result.url,
+        'url_src': result.urlSrc,
+        'html': result.html,
+        'selector': data['selector'],
+        'selector_source': data['selector_source'],
+        'selector_archive': data['selector_archive'],
+        'text_fail': data['text_fail'],
+      },
+    };
   }
 
-  Future<void> _fetchExtFetch(
-    InAppWebViewController controller,
-    Map<String, dynamic> data,
-  ) async {
+  Future<Map<String, dynamic>> _fetchExtFetch(Map<String, dynamic> data) async {
     final url = data['url'] as String?;
-    if (url == null) return;
-    try {
-      final response = await http.get(Uri.parse(url), headers: {
-        'User-Agent': _userAgent ?? bpcGooglebotUserAgent,
-        'Referer': bpcGoogleReferer,
-      });
-      final payload = jsonEncode({
-        'msg': 'showExtFetch',
-        'data': {
-          'url': url,
-          'html': response.body,
-          'data_ext_fetch_id': data['data_ext_fetch_id'],
-        },
-      });
-      await controller.evaluateJavascript(
-        source: 'window.__bpcDeliver && window.__bpcDeliver($payload);',
-      );
-    } catch (_) {}
+    var html = '';
+    if (url != null) {
+      try {
+        final response = await http.get(Uri.parse(url), headers: {
+          'User-Agent': _userAgent ?? bpcArchiveUserAgent,
+          'Referer': bpcGoogleReferer,
+        });
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          html = response.body;
+        }
+      } catch (_) {}
+    }
+    return {
+      'msg': 'showExtFetch',
+      'data': {
+        'url': url,
+        'html': html,
+        'data_ext_fetch_id': data['data_ext_fetch_id'],
+      },
+    };
   }
 
   String? get _userAgent {
@@ -232,7 +235,7 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
 
   Map<String, String> get _headers {
     if (widget.strategy == BpcStrategy.inApp) {
-      final ref = _rule?.referer;
+      final ref = _rule?.resolvedReferer;
       if (ref != null && ref.isNotEmpty) {
         return {'Referer': ref};
       }
@@ -306,10 +309,7 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
                         _controller = controller;
                         controller.addJavaScriptHandler(
                           handlerName: 'bpcRuntime',
-                          callback: (args) async {
-                            await _onRuntimeMessage(args);
-                            return null;
-                          },
+                          callback: (args) async => _onRuntimeMessage(args),
                         );
                         await _beforeLoad();
                       },
