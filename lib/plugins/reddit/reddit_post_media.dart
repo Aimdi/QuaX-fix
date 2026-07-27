@@ -49,6 +49,83 @@ class RedditPostMedia extends StatelessWidget {
   }
 }
 
+/// How tall a picture inside a comment may get. Smaller than a post's, because
+/// a reply is a reply — a full-height meme under one would bury the thread.
+const double kRedditCommentMediaMaxHeight = 280;
+
+/// Pictures and GIFs linked from a comment.
+///
+/// Deliberately Flutter's own [Image], not [ExtendedImage]: a GIF that does not
+/// move is not a GIF, and animating multi-frame images is something the
+/// framework's decoder does for free. Comment pictures are few and small, so
+/// giving up the shared cache costs little.
+class RedditCommentImages extends StatelessWidget {
+  final List<String> urls;
+
+  const RedditCommentImages({super.key, required this.urls});
+
+  @override
+  Widget build(BuildContext context) {
+    if (urls.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final url in urls)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: kRedditCommentMediaMaxHeight),
+                child: Image.network(
+                  url,
+                  fit: BoxFit.contain,
+                  alignment: Alignment.centerLeft,
+                  errorBuilder: (context, _, __) => _RedditBrokenImage(url: url),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// A picture Reddit would not serve. The link survives, so it can still be
+/// opened somewhere that will.
+class _RedditBrokenImage extends StatelessWidget {
+  final String url;
+
+  const _RedditBrokenImage({required this.url});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return InkWell(
+      onTap: () => openUri(context, url),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.broken_image_outlined, size: 18, color: theme.colorScheme.onSurfaceVariant),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              Uri.tryParse(url)?.host ?? url,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _RedditImage extends StatefulWidget {
   final String url;
   final bool blurred;

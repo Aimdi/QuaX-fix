@@ -9,6 +9,7 @@ library;
 
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html;
+import 'package:quax/plugins/reddit/reddit_media_urls.dart';
 
 /// One comment, with whatever replies hang off it.
 class RedditComment {
@@ -27,6 +28,13 @@ class RedditComment {
   /// Marked by Reddit as the submitter of the post.
   final bool isSubmitter;
 
+  /// Pictures and GIFs linked from the body, in the order they appear.
+  ///
+  /// Reddit has no comment-image markup on the old site — an image comment is a
+  /// link to `i.redd.it` — so they are picked out of the body rather than
+  /// arriving as their own field.
+  final List<String> mediaUrls;
+
   final List<RedditComment> replies;
 
   const RedditComment({
@@ -36,6 +44,7 @@ class RedditComment {
     this.score,
     this.createdAt,
     this.isSubmitter = false,
+    this.mediaUrls = const [],
     this.replies = const [],
   });
 
@@ -86,8 +95,13 @@ RedditComment? _commentFrom(Element thing) {
     orElse: () => Element.tag('div'),
   );
 
-  final body = entry.querySelector('.usertext-body .md')?.text.trim() ?? '';
-  if (body.isEmpty) {
+  final markdown = entry.querySelector('.usertext-body .md');
+  final media = _mediaIn(markdown);
+  final body = _bodyOf(markdown, media);
+
+  // A comment that is nothing but a picture is still a comment; only one with
+  // neither text nor media is a row worth skipping.
+  if (body.isEmpty && media.isEmpty) {
     return null;
   }
 
@@ -98,8 +112,48 @@ RedditComment? _commentFrom(Element thing) {
     score: _score(entry),
     createdAt: _createdAt(entry),
     isSubmitter: entry.querySelector('.author.submitter') != null,
+    mediaUrls: media,
     replies: _repliesOf(thing),
   );
+}
+
+/// Every linked picture in a comment body, deduplicated, in order.
+///
+/// Reddit links the same image twice when the text is the URL, and a reader
+/// does not want to see it twice.
+List<String> _mediaIn(Element? markdown) {
+  if (markdown == null) {
+    return const [];
+  }
+
+  final urls = <String>[];
+  for (final anchor in markdown.querySelectorAll('a[href]')) {
+    final image = redditImageUrl(anchor.attributes['href']);
+    if (image != null && !urls.contains(image)) {
+      urls.add(image);
+    }
+  }
+  return urls;
+}
+
+/// The comment's words, with a link that is only its own URL taken out.
+///
+/// An image comment reads `https://i.redd.it/x.gif` as its text; printing that
+/// above the picture it produced is noise. Prose that merely happens to contain
+/// a link keeps every word of it.
+String _bodyOf(Element? markdown, List<String> media) {
+  var text = markdown?.text.trim() ?? '';
+  if (text.isEmpty || media.isEmpty) {
+    return text;
+  }
+
+  for (final url in media) {
+    text = text.replaceAll(url, '');
+  }
+
+  // Only when nothing but the links was there; otherwise the untouched text is
+  // what the comment actually said.
+  return text.trim().isEmpty ? '' : (markdown?.text.trim() ?? '');
 }
 
 /// The comments nested directly inside [thing].

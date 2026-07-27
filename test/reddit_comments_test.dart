@@ -36,6 +36,43 @@ void main() {
       expect(comment.createdAt, DateTime.parse('2026-07-01T10:00:00Z').toLocal());
     });
 
+    test('a picture comment shows the picture, not the URL that made it', () {
+      const link = '<a href="https://i.redd.it/abc.gif">https://i.redd.it/abc.gif</a>';
+      final comment = parseComments(_page(_comment('a', 'someone', link))).single;
+
+      expect(comment.mediaUrls, ['https://i.redd.it/abc.gif']);
+      expect(comment.body, isEmpty, reason: 'the text was only the link the picture came from');
+    });
+
+    test('a picture-only comment is kept rather than skipped as empty', () {
+      const link = '<a href="https://i.redd.it/abc.png">https://i.redd.it/abc.png</a>';
+
+      expect(parseComments(_page(_comment('a', 'someone', link))), hasLength(1));
+    });
+
+    test('words around a link survive', () {
+      const body = 'look at <a href="https://i.redd.it/abc.jpg">this</a> please';
+      final comment = parseComments(_page(_comment('a', 'someone', body))).single;
+
+      expect(comment.mediaUrls, ['https://i.redd.it/abc.jpg']);
+      expect(comment.body, 'look at this please');
+    });
+
+    test('a link to a page is left as text', () {
+      const body = '<a href="https://example.com/story">https://example.com/story</a>';
+      final comment = parseComments(_page(_comment('a', 'someone', body))).single;
+
+      expect(comment.mediaUrls, isEmpty);
+      expect(comment.body, 'https://example.com/story');
+    });
+
+    test('the same picture linked twice is shown once', () {
+      const body = '<a href="https://i.redd.it/x.gif">a</a> <a href="https://i.redd.it/x.gif">b</a>';
+
+      expect(parseComments(_page(_comment('a', 'someone', body))).single.mediaUrls,
+          ['https://i.redd.it/x.gif']);
+    });
+
     test('replies hang off the comment they answer', () {
       final page = _page(_comment('a', 'first', 'Question', replies: _comment('b', 'second', 'Answer')));
 

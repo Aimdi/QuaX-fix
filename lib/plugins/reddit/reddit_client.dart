@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:quax/plugins/reddit/reddit_html.dart';
 import 'package:quax/plugins/reddit/reddit_comments.dart';
+import 'package:quax/plugins/reddit/reddit_media_urls.dart';
 
 /// How a Reddit request failed, in terms the user can act on.
 enum RedditErrorKind {
@@ -99,52 +100,15 @@ class RedditPost {
     return value;
   }
 
-  /// Hosts that serve the picture itself, whatever the path looks like.
-  static const _imageHosts = {'i.redd.it', 'preview.redd.it', 'i.imgur.com', 'i.redditmedia.com'};
-
-  /// Hosts whose links are a video. Reddit's own is a DASH manifest rather than
-  /// a file, so none of these can be shown inline — but knowing it is a video
-  /// is what lets the card say so instead of offering a dead thumbnail.
-  static const _videoHosts = {
-    'v.redd.it',
-    'youtube.com',
-    'youtu.be',
-    'm.youtube.com',
-    'streamable.com',
-    'gfycat.com',
-    'redgifs.com',
-  };
-
-  static const _imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-
   /// The full-size picture to show edge to edge, or null when the post has none
   /// worth showing at that size.
   ///
   /// Deliberately not [thumbnailUrl]: Reddit's listing thumbnails are 70px
   /// wide, and stretching one across a phone gives a smear where a photo should
   /// be.
-  String? get imageUrl {
-    final value = url;
-    final uri = value == null ? null : Uri.tryParse(value);
-    if (value == null || uri == null || !uri.hasScheme) {
-      return null;
-    }
+  String? get imageUrl => redditImageUrl(url);
 
-    final path = uri.path.toLowerCase();
-    final matches = _imageHosts.contains(uri.host) || _imageExtensions.any(path.endsWith);
-
-    return matches ? value : null;
-  }
-
-  bool get isVideo {
-    final host = domain ?? (url == null ? null : Uri.tryParse(url!)?.host);
-    if (host == null) {
-      return false;
-    }
-    final bare = host.startsWith('www.') ? host.substring(4) : host;
-
-    return _videoHosts.contains(bare);
-  }
+  bool get isVideo => isRedditVideoHost(domain ?? (url == null ? null : Uri.tryParse(url!)?.host));
 
   static RedditPost? fromChild(Map<String, dynamic> child) {
     if (child['kind'] != 't3') {
