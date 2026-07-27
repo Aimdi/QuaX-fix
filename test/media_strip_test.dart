@@ -14,10 +14,12 @@ void main() {
     });
 
     test('a size the response did not carry is treated as square', () {
+      // Not a shape at all — no width, a negative one, or a number that is not
+      // one. A square is the guess that is wrong by the least.
       expect(clampMediaAspect(0), 1);
       expect(clampMediaAspect(-3), 1);
       expect(clampMediaAspect(double.nan), 1);
-      expect(clampMediaAspect(double.infinity), kMediaMaxAspect);
+      expect(clampMediaAspect(double.infinity), 1);
     });
   });
 
@@ -45,17 +47,12 @@ void main() {
 
       expect(tall.widths.first, lessThan(wide.widths.first));
 
-      double visible(MediaStripLayout layout) {
-        var used = 0.0, count = 0.0;
-        for (final w in layout.widths) {
-          if (used >= 400) break;
-          used += w + kMediaCardGap;
-          count++;
-        }
-        return count;
-      }
+      // How much of the row one card takes is the whole of it: the number in
+      // view is that, and nothing is counting images.
+      double across(MediaStripLayout layout) => 400 / (layout.widths.first + kMediaCardGap);
 
-      expect(visible(tall), greaterThan(visible(wide)));
+      expect(across(tall), greaterThan(across(wide)));
+      expect(across(tall), greaterThan(1.5), reason: 'a second tall card is well into view');
     });
 
     test('no card fills the row, so the next one always shows an edge', () {
