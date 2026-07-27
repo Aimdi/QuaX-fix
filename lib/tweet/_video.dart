@@ -186,9 +186,24 @@ class _TweetVideoState extends State<TweetVideo> {
       // System MediaCodec decoders, with libmpv's software decoders as fallback.
       await platform.setProperty('hwdec', 'mediacodec-copy');
 
-      if (prefetchSeconds > 0) {
-        await platform.setProperty('cache-secs', '$prefetchSeconds');
-      }
+      // How far ahead a feed video reads.
+      //
+      // libmpv is built for a player you sit down in front of, so it reads far
+      // ahead and keeps a long way back — sensible for one film, wasteful for a
+      // timeline where most videos are watched for seconds and many are never
+      // watched at all. cache-secs only bounded that when the reader had set a
+      // prefetch, and it is zero by default, so out of the box nothing capped
+      // it at all.
+      //
+      // The demuxer bounds are what actually govern this: cache-secs limits
+      // time, these limit the bytes behind it. Both are set, and the reader's
+      // own prefetch still overrides the time.
+      await platform.setProperty('cache-secs', '${prefetchSeconds > 0 ? prefetchSeconds : kVideoReadaheadSeconds}');
+      await platform.setProperty('demuxer-readahead-secs', '$kVideoReadaheadSeconds');
+      await platform.setProperty('demuxer-max-bytes', '$kVideoDemuxerMaxBytes');
+      // What is kept of what has already played, for scrubbing back. Small: a
+      // feed is not somewhere anyone rewinds far.
+      await platform.setProperty('demuxer-max-back-bytes', '$kVideoDemuxerMaxBackBytes');
     }
 
     await player.setPlaylistMode((widget.loop || prefLoop) ? mk.PlaylistMode.single : mk.PlaylistMode.none);

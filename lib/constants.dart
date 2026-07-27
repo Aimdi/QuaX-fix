@@ -26,6 +26,18 @@ const optionMediaBackgroundPlayback = 'media.allow_background_play';
 const optionMediaAllowBackgroundPlayOtherApps = 'media.allow_background_play.other_apps';
 const optionMediaVideoPrefetchSeconds = 'media.video_prefetch_seconds';
 
+/// How far ahead a feed video reads when the reader has not asked for more.
+///
+/// libmpv's own defaults are built for watching one film, not for scrolling
+/// past twenty clips — most of which are watched for seconds, and many of which
+/// are never watched at all.
+const int kVideoReadaheadSeconds = 10;
+
+/// The bytes behind that readahead, and how much of what already played is kept
+/// for scrubbing back. A feed is not somewhere anyone rewinds far.
+const int kVideoDemuxerMaxBytes = 16 * 1024 * 1024;
+const int kVideoDemuxerMaxBackBytes = 4 * 1024 * 1024;
+
 const optionDownloadType = 'download.type';
 const optionDownloadPath = 'download.path';
 // Android document tree for the download folder. The legacy path above is kept
