@@ -5,32 +5,29 @@
 The uploaded `bpc.crx` is **Bypass Paywalls Clean** 4.4.0.0
 (MIT, © magnolia1234).
 
-## What Chrome had that stock Flutter WebView lacked
+## Chrome → QuaX mapping
 
-| Chrome (BPC) | Why it mattered | QuaX rewrite |
-|---|---|---|
-| `declarativeNetRequest` block rules | Stop paywall JS before it runs | `shouldInterceptRequest` via `flutter_inappwebview` |
-| Request header rewrite (UA / Referer) | Many sites serve full text to Googlebot | Per-rule `userAgent` + `Referer` on the WebView |
-| Cookie clearing | Kill metered / soft-paywall sessions | `CookieManager.deleteAllCookies` when the rule drops cookies |
-| Content scripts | Unhide DOM, AMP access, archive fetch | Bundled `assets/bpc/unhide.js` at document-end (+ re-inject on load) |
-| `chrome.runtime` messaging + `cs_local/*` | Hundreds of site-specific JS helpers | Not ported — too tied to the extension mailbox; unhide + script block covers the common path |
+| Chrome (BPC) | QuaX rewrite |
+|---|---|
+| `declarativeNetRequest` script blocks | `shouldInterceptRequest` via `flutter_inappwebview` |
+| UA / Referer rewrites | Per-site rule from `site_rules.json` |
+| Cookie clearing | `CookieManager.deleteAllCookies` when the rule asks |
+| `contentScript.js` + `cs_local/*` | Bundled as assets, injected at document-start |
+| `chrome.runtime` messaging | `assets/bpc/cs/runtime_shim.js` + Dart `bpcRuntime` handler |
+| `bg2csData` from background.js | Built in Dart from the site rule (`toBg2csData`) |
+| `getExtSrc` / `getExtFetch` (archive / JSON) | Dart `http.get`, result delivered via `__bpcDeliver` |
 
 ## In-app engine (default)
 
 1. Claim outbound links whose host is in `bpcSupportedDomains`.
-2. Look up `assets/bpc/site_rules.json` for that host (parent-domain walk).
-3. Open `InAppWebView` on the **original** URL with:
-   - rule UA / Googlebot when set
-   - Google referer when a bot UA is used
-   - cookie clear when the rule asks
-   - request interception matching `block_regex`
-   - unhide user script
-4. Fallbacks still available in settings: Archive.today, 12ft.io, bare Googlebot.
+2. Look up `assets/bpc/site_rules.json` (parent-domain walk).
+3. Open `InAppWebView` on the **original** URL with rule UA / referer / cookie clear.
+4. Inject, in order: runtime shim → purify → `contentScript.js` → locale `cs_local` → generic unhide.
+5. On load start/stop, deliver `{msg: "bg2cs", data: …}` so `cs_default` and `run_custom` run.
+6. Answer content-script `sendMessage` calls (archive fetch, cookie clear, reload) from Dart.
 
-## Limits that remain
+Locale bundle selection mirrors `background.js` (`bpc_cs_locale.dart`).
 
-- Site-specific `cs_local` scripts and archive.is HTML swaps are not executed.
-- Clearing cookies is WebView-global, not per-cookie-name like the extension.
-- Some sites detect WebViews or require desktop Chrome quirks we cannot fake.
+## Fallbacks
 
-When the in-app engine fails on a site, switch that session to Archive or 12ft in plugin settings.
+Archive.today / 12ft.io / bare Googlebot remain in settings for sites that still lock.

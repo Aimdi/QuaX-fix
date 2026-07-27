@@ -14,8 +14,19 @@ class BpcSiteRule {
   final List<String>? dropCookies;
   final bool allowCookies;
   final bool ampUnhide;
-  final bool ampRedirect;
+  final Object? ampRedirect;
   final bool nofix;
+  final bool clearLocalStorage;
+  final bool csBlock;
+  final bool csDompurify;
+  final Object? csCode;
+  final Object? csParam;
+  final String? ldJson;
+  final String? ldJsonNext;
+  final String? ldJsonSource;
+  final String? ldJsonUrl;
+  final String? ldArchiveIs;
+  final String? ldOchToUnlock;
 
   const BpcSiteRule({
     required this.domain,
@@ -26,8 +37,19 @@ class BpcSiteRule {
     this.dropCookies,
     this.allowCookies = false,
     this.ampUnhide = false,
-    this.ampRedirect = false,
+    this.ampRedirect,
     this.nofix = false,
+    this.clearLocalStorage = false,
+    this.csBlock = false,
+    this.csDompurify = false,
+    this.csCode,
+    this.csParam,
+    this.ldJson,
+    this.ldJsonNext,
+    this.ldJsonSource,
+    this.ldJsonUrl,
+    this.ldArchiveIs,
+    this.ldOchToUnlock,
   });
 
   factory BpcSiteRule.fromJson(Map<String, dynamic> json) {
@@ -41,8 +63,19 @@ class BpcSiteRule {
       dropCookies: drop is List ? drop.cast<String>() : null,
       allowCookies: json['ac'] == 1,
       ampUnhide: json['au'] == 1,
-      ampRedirect: json['ar'] == 1,
+      ampRedirect: json['ar'],
       nofix: json['nf'] == 1,
+      clearLocalStorage: json['cl'] == 1,
+      csBlock: json['cb'] == 1,
+      csDompurify: json['dp'] == 1,
+      csCode: json['cc'],
+      csParam: json['cp'],
+      ldJson: json['ld'] as String?,
+      ldJsonNext: json['ldn'] as String?,
+      ldJsonSource: json['lds'] as String?,
+      ldJsonUrl: json['ldu'] as String?,
+      ldArchiveIs: json['lda'] as String?,
+      ldOchToUnlock: json['ldo'] as String?,
     );
   }
 
@@ -66,6 +99,28 @@ class BpcSiteRule {
     } catch (_) {
       return false;
     }
+  }
+
+  /// Payload the extension's background page would send as `{msg: bg2cs}`.
+  Map<String, dynamic> toBg2csData() {
+    final data = <String, dynamic>{
+      // Always let the content scripts fetch through our runtime shim when they
+      // ask — archive.is / JSON article bodies hang off this flag.
+      'optin_fetch': 1,
+    };
+    if (ampUnhide) data['amp_unhide'] = 1;
+    if (ampRedirect != null) data['amp_redirect'] = ampRedirect;
+    if (csBlock) data['cs_block'] = 1;
+    if (clearLocalStorage) data['cs_clear_lclstrg'] = 1;
+    if (csCode != null) data['cs_code'] = csCode;
+    if (csParam != null) data['cs_param'] = csParam;
+    if (ldJson != null) data['ld_json'] = ldJson;
+    if (ldJsonNext != null) data['ld_json_next'] = ldJsonNext;
+    if (ldJsonSource != null) data['ld_json_source'] = ldJsonSource;
+    if (ldJsonUrl != null) data['ld_json_url'] = ldJsonUrl;
+    if (ldArchiveIs != null) data['ld_archive_is'] = ldArchiveIs;
+    if (ldOchToUnlock != null) data['ld_och_to_unlock'] = ldOchToUnlock;
+    return data;
   }
 }
 

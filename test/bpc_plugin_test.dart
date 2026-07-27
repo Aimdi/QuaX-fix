@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:quax/plugins/bpc/bpc_cs_locale.dart';
 import 'package:quax/plugins/bpc/bpc_domains.dart';
 import 'package:quax/plugins/bpc/bpc_links.dart';
 import 'package:quax/plugins/bpc/bpc_plugin.dart';
@@ -100,6 +101,35 @@ void main() {
       expect(rule, isNotNull);
       expect(rule!.blocksUrl('https://www.nytimes.com/meter.js'), isTrue);
       expect(rule.resolvedUserAgent, contains('Google-InspectionTool'));
+    });
+
+    test('toBg2csData carries the fields content scripts expect', () {
+      const rule = BpcSiteRule(
+        domain: 'example.com',
+        ampUnhide: true,
+        clearLocalStorage: true,
+        ldJson: 'div.paywall|article.body',
+        csCode: '[{"hide_elem":".wall"}]',
+      );
+      final data = rule.toBg2csData();
+      expect(data['optin_fetch'], 1);
+      expect(data['amp_unhide'], 1);
+      expect(data['cs_clear_lclstrg'], 1);
+      expect(data['ld_json'], 'div.paywall|article.body');
+      expect(data['cs_code'], '[{"hide_elem":".wall"}]');
+    });
+  });
+
+  group('bpcCsLocalAssetFor', () {
+    test('picks language bundles like the extension background page', () {
+      expect(bpcCsLocalAssetFor('https://www.nytimes.com/a'), endsWith('contentScript_en.js'));
+      expect(bpcCsLocalAssetFor('https://www.lemonde.fr/a'), endsWith('contentScript_fr.js'));
+      expect(bpcCsLocalAssetFor('https://www.faz.net/a'), endsWith('contentScript_de.js'));
+      expect(bpcCsLocalAssetFor('https://elpais.com/a'), endsWith('contentScript_es.pt.js'));
+      expect(bpcCsLocalAssetFor('https://www.repubblica.it/a'), endsWith('contentScript_it.js'));
+      expect(bpcCsLocalAssetFor('https://www.ad.nl/a'), endsWith('contentScript_nl.js'));
+      expect(bpcCsLocalAssetFor('https://wyborcza.pl/a'), endsWith('contentScript_pl.js'));
+      expect(bpcCsLocalAssetFor('https://www.dn.se/a'), endsWith('contentScript_fi.se.js'));
     });
   });
 

@@ -2,9 +2,15 @@ Bypass Paywalls Clean
 Copyright (c) 2020, magnolia1234
 Licensed under the MIT License.
 
-site_rules.json and the domain list were extracted from Bypass Paywalls Clean
-4.4.0.0 (sites.js, custom/sites_custom.json, sites_updated.json, and
-host_permissions). The in-app engine reimplements the extension's main
-tactics (script blocking, header/cookie changes, DOM unhide) inside QuaX's
-WebView. The extension's chrome.runtime content-script mailbox and cs_local
-helpers are not shipped.
+Bundled under assets/bpc/:
+- site_rules.json — domains and per-site rules extracted from sites.js,
+  custom/sites_custom.json, sites_updated.json, and host_permissions
+- cs/contentScript.js, cs/purify.min.js, cs_local/*.js — the extension's
+  content scripts, run inside QuaX's WebView through a chrome.runtime shim
+  (assets/bpc/cs/runtime_shim.js) that delivers bg2csData and answers
+  getExtSrc / getExtFetch / clear_cookies / refreshCurrentTab from Dart
+- unhide.js — extra generic overlay removal as a second pass
+
+The extension's declarativeNetRequest rules are reimplemented with
+shouldInterceptRequest. Header and cookie changes are applied by the
+Flutter reader before the page loads.

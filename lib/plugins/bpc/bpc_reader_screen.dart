@@ -1,10 +1,14 @@
 import 'dart:collection';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:http/http.dart' as http;
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/plugins/bpc/bpc_cs_locale.dart';
 import 'package:quax/plugins/bpc/bpc_rules.dart';
 import 'package:quax/plugins/bpc/bpc_strategy.dart';
 import 'package:quax/utils/urls.dart';
@@ -26,11 +30,15 @@ class BpcReaderScreen extends StatefulWidget {
 }
 
 class _BpcReaderScreenState extends State<BpcReaderScreen> {
+  InAppWebViewController? _controller;
   BpcSiteRule? _rule;
-  String? _unhideJs;
+  List<UserScript> _userScripts = const [];
   var _loading = true;
   var _ready = false;
   String? _error;
+
+  bool get _useEngine =>
+      widget.strategy == BpcStrategy.inApp || widget.strategy == BpcStrategy.googlebot;
 
   @override
   void initState() {
@@ -41,11 +49,12 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
   Future<void> _prepare() async {
     try {
       final book = await BpcRuleBook.load();
-      final unhide = await rootBundle.loadString('assets/bpc/unhide.js');
+      final rule = book.ruleForUrl(widget.articleUrl);
+      final scripts = _useEngine ? await _loadUserScripts() : <UserScript>[];
       if (!mounted) return;
       setState(() {
-        _rule = book.ruleForUrl(widget.articleUrl);
-        _unhideJs = unhide;
+        _rule = rule;
+        _userScripts = scripts;
         _ready = true;
       });
     } catch (e) {
@@ -57,18 +66,146 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
     }
   }
 
+  Future<List<UserScript>> _loadUserScripts() async {
+    final shim = await rootBundle.loadString('assets/bpc/cs/runtime_shim.js');
+    final purify = await rootBundle.loadString('assets/bpc/cs/purify.min.js');
+    final content = await rootBundle.loadString('assets/bpc/cs/contentScript.js');
+    final local = await rootBundle.loadString(bpcCsLocalAssetFor(widget.articleUrl));
+    final unhide = await rootBundle.loadString('assets/bpc/unhide.js');
+
+    // document_start: beat paywall scripts that our interceptor may miss.
+    // document_end: generic unhide as a second pass.
+    return [
+      UserScript(
+        source: shim,
+        injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
+        forMainFrameOnly: true,
+        groupName: 'bpc',
+      ),
+      UserScript(
+        source: purify,
+        injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
+        forMainFrameOnly: true,
+        groupName: 'bpc',
+      ),
+      UserScript(
+        source: content,
+        injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
+        forMainFrameOnly: true,
+        groupName: 'bpc',
+      ),
+      UserScript(
+        source: local,
+        injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
+        forMainFrameOnly: true,
+        groupName: 'bpc',
+      ),
+      UserScript(
+        source: unhide,
+        injectionTime: UserScriptInjectionTime.AT_DOCUMENT_END,
+        forMainFrameOnly: true,
+        groupName: 'bpc',
+      ),
+    ];
+  }
+
   Future<void> _beforeLoad() async {
     if (widget.strategy != BpcStrategy.inApp) return;
     final rule = _rule;
-    if (rule == null) return;
+    if (rule?.dropCookies == null) return;
+    await CookieManager.instance().deleteAllCookies();
+  }
 
-    final cookies = CookieManager.instance();
-    if (rule.dropCookies != null) {
-      // BPC clears the jar for the site (or selected names). Clearing all
-      // WebView cookies is blunt but matches the extension's common path and
-      // avoids leaving a metered session that re-locks the article.
-      await cookies.deleteAllCookies();
+  Future<void> _deliverBg2cs(InAppWebViewController controller) async {
+    if (!_useEngine) return;
+    final data = _rule?.toBg2csData() ?? {'optin_fetch': 1};
+    final payload = jsonEncode({'msg': 'bg2cs', 'data': data});
+    try {
+      await controller.evaluateJavascript(
+        source: 'window.__bpcDeliver && window.__bpcDeliver($payload);',
+      );
+    } catch (_) {}
+  }
+
+  Future<void> _onRuntimeMessage(List<dynamic> args) async {
+    if (args.isEmpty) return;
+    final raw = args.first;
+    if (raw is! Map) return;
+    final msg = Map<String, dynamic>.from(raw);
+    final request = msg['request'] as String?;
+    final data = msg['data'];
+    final controller = _controller;
+    if (controller == null || request == null) return;
+
+    if (request == 'refreshCurrentTab') {
+      await controller.reload();
+      return;
     }
+    if (request == 'clear_cookies_domain') {
+      await CookieManager.instance().deleteAllCookies();
+      return;
+    }
+    if (request == 'getExtSrc' && data is Map) {
+      await _fetchExtSrc(controller, Map<String, dynamic>.from(data));
+      return;
+    }
+    if (request == 'getExtFetch' && data is Map) {
+      await _fetchExtFetch(controller, Map<String, dynamic>.from(data));
+    }
+  }
+
+  Future<void> _fetchExtSrc(
+    InAppWebViewController controller,
+    Map<String, dynamic> data,
+  ) async {
+    final url = data['url'] as String?;
+    if (url == null) return;
+    try {
+      final response = await http.get(Uri.parse(url), headers: {
+        'User-Agent': _userAgent ?? bpcGooglebotUserAgent,
+        'Referer': bpcGoogleReferer,
+      });
+      final payload = jsonEncode({
+        'msg': 'showExtSrc',
+        'data': {
+          'url': widget.articleUrl,
+          'url_src': url,
+          'html': response.body,
+          'selector': data['selector'],
+          'selector_source': data['selector_source'],
+          'selector_archive': data['selector_archive'],
+          'text_fail': data['text_fail'],
+        },
+      });
+      await controller.evaluateJavascript(
+        source: 'window.__bpcDeliver && window.__bpcDeliver($payload);',
+      );
+    } catch (_) {}
+  }
+
+  Future<void> _fetchExtFetch(
+    InAppWebViewController controller,
+    Map<String, dynamic> data,
+  ) async {
+    final url = data['url'] as String?;
+    if (url == null) return;
+    try {
+      final response = await http.get(Uri.parse(url), headers: {
+        'User-Agent': _userAgent ?? bpcGooglebotUserAgent,
+        'Referer': bpcGoogleReferer,
+      });
+      final payload = jsonEncode({
+        'msg': 'showExtFetch',
+        'data': {
+          'url': url,
+          'html': response.body,
+          'data_ext_fetch_id': data['data_ext_fetch_id'],
+        },
+      });
+      await controller.evaluateJavascript(
+        source: 'window.__bpcDeliver && window.__bpcDeliver($payload);',
+      );
+    } catch (_) {}
   }
 
   String? get _userAgent {
@@ -104,27 +241,12 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
     if (rule == null) return null;
     final url = request.url.toString();
     if (!rule.blocksUrl(url)) return null;
-
-    // Empty response == blocked, the DNR equivalent in a WebView.
     return WebResourceResponse(
       contentType: 'text/plain',
       data: Uint8List(0),
       statusCode: 200,
       reasonPhrase: 'OK',
     );
-  }
-
-  Future<void> _injectUnhide(InAppWebViewController controller) async {
-    if (widget.strategy != BpcStrategy.inApp && widget.strategy != BpcStrategy.googlebot) {
-      return;
-    }
-    final js = _unhideJs;
-    if (js == null) return;
-    try {
-      await controller.evaluateJavascript(source: js);
-    } catch (_) {
-      // Page may have navigated away; ignore.
-    }
   }
 
   @override
@@ -165,25 +287,25 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
                         transparentBackground: false,
                         isInspectable: kDebugMode,
                       ),
-                      initialUserScripts: UnmodifiableListView([
-                        if (_unhideJs != null &&
-                            (widget.strategy == BpcStrategy.inApp ||
-                                widget.strategy == BpcStrategy.googlebot))
-                          UserScript(
-                            source: _unhideJs!,
-                            injectionTime: UserScriptInjectionTime.AT_DOCUMENT_END,
-                            forMainFrameOnly: true,
-                          ),
-                      ]),
+                      initialUserScripts: UnmodifiableListView(_userScripts),
                       onWebViewCreated: (controller) async {
+                        _controller = controller;
+                        controller.addJavaScriptHandler(
+                          handlerName: 'bpcRuntime',
+                          callback: (args) async {
+                            await _onRuntimeMessage(args);
+                            return null;
+                          },
+                        );
                         await _beforeLoad();
                       },
                       shouldInterceptRequest: _intercept,
-                      onLoadStart: (controller, url) {
+                      onLoadStart: (controller, url) async {
                         if (mounted) setState(() => _loading = true);
+                        await _deliverBg2cs(controller);
                       },
                       onLoadStop: (controller, url) async {
-                        await _injectUnhide(controller);
+                        await _deliverBg2cs(controller);
                         if (mounted) setState(() => _loading = false);
                       },
                       onReceivedError: (controller, request, error) {
