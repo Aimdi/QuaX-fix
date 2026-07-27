@@ -73,6 +73,29 @@ void main() {
           ['https://i.redd.it/x.gif']);
     });
 
+    test('a Reddit GIF token becomes the GIF, and never shows as raw text', () {
+      const body = '![gif](giphy|l0HlvtIPzPdt2usKs|downsized)';
+      final comment = parseComments(_page(_comment('a', 'someone', body))).single;
+
+      expect(comment.mediaUrls, ['https://media.giphy.com/media/l0HlvtIPzPdt2usKs/giphy.gif']);
+      expect(comment.body, isEmpty);
+    });
+
+    test('a token beside words takes only itself out of the text', () {
+      const body = 'this exactly ![gif](giphy|abc123XYZ|downsized)';
+      final comment = parseComments(_page(_comment('a', 'someone', body))).single;
+
+      expect(comment.mediaUrls, hasLength(1));
+      expect(comment.body, 'this exactly');
+    });
+
+    test('an inlined img is picked up as well as a link', () {
+      const body = '<img src="//i.redd.it/inline.png">';
+
+      expect(parseComments(_page(_comment('a', 'someone', body))).single.mediaUrls,
+          ['https://i.redd.it/inline.png']);
+    });
+
     test('replies hang off the comment they answer', () {
       final page = _page(_comment('a', 'first', 'Question', replies: _comment('b', 'second', 'Answer')));
 

@@ -101,7 +101,7 @@ RedditComment? _commentFrom(Element thing) {
 
   // A comment that is nothing but a picture is still a comment; only one with
   // neither text nor media is a row worth skipping.
-  if (body.isEmpty && media.isEmpty) {
+  if (body.isEmpty && media.urls.isEmpty) {
     return null;
   }
 
@@ -112,48 +112,76 @@ RedditComment? _commentFrom(Element thing) {
     score: _score(entry),
     createdAt: _createdAt(entry),
     isSubmitter: entry.querySelector('.author.submitter') != null,
-    mediaUrls: media,
+    mediaUrls: media.urls,
     replies: _repliesOf(thing),
   );
 }
 
-/// Every linked picture in a comment body, deduplicated, in order.
+/// The pictures a comment body carries, and the text that only announced them.
 ///
-/// Reddit links the same image twice when the text is the URL, and a reader
-/// does not want to see it twice.
-List<String> _mediaIn(Element? markdown) {
+/// [tokens] are Reddit's own media markdown, which the old site prints raw.
+/// They are never words anybody meant to write, so they come out of the text
+/// whatever else it says.
+typedef _CommentMedia = ({List<String> urls, List<String> tokens});
+
+/// Every picture in a comment body, deduplicated, in order.
+///
+/// Three places carry one: an anchor (a link someone pasted), an `img` the old
+/// site inlined itself, and Reddit's `![gif](giphy|…)` token, which the old
+/// site renders as literal text and is otherwise the picture's only trace.
+_CommentMedia _mediaIn(Element? markdown) {
   if (markdown == null) {
-    return const [];
+    return (urls: const [], tokens: const []);
   }
 
   final urls = <String>[];
-  for (final anchor in markdown.querySelectorAll('a[href]')) {
-    final image = redditImageUrl(anchor.attributes['href']);
-    if (image != null && !urls.contains(image)) {
-      urls.add(image);
+  void add(String? url) {
+    if (url != null && !urls.contains(url)) {
+      urls.add(url);
     }
   }
-  return urls;
+
+  for (final anchor in markdown.querySelectorAll('a[href]')) {
+    add(redditEmbeddableImage(anchor.attributes['href']));
+  }
+  for (final image in markdown.querySelectorAll('img[src]')) {
+    add(redditEmbeddableImage(_absolute(image.attributes['src'])));
+  }
+
+  final tokens = <String>[];
+  for (final match in redditMediaToken.allMatches(markdown.text)) {
+    tokens.add(match.group(0)!);
+    add(redditTokenImage(match));
+  }
+
+  return (urls: urls, tokens: tokens);
 }
 
-/// The comment's words, with a link that is only its own URL taken out.
+/// Reddit writes protocol-relative sources; the image loader needs a scheme.
+String? _absolute(String? src) => src != null && src.startsWith('//') ? 'https:$src' : src;
+
+/// The comment's words, with anything that was only an announcement removed.
 ///
-/// An image comment reads `https://i.redd.it/x.gif` as its text; printing that
-/// above the picture it produced is noise. Prose that merely happens to contain
-/// a link keeps every word of it.
-String _bodyOf(Element? markdown, List<String> media) {
-  var text = markdown?.text.trim() ?? '';
-  if (text.isEmpty || media.isEmpty) {
+/// A media token is always noise. A bare URL is not: an image comment reads
+/// `https://i.redd.it/x.gif` as its text and printing that above the picture is
+/// pointless, but prose that merely happens to contain a link keeps every word.
+String _bodyOf(Element? markdown, _CommentMedia media) {
+  var text = markdown?.text ?? '';
+  for (final token in media.tokens) {
+    text = text.replaceAll(token, '');
+  }
+  text = text.trim();
+
+  if (text.isEmpty || media.urls.isEmpty) {
     return text;
   }
 
-  for (final url in media) {
-    text = text.replaceAll(url, '');
+  var withoutLinks = text;
+  for (final url in media.urls) {
+    withoutLinks = withoutLinks.replaceAll(url, '');
   }
 
-  // Only when nothing but the links was there; otherwise the untouched text is
-  // what the comment actually said.
-  return text.trim().isEmpty ? '' : (markdown?.text.trim() ?? '');
+  return withoutLinks.trim().isEmpty ? '' : text;
 }
 
 /// The comments nested directly inside [thing].

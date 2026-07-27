@@ -25,6 +25,39 @@ void main() {
       expect(redditImageUrl('javascript:alert(1)'), isNull, reason: 'only http(s) is ever loaded');
     });
 
+    test('a giphy share link resolves to the file behind it', () {
+      expect(redditEmbeddableImage('https://giphy.com/gifs/funny-cat-l0HlvtIPzPdt2usKs'),
+          'https://media.giphy.com/media/l0HlvtIPzPdt2usKs/giphy.gif');
+      expect(redditEmbeddableImage('https://giphy.com/gifs/l0HlvtIPzPdt2usKs'), isNotNull,
+          reason: 'a slug without words is the id on its own');
+      expect(redditEmbeddableImage('https://giphy.com/explore/cats'), isNull);
+    });
+
+    test('a single imgur page resolves; an album does not', () {
+      expect(redditEmbeddableImage('https://imgur.com/AbCd123'), 'https://i.imgur.com/AbCd123.jpeg');
+      expect(redditEmbeddableImage('https://imgur.com/a/AbCd123'), isNull);
+      expect(redditEmbeddableImage('https://imgur.com/gallery/AbCd123'), isNull);
+    });
+
+    test('a host that needs a key or a round trip is left alone', () {
+      expect(redditEmbeddableImage('https://redgifs.com/watch/somename'), isNull);
+      expect(redditEmbeddableImage('https://tenor.com/view/thing-12345'), isNull);
+    });
+
+    test("Reddit's own media token names the file the old site never rendered", () {
+      final match = redditMediaToken.firstMatch('![gif](giphy|l0HlvtIPzPdt2usKs|downsized)');
+
+      expect(match, isNotNull);
+      expect(redditTokenImage(match!), 'https://media.giphy.com/media/l0HlvtIPzPdt2usKs/giphy.gif');
+    });
+
+    test('an emote token names no public file, so it resolves to nothing', () {
+      final match = redditMediaToken.firstMatch('![img](emote|free_emotes_pack|joy)');
+
+      expect(match, isNotNull);
+      expect(redditTokenImage(match!), isNull);
+    });
+
     test('video hosts are known regardless of www', () {
       expect(isRedditVideoHost('v.redd.it'), isTrue);
       expect(isRedditVideoHost('www.youtube.com'), isTrue);
