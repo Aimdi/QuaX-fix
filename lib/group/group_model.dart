@@ -271,23 +271,46 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
   /// Android 7 devices whose bundled SQLite predates that. The per-group cut is
   /// therefore taken in Dart.
   Future<Map<String, List<GroupMemberPreview>>> _loadMemberPreviews(DatabaseExecutor database) async {
-    var rows = await database.rawQuery(
+    final previews = <String, List<GroupMemberPreview>>{};
+
+    void add(String groupId, GroupMemberPreview preview) {
+      final list = previews.putIfAbsent(groupId, () => <GroupMemberPreview>[]);
+      if (list.length < _avatarPreviewCount) {
+        list.add(preview);
+      }
+    }
+
+    final rows = await database.rawQuery(
         'SELECT gm.group_id, s.id, s.name, s.screen_name, s.profile_image_url_https FROM $tableSubscriptionGroupMember gm '
         'JOIN $tableSubscription s ON s.id = gm.profile_id '
         'ORDER BY gm.group_id, s.screen_name COLLATE NOCASE');
 
-    return rows.fold<Map<String, List<GroupMemberPreview>>>(<String, List<GroupMemberPreview>>{}, (acc, row) {
-      var previews = acc.putIfAbsent(row['group_id'] as String, () => <GroupMemberPreview>[]);
-      if (previews.length < _avatarPreviewCount) {
-        final screenName = row['screen_name'] as String?;
-        previews.add(GroupMemberPreview(
-          id: row['id'] as String,
-          name: (row['name'] as String?) ?? screenName ?? '',
-          avatarUrl: row['profile_image_url_https'] as String?,
-        ));
-      }
-      return acc;
-    });
+    for (final row in rows) {
+      final screenName = row['screen_name'] as String?;
+      add(
+          row['group_id'] as String,
+          GroupMemberPreview(
+            id: row['id'] as String,
+            name: (row['name'] as String?) ?? screenName ?? '',
+            avatarUrl: row['profile_image_url_https'] as String?,
+          ));
+    }
+
+    // Subreddits are members too, and a group made only of them used to have no
+    // cover at all. They come second so a mixed group still leads with faces.
+    final subreddits = await database.rawQuery(
+        'SELECT gm.group_id, s.id, s.name FROM $tableSubscriptionGroupMember gm '
+        'JOIN $tableRedditSubscription s ON s.id = gm.profile_id '
+        'ORDER BY gm.group_id, s.name COLLATE NOCASE');
+
+    for (final row in subreddits) {
+      final name = row['name'] as String;
+      add(
+          row['group_id'] as String,
+          GroupMemberPreview(id: row['id'] as String, name: name, subreddit: name));
+    }
+
+    return previews;
   }
 
   /// Makes the global replies/reposts default apply to every group again by

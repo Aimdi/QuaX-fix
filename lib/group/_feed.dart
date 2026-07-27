@@ -695,7 +695,11 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.chunks.isEmpty) {
+    // A group is empty when it has nothing from *any* source. Testing only the
+    // X chunks meant a group of nothing but subreddits reported itself empty
+    // before its posts were ever asked for — the list below knows how to show
+    // interleaved items with no chains, but never got the chance.
+    if (widget.chunks.isEmpty && widget.publications.isEmpty && widget.subreddits.isEmpty) {
       return Scaffold(
         body: Center(
           child: Text(L10n.of(context).this_group_contains_no_subscriptions),

@@ -1,6 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:quax/database/entities.dart';
+import 'package:quax/plugins/reddit/reddit_subreddit_avatar.dart';
 import 'package:quax/subscriptions/widgets/fallback_avatar.dart';
 
 /// A group's members rendered as its cover art.
@@ -137,6 +138,13 @@ class AvatarMosaic extends StatelessWidget {
       );
 
   Widget _avatar(BuildContext context, GroupMemberPreview member, double diameter) {
+    // A subreddit's picture is not a URL this app holds: it is fetched once and
+    // cached, and falls back to a drawn tile. Its own widget knows all of that.
+    final subreddit = member.subreddit;
+    if (subreddit != null) {
+      return ClipOval(child: RedditSubredditAvatar(subreddit: subreddit, size: diameter));
+    }
+
     final url = member.avatarUrl;
     final fallback = FallbackAvatar(
       seed: member.id,

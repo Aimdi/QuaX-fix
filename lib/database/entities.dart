@@ -322,7 +322,11 @@ class GroupMemberPreview {
   final String name;
   final String? avatarUrl;
 
-  const GroupMemberPreview({required this.id, required this.name, this.avatarUrl});
+  /// Set when the member is a subreddit, whose picture is not a URL this app
+  /// holds — it is fetched and cached separately, and drawn from the name.
+  final String? subreddit;
+
+  const GroupMemberPreview({required this.id, required this.name, this.avatarUrl, this.subreddit});
 }
 
 class SubscriptionGroup with ToMappable {
