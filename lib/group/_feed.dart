@@ -133,13 +133,16 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     }.toList(growable: false);
 
     final items = await loadRedditInterleaved(context, names);
-    if (mounted && items.isNotEmpty) {
+    // Assigned whatever came back, empty included: a subreddit taken out of the
+    // group has to take its posts with it, and keeping the old ones on an empty
+    // result would leave them there for good.
+    if (mounted) {
       setState(() => _redditItems = items);
     }
   }
 
   Future<void> _loadSubstackPosts() async {
-    if (widget.publications.isEmpty || widget.mediaOnly) {
+    if (widget.mediaOnly) {
       return;
     }
 
@@ -376,6 +379,18 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   @override
   void didUpdateWidget(SubscriptionGroupFeed oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    // A group's members are not known when the feed is first built: loading the
+    // group is a round trip to the database, and adding a subreddit re-emits it
+    // again afterwards. Fetching them only in initState therefore asked for the
+    // posts of an empty list and never asked again — which is why a group with
+    // a subreddit in it stayed empty of Reddit posts however long you waited.
+    if (!listEquals(oldWidget.subreddits, widget.subreddits)) {
+      _loadRedditPosts();
+    }
+    if (!listEquals(oldWidget.publications, widget.publications)) {
+      _loadSubstackPosts();
+    }
 
     if (oldWidget.includeReplies != widget.includeReplies ||
         oldWidget.includeRetweets != widget.includeRetweets ||
