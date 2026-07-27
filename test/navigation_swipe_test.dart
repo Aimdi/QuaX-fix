@@ -163,13 +163,19 @@ void main() {
       expect(find.text('body0'), findsOneWidget);
     });
 
-    testWidgets('a single tab has nowhere to go', (tester) async {
-      await tester.pumpWidget(_scaffold(pages: 1));
+    // A single-tab scaffold is not a case that can be built: NavigationBar
+    // requires at least two destinations. pageAfterNavigationSwipe covers the
+    // rule directly above.
+
+    testWidgets('a tap on the bar under the strip still lands', (tester) async {
+      await tester.pumpWidget(_scaffold());
       await tester.pumpAndSettle();
 
-      await _swipeTop(tester, const Offset(-300, 0));
+      // The strip is translucent, so what is under it keeps taking taps.
+      await tester.tap(find.byIcon(Icons.circle).last);
+      await tester.pumpAndSettle();
 
-      expect(find.text('body0'), findsOneWidget);
+      expect(find.text('body3'), findsOneWidget);
     });
   });
 }
