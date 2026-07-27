@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/reddit/reddit_subreddit_avatar.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
+import 'package:quax/plugins/reddit/reddit_listing_screen.dart';
 import 'package:quax/plugins/reddit/reddit_post_media.dart';
 import 'package:quax/plugins/reddit/reddit_post_sheet.dart';
 import 'package:quax/plugins/reddit/reddit_thread_screen.dart';
@@ -89,7 +90,12 @@ class _RedditPostHeader extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RedditSubredditAvatar(subreddit: post.subreddit, size: kRedditAvatarSize),
+          // The picture and the name are one target: both mean "this community",
+          // and a tap on either goes straight there rather than into a menu.
+          GestureDetector(
+            onTap: () => _openSubreddit(context),
+            child: RedditSubredditAvatar(subreddit: post.subreddit, size: kRedditAvatarSize),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -98,10 +104,13 @@ class _RedditPostHeader extends StatelessWidget {
                 Row(
                   children: [
                     Flexible(
-                      child: Text(
-                        'r/${post.subreddit}',
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800),
+                      child: GestureDetector(
+                        onTap: () => _openSubreddit(context),
+                        child: Text(
+                          'r/${post.subreddit}',
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800),
+                        ),
                       ),
                     ),
                     if (date != null) ...[
@@ -116,6 +125,13 @@ class _RedditPostHeader extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _openSubreddit(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => RedditListingScreen.subreddit(post.subreddit)),
     );
   }
 

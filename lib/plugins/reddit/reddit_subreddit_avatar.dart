@@ -94,13 +94,20 @@ class _RedditSubredditAvatarState extends State<RedditSubredditAvatar> {
       return RedditAvatar(name: 'r/${widget.subreddit}', size: widget.size);
     }
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(widget.size / 2),
+    // Contained, not cropped, on a filled square. A community logo is usually
+    // drawn with margins of its own and is rarely square — cover cut the edges
+    // off exactly the part that identifies it.
+    return Container(
+      width: widget.size,
+      height: widget.size,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: redditAvatarBorder(widget.size),
+      ),
+      clipBehavior: Clip.antiAlias,
       child: ExtendedImage.network(
         icon,
-        width: widget.size,
-        height: widget.size,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         loadStateChanged: (state) => state.extendedImageLoadState == LoadState.completed
             ? null
             : RedditAvatar(name: 'r/${widget.subreddit}', size: widget.size),

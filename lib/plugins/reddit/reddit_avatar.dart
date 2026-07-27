@@ -199,6 +199,10 @@ int redditAvatarSeed(String name) {
 Color redditAvatarInk(Color background) =>
     background.computeLuminance() > 0.55 ? const Color(0xFF15202B) : Colors.white;
 
+/// The corner of every Reddit avatar: a square with rounded edges rather than a
+/// circle, so a square logo is not cropped into a disc.
+BorderRadius redditAvatarBorder(double size) => BorderRadius.circular(size / 4);
+
 class RedditAvatar extends StatelessWidget {
   final String? name;
   final double size;
@@ -216,7 +220,7 @@ class RedditAvatar extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(size / 6),
+          borderRadius: redditAvatarBorder(size),
         ),
       );
     }
@@ -224,7 +228,7 @@ class RedditAvatar extends StatelessWidget {
     final avatar = redditAvatarFor(value);
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(size / 6),
+      borderRadius: redditAvatarBorder(size),
       child: SizedBox(
         width: size,
         height: size,
