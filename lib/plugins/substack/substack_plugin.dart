@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:pref/pref.dart';
+import 'package:provider/provider.dart';
 import 'package:quax/constants.dart';
+import 'package:quax/database/repository.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/home/home_screen.dart';
 import 'package:quax/plugins/plugin.dart';
 import 'package:quax/plugins/substack/substack_screen.dart';
+import 'package:quax/plugins/substack/substack_store.dart';
 
 class SubstackPlugin extends QuaxPlugin {
   SubstackPlugin();
@@ -39,5 +43,22 @@ class SubstackPlugin extends QuaxPlugin {
   @override
   Widget homeScreen({required ScrollController scrollController}) {
     return SubstackScreen(scrollController: scrollController);
+  }
+
+  @override
+  List<String> get tables => const [tableSubstackSubscription];
+
+  @override
+  Future<void> resetPreferences(BasePrefService prefs) async {
+    await prefs.set(optionPluginSubstackPublications, '[]');
+    await prefs.set(optionPluginSubstackReadIds, '[]');
+  }
+
+  @override
+  Future<void> forgetLoadedData(BuildContext context) async {
+    await context.read<SubstackPublicationsStore>().load();
+    if (context.mounted) {
+      await context.read<SubstackReadStore>().load();
+    }
   }
 }

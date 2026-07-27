@@ -59,6 +59,13 @@ const optionPluginRedditSubreddits = 'plugin.reddit.subreddits';
 const optionPluginRedditSource = 'plugin.reddit.source';
 const redditSourceAuto = 'auto';
 const redditSourcePublic = 'public';
+
+/// The listing a Reddit feed uses until the reader picks another.
+const redditSortHot = 'hot';
+
+/// Where the subreddit artwork is kept, named here so the plugin can delete
+/// the same directory it fills.
+const redditIconsCacheName = 'reddit_icons';
 /// Set once the reader signs in; the only long-lived Reddit credential kept.
 const optionPluginRedditRefreshToken = 'plugin.reddit.refresh_token';
 
@@ -297,6 +304,15 @@ const optionEndpointRegistryFetchedAt = 'api.endpoint_registry.fetched_at';
 const defaultEndpointRegistryUrl =
     'https://raw.githubusercontent.com/$githubRepo/master/endpoints.json';
 const Duration endpointRegistryTimeout = Duration(seconds: 10);
+
+// Plugin catalogue: decides which plugins the store offers, published the same
+// way the endpoint registry is. It can only narrow the built-in list — a
+// plugin's code is compiled in — and never withdraws one already installed.
+const optionPluginCatalogueUrl = 'plugin.catalogue.url';
+const optionPluginCatalogueCache = 'plugin.catalogue.cache';
+const optionPluginCatalogueFetchedAt = 'plugin.catalogue.fetched_at';
+const defaultPluginCatalogueUrl =
+    'https://raw.githubusercontent.com/$githubRepo/master/plugins.json';
 
 // Offline read cache for threads and profile timelines (feed_group_chunk covers
 // group feeds). Short windows: these are re-read within a session far more

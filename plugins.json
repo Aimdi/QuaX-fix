@@ -1,0 +1,10 @@
+{
+  "$comment": "Which plugins the QuaX plugin store offers. Published rather than compiled so a plugin can be added or withdrawn without a release. This cannot add code to an installed build: an id no build knows is ignored, and a plugin already installed is never taken away. Set \"available\": false to hold one back.",
+  "plugins": [
+    { "id": "substack" },
+    { "id": "reddit" },
+    { "id": "stocks" },
+    { "id": "karakeep" },
+    { "id": "deepmarks" }
+  ]
+}

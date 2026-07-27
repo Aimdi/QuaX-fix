@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pref/pref.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/deepmarks/deepmarks_settings_screen.dart';
@@ -27,4 +28,13 @@ class DeepmarksPlugin extends QuaxPlugin {
 
   @override
   Widget? settingsScreen(BuildContext context) => const DeepmarksSettingsScreen();
+
+  @override
+  Future<void> resetPreferences(BasePrefService prefs) async {
+    await prefs.set(optionPluginDeepmarksApiBase, '');
+    await prefs.set(optionPluginDeepmarksApiKey, '');
+    // The signing key is the reader's Nostr identity. Nothing about it should
+    // outlive the plugin that asked for it.
+    await prefs.set(optionPluginDeepmarksSecretKey, '');
+  }
 }

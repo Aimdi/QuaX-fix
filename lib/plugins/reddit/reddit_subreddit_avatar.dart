@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:ffcache/ffcache.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quax/constants.dart';
 import 'package:quax/plugins/reddit/reddit_avatar.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/utils/cache.dart';
@@ -19,7 +20,7 @@ const Duration kRedditIconExpiry = Duration(days: 7);
 /// looked up again on every card.
 class RedditIcons {
   final RedditClient client;
-  final FFCache _cache = FFCache(name: 'reddit_icons');
+  final FFCache _cache = FFCache(name: redditIconsCacheName);
   final Map<String, Future<String?>> _pending = {};
 
   RedditIcons(this.client);

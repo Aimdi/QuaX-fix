@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:pref/pref.dart';
+import 'package:provider/provider.dart';
 import 'package:quax/constants.dart';
+import 'package:quax/database/repository.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/home/home_screen.dart';
 import 'package:quax/plugins/plugin.dart';
+import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_screen.dart';
+import 'package:quax/plugins/reddit/reddit_store.dart';
 import 'package:quax/plugins/reddit/reddit_settings_screen.dart';
 
 /// Account-free Reddit reading, in the spirit of Stealth: no login, no posting.
@@ -48,4 +53,30 @@ class RedditPlugin extends QuaxPlugin {
 
   @override
   Widget? settingsScreen(BuildContext context) => const RedditSettingsScreen();
+
+  @override
+  List<String> get tables => const [tableRedditSubscription];
+
+  @override
+  List<String> get caches => const [redditIconsCacheName];
+
+  @override
+  Future<void> resetPreferences(BasePrefService prefs) async {
+    // The sign-in and the client id go with everything else: leaving
+    // credentials behind is the part of "uninstall" that would matter most.
+    await prefs.set(optionPluginRedditSubreddits, '[]');
+    await prefs.set(optionPluginRedditClientId, '');
+    await prefs.set(optionPluginRedditRefreshToken, '');
+    await prefs.set(optionPluginRedditSource, redditSourceAuto);
+    await prefs.set(optionPluginRedditSort, redditSortHot);
+    await prefs.set(optionPluginRedditInHomeFeed, false);
+  }
+
+  @override
+  Future<void> forgetLoadedData(BuildContext context) async {
+    await context.read<RedditSubredditsStore>().load();
+    if (context.mounted) {
+      context.read<RedditClient>().forgetToken();
+    }
+  }
 }

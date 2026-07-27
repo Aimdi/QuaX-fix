@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pref/pref.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/karakeep/karakeep_settings_screen.dart';
@@ -26,4 +27,10 @@ class KarakeepPlugin extends QuaxPlugin {
 
   @override
   Widget? settingsScreen(BuildContext context) => const KarakeepSettingsScreen();
+
+  @override
+  Future<void> resetPreferences(BasePrefService prefs) async {
+    await prefs.set(optionPluginKarakeepServerUrl, '');
+    await prefs.set(optionPluginKarakeepApiKey, '');
+  }
 }
