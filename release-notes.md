@@ -41,6 +41,29 @@ wherever you are rather than back in the article you left. Leaving the app
 itself is not covered — there is no media notification behind this yet, so
 Android may reclaim the process.
 
+**Subreddits in a group actually show their posts.** A group with a subreddit
+in it asked for its posts once, before the group knew its own members, and
+never asked again — so it sat there empty. Substack publications in a group had
+the same fault and are fixed with it.
+
+**Read several groups at once.** Hold a group in the switcher and it is read
+alongside the one you are in; hold it again and it is not. Nothing is written
+down — the combination lives for as long as you are using it.
+
+**A post's pictures are laid out along a row**, all at one height and each as
+wide as its own shape, instead of one at a time behind a swipe. That is why the
+number you can see changes from post to post: tall photos are narrow and three
+fit, wide ones are broad and barely two do.
+
+**Choose which browser links open in.** Settings → General lists every browser
+on the phone, so links from a feed can go somewhere other than the system
+default without changing that default for everything.
+
+**Swiping the top of the screen changes tab**, which it never did before — the
+app bar swallowed the drag.
+
+**A new app icon.**
+
 ---
 
 First download? Install it with Obtainium 👇
