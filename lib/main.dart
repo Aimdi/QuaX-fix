@@ -284,7 +284,11 @@ Future<void> main() async {
       optionGlobalIncludeRetweets: true,
       optionThreadedReplies: true,
       optionMediaGridLayout: mediaGridLayoutMasonry,
-      optionShouldCheckForUpdates: true,
+      // Off by default in this fork. It checks this repository, not upstream,
+      // and this repository publishes a build whenever something is fixed — so
+      // the check was firing constantly and reading as an upstream release
+      // notice. The switch in Settings › General still turns it back on.
+      optionShouldCheckForUpdates: false,
       optionEndpointRegistryEnabled: true,
       optionEndpointRegistryUrl: defaultEndpointRegistryUrl,
       optionEndpointRegistryCache: '',
