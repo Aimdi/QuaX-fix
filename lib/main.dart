@@ -305,7 +305,7 @@ Future<void> main() async {
       optionCrashGithubRepo: defaultCrashGithubRepo,
       optionCrashGithubToken: '',
     optionPluginBpcEnabled: false,
-    optionPluginBpcStrategy: 'archive',
+    optionPluginBpcStrategy: 'in_app',
     optionPluginDeepmarksEnabled: false,
     optionPluginDeepmarksApiBase: '',
     optionPluginDeepmarksApiKey: '',

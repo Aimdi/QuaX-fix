@@ -50,6 +50,13 @@ class _BpcSettingsScreenState extends State<BpcSettingsScreen> {
             ),
           ),
           RadioListTile<BpcStrategy>(
+            value: BpcStrategy.inApp,
+            groupValue: strategy,
+            onChanged: (v) => _setStrategy(v!),
+            title: Text(l10n.plugin_bpc_strategy_in_app),
+            subtitle: Text(l10n.plugin_bpc_strategy_in_app_description),
+          ),
+          RadioListTile<BpcStrategy>(
             value: BpcStrategy.archive,
             groupValue: strategy,
             onChanged: (v) => _setStrategy(v!),

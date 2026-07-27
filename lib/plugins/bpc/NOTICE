@@ -1,7 +1,10 @@
-Bypass Paywalls Clean site list
+Bypass Paywalls Clean
 Copyright (c) 2020, magnolia1234
 Licensed under the MIT License.
 
-The domains in bpc_domains.dart were extracted from Bypass Paywalls Clean
-4.4.0.0 (sites.js, custom/sites_custom.json, sites_updated.json). QuaX does
-not ship or execute the extension's background or content scripts.
+site_rules.json and the domain list were extracted from Bypass Paywalls Clean
+4.4.0.0 (sites.js, custom/sites_custom.json, sites_updated.json, and
+host_permissions). The in-app engine reimplements the extension's main
+tactics (script blocking, header/cookie changes, DOM unhide) inside QuaX's
+WebView. The extension's chrome.runtime content-script mailbox and cs_local
+helpers are not shipped.

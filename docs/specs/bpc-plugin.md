@@ -3,37 +3,34 @@
 ## Source
 
 The uploaded `bpc.crx` is **Bypass Paywalls Clean** 4.4.0.0
-(MIT, © magnolia1234). Upstream lives on GitFlic; Android browsers such as
-Quetta can load the CRX directly. QuaX cannot.
+(MIT, © magnolia1234).
 
-## What cannot be ported
+## What Chrome had that stock Flutter WebView lacked
 
-BPC's real unlocks are Chrome-only:
+| Chrome (BPC) | Why it mattered | QuaX rewrite |
+|---|---|---|
+| `declarativeNetRequest` block rules | Stop paywall JS before it runs | `shouldInterceptRequest` via `flutter_inappwebview` |
+| Request header rewrite (UA / Referer) | Many sites serve full text to Googlebot | Per-rule `userAgent` + `Referer` on the WebView |
+| Cookie clearing | Kill metered / soft-paywall sessions | `CookieManager.deleteAllCookies` when the rule drops cookies |
+| Content scripts | Unhide DOM, AMP access, archive fetch | Bundled `assets/bpc/unhide.js` at document-end (+ re-inject on load) |
+| `chrome.runtime` messaging + `cs_local/*` | Hundreds of site-specific JS helpers | Not ported — too tied to the extension mailbox; unhide + script block covers the common path |
 
-- `declarativeNetRequest` header rewrites and script blocking
-- Per-site content scripts that rewrite the DOM / pull archive HTML
-- Cookie clearing against the site's own jar
+## In-app engine (default)
 
-A Flutter app has none of those APIs, so embedding `background.js` /
-`contentScript.js` would not work.
+1. Claim outbound links whose host is in `bpcSupportedDomains`.
+2. Look up `assets/bpc/site_rules.json` for that host (parent-domain walk).
+3. Open `InAppWebView` on the **original** URL with:
+   - rule UA / Googlebot when set
+   - Google referer when a bot UA is used
+   - cookie clear when the rule asks
+   - request interception matching `block_regex`
+   - unhide user script
+4. Fallbacks still available in settings: Archive.today, 12ft.io, bare Googlebot.
 
-## What this plugin does instead
+## Limits that remain
 
-1. Ships the supported-domain list extracted from BPC's `sites.js` (+ custom /
-   updated rules).
-2. When the plugin is enabled, `openWithPlugins` claims outbound http(s) links
-   whose host (or a parent domain) is on that list.
-3. Opens an in-app WebView with one of three mobile strategies:
-   - **Archive.today** (default) — `https://archive.ph/?url=…`
-   - **12ft.io** — `https://12ft.io/{url}`
-   - **Googlebot WebView** — original URL with a Googlebot User-Agent
+- Site-specific `cs_local` scripts and archive.is HTML swaps are not executed.
+- Clearing cookies is WebView-global, not per-cookie-name like the extension.
+- Some sites detect WebViews or require desktop Chrome quirks we cannot fake.
 
-The reader always keeps an "Open original" action that falls back to the normal
-browser path.
-
-## Plugin store
-
-- Id: `bpc`
-- Prefs: `plugin.bpc.enabled` (off by default), `plugin.bpc.strategy`
-- Settings screen: strategy picker, site count, attribution link
-- No home tab — it only changes how article links from posts open
+When the in-app engine fails on a site, switch that session to Archive or 12ft in plugin settings.
