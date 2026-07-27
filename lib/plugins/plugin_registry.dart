@@ -1,4 +1,3 @@
-import 'package:quax/plugins/bpc/bpc_plugin.dart';
 import 'package:quax/plugins/deepmarks/deepmarks_plugin.dart';
 import 'package:quax/plugins/karakeep/karakeep_plugin.dart';
 import 'package:quax/plugins/plugin.dart';
@@ -8,7 +7,6 @@ import 'package:quax/plugins/substack/substack_plugin.dart';
 /// Built-in plugins shipped with QuaX.
 final List<QuaxPlugin> builtInPlugins = [
   SubstackPlugin(),
-  BpcPlugin(),
   KarakeepPlugin(),
   DeepmarksPlugin(),
   RedditPlugin(),

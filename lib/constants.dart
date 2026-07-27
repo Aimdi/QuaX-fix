@@ -38,10 +38,6 @@ const optionDownloadTypeAsk = 'ask';
 const optionLocale = 'locale';
 const optionLocaleDefault = 'system';
 
-const pluginIdBpc = 'bpc';
-const optionPluginBpcEnabled = 'plugin.bpc.enabled';
-const optionPluginBpcStrategy = 'plugin.bpc.strategy';
-
 const pluginIdDeepmarks = 'deepmarks';
 const optionPluginDeepmarksEnabled = 'plugin.deepmarks.enabled';
 const optionPluginDeepmarksApiBase = 'plugin.deepmarks.api_base';

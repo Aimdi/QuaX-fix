@@ -119,7 +119,6 @@ dependencies:
   flutter_tts: ^4.2.5
   bip340: ^0.3.1
   bech32: ^0.2.2
-  flutter_inappwebview: ^6.1.5
 
 dev_dependencies:
   flutter_test:
@@ -152,20 +151,6 @@ flutter:
   assets:
     - assets/icon.png
     - assets/fonts/Inter-OFL.txt
-    - assets/bpc/site_rules.json
-    - assets/bpc/unhide.js
-    - assets/bpc/ft_assist.js
-    - assets/bpc/cs/runtime_shim.js
-    - assets/bpc/cs/purify.min.js
-    - assets/bpc/cs/contentScript.js
-    - assets/bpc/cs_local/contentScript_de.js
-    - assets/bpc/cs_local/contentScript_en.js
-    - assets/bpc/cs_local/contentScript_es.pt.js
-    - assets/bpc/cs_local/contentScript_fi.se.js
-    - assets/bpc/cs_local/contentScript_fr.js
-    - assets/bpc/cs_local/contentScript_it.js
-    - assets/bpc/cs_local/contentScript_nl.js
-    - assets/bpc/cs_local/contentScript_pl.js
 
   fonts:
     - family: Inter
