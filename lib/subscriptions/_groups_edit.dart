@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
@@ -7,6 +6,7 @@ import 'package:quax/group/group_tree.dart';
 import 'package:quax/plugins/reddit/reddit_avatar.dart';
 import 'package:quax/subscriptions/_group_add_member.dart';
 import 'package:quax/subscriptions/group_identity.dart';
+import 'package:quax/subscriptions/widgets/group_color_picker.dart';
 import 'package:quax/subscriptions/group_mark_style.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/user.dart';
@@ -456,42 +456,15 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.palette, color: color),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            var selectedColor = color;
-
-                            return AlertDialog(
-                              title: Text(l10n.pick_a_color),
-                              content: SingleChildScrollView(
-                                child: MaterialColorPicker(
-                                  selectedColor: color ?? Colors.grey,
-                                  onColorChange: (value) => setState(() {
-                                    selectedColor = value;
-                                  }),
-                                ),
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text(l10n.cancel),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                TextButton(
-                                  child: Text(l10n.ok),
-                                  onPressed: () {
-                                    setState(() {
-                                      color = selectedColor;
-                                    });
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
-                          });
+                    icon: Icon(Icons.palette, color: color ?? groupFallbackColor(name ?? '')),
+                    tooltip: l10n.pick_a_color,
+                    onPressed: () async {
+                      final chosen = await openGroupColorPicker(context, current: color, name: name ?? '');
+                      // A dismissed dialog answers nothing; "no colour of its
+                      // own" is an answer and clears the stored one.
+                      if (chosen != null && mounted) {
+                        setState(() => color = chosen.color);
+                      }
                     },
                   ),
                 ],

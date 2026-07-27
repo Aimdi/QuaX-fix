@@ -56,7 +56,11 @@ class GroupListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final fill = (group.color ?? groupFallbackColor(group.name)).harmonizeWith(theme.colorScheme.primary);
+    // A colour the reader chose is used as chosen. Harmonising rotates it
+    // towards the theme accent, which turned every pick into a variation of
+    // orange — the generated fallback is harmonised, because that one is the
+    // app's colour rather than theirs.
+    final fill = group.color ?? groupFallbackColor(group.name).harmonizeWith(theme.colorScheme.primary);
     final onFill =
         ThemeData.estimateBrightnessForColor(fill) == Brightness.dark ? Colors.white : Colors.black87;
     final hiddenMembers = group.numberOfMembers - group.memberPreviews.length;

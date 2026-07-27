@@ -45,9 +45,14 @@ class _GroupTileState extends State<GroupTile> {
     final tokens = GroupBoardTokens.resolve(context);
     final group = widget.group;
     // The group's own colour, unharmonised: X does not rotate a user's colour
-    // towards a theme accent, and the colour only ever appears on the round
-    // identity disc — never as a wash over the card.
+    // towards a theme accent.
     final accentColor = group.color ?? groupFallbackColor(group.name);
+    // A colour the reader chose has to be visible somewhere. Most tiles show a
+    // mosaic of member faces, which left a chosen colour with nowhere to appear
+    // at all — picking one did nothing. It now tints the tile's border and lays
+    // the faintest wash over it. Only an explicit choice does this: tinting
+    // every tile with its generated colour would be noise, not identity.
+    final chosen = group.color;
     final l10n = L10n.of(context);
     final countLabel = l10n.subscription_group_member_count(group.numberOfMembers);
 
@@ -57,9 +62,12 @@ class _GroupTileState extends State<GroupTile> {
 
     final tile = Container(
       decoration: BoxDecoration(
-        color: tileColor,
+        color: chosen == null ? tileColor : Color.alphaBlend(chosen.withValues(alpha: 0.07), tileColor),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: tokens.border, width: 1),
+        border: Border.all(
+          color: chosen == null ? tokens.border : chosen.withValues(alpha: 0.55),
+          width: 1,
+        ),
       ),
       clipBehavior: Clip.antiAlias,
       child: Row(
