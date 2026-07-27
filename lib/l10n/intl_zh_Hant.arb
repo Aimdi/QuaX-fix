@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "不在應用程式內開啟的連結要用哪個瀏覽器開啟",
   "@option_external_browser_description": {},
   "option_external_browser_system": "系統預設",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "長按群組即可與目前群組一起閱讀",
+  "@group_combine_hint": {},
+  "group_combined_count": "正在一起閱讀另外 {count} 個",
+  "@group_combined_count": {},
+  "group_combine_clear": "清除",
+  "@group_combine_clear": {}
 }

@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "アプリ内で開かないリンクをどのブラウザで開くか",
   "@option_external_browser_description": {},
   "option_external_browser_system": "システムの既定",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "グループを長押しすると、このグループと一緒に読めます",
+  "@group_combine_hint": {},
+  "group_combined_count": "他に {count} 件を一緒に表示中",
+  "@group_combined_count": {},
+  "group_combine_clear": "解除",
+  "@group_combine_clear": {}
 }

@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "앱에서 열지 않는 링크를 어떤 브라우저로 열지",
   "@option_external_browser_description": {},
   "option_external_browser_system": "시스템 기본값",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "그룹을 길게 눌러 이 그룹과 함께 보기",
+  "@group_combine_hint": {},
+  "group_combined_count": "{count}개를 함께 보는 중",
+  "@group_combined_count": {},
+  "group_combine_clear": "지우기",
+  "@group_combine_clear": {}
 }

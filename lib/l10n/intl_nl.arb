@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "In welke browser links openen wanneer ze niet in de app openen",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Systeemstandaard",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Houd een groep ingedrukt om die samen met deze te lezen",
+  "@group_combine_hint": {},
+  "group_combined_count": "{count} andere worden meegelezen",
+  "@group_combined_count": {},
+  "group_combine_clear": "Wissen",
+  "@group_combine_clear": {}
 }

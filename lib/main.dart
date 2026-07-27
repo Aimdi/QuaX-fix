@@ -19,6 +19,7 @@ import 'package:quax/database/repository.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/feed_session_cache.dart';
 import 'package:quax/tweet/video_controller_pool.dart';
+import 'package:quax/group/combined_groups.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/group/group_screen.dart';
 import 'package:quax/home/_feed.dart';
@@ -485,6 +486,7 @@ Future<void> main() async {
             Provider(create: (_) => redditFeed),
             Provider(create: (_) => stocksWatchlist),
             Provider(create: (_) => speech),
+            Provider(create: (_) => CombinedGroupsStore()),
             Provider(create: (_) => substackClient),
             Provider(create: (_) => substackPublications),
             Provider(create: (_) => substackFeed),

@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "Le navigateur dans lequel s’ouvrent les liens qui ne s’ouvrent pas dans l’app",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Par défaut du système",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Maintenez un groupe pour le lire avec celui-ci",
+  "@group_combine_hint": {},
+  "group_combined_count": "{count} autres lus en même temps",
+  "@group_combined_count": {},
+  "group_combine_clear": "Effacer",
+  "@group_combine_clear": {}
 }

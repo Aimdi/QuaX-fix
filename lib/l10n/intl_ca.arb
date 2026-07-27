@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "En quin navegador s’obren els enllaços quan no s’obren a l’app",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Predeterminat del sistema",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Mantén premut un grup per llegir-lo amb aquest",
+  "@group_combine_hint": {},
+  "group_combined_count": "Llegint-ne {count} més alhora",
+  "@group_combined_count": {},
+  "group_combine_clear": "Neteja",
+  "@group_combine_clear": {}
 }

@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "В каком браузере открываются ссылки, если они не открываются в приложении",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Системный по умолчанию",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Удерживайте группу, чтобы читать её вместе с этой",
+  "@group_combine_hint": {},
+  "group_combined_count": "Вместе читается ещё: {count}",
+  "@group_combined_count": {},
+  "group_combine_clear": "Сбросить",
+  "@group_combine_clear": {}
 }

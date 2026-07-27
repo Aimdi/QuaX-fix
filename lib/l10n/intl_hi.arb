@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "ऐप में न खुलने वाले लिंक किस ब्राउज़र में खुलें",
   "@option_external_browser_description": {},
   "option_external_browser_system": "सिस्टम डिफ़ॉल्ट",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "किसी समूह को इसके साथ पढ़ने के लिए दबाकर रखें",
+  "@group_combine_hint": {},
+  "group_combined_count": "{count} और साथ में पढ़े जा रहे हैं",
+  "@group_combined_count": {},
+  "group_combine_clear": "हटाएँ",
+  "@group_combine_clear": {}
 }

@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "En qué navegador se abren los enlaces cuando no se abren en la app",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Predeterminado del sistema",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Mantén pulsado un grupo para leerlo junto a este",
+  "@group_combine_hint": {},
+  "group_combined_count": "Leyendo {count} más a la vez",
+  "@group_combined_count": {},
+  "group_combine_clear": "Quitar",
+  "@group_combine_clear": {}
 }

@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "În ce browser se deschid linkurile când nu se deschid în aplicație",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Implicit de sistem",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Țineți apăsat un grup pentru a-l citi împreună cu acesta",
+  "@group_combine_hint": {},
+  "group_combined_count": "Se mai citesc {count} împreună",
+  "@group_combined_count": {},
+  "group_combine_clear": "Șterge",
+  "@group_combine_clear": {}
 }

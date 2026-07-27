@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/group/_settings.dart';
 import 'package:quax/group/feed_refresh_controller.dart';
+import 'package:quax/group/combined_groups.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/ui/scroll_to_top.dart';
@@ -37,7 +39,7 @@ class GroupFeedShell extends StatefulWidget {
 }
 
 class _GroupFeedShellState extends State<GroupFeedShell> with AutomaticKeepAliveClientMixin<GroupFeedShell> {
-  late final GroupModel _groupModel;
+  late GroupModel _groupModel;
   final FeedRefreshController _feedRefreshController = FeedRefreshController();
   int _refreshCounter = 0;
   // Cached refs captured in didChangeDependencies — accessing the InheritedWidget
@@ -51,10 +53,36 @@ class _GroupFeedShellState extends State<GroupFeedShell> with AutomaticKeepAlive
   @override
   bool get wantKeepAlive => true;
 
+  CombinedGroupsStore? _combined;
+  Set<String> _alsoRead = const {};
+
   @override
   void initState() {
     super.initState();
     _groupModel = GroupModel(widget.groupId)..loadGroup();
+  }
+
+  /// Rebuilds the feed over the groups now being read together.
+  ///
+  /// A new model rather than a reload: which groups the membership queries ask
+  /// about is fixed when the model is made, and the feed below keys off the
+  /// members it returns.
+  void _onCombinationChanged() {
+    final combined = _combined;
+    if (!mounted || combined == null) {
+      return;
+    }
+
+    final next = combined.state.where((e) => e != widget.groupId).toSet();
+    if (setEquals(next, _alsoRead)) {
+      return;
+    }
+
+    setState(() {
+      _alsoRead = next;
+      _groupModel = GroupModel(widget.groupId, alsoRead: next)..loadGroup();
+      _refreshCounter++;
+    });
   }
 
   @override
@@ -69,6 +97,15 @@ class _GroupFeedShellState extends State<GroupFeedShell> with AutomaticKeepAlive
       _groupsModel = newGroups;
       _subscriptionsModel!.addReloadListener(_callbackKey, _onReload);
       _groupsModel!.addReloadListener(_callbackKey, _onReload);
+    }
+
+    // Picking another group to read alongside this one rebuilds the feed over
+    // both, without either group being changed.
+    final combined = context.read<CombinedGroupsStore>();
+    if (!identical(combined, _combined)) {
+      _combined = combined;
+      combined.observer(onState: (_) => _onCombinationChanged());
+      _onCombinationChanged();
     }
   }
 

@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "Zein nabigatzailetan irekitzen diren estekak aplikazioan irekitzen ez direnean",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Sistemaren lehenetsia",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Eutsi talde bati hau honekin batera irakurtzeko",
+  "@group_combine_hint": {},
+  "group_combined_count": "Beste {count} batera irakurtzen",
+  "@group_combined_count": {},
+  "group_combine_clear": "Garbitu",
+  "@group_combine_clear": {}
 }

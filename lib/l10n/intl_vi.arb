@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "Liên kết mở trong trình duyệt nào khi không mở trong ứng dụng",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Mặc định hệ thống",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Giữ một nhóm để đọc cùng với nhóm này",
+  "@group_combine_hint": {},
+  "group_combined_count": "Đang đọc thêm {count} nhóm cùng lúc",
+  "@group_combined_count": {},
+  "group_combine_clear": "Xóa",
+  "@group_combine_clear": {}
 }

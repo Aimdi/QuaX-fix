@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "Ve kterém prohlížeči se otevírají odkazy, když se neotevírají v aplikaci",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Výchozí systémový",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Podržte skupinu, abyste ji četli spolu s touto",
+  "@group_combine_hint": {},
+  "group_combined_count": "Společně se čte ještě {count}",
+  "@group_combined_count": {},
+  "group_combine_clear": "Zrušit",
+  "@group_combine_clear": {}
 }

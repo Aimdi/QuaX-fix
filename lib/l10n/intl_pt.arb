@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "Em que navegador abrem as ligações quando não abrem na aplicação",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Predefinição do sistema",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Mantenha um grupo premido para o ler juntamente com este",
+  "@group_combine_hint": {},
+  "group_combined_count": "A ler mais {count} em conjunto",
+  "@group_combined_count": {},
+  "group_combine_clear": "Limpar",
+  "@group_combine_clear": {}
 }

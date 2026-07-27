@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "En kiu retumilo malfermiĝas ligiloj kiam ili ne malfermiĝas en la aplikaĵo",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Sistema aprioro",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Tenu grupon por legi ĝin kune kun ĉi tiu",
+  "@group_combine_hint": {},
+  "group_combined_count": "Kune legiĝas ankoraŭ {count}",
+  "@group_combined_count": {},
+  "group_combine_clear": "Vakigi",
+  "@group_combine_clear": {}
 }

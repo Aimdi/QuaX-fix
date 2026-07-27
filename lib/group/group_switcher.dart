@@ -3,6 +3,7 @@ import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/group/combined_groups.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/subscriptions/group_identity.dart';
 
@@ -42,6 +43,21 @@ class GroupSwitcherTitle extends StatelessWidget {
                   style: theme.appBarTheme.titleTextStyle ?? theme.textTheme.titleLarge,
                 ),
               ),
+              // Says the feed is more than the group it is named after, which
+              // nothing else on the screen would.
+              ScopedBuilder<CombinedGroupsStore, Set<String>>(
+                store: context.read<CombinedGroupsStore>(),
+                onState: (context, alsoRead) {
+                  final extra = alsoRead.where((e) => e != currentGroupId).length;
+                  if (extra == 0) {
+                    return const SizedBox.shrink();
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 6),
+                    child: Text('+$extra', style: TextStyle(color: theme.colorScheme.primary)),
+                  );
+                },
+              ),
               const SizedBox(width: 2),
               Icon(Icons.expand_more, size: 20, color: theme.appBarTheme.foregroundColor),
             ],
@@ -52,8 +68,40 @@ class GroupSwitcherTitle extends StatelessWidget {
   }
 }
 
+/// Says how to put groups together, and how many currently are.
+///
+/// A row rather than a hint buried in settings: holding a list item is not
+/// something anyone finds by accident, and a combination that cannot be seen is
+/// a combination nobody remembers making.
+class _CombineHint extends StatelessWidget {
+  final int count;
+  final VoidCallback onClear;
+
+  const _CombineHint({required this.count, required this.onClear});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+    final theme = Theme.of(context);
+
+    if (count == 0) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+        child: Text(l10n.group_combine_hint, style: theme.textTheme.bodySmall),
+      );
+    }
+
+    return ListTile(
+      leading: Icon(Icons.playlist_add_check, color: theme.colorScheme.primary),
+      title: Text(l10n.group_combined_count(count), style: TextStyle(color: theme.colorScheme.primary)),
+      trailing: TextButton(onPressed: onClear, child: Text(l10n.group_combine_clear)),
+    );
+  }
+}
+
 /// Lists the groups in the order the Groups tab shows them (pinned first), with
-/// the current one marked. Picking one calls [onSwitch].
+/// the current one marked. Picking one calls [onSwitch]; holding one reads it
+/// alongside instead of instead of.
 Future<void> showGroupSwitcher(
   BuildContext context, {
   required String currentGroupId,
@@ -77,30 +125,47 @@ Future<void> showGroupSwitcher(
             );
           }
 
+          final combined = sheetContext.read<CombinedGroupsStore>();
+
           return ConstrainedBox(
             constraints: BoxConstraints(maxHeight: MediaQuery.of(sheetContext).size.height * 0.7),
-            child: ListView.builder(
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(bottom: 16),
-              itemCount: groups.length,
-              itemBuilder: (context, index) {
-                final group = groups[index];
-                final isCurrent = group.id == currentGroupId;
+            child: ScopedBuilder<CombinedGroupsStore, Set<String>>(
+              store: combined,
+              onState: (_, alsoRead) => ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(bottom: 16),
+                itemCount: groups.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return _CombineHint(count: alsoRead.length, onClear: combined.clear);
+                  }
 
-                return ListTile(
-                  leading: GroupMark.forGroup(group, size: 36),
-                  title: Text(group.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-                  subtitle: Text(L10n.of(context).subscription_group_member_count(group.numberOfMembers)),
-                  trailing: isCurrent ? const Icon(Icons.check) : (group.pinned ? const Icon(Icons.push_pin, size: 16) : null),
-                  selected: isCurrent,
-                  onTap: () {
-                    Navigator.pop(sheetContext);
-                    if (!isCurrent) {
-                      onSwitch(group);
-                    }
-                  },
-                );
-              },
+                  final group = groups[index - 1];
+                  final isCurrent = group.id == currentGroupId;
+                  final isCombined = alsoRead.contains(group.id) && !isCurrent;
+
+                  return ListTile(
+                    leading: GroupMark.forGroup(group, size: 36),
+                    title: Text(group.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    subtitle: Text(L10n.of(context).subscription_group_member_count(group.numberOfMembers)),
+                    trailing: isCurrent
+                        ? const Icon(Icons.check)
+                        : isCombined
+                            ? const Icon(Icons.playlist_add_check)
+                            : (group.pinned ? const Icon(Icons.push_pin, size: 16) : null),
+                    selected: isCurrent || isCombined,
+                    onTap: () {
+                      Navigator.pop(sheetContext);
+                      if (!isCurrent) {
+                        onSwitch(group);
+                      }
+                    },
+                    // Held rather than tapped, so the ordinary use of this sheet
+                    // — hopping to one group — keeps costing one tap.
+                    onLongPress: isCurrent ? null : () => combined.toggle(group.id),
+                  );
+                },
+              ),
             ),
           );
         },

@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "Which browser links open in when they are not opened in the app",
   "@option_external_browser_description": {},
   "option_external_browser_system": "System default",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Hold a group to read it alongside this one",
+  "@group_combine_hint": {},
+  "group_combined_count": "Reading {count} more alongside",
+  "@group_combined_count": {},
+  "group_combine_clear": "Clear",
+  "@group_combine_clear": {}
 }

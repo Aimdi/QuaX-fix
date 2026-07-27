@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "Di peramban mana tautan dibuka jika tidak dibuka di aplikasi",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Bawaan sistem",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Tahan grup untuk membacanya bersama grup ini",
+  "@group_combine_hint": {},
+  "group_combined_count": "{count} lainnya dibaca bersamaan",
+  "@group_combined_count": {},
+  "group_combine_clear": "Bersihkan",
+  "@group_combine_clear": {}
 }

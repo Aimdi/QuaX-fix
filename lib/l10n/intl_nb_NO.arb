@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "Hvilken nettleser lenker åpnes i når de ikke åpnes i appen",
   "@option_external_browser_description": {},
   "option_external_browser_system": "Systemstandard",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "Hold inne en gruppe for å lese den sammen med denne",
+  "@group_combine_hint": {},
+  "group_combined_count": "Leser {count} til samtidig",
+  "@group_combined_count": {},
+  "group_combine_clear": "Fjern",
+  "@group_combine_clear": {}
 }

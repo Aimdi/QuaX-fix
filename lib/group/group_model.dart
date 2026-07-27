@@ -48,7 +48,12 @@ Future<Map<String, String?>> readGroupParents(DatabaseExecutor database) async {
 class GroupModel extends Store<SubscriptionGroupGet> {
   final String id;
 
-  GroupModel(this.id)
+  /// Other groups being read alongside this one, for as long as the reader
+  /// wants them together. Their members join this group's feed; nothing about
+  /// either group is changed.
+  final Set<String> alsoRead;
+
+  GroupModel(this.id, {this.alsoRead = const {}})
       : super(SubscriptionGroupGet(
             id: '',
             name: '',
@@ -86,9 +91,14 @@ class GroupModel extends Store<SubscriptionGroupGet> {
       }
 
       // A group's feed is its own members plus everything nested inside it, so
-      // the membership queries ask for a set of group ids rather than one.
+      // the membership queries ask for a set of group ids rather than one — and
+      // reading several groups together is the same question asked of more
+      // roots, which is why it costs nothing here.
       final parents = await readGroupParents(database);
-      final ids = groupAndDescendants(id, parents).toList(growable: false);
+      final ids = {
+        ...groupAndDescendants(id, parents),
+        for (final other in alsoRead) ...groupAndDescendants(other, parents),
+      }.toList(growable: false);
       final placeholders = List.filled(ids.length, '?').join(', ');
 
       var searchSubscriptions = (await database.rawQuery(

@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "المتصفح الذي تُفتح فيه الروابط عندما لا تُفتح داخل التطبيق",
   "@option_external_browser_description": {},
   "option_external_browser_system": "الإعداد الافتراضي للنظام",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "اضغط مطولًا على مجموعة لقراءتها مع هذه المجموعة",
+  "@group_combine_hint": {},
+  "group_combined_count": "تُقرأ {count} أخرى معها",
+  "@group_combined_count": {},
+  "group_combine_clear": "مسح",
+  "@group_combine_clear": {}
 }

@@ -1206,5 +1206,11 @@
   "option_external_browser_description": "不在应用内打开的链接使用哪个浏览器打开",
   "@option_external_browser_description": {},
   "option_external_browser_system": "系统默认",
-  "@option_external_browser_system": {}
+  "@option_external_browser_system": {},
+  "group_combine_hint": "长按分组即可与当前分组一起阅读",
+  "@group_combine_hint": {},
+  "group_combined_count": "正在一起阅读另外 {count} 个",
+  "@group_combined_count": {},
+  "group_combine_clear": "清除",
+  "@group_combine_clear": {}
 }
