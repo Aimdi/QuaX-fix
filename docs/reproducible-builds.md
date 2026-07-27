@@ -24,7 +24,7 @@ can verify that a release contains only what the source says it does.
 | compileSdk / targetSdk | `android/app/build.gradle` | 37 |
 | Java source/target | `android/app/build.gradle` | 17 |
 | JDK running Gradle | `.github/workflows/*.yml` | 21.0.10 |
-| Icon rasteriser | `requirements.txt` | cairosvg 2.9.0, pillow 12.3.0 |
+| Icon rasteriser | `requirements.txt` | pillow 12.3.0 |
 
 `dependenciesInfo { includeInApk = false }` is already set in
 `android/app/build.gradle`. Without it every APK embeds a Play-Store
