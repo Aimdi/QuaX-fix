@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/reddit/reddit_avatar.dart';
+import 'package:quax/plugins/reddit/reddit_subreddit_avatar.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_post_media.dart';
 import 'package:quax/plugins/reddit/reddit_post_sheet.dart';
@@ -89,7 +89,7 @@ class _RedditPostHeader extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RedditAvatar(name: post.author, size: kRedditAvatarSize),
+          RedditSubredditAvatar(subreddit: post.subreddit, size: kRedditAvatarSize),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

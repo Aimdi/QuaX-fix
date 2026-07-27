@@ -162,6 +162,33 @@ void main() {
     });
   });
 
+  group('a subreddit picture', () {
+    test('comes from the header image the old site does have', () {
+      const page = '''
+<html><head><meta property="og:image" content="https://www.redditstatic.com/icon.png"></head>
+<body><a id="header-img" href="/r/x/"><img src="//b.thumbs.redditmedia.com/logo.png"></a></body></html>
+''';
+
+      expect(parseSubredditIcon(page), 'https://b.thumbs.redditmedia.com/logo.png',
+          reason: "the site's own logo in og:image is not the subreddit's picture");
+    });
+
+    test('falls back to og:image when it is community artwork', () {
+      const page = '''
+<html><head>
+  <meta property="og:image" content="https://styles.redditmedia.com/t5_2qh0u/styles/communityIcon.png">
+</head><body></body></html>
+''';
+
+      expect(parseSubredditIcon(page), 'https://styles.redditmedia.com/t5_2qh0u/styles/communityIcon.png');
+    });
+
+    test('a subreddit with no artwork has none to find', () {
+      expect(parseSubredditIcon('<html><body>nothing here</body></html>'), isNull);
+      expect(parseSubredditIcon(''), isNull);
+    });
+  });
+
   group('the over-18 gate', () {
     test('is recognised so it can be answered with a cookie', () {
       const gate = '''

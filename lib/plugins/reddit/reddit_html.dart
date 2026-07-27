@@ -102,6 +102,46 @@ String? _absolute(String src) {
   return src.startsWith('http') ? src : null;
 }
 
+/// Hosts Reddit serves community artwork from. Anything else on a subreddit
+/// page — the site logo, a tracking pixel, an advert — is not the icon.
+const _iconHosts = {
+  'styles.redditmedia.com',
+  'a.thumbs.redditmedia.com',
+  'b.thumbs.redditmedia.com',
+  'f.thumbs.redditmedia.com',
+  'preview.redd.it',
+  'i.redd.it',
+};
+
+/// A subreddit's own picture, from its old.reddit page.
+///
+/// The old site predates community icons and has no element for one, so this
+/// takes what it does have: the header image a subreddit sets, which for most
+/// is the same artwork, and failing that the page's `og:image`. Subreddits that
+/// set neither have no picture to find — the caller falls back to a generated
+/// tile rather than showing nothing.
+String? parseSubredditIcon(String body) {
+  final document = html.parse(body);
+
+  // Old themes make the header an `<img id="header-img">`; others wrap it in a
+  // link, so the id lands on the anchor and the source is a child.
+  final header = document.querySelector('#header-img')?.attributes['src'] ??
+      document.querySelector('#header-img img')?.attributes['src'] ??
+      document.querySelector('.subreddit-icon img')?.attributes['src'];
+
+  final og = document.querySelector('meta[property="og:image"]')?.attributes['content'];
+
+  for (final candidate in [header, og]) {
+    final url = candidate == null ? null : _absolute(candidate);
+    final host = url == null ? null : Uri.tryParse(url)?.host.toLowerCase();
+    if (url != null && host != null && _iconHosts.contains(host)) {
+      return url;
+    }
+  }
+
+  return null;
+}
+
 /// Whether the page Reddit returned is the over-18 gate rather than a listing.
 ///
 /// Answering it needs a cookie, not a login, which is why it is worth

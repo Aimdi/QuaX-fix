@@ -468,6 +468,24 @@ class RedditClient {
     return RedditListing(posts: listing.posts, after: listing.after);
   }
 
+  /// A subreddit's own picture, or null when it has none to find.
+  ///
+  /// Never throws: a timeline that failed to load because a picture could not
+  /// be fetched would be a poor trade.
+  Future<String?> fetchSubredditIcon(String subreddit) async {
+    final name = normaliseSubreddit(subreddit);
+    if (name == null) {
+      return null;
+    }
+
+    try {
+      final body = await _scrape(Uri.parse('$_publicFallbackBase/r/$name/'));
+      return body == null ? null : parseSubredditIcon(body);
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// One page of old.reddit, with the over-18 gate answered, or null when the
   /// page could not be read at all.
   Future<String?> _scrape(Uri uri) async {

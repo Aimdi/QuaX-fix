@@ -63,6 +63,7 @@ import 'package:quax/plugins/deepmarks/deepmarks_client.dart';
 import 'package:quax/plugins/reddit/reddit_auth.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_store.dart';
+import 'package:quax/plugins/reddit/reddit_subreddit_avatar.dart';
 
 Future checkForUpdates(context) async {
   Logger.root.info('Checking for updates');
@@ -403,6 +404,7 @@ Future<void> main() async {
     final deepmarksClient = DeepmarksClient();
     final karakeepClient = KarakeepClient();
     final redditClient = RedditClient();
+    final redditIcons = RedditIcons(redditClient);
     final redditAuth = RedditAuth();
     final redditSubreddits = RedditSubredditsStore(prefService);
     final redditFeed = RedditFeedStore(redditClient, redditSubreddits, prefService, auth: redditAuth);
@@ -443,6 +445,7 @@ Future<void> main() async {
         child: MultiProvider(
           providers: [
             Provider(create: (context) => groupsModel),
+            Provider(create: (context) => redditIcons),
             Provider(create: (context) => feedSessionCache),
             Provider(create: (context) => VideoControllerPool(maxSize: 5)),
             Provider(create: (context) => homeModel),
