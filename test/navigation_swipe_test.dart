@@ -47,6 +47,13 @@ Future<void> _swipeBar(WidgetTester tester, Offset offset) async {
   await tester.pumpAndSettle();
 }
 
+/// Flings across the strip the app bar occupies, without touching the page.
+Future<void> _swipeTop(WidgetTester tester, Offset offset) async {
+  final width = tester.view.physicalSize.width / tester.view.devicePixelRatio;
+  await tester.flingFrom(Offset(width / 2, kToolbarHeight / 2), offset, 600);
+  await tester.pumpAndSettle();
+}
+
 void main() {
   group('pageAfterNavigationSwipe', () {
     test('a leftward swipe advances, a rightward one goes back', () {
@@ -128,6 +135,41 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('body3'), findsOneWidget);
+    });
+  });
+
+  // Every tab draws its own app bar inside a NestedScrollView, which took the
+  // drag rather than letting it reach the pager — so the top of the screen, the
+  // place a thumb already is, was the one place swiping did nothing.
+  group('swiping the top of the screen', () {
+    testWidgets('moves to the next tab and back', (tester) async {
+      await tester.pumpWidget(_scaffold());
+      await tester.pumpAndSettle();
+      expect(find.text('body0'), findsOneWidget);
+
+      await _swipeTop(tester, const Offset(-300, 0));
+      expect(find.text('body1'), findsOneWidget);
+
+      await _swipeTop(tester, const Offset(300, 0));
+      expect(find.text('body0'), findsOneWidget);
+    });
+
+    testWidgets('the ends stay put', (tester) async {
+      await tester.pumpWidget(_scaffold());
+      await tester.pumpAndSettle();
+
+      await _swipeTop(tester, const Offset(300, 0));
+
+      expect(find.text('body0'), findsOneWidget);
+    });
+
+    testWidgets('a single tab has nowhere to go', (tester) async {
+      await tester.pumpWidget(_scaffold(pages: 1));
+      await tester.pumpAndSettle();
+
+      await _swipeTop(tester, const Offset(-300, 0));
+
+      expect(find.text('body0'), findsOneWidget);
     });
   });
 }

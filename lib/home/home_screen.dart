@@ -12,6 +12,7 @@ import 'package:quax/home/_feed.dart';
 import 'package:quax/home/_missing.dart';
 import 'package:quax/home/_saved.dart';
 import 'package:quax/home/home_model.dart';
+import 'package:quax/home/top_swipe_area.dart';
 import 'package:quax/plugins/plugin_registry.dart';
 import 'package:quax/search/search.dart';
 import 'package:quax/subscriptions/subscriptions.dart';
@@ -304,7 +305,17 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
             _currentPage = page;
           });
         },
-        children: widget.builder(_scrollControllers, _focusNodes),
+        // Every page gets the top strip, so the swipe works on the bar of
+        // whichever tab is showing rather than only the ones that happen to
+        // let the drag through.
+        children: widget
+            .builder(_scrollControllers, _focusNodes)
+            .map((page) => TopSwipeArea(
+                  movePage: _movePage,
+                  directionOf: _swipeDirection,
+                  child: page,
+                ))
+            .toList(growable: false),
       ),
       // Swiping the bar itself always changes tab, which swiping the page
       // cannot promise: the Subscriptions tab holds its own Groups/People tab
@@ -375,6 +386,19 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
       ),
     );
   }
+
+  /// Which way a finished drag means to go: -1, 0 or +1.
+  ///
+  /// Both ends of the screen ask the same question of the same rule, so a swipe
+  /// that changes tab along the bottom changes it along the top too.
+  int _swipeDirection(double velocity, double distance) =>
+      pageAfterNavigationSwipe(
+        current: _currentPage,
+        pageCount: widget.pages.length,
+        velocity: velocity,
+        distance: distance,
+      ) -
+      _currentPage;
 
   void _swipeNavigationBar(double velocity, double distance) {
     final target = pageAfterNavigationSwipe(
