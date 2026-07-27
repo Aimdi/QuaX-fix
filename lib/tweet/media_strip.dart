@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 /// How a post's media is laid out along one row.
 ///
 /// A post used to show one image at a time in a full-width pager: whatever else
@@ -10,6 +8,8 @@ import 'dart:math' as math;
 /// Tall photos are narrow and three fit; wide ones are broad and barely two do.
 /// That is not a rule about the count, it falls out of the shapes.
 library;
+
+import 'dart:math' as math;
 
 /// The range media is shown between: 4:5 at the tallest, 1.91:1 at the widest.
 ///
