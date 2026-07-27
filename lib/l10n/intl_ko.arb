@@ -1126,5 +1126,17 @@
   "plugin_reddit_in_home_feed_description": "팔로우한 서브레딧의 게시물을 팔로잉과 추천에 함께 표시합니다",
   "@plugin_reddit_in_home_feed_description": {},
   "no_other_groups": "다른 그룹이 아직 없습니다",
-  "@no_other_groups": {}
+  "@no_other_groups": {},
+  "ticker_range_day": "1일",
+  "@ticker_range_day": {},
+  "ticker_range_week": "1주",
+  "@ticker_range_week": {},
+  "ticker_range_month": "1개월",
+  "@ticker_range_month": {},
+  "ticker_range_six_months": "6개월",
+  "@ticker_range_six_months": {},
+  "ticker_range_year": "1년",
+  "@ticker_range_year": {},
+  "ticker_range_five_years": "5년",
+  "@ticker_range_five_years": {}
 }

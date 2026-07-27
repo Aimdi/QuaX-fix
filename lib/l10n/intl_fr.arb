@@ -1126,5 +1126,17 @@
   "plugin_reddit_in_home_feed_description": "Intègre les publications des subreddits que vous suivez dans « Abonnements » et « Pour vous »",
   "@plugin_reddit_in_home_feed_description": {},
   "no_other_groups": "Aucun autre groupe pour le moment",
-  "@no_other_groups": {}
+  "@no_other_groups": {},
+  "ticker_range_day": "1J",
+  "@ticker_range_day": {},
+  "ticker_range_week": "1S",
+  "@ticker_range_week": {},
+  "ticker_range_month": "1M",
+  "@ticker_range_month": {},
+  "ticker_range_six_months": "6M",
+  "@ticker_range_six_months": {},
+  "ticker_range_year": "1A",
+  "@ticker_range_year": {},
+  "ticker_range_five_years": "5A",
+  "@ticker_range_five_years": {}
 }

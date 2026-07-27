@@ -1126,5 +1126,17 @@
   "plugin_reddit_in_home_feed_description": "Miksas afiŝojn el la subredditoj kiujn vi sekvas en «Sekvataj» kaj «Por vi»",
   "@plugin_reddit_in_home_feed_description": {},
   "no_other_groups": "Ankoraŭ neniuj aliaj grupoj",
-  "@no_other_groups": {}
+  "@no_other_groups": {},
+  "ticker_range_day": "1t",
+  "@ticker_range_day": {},
+  "ticker_range_week": "1sem",
+  "@ticker_range_week": {},
+  "ticker_range_month": "1mon",
+  "@ticker_range_month": {},
+  "ticker_range_six_months": "6mon",
+  "@ticker_range_six_months": {},
+  "ticker_range_year": "1j",
+  "@ticker_range_year": {},
+  "ticker_range_five_years": "5j",
+  "@ticker_range_five_years": {}
 }

@@ -1126,5 +1126,17 @@
   "plugin_reddit_in_home_feed_description": "フォロー中のサブレディットの投稿を「フォロー中」と「おすすめ」に混ぜます",
   "@plugin_reddit_in_home_feed_description": {},
   "no_other_groups": "ほかのグループはまだありません",
-  "@no_other_groups": {}
+  "@no_other_groups": {},
+  "ticker_range_day": "1日",
+  "@ticker_range_day": {},
+  "ticker_range_week": "1週",
+  "@ticker_range_week": {},
+  "ticker_range_month": "1か月",
+  "@ticker_range_month": {},
+  "ticker_range_six_months": "6か月",
+  "@ticker_range_six_months": {},
+  "ticker_range_year": "1年",
+  "@ticker_range_year": {},
+  "ticker_range_five_years": "5年",
+  "@ticker_range_five_years": {}
 }

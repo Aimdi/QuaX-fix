@@ -1126,5 +1126,17 @@
   "plugin_reddit_in_home_feed_description": "आप जिन सबरेडिट को फ़ॉलो करते हैं उनकी पोस्ट को \"फ़ॉलोइंग\" और \"आपके लिए\" में मिलाता है",
   "@plugin_reddit_in_home_feed_description": {},
   "no_other_groups": "अभी तक कोई अन्य समूह नहीं",
-  "@no_other_groups": {}
+  "@no_other_groups": {},
+  "ticker_range_day": "1दि",
+  "@ticker_range_day": {},
+  "ticker_range_week": "1स",
+  "@ticker_range_week": {},
+  "ticker_range_month": "1मा",
+  "@ticker_range_month": {},
+  "ticker_range_six_months": "6मा",
+  "@ticker_range_six_months": {},
+  "ticker_range_year": "1व",
+  "@ticker_range_year": {},
+  "ticker_range_five_years": "5व",
+  "@ticker_range_five_years": {}
 }

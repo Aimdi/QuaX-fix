@@ -1126,5 +1126,17 @@
   "plugin_reddit_in_home_feed_description": "Takip ettiğin subredditlerin gönderilerini Takip ve Sana Özel akışlarına karıştırır",
   "@plugin_reddit_in_home_feed_description": {},
   "no_other_groups": "Henüz başka grup yok",
-  "@no_other_groups": {}
+  "@no_other_groups": {},
+  "ticker_range_day": "1G",
+  "@ticker_range_day": {},
+  "ticker_range_week": "1H",
+  "@ticker_range_week": {},
+  "ticker_range_month": "1A",
+  "@ticker_range_month": {},
+  "ticker_range_six_months": "6A",
+  "@ticker_range_six_months": {},
+  "ticker_range_year": "1Y",
+  "@ticker_range_year": {},
+  "ticker_range_five_years": "5Y",
+  "@ticker_range_five_years": {}
 }

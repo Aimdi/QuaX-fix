@@ -1126,5 +1126,17 @@
   "plugin_reddit_in_home_feed_description": "Adaugă postările din subredditurile urmărite în „Urmăriți” și „Pentru tine”",
   "@plugin_reddit_in_home_feed_description": {},
   "no_other_groups": "Încă nu există alte grupuri",
-  "@no_other_groups": {}
+  "@no_other_groups": {},
+  "ticker_range_day": "1z",
+  "@ticker_range_day": {},
+  "ticker_range_week": "1săpt",
+  "@ticker_range_week": {},
+  "ticker_range_month": "1lună",
+  "@ticker_range_month": {},
+  "ticker_range_six_months": "6lună",
+  "@ticker_range_six_months": {},
+  "ticker_range_year": "1an",
+  "@ticker_range_year": {},
+  "ticker_range_five_years": "5an",
+  "@ticker_range_five_years": {}
 }

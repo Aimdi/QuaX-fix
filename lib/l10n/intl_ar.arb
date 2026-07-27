@@ -1126,5 +1126,17 @@
   "plugin_reddit_in_home_feed_description": "يدمج منشورات السَبريديتس التي تتابعها في \"المتابَعون\" و\"لك\"",
   "@plugin_reddit_in_home_feed_description": {},
   "no_other_groups": "لا توجد مجموعات أخرى بعد",
-  "@no_other_groups": {}
+  "@no_other_groups": {},
+  "ticker_range_day": "ي",
+  "@ticker_range_day": {},
+  "ticker_range_week": "أ",
+  "@ticker_range_week": {},
+  "ticker_range_month": "ش",
+  "@ticker_range_month": {},
+  "ticker_range_six_months": "6ش",
+  "@ticker_range_six_months": {},
+  "ticker_range_year": "س",
+  "@ticker_range_year": {},
+  "ticker_range_five_years": "5س",
+  "@ticker_range_five_years": {}
 }

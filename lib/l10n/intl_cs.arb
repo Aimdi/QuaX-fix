@@ -1126,5 +1126,17 @@
   "plugin_reddit_in_home_feed_description": "Přimíchá příspěvky ze subredditů, které sledujete, do „Sleduji“ a „Pro tebe“",
   "@plugin_reddit_in_home_feed_description": {},
   "no_other_groups": "Zatím žádné další skupiny",
-  "@no_other_groups": {}
+  "@no_other_groups": {},
+  "ticker_range_day": "1d",
+  "@ticker_range_day": {},
+  "ticker_range_week": "1t",
+  "@ticker_range_week": {},
+  "ticker_range_month": "1měs",
+  "@ticker_range_month": {},
+  "ticker_range_six_months": "6měs",
+  "@ticker_range_six_months": {},
+  "ticker_range_year": "1r",
+  "@ticker_range_year": {},
+  "ticker_range_five_years": "5r",
+  "@ticker_range_five_years": {}
 }

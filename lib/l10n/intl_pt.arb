@@ -1126,5 +1126,17 @@
   "plugin_reddit_in_home_feed_description": "Mistura as publicações dos subreddits que segue em «A seguir» e «Para si»",
   "@plugin_reddit_in_home_feed_description": {},
   "no_other_groups": "Ainda não há outros grupos",
-  "@no_other_groups": {}
+  "@no_other_groups": {},
+  "ticker_range_day": "1d",
+  "@ticker_range_day": {},
+  "ticker_range_week": "1sem",
+  "@ticker_range_week": {},
+  "ticker_range_month": "1mês",
+  "@ticker_range_month": {},
+  "ticker_range_six_months": "6mês",
+  "@ticker_range_six_months": {},
+  "ticker_range_year": "1ano",
+  "@ticker_range_year": {},
+  "ticker_range_five_years": "5ano",
+  "@ticker_range_five_years": {}
 }

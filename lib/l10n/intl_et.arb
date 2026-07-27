@@ -1126,5 +1126,17 @@
   "plugin_reddit_in_home_feed_description": "Lisab jälgitavate subredditide postitused voogudesse „Jälgitavad“ ja „Sulle“",
   "@plugin_reddit_in_home_feed_description": {},
   "no_other_groups": "Teisi rühmi veel pole",
-  "@no_other_groups": {}
+  "@no_other_groups": {},
+  "ticker_range_day": "1p",
+  "@ticker_range_day": {},
+  "ticker_range_week": "1n",
+  "@ticker_range_week": {},
+  "ticker_range_month": "1k",
+  "@ticker_range_month": {},
+  "ticker_range_six_months": "6k",
+  "@ticker_range_six_months": {},
+  "ticker_range_year": "1a",
+  "@ticker_range_year": {},
+  "ticker_range_five_years": "5a",
+  "@ticker_range_five_years": {}
 }

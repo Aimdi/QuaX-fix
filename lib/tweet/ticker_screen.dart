@@ -8,6 +8,7 @@ import 'package:quax/tweet/paginated_tweet_list.dart';
 import 'package:quax/tweet/ticker/ticker_chart.dart';
 import 'package:quax/tweet/ticker/ticker_client.dart';
 import 'package:quax/tweet/ticker/ticker_quote.dart';
+import 'package:quax/tweet/ticker/ticker_range.dart';
 import 'package:quax/tweet/tweet_context_scope.dart';
 
 class TickerScreenArguments {
@@ -53,6 +54,13 @@ class _TickerScreenState extends State<_TickerScreen> {
   bool _quoteFailed = false;
   bool _loadingQuote = false;
 
+  TickerRange _range = TickerRange.month;
+
+  /// The point under the reader's finger, if any. While it is set the header
+  /// reports that moment rather than the latest price — which is the whole
+  /// point of being able to touch the chart.
+  TickerPoint? _scrubbed;
+
   @override
   void dispose() {
     _feed.dispose();
@@ -70,9 +78,18 @@ class _TickerScreenState extends State<_TickerScreen> {
   bool get _chartEnabled => PrefService.of(context).get<bool>(optionTickerChart) == true;
 
   Future<void> _loadQuote() async {
-    setState(() => _loadingQuote = true);
+    final range = _range;
+    setState(() {
+      _loadingQuote = true;
+      _quoteFailed = false;
+    });
     try {
-      final quote = await _client.fetchQuote(widget.symbol);
+      final quote = await _client.fetchQuote(widget.symbol, range: range.range, interval: range.interval);
+      if (range != _range) {
+        // The reader moved on while this was in flight; the newer request owns
+        // the screen.
+        return;
+      }
       if (mounted) {
         setState(() {
           _quote = quote;
@@ -98,7 +115,8 @@ class _TickerScreenState extends State<_TickerScreen> {
 
   Widget _quoteHeader(BuildContext context, TickerQuote quote) {
     final theme = Theme.of(context);
-    final price = quote.price ?? quote.points.last.close;
+    final scrubbed = _scrubbed;
+    final price = scrubbed?.close ?? quote.price ?? quote.points.last.close;
     final percent = quote.changePercent;
     final up = quote.isUp ?? true;
     final money = NumberFormat.decimalPatternDigits(decimalDigits: 2);
@@ -115,12 +133,47 @@ class _TickerScreenState extends State<_TickerScreen> {
             Text(quote.currency!, style: theme.textTheme.bodySmall),
           ],
           const Spacer(),
-          if (percent != null)
+          // While scrubbing, when that point was — a price with no moment
+          // attached to it is not worth reading.
+          if (scrubbed != null)
+            Text(DateFormat.yMMMd().add_Hm().format(scrubbed.at), style: theme.textTheme.bodySmall)
+          else if (percent != null)
             Text(
               '${up ? '+' : ''}${percent.toStringAsFixed(2)}%',
               style: theme.textTheme.titleMedium!.copyWith(
                 fontWeight: FontWeight.w700,
                 color: up ? const Color(0xFF00BA7C) : const Color(0xFFF4212E),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// The ranges, as a row of chips. Changing one reloads the chart and leaves
+  /// the posts below untouched.
+  Widget _rangePicker(BuildContext context) {
+    return SizedBox(
+      height: 40,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        children: [
+          for (final range in TickerRange.values)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: ChoiceChip(
+                label: Text(tickerRangeLabel(context, range)),
+                selected: range == _range,
+                onSelected: (_) {
+                  if (range == _range) return;
+                  setState(() {
+                    _range = range;
+                    _quote = null;
+                    _scrubbed = null;
+                  });
+                  _loadQuote();
+                },
               ),
             ),
         ],
@@ -135,7 +188,15 @@ class _TickerScreenState extends State<_TickerScreen> {
 
     final quote = _quote;
     if (quote == null) {
-      return const SizedBox(height: 200, child: Center(child: CircularProgressIndicator()));
+      // Keeping the picker visible while a range loads means the row does not
+      // vanish under the finger that just tapped it.
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 200, child: Center(child: CircularProgressIndicator())),
+          _rangePicker(context),
+        ],
+      );
     }
 
     return Column(
@@ -143,8 +204,9 @@ class _TickerScreenState extends State<_TickerScreen> {
       children: [
         _quoteHeader(context, quote),
         const SizedBox(height: 8),
-        TickerChart(quote: quote),
-        const SizedBox(height: 8),
+        TickerChart(quote: quote, onScrub: (point) => setState(() => _scrubbed = point)),
+        _rangePicker(context),
+        const SizedBox(height: 4),
       ],
     );
   }

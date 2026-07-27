@@ -1126,5 +1126,17 @@
   "plugin_reddit_in_home_feed_description": "把你关注的子版块的帖子混入「关注」和「为你推荐」",
   "@plugin_reddit_in_home_feed_description": {},
   "no_other_groups": "还没有其他分组",
-  "@no_other_groups": {}
+  "@no_other_groups": {},
+  "ticker_range_day": "1天",
+  "@ticker_range_day": {},
+  "ticker_range_week": "1周",
+  "@ticker_range_week": {},
+  "ticker_range_month": "1个月",
+  "@ticker_range_month": {},
+  "ticker_range_six_months": "6个月",
+  "@ticker_range_six_months": {},
+  "ticker_range_year": "1年",
+  "@ticker_range_year": {},
+  "ticker_range_five_years": "5年",
+  "@ticker_range_five_years": {}
 }
