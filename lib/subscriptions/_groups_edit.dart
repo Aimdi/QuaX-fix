@@ -4,6 +4,7 @@ import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/group/group_tree.dart';
+import 'package:quax/plugins/reddit/reddit_avatar.dart';
 import 'package:quax/subscriptions/group_identity.dart';
 import 'package:quax/subscriptions/group_mark_style.dart';
 import 'package:quax/subscriptions/users_model.dart';
@@ -44,6 +45,24 @@ ButtonStyle _discreetActionStyle(BuildContext context) => TextButton.styleFrom(
       textStyle: Theme.of(context).textTheme.bodySmall,
       visualDensity: VisualDensity.compact,
     );
+
+/// What a group member is, under its name.
+///
+/// A subreddit and a publication are subscriptions like any other and belong in
+/// this list, but neither has an `@handle` — labelling them with one made a
+/// subreddit read as an X account that had lost its avatar.
+String _memberSubtitle(Subscription subscription) => switch (subscription) {
+      SearchSubscription() => L10n.current.search_term,
+      RedditSubscription(:final name) => 'r/$name',
+      SubstackSubscription(:final baseUrl) => Uri.tryParse(baseUrl)?.host ?? baseUrl,
+      _ => '@${subscription.screenName}',
+    };
+
+Widget _memberAvatar(Subscription subscription) => switch (subscription) {
+      SearchSubscription() => const SizedBox(width: 48, child: Icon(Icons.search)),
+      RedditSubscription(:final name) => RedditAvatar(name: 'r/$name', size: 40),
+      _ => UserAvatar(uri: subscription.profileImageUrlHttps),
+    };
 
 class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -491,18 +510,11 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                   itemBuilder: (context, index) {
                     var subscription = orderedSubscriptions[index];
 
-                    var subtitle =
-                        subscription is SearchSubscription ? L10n.current.search_term : '@${subscription.screenName}';
-
-                    var avatar = subscription is SearchSubscription
-                        ? const SizedBox(width: 48, child: Icon(Icons.search))
-                        : UserAvatar(uri: subscription.profileImageUrlHttps);
-
                     return CheckboxListTile(
                       dense: true,
-                      secondary: avatar,
+                      secondary: _memberAvatar(subscription),
                       title: Text(subscription.name),
-                      subtitle: Text(subtitle),
+                      subtitle: Text(_memberSubtitle(subscription)),
                       selected: members.contains(subscription.id),
                       value: members.contains(subscription.id),
                       onChanged: (v) => setState(() {

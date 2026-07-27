@@ -346,7 +346,16 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
               prefix: widget.newPageErrorPrefix,
               onRetry: fetchNextPage,
             ),
-            noItemsFoundIndicatorBuilder: (context) => Center(child: Text(widget.emptyMessage)),
+            // A group can hold nothing but subreddits or publications. Its
+            // posts are all interleaved items, and X having no chains for it is
+            // not the same as the feed being empty — reporting "no posts" over
+            // the top of them is what made such a group look broken.
+            noItemsFoundIndicatorBuilder: (context) => buckets.last.isEmpty
+                ? Center(child: Text(widget.emptyMessage))
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [for (final item in buckets.last) item.build(context)],
+                  ),
             noMoreItemsIndicatorBuilder: (context) => widget.feed.pausedByPageCap
                 ? _ZenFeedEndCard(onLoadMore: widget.feed.continuePastCap)
                 : const SizedBox.shrink(),

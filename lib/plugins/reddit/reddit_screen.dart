@@ -9,6 +9,7 @@ import 'package:quax/plugins/reddit/reddit_login_webview.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_post_card.dart';
 import 'package:quax/plugins/reddit/reddit_store.dart';
+import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/ui/errors.dart';
 
 String redditErrorMessage(L10n l10n, Object error) {
@@ -231,8 +232,17 @@ class _RedditScreenState extends State<RedditScreen> {
 
     await context.read<RedditSubredditsStore>().add(entered);
     if (mounted) {
-      await context.read<RedditFeedStore>().refresh();
+      await _refreshAfterChange(context);
     }
+  }
+
+  /// The feed and the subscription list both have to hear about it: a subreddit
+  /// is a group member now, and the group editor reads that list rather than
+  /// the store this screen keeps.
+  static Future<void> _refreshAfterChange(BuildContext context) async {
+    final subscriptions = context.read<SubscriptionsModel>();
+    await context.read<RedditFeedStore>().refresh();
+    await subscriptions.reloadSubscriptions();
   }
 
   Future<void> _manageSubreddits() async {
@@ -255,7 +265,7 @@ class _RedditScreenState extends State<RedditScreen> {
                       onPressed: () async {
                         await store.remove(name);
                         if (sheetContext.mounted) {
-                          await sheetContext.read<RedditFeedStore>().refresh();
+                          await _refreshAfterChange(sheetContext);
                         }
                       },
                     ),

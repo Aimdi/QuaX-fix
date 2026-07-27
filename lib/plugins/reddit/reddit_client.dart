@@ -63,6 +63,13 @@ class RedditPost {
   final bool stickied;
   final String? thumbnail;
 
+  /// The post's own label within its subreddit, e.g. `Elon Criticism`.
+  final String? flair;
+
+  /// Where the post points, as Reddit summarises it: `i.redd.it`, `v.redd.it`,
+  /// `self.dartlang`, or an article's domain.
+  final String? domain;
+
   const RedditPost({
     required this.id,
     required this.title,
@@ -78,6 +85,8 @@ class RedditPost {
     this.over18 = false,
     this.stickied = false,
     this.thumbnail,
+    this.flair,
+    this.domain,
   });
 
   /// A thumbnail worth showing; Reddit uses sentinels like `self` and `default`
@@ -88,6 +97,53 @@ class RedditPost {
       return null;
     }
     return value;
+  }
+
+  /// Hosts that serve the picture itself, whatever the path looks like.
+  static const _imageHosts = {'i.redd.it', 'preview.redd.it', 'i.imgur.com', 'i.redditmedia.com'};
+
+  /// Hosts whose links are a video. Reddit's own is a DASH manifest rather than
+  /// a file, so none of these can be shown inline — but knowing it is a video
+  /// is what lets the card say so instead of offering a dead thumbnail.
+  static const _videoHosts = {
+    'v.redd.it',
+    'youtube.com',
+    'youtu.be',
+    'm.youtube.com',
+    'streamable.com',
+    'gfycat.com',
+    'redgifs.com',
+  };
+
+  static const _imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+
+  /// The full-size picture to show edge to edge, or null when the post has none
+  /// worth showing at that size.
+  ///
+  /// Deliberately not [thumbnailUrl]: Reddit's listing thumbnails are 70px
+  /// wide, and stretching one across a phone gives a smear where a photo should
+  /// be.
+  String? get imageUrl {
+    final value = url;
+    final uri = value == null ? null : Uri.tryParse(value);
+    if (value == null || uri == null || !uri.hasScheme) {
+      return null;
+    }
+
+    final path = uri.path.toLowerCase();
+    final matches = _imageHosts.contains(uri.host) || _imageExtensions.any(path.endsWith);
+
+    return matches ? value : null;
+  }
+
+  bool get isVideo {
+    final host = domain ?? (url == null ? null : Uri.tryParse(url!)?.host);
+    if (host == null) {
+      return false;
+    }
+    final bare = host.startsWith('www.') ? host.substring(4) : host;
+
+    return _videoHosts.contains(bare);
   }
 
   static RedditPost? fromChild(Map<String, dynamic> child) {
@@ -124,6 +180,8 @@ class RedditPost {
       over18: map['over_18'] == true,
       stickied: map['stickied'] == true,
       thumbnail: map['thumbnail'] as String?,
+      flair: (map['link_flair_text'] as String?)?.trim(),
+      domain: map['domain'] as String?,
     );
   }
 }

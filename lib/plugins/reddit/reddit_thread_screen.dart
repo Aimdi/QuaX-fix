@@ -4,10 +4,10 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/reddit/reddit_avatar.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_comments.dart';
+import 'package:quax/plugins/reddit/reddit_post_media.dart';
 import 'package:quax/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
 import 'package:quax/ui/dates.dart';
 import 'package:quax/ui/errors.dart';
-import 'package:quax/utils/urls.dart';
 
 /// How far each level of replies is indented, and how deep that goes.
 ///
@@ -105,7 +105,6 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
   Widget _header(BuildContext context) {
     final theme = Theme.of(context);
     final post = widget.post;
-    final url = post.url;
     final date = post.createdAt;
 
     return Padding(
@@ -131,14 +130,9 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
               ],
             ),
           ),
-          if (!post.isSelf && url != null) ...[
-            const SizedBox(height: 10),
-            OutlinedButton.icon(
-              onPressed: () async => await openUri(context, url),
-              icon: const Icon(Icons.open_in_new, size: 16),
-              label: Text(Uri.tryParse(url)?.host ?? url, overflow: TextOverflow.ellipsis),
-            ),
-          ],
+          // The same block the feed card uses, so a picture post opens on its
+          // picture rather than on a link to one.
+          RedditPostMedia(post: post, padding: const EdgeInsets.only(top: 10)),
           if (_selfText != null) ...[
             const SizedBox(height: 10),
             Text(_selfText!, style: theme.textTheme.bodyMedium),

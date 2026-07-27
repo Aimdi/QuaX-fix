@@ -71,7 +71,26 @@ RedditPost? _postFrom(Element thing) {
     // old.reddit marks a pinned post with a class rather than an attribute.
     stickied: thing.classes.contains('stickied'),
     thumbnail: thumbnail == null ? null : _absolute(thumbnail),
+    flair: _flairOf(thing),
+    domain: domain.isEmpty ? null : domain,
   );
+}
+
+/// The post's flair, which old.reddit renders inside the title line.
+///
+/// The `title` attribute holds the full label where the visible text is
+/// abbreviated, so it wins when both are there.
+String? _flairOf(Element thing) {
+  final label = thing.querySelector('.linkflairlabel');
+  if (label == null) {
+    return null;
+  }
+
+  final full = label.attributes['title']?.trim();
+  final text = label.text.trim();
+  final flair = (full != null && full.isNotEmpty) ? full : text;
+
+  return flair.isEmpty ? null : flair;
 }
 
 /// Reddit serves protocol-relative thumbnail URLs; the image loader needs a

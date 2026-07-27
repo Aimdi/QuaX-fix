@@ -1,18 +1,23 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/reddit/reddit_avatar.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
+import 'package:quax/plugins/reddit/reddit_post_media.dart';
 import 'package:quax/plugins/reddit/reddit_thread_screen.dart';
 import 'package:quax/tweet/tweet_chrome.dart';
+import 'package:quax/tweet/tweet_footer.dart';
 import 'package:quax/ui/dates.dart';
+import 'package:quax/utils/urls.dart';
 
-/// A Reddit post, compact.
+/// The avatar a Reddit post gets, matching the one a tweet gets.
+const double kRedditAvatarSize = 48;
+
+/// A Reddit post, built like a tweet.
 ///
-/// One line of context, the title, and a small thumbnail beside it — the shape
-/// Stealth uses, and about half the height of the ListTile this replaces. The
-/// body is deliberately not shown: a self post's text belongs on the thread
-/// screen, not in a feed you are scrolling past.
+/// Avatar, then who and when, then the text, then the media edge to edge, then
+/// a row of actions — the same shape and the same tap targets as everything
+/// else in the timeline, because in a mixed group feed it sits directly between
+/// tweets and reading it should not mean changing gear.
 class RedditPostCard extends StatelessWidget {
   final RedditPost post;
 
@@ -27,43 +32,21 @@ class RedditPostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final thumbnail = post.thumbnailUrl;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         InkWell(
           onTap: () => _open(context),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            padding: const EdgeInsets.only(top: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _context(context),
-                      const SizedBox(height: 4),
-                      Text(
-                        post.title,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(height: 6),
-                      _counts(context),
-                    ],
-                  ),
-                ),
-                if (thumbnail != null) ...[
-                  const SizedBox(width: 12),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: ExtendedImage.network(thumbnail, width: 64, height: 64, fit: BoxFit.cover),
-                  ),
-                ],
+                _RedditPostHeader(post: post, showSourceBadge: showSourceBadge),
+                _title(context),
+                if (post.flair != null) _RedditFlair(label: post.flair!),
+                RedditPostMedia(post: post),
+                _RedditPostFooter(post: post, onComments: () => _open(context)),
               ],
             ),
           ),
@@ -73,60 +56,185 @@ class RedditPostCard extends StatelessWidget {
     );
   }
 
-  Widget _context(BuildContext context) {
+  Widget _title(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: Text(
+        post.title,
+        maxLines: 6,
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, height: 1.25),
+      ),
+    );
+  }
+}
+
+class _RedditPostHeader extends StatelessWidget {
+  final RedditPost post;
+  final bool showSourceBadge;
+
+  const _RedditPostHeader({required this.post, required this.showSourceBadge});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final date = post.createdAt;
 
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RedditAvatar(name: post.author, size: kRedditAvatarSize),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'r/${post.subreddit}',
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                    if (date != null) ...[
+                      const SizedBox(width: 6),
+                      Text('· ${createRelativeDate(date)}', style: theme.textTheme.bodySmall),
+                    ],
+                  ],
+                ),
+                _subtitle(context),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _subtitle(BuildContext context) {
+    final theme = Theme.of(context);
+    final author = post.author;
+
     return DefaultTextStyle.merge(
       style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
       child: Row(
         children: [
-          Flexible(
-            child: Text('r/${post.subreddit}',
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontWeight: FontWeight.w700, color: theme.colorScheme.onSurface)),
-          ),
+          // A deleted account has no name to show; the row simply starts with
+          // the badge rather than announcing the absence.
+          if (author != null) Flexible(child: Text('u/$author', overflow: TextOverflow.ellipsis)),
           if (showSourceBadge) ...[
-            const SizedBox(width: 6),
-            _badge(context, L10n.of(context).plugin_reddit_title),
+            if (author != null) const SizedBox(width: 6),
+            _RedditBadge(label: L10n.of(context).plugin_reddit_title),
           ],
           if (post.over18) ...[
             const SizedBox(width: 6),
-            _badge(context, L10n.of(context).plugin_reddit_nsfw, tint: theme.colorScheme.error),
+            _RedditBadge(label: L10n.of(context).plugin_reddit_nsfw, tint: theme.colorScheme.error),
           ],
-          const Spacer(),
-          if (date != null) Text(createRelativeDate(date)),
         ],
       ),
     );
   }
+}
 
-  Widget _counts(BuildContext context) {
+/// Score, comments and a way out to the browser, at the footer's tap size.
+class _RedditPostFooter extends StatelessWidget {
+  final RedditPost post;
+  final VoidCallback onComments;
+
+  const _RedditPostFooter({required this.post, required this.onComments});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
 
-    return DefaultTextStyle.merge(
-      style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, right: 8, top: 4),
       child: Row(
         children: [
-          Icon(Icons.arrow_upward, size: 14, color: theme.colorScheme.onSurfaceVariant),
-          const SizedBox(width: 3),
-          Text('${post.score}'),
-          const SizedBox(width: 14),
-          Icon(Icons.mode_comment_outlined, size: 14, color: theme.colorScheme.onSurfaceVariant),
-          const SizedBox(width: 3),
-          Text('${post.commentCount}'),
-          if (post.author != null) ...[
-            const SizedBox(width: 14),
-            RedditAvatar(name: post.author, size: 16),
-            const SizedBox(width: 4),
-            Flexible(child: Text('u/${post.author}', overflow: TextOverflow.ellipsis)),
-          ],
+          _stat(context, Icons.arrow_upward, '${post.score}'),
+          TextButton.icon(
+            style: footerButtonStyle,
+            onPressed: onComments,
+            icon: Icon(Icons.mode_comment_outlined, size: 18, color: muted),
+            label: Text('${post.commentCount}', style: theme.textTheme.bodySmall!.copyWith(color: muted)),
+          ),
+          const Spacer(),
+          IconButton(
+            tooltip: L10n.of(context).open_in_browser,
+            onPressed: () => openUri(context, 'https://www.reddit.com${post.permalink}'),
+            icon: Icon(Icons.open_in_new, size: 18, color: muted),
+          ),
         ],
       ),
     );
   }
 
-  Widget _badge(BuildContext context, String label, {Color? tint}) {
+  /// A count with no action behind it, sized to match the buttons beside it so
+  /// the row does not step up and down.
+  Widget _stat(BuildContext context, IconData icon, String value) {
+    final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kFooterButtonPadding),
+      child: SizedBox(
+        height: kFooterButtonHeight,
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: muted),
+            const SizedBox(width: 6),
+            Text(value, style: theme.textTheme.bodySmall!.copyWith(color: muted)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RedditFlair extends StatelessWidget {
+  final String label;
+
+  const _RedditFlair({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.secondaryContainer,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.labelMedium!.copyWith(color: theme.colorScheme.onSecondaryContainer),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RedditBadge extends StatelessWidget {
+  final String label;
+  final Color? tint;
+
+  const _RedditBadge({required this.label, this.tint});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Container(

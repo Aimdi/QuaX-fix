@@ -521,4 +521,31 @@ void main() {
       );
     });
   });
+
+  group('what a post has to show', () {
+    RedditPost post({String? url, String? domain}) =>
+        RedditPost(id: 'a', title: 't', subreddit: 'x', permalink: '/r/x/comments/a/', url: url, domain: domain);
+
+    test('a direct picture is shown at full width', () {
+      expect(post(url: 'https://i.redd.it/abc.jpg', domain: 'i.redd.it').imageUrl, 'https://i.redd.it/abc.jpg');
+      expect(post(url: 'https://example.com/photo.PNG').imageUrl, 'https://example.com/photo.PNG');
+      expect(post(url: 'https://preview.redd.it/x?width=640', domain: 'preview.redd.it').imageUrl, isNotNull,
+          reason: 'the host serves the picture whatever the path looks like');
+    });
+
+    test('a page is not a picture, however tempting the thumbnail is', () {
+      expect(post(url: 'https://www.reddit.com/gallery/abc', domain: 'reddit.com').imageUrl, isNull);
+      expect(post(url: 'https://v.redd.it/abc', domain: 'v.redd.it').imageUrl, isNull);
+      expect(post(url: 'https://news.example.com/story', domain: 'news.example.com').imageUrl, isNull);
+      expect(post().imageUrl, isNull);
+      expect(post(url: 'not a url at all').imageUrl, isNull);
+    });
+
+    test('a video is recognised so the card offers a play badge, not a dead image', () {
+      expect(post(url: 'https://v.redd.it/abc', domain: 'v.redd.it').isVideo, isTrue);
+      expect(post(url: 'https://www.youtube.com/watch?v=1', domain: 'youtube.com').isVideo, isTrue);
+      expect(post(url: 'https://example.com/story', domain: 'example.com').isVideo, isFalse);
+      expect(post().isVideo, isFalse);
+    });
+  });
 }

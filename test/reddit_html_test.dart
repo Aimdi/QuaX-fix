@@ -88,6 +88,31 @@ void main() {
       expect(parseListing(_page(_link)).posts.single.stickied, isFalse);
     });
 
+    test('the domain comes through so the card can say where a link leads', () {
+      expect(parseListing(_page(_link)).posts.single.domain, 'example.com');
+    });
+
+    test('flair is read, preferring the full label over the abbreviated one', () {
+      const flaired = '''
+<div class="thing" data-fullname="t3_f" data-subreddit="x"
+     data-permalink="/r/x/comments/f/">
+  <a class="title">Titled</a>
+  <span class="linkflairlabel" title="Elon Criticism">Elon Crit…</span>
+</div>
+''';
+      const bare = '''
+<div class="thing" data-fullname="t3_b" data-subreddit="x"
+     data-permalink="/r/x/comments/b/">
+  <a class="title">Titled</a>
+  <span class="linkflairlabel">Discussion</span>
+</div>
+''';
+
+      expect(parseListing(_page(flaired)).posts.single.flair, 'Elon Criticism');
+      expect(parseListing(_page(bare)).posts.single.flair, 'Discussion');
+      expect(parseListing(_page(_link)).posts.single.flair, isNull);
+    });
+
     test('an over-18 post carries the flag', () {
       const nsfw = '''
 <div class="thing" data-fullname="t3_n" data-subreddit="x" data-nsfw="true"
