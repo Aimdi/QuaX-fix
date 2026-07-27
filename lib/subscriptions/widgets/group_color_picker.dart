@@ -5,28 +5,23 @@ import 'package:quax/subscriptions/group_identity.dart';
 
 /// Colours a group can be given.
 ///
-/// X's own six accents first — they are already in this app, already chosen to
-/// stay legible on all three backgrounds, and picking a group colour out of the
-/// same set is what makes a coloured group look like part of the app rather
-/// than like a Material demo. The rest fill out the wheel where X leaves gaps,
-/// at the same weight.
-const groupColorChoices = <Color>[
-  ...[
-    Color(0xFF1D9BF0), // blue
-    Color(0xFFFFD400), // yellow
-    Color(0xFFF91880), // pink
-    Color(0xFF7856FF), // purple
-    Color(0xFFFF7A00), // orange
-    Color(0xFF00BA7C), // green
-  ],
-  Color(0xFFF4212E), // red — X's own error red
-  Color(0xFFFF6E40), // coral
-  Color(0xFF00BCD4), // cyan
-  Color(0xFF7BC67E), // sage
-  Color(0xFFB388FF), // lilac
-  Color(0xFF8D6E63), // clay
-  Color(0xFF536471), // slate — X's grey
-  Color(0xFFE1E8ED), // bone
+/// X's own six accents first, read straight from the theme's palette — they are
+/// already chosen to stay legible on all three backgrounds, and picking a group
+/// colour out of the same set is what makes a coloured group look like part of
+/// the app rather than like a Material demo. The rest fill out the wheel where
+/// X leaves gaps, at the same weight.
+final groupColorChoices = <Color>[
+  // X's own six, taken from the theme rather than copied: one palette, one
+  // place to change it.
+  ...xLookAccents.values,
+  const Color(0xFFF4212E), // red — X's own error red
+  const Color(0xFFFF6E40), // coral
+  const Color(0xFF00BCD4), // cyan
+  const Color(0xFF7BC67E), // sage
+  const Color(0xFFB388FF), // lilac
+  const Color(0xFF8D6E63), // clay
+  const Color(0xFF536471), // slate — X's grey
+  const Color(0xFFE1E8ED), // bone
 ];
 
 /// Picks a group's colour, or clears it back to the generated one.
