@@ -34,6 +34,13 @@ add a subreddit, manage them — rather than only in its own tab.
 
 **Links open inside the app** by default, instead of handing you to a browser.
 
+**Reading aloud keeps going when you close the article.** It used to stop
+mid-sentence the moment you left the tab. While something is being read, a bar
+under every screen says what it is and stops it on a tap, so the control is
+wherever you are rather than back in the article you left. Leaving the app
+itself is not covered — there is no media notification behind this yet, so
+Android may reclaim the process.
+
 ---
 
 First download? Install it with Obtainium 👇
