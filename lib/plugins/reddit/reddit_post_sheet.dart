@@ -64,9 +64,11 @@ class _RedditPostSheet extends StatelessWidget {
         _RedditSheetAction(
           icon: Icons.open_in_new,
           label: l10n.open_in_browser,
-          onTap: () {
-            Navigator.pop(context);
-            openUri(context, redditPostUrl(post));
+          // Launch before dismissing: once the sheet is gone its context is
+          // defunct, and openUri needs a live one.
+          onTap: () async {
+            await openUri(context, redditPostUrl(post));
+            if (context.mounted) Navigator.pop(context);
           },
         ),
         _RedditSheetAction(
@@ -82,9 +84,12 @@ class _RedditPostSheet extends StatelessWidget {
     );
   }
 
+  /// The navigator is taken before the sheet closes: afterwards this context is
+  /// no longer in the tree and cannot be used to push anything.
   void _push(BuildContext context, Widget screen) {
-    Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
+    final navigator = Navigator.of(context);
+    navigator.pop();
+    navigator.push(MaterialPageRoute(builder: (_) => screen));
   }
 }
 
