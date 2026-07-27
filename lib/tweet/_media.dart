@@ -11,6 +11,7 @@ import 'package:quax/constants.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/profile/profile.dart';
 import 'package:quax/tweet/_photo.dart';
+import 'package:quax/tweet/media_strip.dart';
 import 'package:quax/tweet/_video.dart';
 import 'package:quax/tweet/tweet_chrome.dart';
 import 'package:quax/ui/errors.dart';
@@ -30,13 +31,23 @@ class _TweetMediaItem extends StatefulWidget {
   final String username;
   final String? tweetId;
 
+  /// How a photo fills its box. Cards in the strip are sized for it; the older
+  /// full-width pager shows the whole picture instead.
+  final BoxFit fit;
+
+  /// Whether to write "2 / 4" in the corner. Pointless in a strip, where the
+  /// rest of them are right there.
+  final bool showCounter;
+
   const _TweetMediaItem(
       {required this.index,
       required this.mediaIndex,
       required this.total,
       required this.media,
       required this.username,
-      this.tweetId});
+      this.tweetId,
+      this.fit = BoxFit.contain,
+      this.showCounter = true});
 
   @override
   State<_TweetMediaItem> createState() => _TweetMediaItemState();
@@ -96,7 +107,8 @@ class _TweetMediaItemState extends State<_TweetMediaItem> {
           pullToClose: false,
           inPageView: false,
           tweetId: widget.tweetId,
-          mediaIndex: widget.mediaIndex);
+          mediaIndex: widget.mediaIndex,
+          fit: widget.fit);
     } else {
       media = GestureDetector(
         child: Container(
@@ -114,7 +126,7 @@ class _TweetMediaItemState extends State<_TweetMediaItem> {
     }
 
     // If there's only one item in this media collection, don't show the page counter
-    if (widget.total == 1) {
+    if (widget.total == 1 || !widget.showCounter) {
       return media;
     }
 
@@ -184,19 +196,36 @@ class TweetMedia extends StatefulWidget {
 }
 
 class _TweetMediaState extends State<TweetMedia> {
-  late final PageController _controller;
+  final ScrollController _controller = ScrollController();
+
+  /// The row is only moved to [TweetMedia.initialMediaIndex] once. Doing it on
+  /// every layout would drag the row back under the reader's finger.
+  bool _placed = false;
 
   @override
-  void initState() {
-    super.initState();
-    _controller = PageController(initialPage: widget.initialMediaIndex);
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  /// Puts the picture the post was opened at into view.
+  void _placeAt(MediaStripLayout layout) {
+    if (_placed || widget.initialMediaIndex <= 0) {
+      return;
+    }
+    _placed = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_controller.hasClients) {
+        return;
+      }
+      final offset = mediaStripOffsetOf(widget.initialMediaIndex, layout.widths);
+      _controller.jumpTo(math.min(offset, _controller.position.maxScrollExtent));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    var largestAspectRatio =
-    widget.media.map((e) => ((e.sizes!.large!.w) ?? 1) / ((e.sizes!.large!.h) ?? 1)).reduce(math.min);
-
     return Consumer<TweetContextState>(builder: (context, model, child) {
       if (model.hideSensitive && (widget.sensitive ?? false)) {
         return Card(
@@ -214,58 +243,96 @@ class _TweetMediaState extends State<TweetMedia> {
       final tokens = XLookTokens.maybeOf(context);
       final radius = tokens?.mediaRadius ?? kTweetMediaRadius;
 
-      return RepaintBoundary(
-        child: Container(
-          margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
-          child: AspectRatio(
-            aspectRatio: largestAspectRatio,
-            // A carousel of several images owns horizontal drags that start on
-            // it, so without this a swipe over a post's media could not reach
-            // the home page view. (One image scrolls nowhere, so Flutter never
-            // gives it a drag recogniser and it already passes them through.)
-            child: edgeSwipeToChangeHomePage(
-              context,
-              PageView.builder(
-              controller: _controller,
-              scrollDirection: Axis.horizontal,
-              itemCount: widget.media.length,
-              itemBuilder: (context, index) {
-                var item = widget.media[index];
-
-                // A video has its own tap controls and must never open the
-                // fullscreen media viewer. Photos and GIFs still open it.
-                final isVideo = item.type == 'video';
-
-                return GestureDetector(
-                  onTap: isVideo
-                      ? null
-                      : () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TweetMediaView(
-                                  initialIndex: index,
-                                  media: widget.media,
-                                  username: widget.username,
-                                  tweetId: widget.tweetId))),
-                  onLongPress:
-                      item.type == 'photo' ? () => downloadMediaItem(context, item, widget.username) : null,
-                  child: _TweetMediaItem(
-                      media: item,
-                      index: index + 1,
-                      mediaIndex: index,
-                      total: widget.media.length,
-                      username: widget.username,
-                      tweetId: widget.tweetId),
-                );
-              },
-              ),
+      if (widget.media.length == 1) {
+        return RepaintBoundary(
+          child: Container(
+            margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
+            child: AspectRatio(
+              aspectRatio: clampMediaAspect(_aspects().single),
+              child: _card(context, 0, fit: BoxFit.contain, showCounter: false),
             ),
+          ),
+        );
+      }
+
+      return RepaintBoundary(
+        // No right margin: the row runs off the edge of the screen, which is
+        // what says there is more of it than fits.
+        child: Container(
+          margin: const EdgeInsets.only(top: 8, left: 16),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final layout = mediaStripLayout(width: constraints.maxWidth, aspects: _aspects());
+              _placeAt(layout);
+
+              return SizedBox(
+                height: layout.height,
+                // The row owns horizontal drags that start on it, so without
+                // this a swipe over a post's media could not reach the home
+                // page view.
+                child: edgeSwipeToChangeHomePage(
+                  context,
+                  ListView.separated(
+                    controller: _controller,
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(right: 16),
+                    itemCount: widget.media.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: kMediaCardGap),
+                    itemBuilder: (context, index) => SizedBox(
+                      width: layout.widths[index],
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(radius),
+                        child: _card(context, index, fit: BoxFit.cover, showCounter: false),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       );
     });
+  }
+
+  /// The aspect ratio of every item, for the row to size itself from.
+  List<double> _aspects() => widget.media
+      .map((e) => ((e.sizes?.large?.w ?? 1) / (e.sizes?.large?.h ?? 1)).toDouble())
+      .toList(growable: false);
+
+  /// One piece of media, with the taps that belong to it.
+  Widget _card(BuildContext context, int index, {required BoxFit fit, required bool showCounter}) {
+    final item = widget.media[index];
+
+    // A video has its own tap controls and must never open the fullscreen
+    // media viewer. Photos and GIFs still open it.
+    final isVideo = item.type == 'video';
+
+    return GestureDetector(
+      onTap: isVideo
+          ? null
+          : () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TweetMediaView(
+                      initialIndex: index,
+                      media: widget.media,
+                      username: widget.username,
+                      tweetId: widget.tweetId))),
+      onLongPress: item.type == 'photo' ? () => downloadMediaItem(context, item, widget.username) : null,
+      child: _TweetMediaItem(
+        media: item,
+        index: index + 1,
+        mediaIndex: index,
+        total: widget.media.length,
+        username: widget.username,
+        tweetId: widget.tweetId,
+        fit: fit,
+        showCounter: showCounter,
+      ),
+    );
   }
 }
 
@@ -474,6 +541,11 @@ class _TweetMediaThing extends StatelessWidget {
   final String? tweetId;
   final int mediaIndex;
 
+  /// How a photo sits in the space it is given. A card in the strip has a size
+  /// of its own to fill, so it covers; anywhere else the whole picture matters
+  /// more than the shape of its box.
+  final BoxFit fit;
+
   const _TweetMediaThing(
       {required this.item,
       required this.username,
@@ -481,7 +553,8 @@ class _TweetMediaThing extends StatelessWidget {
       required this.pullToClose,
       required this.inPageView,
       this.tweetId,
-      this.mediaIndex = 0});
+      this.mediaIndex = 0,
+      this.fit = BoxFit.contain});
 
   @override
   Widget build(BuildContext context) {
@@ -503,8 +576,7 @@ class _TweetMediaThing extends StatelessWidget {
           tweetId: tweetId,
           mediaIndex: mediaIndex);
     } else if (item.type == 'photo') {
-      media = TweetPhoto(
-          size: size, uri: item.mediaUrlHttps!, fit: BoxFit.contain, pullToClose: pullToClose, inPageView: inPageView);
+      media = TweetPhoto(size: size, uri: item.mediaUrlHttps!, fit: fit, pullToClose: pullToClose, inPageView: inPageView);
     } else {
       media = Text(L10n.of(context).unknown);
     }
