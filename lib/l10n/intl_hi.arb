@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "होम टाइमलाइन में दिखाएँ",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "आप जिन सबरेडिट को फ़ॉलो करते हैं उनकी पोस्ट को \"फ़ॉलोइंग\" और \"आपके लिए\" में मिलाता है",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "अभी तक कोई अन्य समूह नहीं",
+  "@no_other_groups": {}
 }

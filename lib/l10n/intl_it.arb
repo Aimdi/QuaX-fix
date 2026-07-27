@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "Mostra nella timeline principale",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Inserisce i post dei subreddit che segui in «Seguiti» e «Per te»",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "Nessun altro gruppo per ora",
+  "@no_other_groups": {}
 }

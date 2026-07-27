@@ -129,7 +129,8 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
     );
   }
 
-  Widget _buildReorderableList(BuildContext context, List<SubscriptionGroup> groups, {required bool canReorder}) {
+  Widget _buildReorderableList(BuildContext context, List<SubscriptionGroup> groups,
+      {required bool canReorder, Map<String, int> depths = const {}}) {
     return ReorderableListView.builder(
       scrollController: widget.scrollController,
       padding: const EdgeInsets.fromLTRB(8, 4, 8, 24),
@@ -140,6 +141,7 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
         return GroupListItem(
           key: ValueKey(group.id),
           group: group,
+          depth: depths[group.id] ?? 0,
           // No handle means no drag: rearranging a name-sorted or filtered list
           // would write an order the reader cannot see.
           reorderIndex: canReorder ? index : null,
@@ -195,13 +197,14 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
             ? state
             : state.where((g) => g.name.toLowerCase().contains(query)).toList(growable: false);
 
-        // A nested group is shown inside its parent, not beside it — except
-        // while searching, when the reader is looking for a particular group
-        // and should find it wherever it lives.
+        // A nested group sits under its parent rather than beside it — but it
+        // is still shown. Hiding it made "put inside group" look like a delete.
+        // While searching the order is left alone: the reader is looking for one
+        // group and should find it wherever it lives.
         final parents = {for (final g in state) g.id: g.parentId};
         if (query.isEmpty) {
-          final visible = topLevelGroups(groups.map((g) => g.id), parents).toSet();
-          groups = groups.where((g) => visible.contains(g.id)).toList(growable: false);
+          final byId = {for (final g in groups) g.id: g};
+          groups = groupsInTreeOrder(byId.keys, parents).map((id) => byId[id]!).toList(growable: false);
         }
         final prefs = PrefService.of(context);
         final animate = prefs.get<bool>(optionDisableAnimations) != true;
@@ -210,6 +213,8 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
         // only the list carries drag handles — and only when the order it would
         // rearrange is the one being shown.
         final canReorder = context.read<GroupsModel>().orderGroupsBy == 'position' && query.isEmpty;
+        // How far each group is indented, so a nested one reads as nested.
+        final depths = {for (final g in groups) g.id: depthOf(g.id, parents)};
 
         return Column(
           children: [
@@ -217,7 +222,7 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
             ..._pluginFeedRows(context),
             Expanded(
               child: asList
-                  ? _buildReorderableList(context, groups, canReorder: canReorder)
+                  ? _buildReorderableList(context, groups, canReorder: canReorder, depths: depths)
                   : _buildBoard(context, groups, animate: animate),
             ),
           ],

@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "Mostra a la cronologia principal",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Barreja les publicacions dels subreddits que segueixes a «Seguint» i «Per a tu»",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "Encara no hi ha altres grups",
+  "@no_other_groups": {}
 }

@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "Mostrar na cronologia principal",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Mistura as publicações dos subreddits que segue em «A seguir» e «Para si»",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "Ainda não há outros grupos",
+  "@no_other_groups": {}
 }

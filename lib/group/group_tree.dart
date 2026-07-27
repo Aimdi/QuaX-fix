@@ -47,6 +47,40 @@ List<String> topLevelGroups(Iterable<String> ids, Map<String, String?> parentOf)
   }).toList(growable: false);
 }
 
+/// [ids] with every group placed directly under its parent, parents first.
+///
+/// Nesting used to hide a child from the board entirely, which made "put inside
+/// group" look like it had deleted the group: it vanished and there was nothing
+/// to open. A child belongs *under* its parent, not instead of it.
+///
+/// Order within a level is the order given, so whatever sort or manual
+/// arrangement the board is using still holds.
+List<String> groupsInTreeOrder(Iterable<String> ids, Map<String, String?> parentOf) {
+  final present = ids.toList(growable: false);
+  final ordered = <String>[];
+  final placed = <String>{};
+
+  void place(String id) {
+    if (!placed.add(id)) {
+      return;
+    }
+    ordered.add(id);
+    for (final child in present.where((c) => parentOf[c] == id && c != id)) {
+      place(child);
+    }
+  }
+
+  for (final id in topLevelGroups(present, parentOf)) {
+    place(id);
+  }
+  // A group inside a cycle belongs to no top level and would otherwise be lost.
+  for (final id in present) {
+    place(id);
+  }
+
+  return ordered;
+}
+
 /// Whether nesting [child] inside [parent] would close a loop.
 ///
 /// True when they are the same group, or when [parent] is already somewhere

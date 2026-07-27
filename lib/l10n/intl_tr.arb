@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "Ana akışta göster",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Takip ettiğin subredditlerin gönderilerini Takip ve Sana Özel akışlarına karıştırır",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "Henüz başka grup yok",
+  "@no_other_groups": {}
 }

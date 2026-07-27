@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "Näita avalehe voos",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Lisab jälgitavate subredditide postitused voogudesse „Jälgitavad“ ja „Sulle“",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "Teisi rühmi veel pole",
+  "@no_other_groups": {}
 }

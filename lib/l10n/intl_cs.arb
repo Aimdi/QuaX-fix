@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "Zobrazovat na hlavní nástěnce",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Přimíchá příspěvky ze subredditů, které sledujete, do „Sleduji“ a „Pro tebe“",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "Zatím žádné další skupiny",
+  "@no_other_groups": {}
 }

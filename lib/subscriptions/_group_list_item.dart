@@ -10,6 +10,9 @@ import 'package:quax/subscriptions/widgets/fallback_avatar.dart';
 import 'package:quax/user.dart';
 import 'package:provider/provider.dart';
 
+/// How far each level of nesting moves a row to the right.
+const double kGroupNestIndent = 20;
+
 /// One group as a dense list row: colored avatar with the group's icon (or a
 /// monogram when none was chosen), name, member count and a preview cluster of
 /// member avatars. The group color lives only on the small avatar, so the text
@@ -18,11 +21,14 @@ class GroupListItem extends StatelessWidget {
   final SubscriptionGroup group;
   final VoidCallback? onLongPress;
 
+  /// How deep this group is nested, which is how far the row is indented.
+  final int depth;
+
   // When set, the row is part of a manually-ordered list and shows a drag
   // handle bound to this index.
   final int? reorderIndex;
 
-  const GroupListItem({super.key, required this.group, this.onLongPress, this.reorderIndex});
+  const GroupListItem({super.key, required this.group, this.onLongPress, this.reorderIndex, this.depth = 0});
 
   Widget _buildTrailing(BuildContext context) {
     final l10n = L10n.of(context);
@@ -57,6 +63,8 @@ class GroupListItem extends StatelessWidget {
 
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      // Indent rather than hide: a nested group is still a group you can open.
+      contentPadding: EdgeInsets.only(left: 16 + kGroupNestIndent * depth, right: 8),
       leading: CircleAvatar(
         radius: 20,
         backgroundColor: fill,

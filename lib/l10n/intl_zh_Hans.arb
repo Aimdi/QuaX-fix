@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "显示在主时间线中",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "把你关注的子版块的帖子混入「关注」和「为你推荐」",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "还没有其他分组",
+  "@no_other_groups": {}
 }

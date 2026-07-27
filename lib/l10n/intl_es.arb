@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "Mostrar en la cronología principal",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Mezcla las publicaciones de los subreddits que sigues en «Siguiendo» y «Para ti»",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "Aún no hay otros grupos",
+  "@no_other_groups": {}
 }

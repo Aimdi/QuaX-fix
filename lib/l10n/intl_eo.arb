@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "Montri en la hejma tempolinio",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Miksas afiŝojn el la subredditoj kiujn vi sekvas en «Sekvataj» kaj «Por vi»",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "Ankoraŭ neniuj aliaj grupoj",
+  "@no_other_groups": {}
 }

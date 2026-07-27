@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "Erakutsi hasierako denbora-lerroan",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Jarraitzen dituzun subredditen bidalketak «Jarraitzen» eta «Zuretzat» ataletan tartekatzen ditu",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "Oraindik ez dago beste talderik",
+  "@no_other_groups": {}
 }

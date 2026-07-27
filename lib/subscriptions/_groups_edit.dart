@@ -5,6 +5,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/group/group_tree.dart';
 import 'package:quax/plugins/reddit/reddit_avatar.dart';
+import 'package:quax/subscriptions/_group_add_member.dart';
 import 'package:quax/subscriptions/group_identity.dart';
 import 'package:quax/subscriptions/group_mark_style.dart';
 import 'package:quax/subscriptions/users_model.dart';
@@ -105,9 +106,34 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         }));
   }
 
+  /// Follows something new and ticks it, so a group can be filled from inside
+  /// the group rather than by going elsewhere to subscribe first.
+  Future<void> _addMembers() async {
+    final subscriptionsModel = context.read<SubscriptionsModel>();
+    final added = await openGroupAddMemberSheet(context);
+    if (!mounted || added.isEmpty) {
+      return;
+    }
+
+    final subscriptions = subscriptionsModel.state;
+    setState(() {
+      members.addAll(added);
+      orderedSubscriptions = [
+        ...subscriptions.where((s) => members.contains(s.id)),
+        ...subscriptions.where((s) => !members.contains(s.id)),
+      ];
+    });
+  }
+
   Future<void> _openMergeSheet(BuildContext context) async {
     final groupsModel = context.read<GroupsModel>();
     final others = groupsModel.state.where((g) => g.id != widget.id).toList(growable: false);
+
+    // An empty sheet is indistinguishable from a broken button.
+    if (others.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.of(context).no_other_groups)));
+      return;
+    }
 
     final target = await showModalBottomSheet<SubscriptionGroup>(
         context: context,
@@ -143,6 +169,11 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         .toList(growable: false);
     final current = parents[widget.id!];
 
+    if (candidates.isEmpty && current == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.of(context).no_other_groups)));
+      return;
+    }
+
     final choice = await showModalBottomSheet<String>(
       context: context,
       builder: (sheetContext) => SafeArea(
@@ -168,8 +199,13 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
     );
 
     if (choice == null || !context.mounted) return;
-    await groupsModel.setGroupParent(widget.id!, choice.isEmpty ? null : choice);
-    if (context.mounted) Navigator.pop(context);
+    final applied = await groupsModel.setGroupParent(widget.id!, choice.isEmpty ? null : choice);
+    if (!context.mounted) return;
+    if (!applied) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.of(context).no_other_groups)));
+      return;
+    }
+    Navigator.pop(context);
   }
 
   void openDeleteSubscriptionGroupDialog(String id, String name) {
@@ -487,6 +523,12 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                 children: [
                   ...groupActions,
                   const Spacer(),
+                  TextButton.icon(
+                    style: _discreetActionStyle(context),
+                    icon: const Icon(Icons.person_add_alt, size: 18),
+                    label: Text(l10n.add_to_group),
+                    onPressed: _addMembers,
+                  ),
                   TextButton.icon(
                     style: _discreetActionStyle(context),
                     icon: const Icon(Icons.checklist, size: 18),

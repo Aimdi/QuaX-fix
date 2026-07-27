@@ -96,4 +96,32 @@ void main() {
       expect(depthOf('a', {'a': 'b', 'b': 'a'}), lessThan(3));
     });
   });
+
+  group('tree order', () {
+    test('a child follows its parent instead of vanishing', () {
+      const parents = {'a': null, 'b': 'a', 'c': null};
+
+      expect(groupsInTreeOrder(['a', 'b', 'c'], parents), ['a', 'b', 'c']);
+    });
+
+    test('depth follows depth, not the order the ids arrived in', () {
+      const parents = {'a': null, 'b': 'a', 'c': 'b', 'd': null};
+
+      expect(groupsInTreeOrder(['d', 'c', 'b', 'a'], parents), ['d', 'a', 'b', 'c']);
+    });
+
+    test('every group appears exactly once, cycle or no cycle', () {
+      const parents = {'a': 'b', 'b': 'a', 'c': null};
+
+      final ordered = groupsInTreeOrder(['a', 'b', 'c'], parents);
+      expect(ordered.toSet(), {'a', 'b', 'c'});
+      expect(ordered, hasLength(3));
+    });
+
+    test('a group whose parent is filtered out is still shown', () {
+      const parents = {'a': null, 'b': 'a'};
+
+      expect(groupsInTreeOrder(['b'], parents), ['b']);
+    });
+  });
 }

@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "Tampilkan di lini masa beranda",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Menggabungkan kiriman dari subreddit yang Anda ikuti ke Mengikuti dan Untuk Anda",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "Belum ada grup lain",
+  "@no_other_groups": {}
 }

@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "Show in the home timeline",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Mixes posts from the subreddits you follow into Following and For you",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "No other groups yet",
+  "@no_other_groups": {}
 }

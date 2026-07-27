@@ -1124,5 +1124,7 @@
   "plugin_reddit_in_home_feed": "Показувати в головній стрічці",
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Додає дописи із сабредитів, на які ви підписані, у «Підписки» та «Для вас»",
-  "@plugin_reddit_in_home_feed_description": {}
+  "@plugin_reddit_in_home_feed_description": {},
+  "no_other_groups": "Інших груп поки немає",
+  "@no_other_groups": {}
 }
