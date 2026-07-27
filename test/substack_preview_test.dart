@@ -51,14 +51,16 @@ void main() {
     test('is rendered with the article when there is one', () {
       final html = _wrap(footer: 'The free part ends here.', link: 'https://example.com', label: 'Continue');
 
-      expect(html, contains('preview-end'));
+      expect(html, contains('<div class="preview-end">'));
       expect(html, contains('The free part ends here.'));
       expect(html, contains('href="https://example.com"'));
       expect(html, contains('Continue'));
     });
 
     test('a free article gets no note at all', () {
-      expect(_wrap(), isNot(contains('preview-end')));
+      // The class is styled in every document; what must be absent is an
+      // element wearing it.
+      expect(_wrap(), isNot(contains('<div class="preview-end">')));
     });
 
     test('a note with nowhere to continue is still shown', () {
