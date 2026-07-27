@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Ezin izan da pluginen zerrenda eskuratu",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Jasotako azken zerrenda erakusten ari da",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Ozen irakurtzen",
+  "@speech_playing": {},
+  "speech_stop": "Gelditu",
+  "@speech_stop": {}
 }

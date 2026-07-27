@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Nie udało się pobrać listy wtyczek",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Wyświetlana jest ostatnia pobrana lista",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Czyta na głos",
+  "@speech_playing": {},
+  "speech_stop": "Zatrzymaj",
+  "@speech_stop": {}
 }

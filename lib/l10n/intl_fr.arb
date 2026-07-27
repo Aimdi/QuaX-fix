@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Impossible de récupérer la liste des extensions",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "La dernière liste reçue est affichée",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Lecture à voix haute",
+  "@speech_playing": {},
+  "speech_stop": "Arrêter",
+  "@speech_stop": {}
 }

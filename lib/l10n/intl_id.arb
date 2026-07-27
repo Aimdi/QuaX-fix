@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Daftar plugin tidak bisa diambil",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Menampilkan daftar terakhir yang diterima",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Membacakan",
+  "@speech_playing": {},
+  "speech_stop": "Hentikan",
+  "@speech_stop": {}
 }

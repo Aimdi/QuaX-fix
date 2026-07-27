@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/substack/substack_client.dart';
@@ -9,7 +8,8 @@ import 'package:quax/plugins/substack/substack_html.dart';
 import 'package:quax/plugins/substack/substack_models.dart';
 import 'package:quax/plugins/substack/substack_archive_screen.dart';
 import 'package:quax/plugins/substack/substack_store.dart';
-import 'package:quax/plugins/substack/substack_tts_settings.dart';
+import 'package:quax/speech/speech_store.dart';
+import 'package:quax/speech/tts_settings.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/utils/urls.dart';
 import 'package:share_plus/share_plus.dart';
@@ -26,7 +26,6 @@ class SubstackReaderScreen extends StatefulWidget {
 
 class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
   late final WebViewController _controller;
-  late final FlutterTts _tts;
   late SubstackPost _post;
   Object? _error;
   var _loading = true;
@@ -36,8 +35,6 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
   /// True when what is on screen is the free opening of a paid post rather than
   /// the whole thing.
   var _partial = false;
-  var _speaking = false;
-  var _ttsReady = false;
   String? _speakText;
 
   @override
@@ -45,56 +42,10 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
     super.initState();
     _post = widget.post;
     _controller = WebViewController()..setJavaScriptMode(JavaScriptMode.unrestricted);
-    _tts = FlutterTts();
-    _initTts();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SubstackReadStore>().markRead(_post.id);
       _load();
     });
-  }
-
-  Future<void> _initTts() async {
-    await _tts.awaitSpeakCompletion(true);
-    _tts.setCancelHandler(() {
-      if (mounted) setState(() => _speaking = false);
-    });
-    _tts.setErrorHandler((_) {
-      if (mounted) setState(() => _speaking = false);
-    });
-
-    await _applyVoice();
-    if (mounted) setState(() => _ttsReady = true);
-  }
-
-  /// The reader's chosen engine and voice, falling back to the app's language
-  /// when they have not chosen one — or when what they chose has gone.
-  Future<void> _applyVoice() async {
-    if (!mounted) return;
-    final choice = readTtsChoice(PrefService.of(context, listen: false));
-
-    if (await applyTtsChoice(_tts, choice) && choice.hasVoice) {
-      return;
-    }
-
-    final locale = Intl.shortLocale(Intl.getCurrentLocale());
-    final language = switch (locale) {
-      'zh' => 'zh-CN',
-      'nb' => 'nb-NO',
-      'pt' => 'pt-BR',
-      _ => locale.contains('_') ? locale.replaceAll('_', '-') : '$locale-${locale.toUpperCase()}',
-    };
-    try {
-      await _tts.setLanguage(language);
-    } catch (_) {
-      await _tts.setLanguage('en-US');
-    }
-    await _tts.setSpeechRate(choice.rate);
-  }
-
-  @override
-  void dispose() {
-    _tts.stop();
-    super.dispose();
   }
 
   Future<void> _load() async {
@@ -212,10 +163,13 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
     }
   }
 
-  Future<void> _toggleTts() async {
-    if (_speaking) {
-      await _tts.stop();
-      if (mounted) setState(() => _speaking = false);
+  /// True when what is being read aloud is this article, rather than one the
+  /// reader started earlier and left playing.
+  bool _isReadingThis(SpeechPlayback playback) => playback.speaking && playback.title == _post.title;
+
+  Future<void> _toggleTts(SpeechStore speech) async {
+    if (_isReadingThis(speech.state)) {
+      await speech.stop();
       return;
     }
 
@@ -228,14 +182,11 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
       return;
     }
 
-    // Android engines can choke on very long utterances; speak in chunks.
-    final chunks = _chunkForTts(text);
-    setState(() => _speaking = true);
-    for (final chunk in chunks) {
-      if (!mounted || !_speaking) break;
-      await _tts.speak(chunk);
-    }
-    if (mounted) setState(() => _speaking = false);
+    await speech.speak(
+      title: _post.title,
+      text: text,
+      choice: readTtsChoice(PrefService.of(context, listen: false)),
+    );
   }
 
   void _share() {
@@ -246,7 +197,8 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final canSpeak = _ttsReady && !_paywalled && !_empty && (_speakText?.trim().isNotEmpty ?? false);
+    final speech = context.read<SpeechStore>();
+    final canSpeak = !_paywalled && !_empty && (_speakText?.trim().isNotEmpty ?? false);
 
     return Scaffold(
       appBar: AppBar(
@@ -272,23 +224,30 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
               MaterialPageRoute(builder: (_) => SubstackArchiveScreen(publication: _post.publication)),
             ),
           ),
-          if (canSpeak || _speaking)
-            IconButton(
-              tooltip: _speaking
-                  ? L10n.of(context).plugin_substack_tts_stop
-                  : L10n.of(context).plugin_substack_tts_listen,
-              icon: Icon(_speaking ? Icons.stop_circle_outlined : Icons.record_voice_over_outlined),
-              onPressed: _toggleTts,
+          if (canSpeak)
+            ScopedBuilder<SpeechStore, SpeechPlayback>(
+              store: speech,
+              onState: (context, playback) {
+                final reading = _isReadingThis(playback);
+                return IconButton(
+                  tooltip: reading
+                      ? L10n.of(context).plugin_substack_tts_stop
+                      : L10n.of(context).plugin_substack_tts_listen,
+                  icon: Icon(reading ? Icons.stop_circle_outlined : Icons.record_voice_over_outlined),
+                  onPressed: () => _toggleTts(speech),
+                );
+              },
             ),
-          if (canSpeak || _speaking)
+          if (canSpeak)
             IconButton(
               tooltip: L10n.of(context).plugin_substack_tts_settings,
               icon: const Icon(Icons.tune),
               onPressed: () async {
-                if (await openTtsSettings(context, _tts)) {
-                  await _tts.stop();
-                  await _applyVoice();
-                  if (mounted) setState(() => _speaking = false);
+                // A new voice cannot be applied to an utterance already in
+                // flight, so what is being read stops rather than finishing in
+                // the voice that was just replaced.
+                if (await openTtsSettings(context, speech.tts)) {
+                  await speech.stop();
                 }
               },
             ),
@@ -382,22 +341,4 @@ class _PaywallPane extends StatelessWidget {
 String _cssColor(Color color) {
   final hex = color.toARGB32().toRadixString(16).padLeft(8, '0');
   return '#${hex.substring(2)}';
-}
-
-List<String> _chunkForTts(String text, {int maxChars = 3500}) {
-  if (text.length <= maxChars) return [text];
-
-  final chunks = <String>[];
-  var remaining = text;
-  while (remaining.length > maxChars) {
-    var splitAt = remaining.lastIndexOf('\n\n', maxChars);
-    if (splitAt < maxChars ~/ 2) {
-      splitAt = remaining.lastIndexOf('. ', maxChars);
-      if (splitAt < maxChars ~/ 2) splitAt = maxChars;
-    }
-    chunks.add(remaining.substring(0, splitAt).trim());
-    remaining = remaining.substring(splitAt).trimLeft();
-  }
-  if (remaining.isNotEmpty) chunks.add(remaining);
-  return chunks;
 }

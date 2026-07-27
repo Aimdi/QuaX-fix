@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Die Plugin-Liste konnte nicht geladen werden",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Angezeigt wird die zuletzt geladene Liste",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Wird vorgelesen",
+  "@speech_playing": {},
+  "speech_stop": "Stopp",
+  "@speech_stop": {}
 }

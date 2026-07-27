@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Klarte ikke å hente listen over programtillegg",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Viser den siste listen som kom inn",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Leser høyt",
+  "@speech_playing": {},
+  "speech_stop": "Stopp",
+  "@speech_stop": {}
 }

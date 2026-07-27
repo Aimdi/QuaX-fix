@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Seznam pluginů se nepodařilo načíst",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Zobrazuje se poslední načtený seznam",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Čte nahlas",
+  "@speech_playing": {},
+  "speech_stop": "Zastavit",
+  "@speech_stop": {}
 }

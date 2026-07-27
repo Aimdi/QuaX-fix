@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Не ўдалося атрымаць спіс плагінаў",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Паказваецца апошні атрыманы спіс",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Чытае ўслых",
+  "@speech_playing": {},
+  "speech_stop": "Спыніць",
+  "@speech_stop": {}
 }

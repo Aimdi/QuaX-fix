@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "플러그인 목록을 가져오지 못했습니다",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "마지막으로 받은 목록을 표시합니다",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "읽어 주는 중",
+  "@speech_playing": {},
+  "speech_stop": "중지",
+  "@speech_stop": {}
 }

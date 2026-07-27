@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Không lấy được danh sách plugin",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Đang hiển thị danh sách nhận được gần nhất",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Đang đọc to",
+  "@speech_playing": {},
+  "speech_stop": "Dừng",
+  "@speech_stop": {}
 }

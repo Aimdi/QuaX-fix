@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "प्लगइन सूची प्राप्त नहीं की जा सकी",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "पिछली प्राप्त सूची दिखाई जा रही है",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "ज़ोर से पढ़ा जा रहा है",
+  "@speech_playing": {},
+  "speech_stop": "रोकें",
+  "@speech_stop": {}
 }

@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "无法获取插件列表",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "正在显示上次获取到的列表",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "正在朗读",
+  "@speech_playing": {},
+  "speech_stop": "停止",
+  "@speech_stop": {}
 }

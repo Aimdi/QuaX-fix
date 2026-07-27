@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "No s'ha pogut obtenir la llista de connectors",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Es mostra la darrera llista rebuda",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Llegint en veu alta",
+  "@speech_playing": {},
+  "speech_stop": "Atura",
+  "@speech_stop": {}
 }

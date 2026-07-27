@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "The plugin list could not be fetched",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Showing the last list that arrived",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Reading aloud",
+  "@speech_playing": {},
+  "speech_stop": "Stop",
+  "@speech_stop": {}
 }

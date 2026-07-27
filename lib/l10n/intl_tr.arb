@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Eklenti listesi alınamadı",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Alınabilen son liste gösteriliyor",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Sesli okunuyor",
+  "@speech_playing": {},
+  "speech_stop": "Durdur",
+  "@speech_stop": {}
 }

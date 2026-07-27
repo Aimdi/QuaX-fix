@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Ne eblis akiri la liston de kromprogramoj",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Montriĝas la lasta ricevita listo",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Voĉlegado",
+  "@speech_playing": {},
+  "speech_stop": "Haltu",
+  "@speech_stop": {}
 }

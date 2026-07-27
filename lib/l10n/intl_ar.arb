@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "تعذّر جلب قائمة الإضافات",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "يتم عرض آخر قائمة تم جلبها",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "قراءة بصوت عالٍ",
+  "@speech_playing": {},
+  "speech_stop": "إيقاف",
+  "@speech_stop": {}
 }

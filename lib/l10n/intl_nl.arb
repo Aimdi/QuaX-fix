@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "De pluginlijst kon niet worden opgehaald",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "De laatst opgehaalde lijst wordt getoond",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Wordt voorgelezen",
+  "@speech_playing": {},
+  "speech_stop": "Stoppen",
+  "@speech_stop": {}
 }

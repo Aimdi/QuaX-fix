@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Nie ŭdalosia atrymać spis plahinaŭ",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Pakazvajecca apošni atrymany spis",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Čytaje ŭsłuch",
+  "@speech_playing": {},
+  "speech_stop": "Spynić",
+  "@speech_stop": {}
 }

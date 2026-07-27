@@ -65,6 +65,8 @@ import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_store.dart';
 import 'package:quax/plugins/reddit/reddit_subreddit_avatar.dart';
 import 'package:quax/plugins/stocks/stocks_store.dart';
+import 'package:quax/speech/speech_bar.dart';
+import 'package:quax/speech/speech_store.dart';
 
 Future checkForUpdates(context) async {
   Logger.root.info('Checking for updates');
@@ -422,6 +424,7 @@ Future<void> main() async {
     final redditSubreddits = RedditSubredditsStore(prefService);
     final redditFeed = RedditFeedStore(redditClient, redditSubreddits, prefService, auth: redditAuth);
     final stocksWatchlist = StocksWatchlistStore();
+    final speech = SpeechStore();
     final substackClient = SubstackClient();
     final substackPublications = SubstackPublicationsStore(prefService);
     final substackFeed = SubstackFeedStore(substackClient, substackPublications);
@@ -480,6 +483,7 @@ Future<void> main() async {
             Provider(create: (_) => redditSubreddits),
             Provider(create: (_) => redditFeed),
             Provider(create: (_) => stocksWatchlist),
+            Provider(create: (_) => speech),
             Provider(create: (_) => substackClient),
             Provider(create: (_) => substackPublications),
             Provider(create: (_) => substackFeed),
@@ -711,7 +715,10 @@ class _FritterAppState extends State<FritterApp> {
                     prefix: L10n.of(context).something_broke_in_fritter,
                   );
 
-                  return child ?? Container();
+                  // Reading aloud outlives the article it started in, so the
+                  // way to stop it has to be reachable from wherever the reader
+                  // has gone. Nothing is added while nothing is being read.
+                  return SpeechBarScaffold(child: child ?? Container());
                 },
               ),
             ),

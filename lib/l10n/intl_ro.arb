@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Lista de pluginuri nu a putut fi preluată",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "Se afișează ultima listă primită",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "Se citește cu voce tare",
+  "@speech_playing": {},
+  "speech_stop": "Oprește",
+  "@speech_stop": {}
 }

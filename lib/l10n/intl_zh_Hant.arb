@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "無法取得外掛清單",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "正在顯示上次取得的清單",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "正在朗讀",
+  "@speech_playing": {},
+  "speech_stop": "停止",
+  "@speech_stop": {}
 }

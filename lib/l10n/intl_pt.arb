@@ -1196,5 +1196,9 @@
   "plugin_catalogue_unavailable": "Não foi possível obter a lista de plugins",
   "@plugin_catalogue_unavailable": {},
   "plugin_catalogue_cached": "A mostrar a última lista recebida",
-  "@plugin_catalogue_cached": {}
+  "@plugin_catalogue_cached": {},
+  "speech_playing": "A ler em voz alta",
+  "@speech_playing": {},
+  "speech_stop": "Parar",
+  "@speech_stop": {}
 }
