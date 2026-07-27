@@ -301,8 +301,14 @@ const optionEndpointRegistryEnabled = 'api.endpoint_registry.enabled';
 const optionEndpointRegistryUrl = 'api.endpoint_registry.url';
 const optionEndpointRegistryCache = 'api.endpoint_registry.cache';
 const optionEndpointRegistryFetchedAt = 'api.endpoint_registry.fetched_at';
+/// The branch the published documents are read from.
+///
+/// Named once: both registries pointed at `master`, which this fork does not
+/// have, so every fetch 404'd and neither had ever been read.
+const githubPublishBranch = 'main';
+
 const defaultEndpointRegistryUrl =
-    'https://raw.githubusercontent.com/$githubRepo/master/endpoints.json';
+    'https://raw.githubusercontent.com/$githubRepo/$githubPublishBranch/endpoints.json';
 const Duration endpointRegistryTimeout = Duration(seconds: 10);
 
 // Plugin catalogue: decides which plugins the store offers, published the same
@@ -312,7 +318,7 @@ const optionPluginCatalogueUrl = 'plugin.catalogue.url';
 const optionPluginCatalogueCache = 'plugin.catalogue.cache';
 const optionPluginCatalogueFetchedAt = 'plugin.catalogue.fetched_at';
 const defaultPluginCatalogueUrl =
-    'https://raw.githubusercontent.com/$githubRepo/master/plugins.json';
+    'https://raw.githubusercontent.com/$githubRepo/$githubPublishBranch/plugins.json';
 
 // Offline read cache for threads and profile timelines (feed_group_chunk covers
 // group feeds). Short windows: these are re-read within a session far more

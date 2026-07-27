@@ -2,13 +2,13 @@ name: verify
 
 # The build in ci.yml proves the app compiles. This proves it is *correct*:
 # formatting, static analysis, unit tests and ARB integrity, on every pull
-# request rather than only after a push to master.
+# request rather than only after a push to main.
 on:
   workflow_dispatch:
   pull_request:
   push:
     branches:
-      - master
+      - main
       - main
 
 concurrency:

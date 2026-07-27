@@ -1,30 +1,44 @@
-## QuaX v4.12.0
+## QuaX-fix
 
-What's new in QuaX v4.12.0:
-  - 🔗 Added intent filters for fixupx.com URLs (#164) (by @uptivuptiz) <sup>[[view modified code]](https://github.com/teskann/quax/commit/8ccdcd2ee57708318127a9f832fd0f7c0077fa22)</sup>
-  - 📶🎬 You can now save data by customizing the video pre-fetching duration. ➡️ `Settings` > `Medias` > `Video prefetch duration` <sup>[[view modified code]](https://github.com/teskann/quax/commit/88057e0ed7bffc13828e329d21d3be10ccf6cbe9)</sup>
-  - 🎬 Improved video player stability and limited the number of GIFs that can be played simultaneously on a media grid to avoid lags and freezes <sup>[[view modified code]](https://github.com/teskann/quax/commit/5b2328ea83e4b61dc860d335471ad481f1f64f3c)</sup>
-  - 🔖📁 Introducing folders for saved posts ! Long press on the "save" button of a post to select a folder. <sup>[[view modified code]](https://github.com/teskann/quax/commit/6403a1ba157c892bd263e0f22abc610d45a62210)</sup>
-  - ❤️ You can now like posts ! Likes stay on your device. X cannot know what you like. You can find liked posts in the "Likes" folder of the *Saved* tab. (Fixed #143) <sup>[[view modified code]](https://github.com/teskann/quax/commit/8921f4024ff26804cdee9b4e3011a73135e6bb30)</sup>
-  - ⚙️ Split options to select the media quality for images and videos. Now they are independent <sup>[[view modified code]](https://github.com/teskann/quax/commit/4984b4e0a254b6839d0b8b0463faf5e8cccdffa5)</sup>
+A read-only fork of [QuaX](https://github.com/Teskann/QuaX). Same idea — read X
+without an account of X's choosing, keep what you follow on your own device —
+with the plugins, feeds and fixes below on top.
 
+### What's new
+
+**Stocks.** A tab of its own, off until you install it. A reel of price cards
+across the top, then each symbol at the size a market page gives it: the price
+large, the day's move beside it, the line drawn against the previous close, and
+the volume and the year's high and low underneath. Tickers are a subscription
+like any other, so they can join a group.
+
+**The ticker chart, readable.** Both axes are labelled, and dragging across the
+chart reports the price under your finger instead of only the latest one.
+Cashtags that are spoken one way and quoted another — `$SPX`, `$DAX`, `$BTC` —
+now find their symbol instead of charting as "no data".
+
+**Plugins are published, not just shipped.** The plugin store reads its list
+from `plugins.json` in this repository, so a plugin can be added or withdrawn
+without a new APK. Uninstalling one now deletes what it saved: its
+subscriptions, the group entries pointing at them, its cache on disk and its
+settings — including the Reddit sign-in and the Deepmarks signing key. Each
+installed plugin says what it is currently holding.
+
+**Substack.** A paid post that gives away its opening now shows that opening,
+with a note where the free part ends, instead of a lock over an article you were
+sent. Reading aloud lets you pick the engine and the voice, so an installed
+speech engine of your own is actually used.
+
+**Reddit.** The feed carries the same bar wherever it appears — sort, search,
+add a subreddit, manage them — rather than only in its own tab.
+
+**Links open inside the app** by default, instead of handing you to a browser.
 
 ---
 
-First download ? Click the button below to install it with Obtainium ! 👇
+First download? Install it with Obtainium 👇
 
-[![Get it on Obtainium](https://github.com/teskann/quax/blob/master/assets/readme/get-it-on-obtainium.png)](https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/Teskann/QuaX)
+[Add to Obtainium](https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/Aimdi/QuaX-fix)
 
-APK Certificate fingerprints:
-```text
-SHA1: B4:8C:12:75:81:4D:94:8D:84:00:32:D5:45:EE:06:A9:3E:0A:2D:BE
-SHA256: 5E:39:1A:AA:89:9A:0B:21:A5:29:6A:4C:26:DB:50:12:7E:B8:40:63:6A:2A:35:18:14:16:75:3F:AB:1C:17:C3
-```
-
----
-
-Missed an update ? See [full changelog](https://github.com/teskann/quax/blob/master/changelog.md) for more details.
-    
-🗨️ Got questions about QuaX ? Ask anything in the [Q&A](https://github.com/Teskann/QuaX/discussions/categories/q-a) section !
-
-👉 Read the [wiki](https://github.com/teskann/quax/blob/master/docs/QuaX.md) to learn more about the app and how it works.
+This fork is signed with its own key, so Android will not update an install of
+upstream QuaX in place — and upstream will not update this one. Pick one.
