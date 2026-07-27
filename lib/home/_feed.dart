@@ -8,6 +8,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/_feed_shell.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/group/group_screen.dart';
+import 'package:quax/plugins/reddit/reddit_actions.dart';
 import 'package:quax/plugins/reddit/reddit_feed_list.dart';
 
 typedef FeedTabTitleBuilder = String Function(BuildContext context);
@@ -81,6 +82,14 @@ class _FeedScreenState extends State<FeedScreen> {
         },
       ),
       actionsBuilder: (context) {
+        // Reddit brings its own bar: sorting, search and adding a subreddit are
+        // what this feed is steered with, and the generic feed actions steer
+        // nothing here. Its overflow carries the app settings so the one thing
+        // the shell would have contributed is not lost.
+        if (tab == FeedTab.reddit) {
+          return const [RedditFeedActions(showAppSettings: true)];
+        }
+
         final model = context.read<GroupModel>();
         return defaultGroupActions(
           context,
