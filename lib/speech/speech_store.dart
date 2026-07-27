@@ -36,13 +36,12 @@ class SpeechPlayback {
 class SpeechStore extends Store<SpeechPlayback> {
   final FlutterTts _tts;
 
-  /// Long text is spoken in pieces: the platform silently truncates a very long
-  /// utterance. Held so [stop] can abandon what has not been said yet.
-  List<String> _queue = const [];
-  int _spoken = 0;
-
-  /// Bumped every time a new reading starts, so a chunk loop belonging to the
-  /// previous one stops rather than talking over its successor.
+  /// Bumped every time a reading starts or is stopped.
+  ///
+  /// Long text is spoken in pieces, because the platform silently truncates a
+  /// very long utterance, and the loop feeding those pieces is what has to be
+  /// called off. It checks this between chunks, so a loop belonging to an
+  /// abandoned reading stops rather than talking over its successor.
   int _generation = 0;
 
   SpeechStore({FlutterTts? tts}) : _tts = tts ?? FlutterTts(), super(SpeechPlayback.idle) {
@@ -51,15 +50,11 @@ class SpeechStore extends Store<SpeechPlayback> {
     _tts.setErrorHandler((_) => _finished());
   }
 
+  /// Exposed for the voice picker, which has to ask the platform what it can
+  /// speak with — and there is only one engine, this one.
   FlutterTts get tts => _tts;
 
-  bool get isSpeaking => state.speaking;
-
-  void _finished() {
-    _queue = const [];
-    _spoken = 0;
-    update(SpeechPlayback.idle);
-  }
+  void _finished() => update(SpeechPlayback.idle);
 
   /// Reads [text] aloud, replacing whatever was being read.
   Future<void> speak({required String title, required String text, required TtsChoice choice}) async {
@@ -73,8 +68,6 @@ class SpeechStore extends Store<SpeechPlayback> {
     await _applyVoice(choice);
 
     final generation = ++_generation;
-    _queue = chunks;
-    _spoken = 0;
     update(SpeechPlayback(title: title, speaking: true));
 
     for (final chunk in chunks) {
@@ -82,7 +75,6 @@ class SpeechStore extends Store<SpeechPlayback> {
         return;
       }
       await _tts.speak(chunk);
-      _spoken++;
     }
 
     if (generation == _generation) {
@@ -92,8 +84,6 @@ class SpeechStore extends Store<SpeechPlayback> {
 
   Future<void> stop() async {
     _generation++;
-    _queue = const [];
-    _spoken = 0;
     if (state.speaking) {
       update(SpeechPlayback.idle);
     }
