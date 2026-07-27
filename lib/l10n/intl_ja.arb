@@ -1138,5 +1138,11 @@
   "ticker_range_year": "1年",
   "@ticker_range_year": {},
   "ticker_range_five_years": "5年",
-  "@ticker_range_five_years": {}
+  "@ticker_range_five_years": {},
+  "plugin_substack_preview_ends": "この記事の無料部分はここまでです。",
+  "@plugin_substack_preview_ends": {},
+  "plugin_substack_continue_on_site": "発行元のサイトで続きを読む",
+  "@plugin_substack_continue_on_site": {},
+  "plugin_substack_preview_badge": "試し読み",
+  "@plugin_substack_preview_badge": {}
 }

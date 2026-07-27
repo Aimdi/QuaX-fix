@@ -123,6 +123,9 @@ String wrapSubstackHtml({
   String? publicationName,
   double fontSizePx = 18,
   double lineHeight = 1.7,
+  String? footer,
+  String? footerLink,
+  String? footerLinkLabel,
 }) {
   final cleanBody = sanitizeSubstackBodyHtml(body);
   final meta = [
@@ -255,6 +258,14 @@ String wrapSubstackHtml({
   .twitter-embed, .youtube-wrap, .youtube-inner {
     margin: 1.2em 0;
   }
+  .preview-end {
+    margin-top: 2em;
+    padding-top: 1em;
+    border-top: 1px solid $rule;
+    color: $muted;
+    font-size: 0.9em;
+  }
+  .preview-end p { margin: 0.4em 0; }
 </style>
 </head>
 <body>
@@ -263,10 +274,27 @@ String wrapSubstackHtml({
     ${meta.isEmpty ? '' : '<div class="meta">$meta</div>'}
     ${subtitle == null || subtitle.isEmpty ? '' : '<p class="subtitle">${_escape(subtitle)}</p>'}
     <div class="content">$cleanBody</div>
+    ${_footerHtml(footer, footerLink, footerLinkLabel)}
   </article>
 </body>
 </html>
 ''';
+}
+
+/// A note under the article saying where the free part stops.
+///
+/// Part of the page rather than a widget beneath it, so it scrolls with the
+/// text and is not mistaken for a control of the app's.
+String _footerHtml(String? text, String? link, String? linkLabel) {
+  if (text == null || text.isEmpty) {
+    return '';
+  }
+
+  final action = (link != null && link.isNotEmpty && linkLabel != null && linkLabel.isNotEmpty)
+      ? '<p><a href="${_escape(link)}">${_escape(linkLabel)}</a></p>'
+      : '';
+
+  return '<div class="preview-end"><p>${_escape(text)}</p>$action</div>';
 }
 
 String _escape(String value) => value

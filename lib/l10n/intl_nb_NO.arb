@@ -1138,5 +1138,11 @@
   "ticker_range_year": "1år",
   "@ticker_range_year": {},
   "ticker_range_five_years": "5år",
-  "@ticker_range_five_years": {}
+  "@ticker_range_five_years": {},
+  "plugin_substack_preview_ends": "Her slutter den gratis delen av artikkelen.",
+  "@plugin_substack_preview_ends": {},
+  "plugin_substack_continue_on_site": "Fortsett på utgiverens nettsted",
+  "@plugin_substack_continue_on_site": {},
+  "plugin_substack_preview_badge": "Smakebit",
+  "@plugin_substack_preview_badge": {}
 }

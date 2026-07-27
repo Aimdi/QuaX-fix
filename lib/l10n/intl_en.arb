@@ -1138,5 +1138,11 @@
   "ticker_range_year": "1Y",
   "@ticker_range_year": {},
   "ticker_range_five_years": "5Y",
-  "@ticker_range_five_years": {}
+  "@ticker_range_five_years": {},
+  "plugin_substack_preview_ends": "The free part of this article ends here.",
+  "@plugin_substack_preview_ends": {},
+  "plugin_substack_continue_on_site": "Continue on the publication’s site",
+  "@plugin_substack_continue_on_site": {},
+  "plugin_substack_preview_badge": "Preview",
+  "@plugin_substack_preview_badge": {}
 }

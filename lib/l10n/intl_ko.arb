@@ -1138,5 +1138,11 @@
   "ticker_range_year": "1년",
   "@ticker_range_year": {},
   "ticker_range_five_years": "5년",
-  "@ticker_range_five_years": {}
+  "@ticker_range_five_years": {},
+  "plugin_substack_preview_ends": "이 글의 무료 공개 부분은 여기까지입니다.",
+  "@plugin_substack_preview_ends": {},
+  "plugin_substack_continue_on_site": "발행처 사이트에서 계속 읽기",
+  "@plugin_substack_continue_on_site": {},
+  "plugin_substack_preview_badge": "미리보기",
+  "@plugin_substack_preview_badge": {}
 }

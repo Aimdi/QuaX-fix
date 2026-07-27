@@ -1138,5 +1138,11 @@
   "ticker_range_year": "1व",
   "@ticker_range_year": {},
   "ticker_range_five_years": "5व",
-  "@ticker_range_five_years": {}
+  "@ticker_range_five_years": {},
+  "plugin_substack_preview_ends": "इस लेख का मुफ़्त हिस्सा यहीं समाप्त होता है।",
+  "@plugin_substack_preview_ends": {},
+  "plugin_substack_continue_on_site": "प्रकाशन की साइट पर पढ़ना जारी रखें",
+  "@plugin_substack_continue_on_site": {},
+  "plugin_substack_preview_badge": "झलक",
+  "@plugin_substack_preview_badge": {}
 }

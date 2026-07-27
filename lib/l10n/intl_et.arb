@@ -1138,5 +1138,11 @@
   "ticker_range_year": "1a",
   "@ticker_range_year": {},
   "ticker_range_five_years": "5a",
-  "@ticker_range_five_years": {}
+  "@ticker_range_five_years": {},
+  "plugin_substack_preview_ends": "Siin lõpeb artikli tasuta osa.",
+  "@plugin_substack_preview_ends": {},
+  "plugin_substack_continue_on_site": "Jätka väljaande veebilehel",
+  "@plugin_substack_continue_on_site": {},
+  "plugin_substack_preview_badge": "Eelvaade",
+  "@plugin_substack_preview_badge": {}
 }

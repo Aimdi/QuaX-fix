@@ -29,6 +29,10 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
   var _loading = true;
   var _empty = false;
   var _paywalled = false;
+
+  /// True when what is on screen is the free opening of a paid post rather than
+  /// the whole thing.
+  var _partial = false;
   var _speaking = false;
   var _ttsReady = false;
   String? _speakText;
@@ -90,6 +94,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
       if (_post.canonicalUrl != null) {
         _error = null;
         _paywalled = false;
+        _partial = false;
         _empty = false;
         _speakText = null;
         _controller.setNavigationDelegate(NavigationDelegate(
@@ -108,9 +113,17 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
   }
 
   Future<void> _showContent(SubstackPost post) async {
-    if (post.isPaywalled) {
+    final html = post.bodyHtml;
+    final hasBody = html != null && html.trim().isNotEmpty;
+
+    // A paid post usually arrives with its opening paragraphs — the part the
+    // publication chose to give away. Refusing to render any of it because the
+    // post is marked paid threw away what had already been sent, and left a
+    // lock icon where there was something to read.
+    if (post.isPaywalled && !hasBody) {
       setState(() {
         _paywalled = true;
+        _partial = false;
         _empty = false;
         _loading = false;
         _speakText = null;
@@ -118,8 +131,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
       return;
     }
 
-    final html = post.bodyHtml;
-    if (html != null && html.trim().isNotEmpty) {
+    if (hasBody) {
       _paywalled = false;
       _empty = false;
       _speakText = buildSubstackSpeakText(
@@ -129,6 +141,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
         publicationName: post.publicationName,
         bodyHtml: html,
       );
+      _partial = post.isPaywalled;
       _controller.setNavigationDelegate(NavigationDelegate(
         onPageFinished: (_) {
           if (mounted) setState(() => _loading = false);
@@ -148,6 +161,11 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
           muted: _cssColor(scheme.onSurfaceVariant),
           link: _cssColor(scheme.primary),
           isDark: isDark,
+          // Says where the free part stops, so the end of the preview does not
+          // read as the end of the article.
+          footer: post.isPaywalled ? L10n.of(context).plugin_substack_preview_ends : null,
+          footerLink: post.isPaywalled ? post.canonicalUrl : null,
+          footerLinkLabel: post.isPaywalled ? L10n.of(context).plugin_substack_continue_on_site : null,
         ),
       );
       return;
@@ -155,6 +173,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
 
     if (post.canonicalUrl != null) {
       _paywalled = false;
+      _partial = false;
       _empty = false;
       _speakText = null;
       _controller.setNavigationDelegate(NavigationDelegate(
@@ -171,6 +190,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
         _loading = false;
         _empty = true;
         _paywalled = false;
+        _partial = false;
         _speakText = null;
       });
     }
@@ -216,6 +236,18 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
       appBar: AppBar(
         title: Text(_post.title, maxLines: 1, overflow: TextOverflow.ellipsis),
         actions: [
+          // Says up front that this is the opening of a paid post, so the
+          // reader is not surprised when it stops.
+          if (_partial)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+              child: Chip(
+                label: Text(L10n.of(context).plugin_substack_preview_badge),
+                labelStyle: Theme.of(context).textTheme.labelSmall,
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+              ),
+            ),
           if (canSpeak || _speaking)
             IconButton(
               tooltip: _speaking

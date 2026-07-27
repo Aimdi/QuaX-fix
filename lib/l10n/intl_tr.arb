@@ -1138,5 +1138,11 @@
   "ticker_range_year": "1Y",
   "@ticker_range_year": {},
   "ticker_range_five_years": "5Y",
-  "@ticker_range_five_years": {}
+  "@ticker_range_five_years": {},
+  "plugin_substack_preview_ends": "Bu yazının ücretsiz bölümü burada bitiyor.",
+  "@plugin_substack_preview_ends": {},
+  "plugin_substack_continue_on_site": "Yayının sitesinde devam et",
+  "@plugin_substack_continue_on_site": {},
+  "plugin_substack_preview_badge": "Önizleme",
+  "@plugin_substack_preview_badge": {}
 }
