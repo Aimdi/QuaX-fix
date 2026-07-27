@@ -19,12 +19,13 @@ The uploaded `bpc.crx` is **Bypass Paywalls Clean** 4.4.0.0
 
 ## In-app engine (default)
 
-1. Claim outbound links whose host is in `bpcSupportedDomains`.
-2. Look up `assets/bpc/site_rules.json` (parent-domain walk).
-3. Open `InAppWebView` on the **original** URL with rule UA / referer / cookie clear.
-4. Inject, in order: runtime shim → purify → `contentScript.js` → locale `cs_local` → generic unhide.
-5. On load start/stop, deliver `{msg: "bg2cs", data: …}` so `cs_default` and `run_custom` run.
-6. Answer content-script `sendMessage` calls (archive fetch, cookie clear, reload) from Dart.
+1. When the plugin is enabled, claim **all** external http(s) links except X/Twitter hosts.
+2. Resolve redirects first (so `ft.trib.al/…` becomes `ft.com/…`) before matching rules.
+3. Look up `assets/bpc/site_rules.json` (parent-domain walk). Unknown hosts still open in the WebView without site-specific rules.
+4. Open `InAppWebView` on the **resolved** URL with rule UA / referer / cookie clear.
+5. Inject, in order: runtime shim → purify → `contentScript.js` → locale `cs_local` → generic unhide.
+6. On load start/stop, deliver `{msg: "bg2cs", data: …}` so `cs_default` and `run_custom` run; re-match the site rule if the host changes.
+7. Answer content-script `sendMessage` calls (archive fetch, cookie clear, reload) from Dart.
 
 Locale bundle selection mirrors `background.js` (`bpc_cs_locale.dart`).
 

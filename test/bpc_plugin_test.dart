@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:quax/plugins/bpc/bpc_cs_locale.dart';
 import 'package:quax/plugins/bpc/bpc_domains.dart';
 import 'package:quax/plugins/bpc/bpc_links.dart';
@@ -8,6 +10,50 @@ import 'package:quax/plugins/bpc/bpc_strategy.dart';
 import 'package:quax/plugins/plugin_registry.dart';
 
 void main() {
+  group('isBpcClaimableUrl', () {
+    test('claims any external http(s) host', () {
+      expect(isBpcClaimableUrl('https://ft.trib.al/6142iVp'), isTrue);
+      expect(isBpcClaimableUrl('https://example.com/post'), isTrue);
+      expect(isBpcClaimableUrl('https://www.ft.com/content/abc'), isTrue);
+    });
+
+    test('skips X hosts and non-http schemes', () {
+      expect(isBpcClaimableUrl('https://x.com/someone/status/1'), isFalse);
+      expect(isBpcClaimableUrl('https://twitter.com/someone'), isFalse);
+      expect(isBpcClaimableUrl('mailto:editor@nytimes.com'), isFalse);
+    });
+  });
+
+  group('resolveBpcArticleUrl', () {
+    test('leaves known BPC hosts alone without a network hop', () async {
+      final client = MockClient((_) async => fail('should not fetch'));
+      final resolved = await resolveBpcArticleUrl(
+        'https://www.ft.com/content/abc',
+        client: client,
+      );
+      expect(resolved, 'https://www.ft.com/content/abc');
+    });
+
+    test('follows short-link redirects to the article host', () async {
+      final client = MockClient((request) async {
+        if (request.url.host == 'ft.trib.al') {
+          return http.Response(
+            '',
+            302,
+            headers: {'location': 'https://www.ft.com/content/abc'},
+          );
+        }
+        return http.Response('ok', 200);
+      });
+      final resolved = await resolveBpcArticleUrl(
+        'https://ft.trib.al/6142iVp',
+        client: client,
+      );
+      expect(resolved, 'https://www.ft.com/content/abc');
+      expect(isBpcSupportedUrl(resolved), isTrue);
+    });
+  });
+
   group('isBpcSupportedUrl', () {
     test('matches listed hosts and www variants', () {
       expect(isBpcSupportedUrl('https://www.nytimes.com/2024/01/01/world/example.html'), isTrue);

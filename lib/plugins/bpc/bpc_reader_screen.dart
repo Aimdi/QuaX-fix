@@ -30,8 +30,10 @@ class BpcReaderScreen extends StatefulWidget {
 
 class _BpcReaderScreenState extends State<BpcReaderScreen> {
   InAppWebViewController? _controller;
+  BpcRuleBook? _book;
   BpcSiteRule? _rule;
   List<UserScript> _userScripts = const [];
+  late String _articleUrl;
   var _loading = true;
   var _ready = false;
   String? _error;
@@ -42,16 +44,18 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
   @override
   void initState() {
     super.initState();
+    _articleUrl = widget.articleUrl;
     _prepare();
   }
 
   Future<void> _prepare() async {
     try {
       final book = await BpcRuleBook.load();
-      final rule = book.ruleForUrl(widget.articleUrl);
-      final scripts = _useEngine ? await _loadUserScripts() : <UserScript>[];
+      final rule = book.ruleForUrl(_articleUrl);
+      final scripts = _useEngine ? await _loadUserScripts(_articleUrl) : <UserScript>[];
       if (!mounted) return;
       setState(() {
+        _book = book;
         _rule = rule;
         _userScripts = scripts;
         _ready = true;
@@ -65,11 +69,22 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
     }
   }
 
-  Future<List<UserScript>> _loadUserScripts() async {
+  Future<void> _syncRuleFor(String url) async {
+    final book = _book;
+    if (book == null || !_useEngine) return;
+    final next = book.ruleForUrl(url);
+    if (next?.domain == _rule?.domain && next?.blockRegex == _rule?.blockRegex) {
+      return;
+    }
+    if (!mounted) return;
+    setState(() => _rule = next);
+  }
+
+  Future<List<UserScript>> _loadUserScripts(String articleUrl) async {
     final shim = await rootBundle.loadString('assets/bpc/cs/runtime_shim.js');
     final purify = await rootBundle.loadString('assets/bpc/cs/purify.min.js');
     final content = await rootBundle.loadString('assets/bpc/cs/contentScript.js');
-    final local = await rootBundle.loadString(bpcCsLocalAssetFor(widget.articleUrl));
+    final local = await rootBundle.loadString(bpcCsLocalAssetFor(articleUrl));
     final unhide = await rootBundle.loadString('assets/bpc/unhide.js');
 
     // document_start: beat paywall scripts that our interceptor may miss.
@@ -167,7 +182,7 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
       final payload = jsonEncode({
         'msg': 'showExtSrc',
         'data': {
-          'url': widget.articleUrl,
+          'url': _articleUrl,
           'url_src': url,
           'html': response.body,
           'selector': data['selector'],
@@ -258,12 +273,12 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
           IconButton(
             tooltip: l10n.plugin_bpc_open_original,
             icon: const Icon(Icons.open_in_browser),
-            onPressed: () => openUri(context, widget.articleUrl),
+            onPressed: () => openUri(context, _articleUrl),
           ),
           IconButton(
             tooltip: l10n.share_link,
             icon: const Icon(Icons.share_outlined),
-            onPressed: () => SharePlus.instance.share(ShareParams(text: widget.articleUrl)),
+            onPressed: () => SharePlus.instance.share(ShareParams(text: _articleUrl)),
           ),
         ],
       ),
@@ -275,7 +290,7 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
                   children: [
                     InAppWebView(
                       initialUrlRequest: URLRequest(
-                        url: WebUri(bpcReaderUri(widget.articleUrl, widget.strategy).toString()),
+                        url: WebUri(bpcReaderUri(_articleUrl, widget.strategy).toString()),
                         headers: _headers,
                       ),
                       initialSettings: InAppWebViewSettings(
@@ -300,10 +315,16 @@ class _BpcReaderScreenState extends State<BpcReaderScreen> {
                       },
                       shouldInterceptRequest: _intercept,
                       onLoadStart: (controller, url) async {
+                        if (url != null) {
+                          await _syncRuleFor(url.toString());
+                        }
                         if (mounted) setState(() => _loading = true);
                         await _deliverBg2cs(controller);
                       },
                       onLoadStop: (controller, url) async {
+                        if (url != null) {
+                          await _syncRuleFor(url.toString());
+                        }
                         await _deliverBg2cs(controller);
                         if (mounted) setState(() => _loading = false);
                       },

@@ -13,9 +13,9 @@ import 'package:quax/plugins/substack/substack_store.dart';
 /// Opens [url] inside QuaX when an enabled plugin can read it, returning true
 /// when it handled the link. Callers fall back to the browser on false.
 ///
-/// Substack is tried first (specific post URLs). Bypass Paywalls Clean claims
-/// known news domains next so a tweet's article link opens through the chosen
-/// bypass strategy instead of the paywalled page.
+/// Substack is tried first (specific post URLs). When Bypass Paywalls is on,
+/// every other external http(s) link opens in the in-app reader (short links
+/// are resolved first so site rules can match).
 Future<bool> openWithPlugins(BuildContext context, String url) async {
   if (await _openSubstack(context, url)) {
     return true;
@@ -57,7 +57,17 @@ Future<bool> _openBpc(BuildContext context, String url) async {
   if (prefs.get(optionPluginBpcEnabled) != true) {
     return false;
   }
-  if (!isBpcSupportedUrl(url)) {
+  if (!isBpcClaimableUrl(url)) {
+    return false;
+  }
+
+  // Resolve shorteners (ft.trib.al → ft.com) before deciding; if we land on X,
+  // leave the link to the browser / deep-link path.
+  final resolved = await resolveBpcArticleUrl(url);
+  if (!isBpcClaimableUrl(resolved)) {
+    return false;
+  }
+  if (!context.mounted) {
     return false;
   }
 
@@ -65,7 +75,7 @@ Future<bool> _openBpc(BuildContext context, String url) async {
   await Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (_) => BpcReaderScreen(articleUrl: url, strategy: strategy),
+      builder: (_) => BpcReaderScreen(articleUrl: resolved, strategy: strategy),
     ),
   );
   return true;
