@@ -1,0 +1,7 @@
+Bypass Paywalls Clean site list
+Copyright (c) 2020, magnolia1234
+Licensed under the MIT License.
+
+The domains in bpc_domains.dart were extracted from Bypass Paywalls Clean
+4.4.0.0 (sites.js, custom/sites_custom.json, sites_updated.json). QuaX does
+not ship or execute the extension's background or content scripts.
