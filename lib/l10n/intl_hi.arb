@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "सुनें",
   "plugin_substack_tts_stop": "रोकें",
-  "plugin_substack_tts_unavailable": "इस पोस्ट में ज़ोर से पढ़ने के लिए कुछ नहीं है",
+  "plugin_substack_tts_unavailable": "इस डिवाइस पर कोई वाक् इंजन इंस्टॉल नहीं है",
   "plugin_substack_unfollow": "अनफ़ॉलो करें",
   "popular": "लोकप्रिय",
   "popular_feed_description": "सबसे नई के बजाय सबसे लोकप्रिय पोस्ट पहले दिखाएँ",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "प्रकाशन की साइट पर पढ़ना जारी रखें",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "झलक",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "आवाज़ सेटिंग",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "वाक् इंजन",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "आवाज़",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "गति",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "सिस्टम डिफ़ॉल्ट",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "प्रकाशन",
+  "@plugin_substack_publication": {}
 }

@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Слухаць",
   "plugin_substack_tts_stop": "Спыніць",
-  "plugin_substack_tts_unavailable": "Няма чаго чытаць услых для гэтага паста",
+  "plugin_substack_tts_unavailable": "На гэтай прыладзе няма рухавіка маўлення",
   "plugin_substack_unfollow": "Адпісацца",
   "popular": "Папулярныя",
   "popular_feed_description": "Паказваць спачатку самыя папулярныя твіты замест самых новых",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "Працягнуць на сайце выдання",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "Урывак",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "Налады голасу",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "Рухавік маўлення",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "Голас",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "Хуткасць",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "Сістэмны",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "Выданне",
+  "@plugin_substack_publication": {}
 }

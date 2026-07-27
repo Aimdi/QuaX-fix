@@ -75,6 +75,13 @@ const optionPluginRedditShowTab = 'plugin.reddit.show_tab';
 const optionPluginRedditSort = 'plugin.reddit.sort';
 
 const pluginIdSubstack = 'substack';
+/// Reading aloud: which engine, which voice, how fast. Shared rather than
+/// per-plugin — a reader picks a voice once, not once per source.
+const optionTtsEngine = 'tts.engine';
+const optionTtsVoiceName = 'tts.voice_name';
+const optionTtsVoiceLocale = 'tts.voice_locale';
+const optionTtsRate = 'tts.rate';
+
 const optionPluginSubstackEnabled = 'plugin.substack.enabled';
 const optionPluginSubstackShowTab = 'plugin.substack.show_tab';
 const optionPluginSubstackPublications = 'plugin.substack.publications';

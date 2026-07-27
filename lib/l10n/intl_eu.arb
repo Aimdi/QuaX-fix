@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Entzun",
   "plugin_substack_tts_stop": "Gelditu",
-  "plugin_substack_tts_unavailable": "Mezu honek ez du ozen irakurtzeko edukirik",
+  "plugin_substack_tts_unavailable": "Gailu honek ez du ahots-motorrik",
   "plugin_substack_unfollow": "Jarraitzeari utzi",
   "popular": "Ezagunak",
   "popular_feed_description": "Erakutsi lehenik txio ezagunenak, berrienak beharrean",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "Jarraitu argitalpenaren gunean",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "Aurrebista",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "Ahots-ezarpenak",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "Ahots-motorra",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "Ahotsa",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "Abiadura",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "Sistemaren lehenetsia",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "Argitalpena",
+  "@plugin_substack_publication": {}
 }

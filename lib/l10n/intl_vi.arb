@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Nghe",
   "plugin_substack_tts_stop": "Dừng",
-  "plugin_substack_tts_unavailable": "Không có nội dung để đọc to cho bài này",
+  "plugin_substack_tts_unavailable": "Thiết bị này chưa cài bộ đọc nào",
   "plugin_substack_unfollow": "Bỏ theo dõi",
   "popular": "Phổ biến",
   "popular_feed_description": "Hiển thị bài viết phổ biến nhất trước thay vì mới nhất",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "Đọc tiếp trên trang của tác giả",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "Xem trước",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "Cài đặt giọng đọc",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "Bộ đọc",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "Giọng",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "Tốc độ",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "Mặc định hệ thống",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "Ấn phẩm",
+  "@plugin_substack_publication": {}
 }

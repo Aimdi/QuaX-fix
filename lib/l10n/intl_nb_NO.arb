@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Lytt",
   "plugin_substack_tts_stop": "Stopp",
-  "plugin_substack_tts_unavailable": "Ingenting å lese opp for dette innlegget",
+  "plugin_substack_tts_unavailable": "Ingen talemotor er installert på denne enheten",
   "plugin_substack_unfollow": "Avfølg",
   "popular": "Populære",
   "popular_feed_description": "Vis de mest populære tweetene først i stedet for de nyeste",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "Fortsett på utgiverens nettsted",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "Smakebit",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "Stemmeinnstillinger",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "Talemotor",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "Stemme",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "Hastighet",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "Systemstandard",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "Publikasjon",
+  "@plugin_substack_publication": {}
 }

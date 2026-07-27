@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Слушать",
   "plugin_substack_tts_stop": "Остановить",
-  "plugin_substack_tts_unavailable": "Нечего читать вслух для этого поста",
+  "plugin_substack_tts_unavailable": "На этом устройстве нет синтезатора речи",
   "plugin_substack_unfollow": "Отписаться",
   "popular": "Популярные",
   "popular_feed_description": "Показывать сначала самые популярные твиты вместо самых новых",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "Продолжить на сайте издания",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "Фрагмент",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "Настройки голоса",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "Синтезатор речи",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "Голос",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "Скорость",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "Системный по умолчанию",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "Издание",
+  "@plugin_substack_publication": {}
 }

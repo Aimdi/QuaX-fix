@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "朗读",
   "plugin_substack_tts_stop": "停止朗读",
-  "plugin_substack_tts_unavailable": "这篇文章没有可朗读的内容",
+  "plugin_substack_tts_unavailable": "此设备未安装语音引擎",
   "plugin_substack_unfollow": "取消关注",
   "popular": "热门",
   "popular_feed_description": "优先显示最热门的推文而不是最新的",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "在原站继续阅读",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "试读",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "语音设置",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "语音引擎",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "语音",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "速度",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "系统默认",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "刊物",
+  "@plugin_substack_publication": {}
 }

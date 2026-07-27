@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Beluisteren",
   "plugin_substack_tts_stop": "Stoppen",
-  "plugin_substack_tts_unavailable": "Niets om voor te lezen bij dit bericht",
+  "plugin_substack_tts_unavailable": "Op dit apparaat is geen spraakmodule geïnstalleerd",
   "plugin_substack_unfollow": "Ontvolgen",
   "popular": "Populair",
   "popular_feed_description": "Toon eerst de populairste tweets in plaats van de nieuwste",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "Verder lezen op de site van de publicatie",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "Fragment",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "Steminstellingen",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "Spraakmodule",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "Stem",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "Snelheid",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "Systeemstandaard",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "Publicatie",
+  "@plugin_substack_publication": {}
 }

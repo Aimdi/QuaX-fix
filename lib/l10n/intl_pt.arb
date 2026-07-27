@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Ouvir",
   "plugin_substack_tts_stop": "Parar de ouvir",
-  "plugin_substack_tts_unavailable": "Nada para ler em voz alta nesta publicação",
+  "plugin_substack_tts_unavailable": "Este dispositivo não tem nenhum motor de voz",
   "plugin_substack_unfollow": "Deixar de seguir",
   "popular": "Populares",
   "popular_feed_description": "Mostra primeiro os tweets mais populares em vez dos mais recentes",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "Continuar no site da publicação",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "Excerto",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "Definições de voz",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "Motor de voz",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "Voz",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "Velocidade",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "Predefinição do sistema",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "Publicação",
+  "@plugin_substack_publication": {}
 }

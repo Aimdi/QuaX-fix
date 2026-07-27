@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:pref/pref.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/substack/substack_client.dart';
 import 'package:quax/plugins/substack/substack_html.dart';
 import 'package:quax/plugins/substack/substack_models.dart';
+import 'package:quax/plugins/substack/substack_archive_screen.dart';
 import 'package:quax/plugins/substack/substack_store.dart';
+import 'package:quax/plugins/substack/substack_tts_settings.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/utils/urls.dart';
 import 'package:share_plus/share_plus.dart';
@@ -59,6 +62,20 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
       if (mounted) setState(() => _speaking = false);
     });
 
+    await _applyVoice();
+    if (mounted) setState(() => _ttsReady = true);
+  }
+
+  /// The reader's chosen engine and voice, falling back to the app's language
+  /// when they have not chosen one — or when what they chose has gone.
+  Future<void> _applyVoice() async {
+    if (!mounted) return;
+    final choice = readTtsChoice(PrefService.of(context, listen: false));
+
+    if (await applyTtsChoice(_tts, choice) && choice.hasVoice) {
+      return;
+    }
+
     final locale = Intl.shortLocale(Intl.getCurrentLocale());
     final language = switch (locale) {
       'zh' => 'zh-CN',
@@ -71,8 +88,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
     } catch (_) {
       await _tts.setLanguage('en-US');
     }
-    await _tts.setSpeechRate(0.45);
-    if (mounted) setState(() => _ttsReady = true);
+    await _tts.setSpeechRate(choice.rate);
   }
 
   @override
@@ -248,6 +264,14 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
                 padding: EdgeInsets.zero,
               ),
             ),
+          IconButton(
+            tooltip: L10n.of(context).plugin_substack_publication,
+            icon: const Icon(Icons.newspaper_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => SubstackArchiveScreen(publication: _post.publication)),
+            ),
+          ),
           if (canSpeak || _speaking)
             IconButton(
               tooltip: _speaking
@@ -255,6 +279,18 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
                   : L10n.of(context).plugin_substack_tts_listen,
               icon: Icon(_speaking ? Icons.stop_circle_outlined : Icons.record_voice_over_outlined),
               onPressed: _toggleTts,
+            ),
+          if (canSpeak || _speaking)
+            IconButton(
+              tooltip: L10n.of(context).plugin_substack_tts_settings,
+              icon: const Icon(Icons.tune),
+              onPressed: () async {
+                if (await openTtsSettings(context, _tts)) {
+                  await _tts.stop();
+                  await _applyVoice();
+                  if (mounted) setState(() => _speaking = false);
+                }
+              },
             ),
           if (_post.canonicalUrl != null) ...[
             IconButton(

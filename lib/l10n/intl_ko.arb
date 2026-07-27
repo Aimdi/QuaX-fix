@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "듣기",
   "plugin_substack_tts_stop": "중지",
-  "plugin_substack_tts_unavailable": "이 글에 읽어 줄 내용이 없습니다",
+  "plugin_substack_tts_unavailable": "이 기기에 설치된 음성 엔진이 없습니다",
   "plugin_substack_unfollow": "팔로우 취소",
   "popular": "인기",
   "popular_feed_description": "최신 트윗 대신 인기 트윗을 먼저 표시합니다",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "발행처 사이트에서 계속 읽기",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "미리보기",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "음성 설정",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "음성 엔진",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "음성",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "속도",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "시스템 기본값",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "발행처",
+  "@plugin_substack_publication": {}
 }

@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Aŭskulti",
   "plugin_substack_tts_stop": "Haltigi",
-  "plugin_substack_tts_unavailable": "Nenio legebla laŭte por tiu afiŝo",
+  "plugin_substack_tts_unavailable": "Ĉi tiu aparato havas neniun parolmotoron",
   "plugin_substack_unfollow": "Malsekvi",
   "popular": "Popularaj",
   "popular_feed_description": "Montri unue la plej popularajn pepojn anstataŭ la plej novajn",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "Daŭrigi ĉe la retejo de la eldonejo",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "Antaŭrigardo",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "Voĉaj agordoj",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "Parolmotoro",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "Voĉo",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "Rapido",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "Sistema defaŭlto",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "Eldonejo",
+  "@plugin_substack_publication": {}
 }

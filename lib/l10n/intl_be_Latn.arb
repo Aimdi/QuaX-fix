@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Sluchać",
   "plugin_substack_tts_stop": "Spynić",
-  "plugin_substack_tts_unavailable": "Niama čaho čytać usłych dla hetaha pasta",
+  "plugin_substack_tts_unavailable": "Na hetaj pryladzie niama ruchavika maŭliennia",
   "plugin_substack_unfollow": "Adpisacca",
   "popular": "Papularnyja",
   "popular_feed_description": "Pakazvać spačatku samyja papularnyja tvity zamiest samych novych",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "Praciahnuć na sajcie vydannia",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "Uryvak",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "Nalady holasu",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "Ruchavik maŭliennia",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "Holas",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "Chutkasć",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "Sistemny",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "Vydannie",
+  "@plugin_substack_publication": {}
 }

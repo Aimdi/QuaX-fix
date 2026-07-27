@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Escolta",
   "plugin_substack_tts_stop": "Atura",
-  "plugin_substack_tts_unavailable": "No hi ha res per llegir en veu alta en aquesta entrada",
+  "plugin_substack_tts_unavailable": "Aquest dispositiu no té cap motor de veu",
   "plugin_substack_unfollow": "Deixa de seguir",
   "popular": "Populars",
   "popular_feed_description": "Mostra primer els tuits més populars en lloc dels més recents",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "Continua al lloc de la publicació",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "Fragment",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "Ajustos de veu",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "Motor de veu",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "Veu",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "Velocitat",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "Predeterminat del sistema",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "Publicació",
+  "@plugin_substack_publication": {}
 }

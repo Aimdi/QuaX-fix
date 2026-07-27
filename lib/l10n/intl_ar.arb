@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "استمع",
   "plugin_substack_tts_stop": "إيقاف الاستماع",
-  "plugin_substack_tts_unavailable": "لا يوجد محتوى للقراءة بصوت عالٍ في هذا المنشور",
+  "plugin_substack_tts_unavailable": "لا يوجد محرك قراءة على هذا الجهاز",
   "plugin_substack_unfollow": "إلغاء المتابعة",
   "popular": "الشائعة",
   "popular_feed_description": "عرض التغريدات الأكثر شيوعًا أولًا بدلًا من الأحدث",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "تابع على موقع النشرة",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "مقتطف",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "إعدادات الصوت",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "محرك القراءة",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "الصوت",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "السرعة",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "الافتراضي للنظام",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "النشرة",
+  "@plugin_substack_publication": {}
 }

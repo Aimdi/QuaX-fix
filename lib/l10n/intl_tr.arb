@@ -361,7 +361,7 @@
   "plugin_substack_title": "Substack",
   "plugin_substack_tts_listen": "Dinle",
   "plugin_substack_tts_stop": "Durdur",
-  "plugin_substack_tts_unavailable": "Bu yazıda sesli okunacak bir şey yok",
+  "plugin_substack_tts_unavailable": "Bu cihazda konuşma motoru yüklü değil",
   "plugin_substack_unfollow": "Takibi bırak",
   "popular": "Popüler",
   "popular_feed_description": "En yeni tweetler yerine en popüler tweetleri önce göster",
@@ -1144,5 +1144,17 @@
   "plugin_substack_continue_on_site": "Yayının sitesinde devam et",
   "@plugin_substack_continue_on_site": {},
   "plugin_substack_preview_badge": "Önizleme",
-  "@plugin_substack_preview_badge": {}
+  "@plugin_substack_preview_badge": {},
+  "plugin_substack_tts_settings": "Ses ayarları",
+  "@plugin_substack_tts_settings": {},
+  "plugin_substack_tts_engine": "Konuşma motoru",
+  "@plugin_substack_tts_engine": {},
+  "plugin_substack_tts_voice": "Ses",
+  "@plugin_substack_tts_voice": {},
+  "plugin_substack_tts_speed": "Hız",
+  "@plugin_substack_tts_speed": {},
+  "plugin_substack_tts_default": "Sistem varsayılanı",
+  "@plugin_substack_tts_default": {},
+  "plugin_substack_publication": "Yayın",
+  "@plugin_substack_publication": {}
 }

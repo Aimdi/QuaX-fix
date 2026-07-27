@@ -5,6 +5,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/substack/substack_models.dart';
 import 'package:quax/plugins/substack/substack_post_card.dart';
 import 'package:quax/plugins/substack/substack_store.dart';
+import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/ui/errors.dart';
 
 class SubstackArchiveScreen extends StatefulWidget {
@@ -40,13 +41,19 @@ class _SubstackArchiveScreenState extends State<SubstackArchiveScreen> {
     final store = _store;
     if (store == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(widget.publication.name)),
+        appBar: AppBar(
+          title: Text(widget.publication.name),
+          actions: [SubstackFollowButton(publication: widget.publication)],
+        ),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.publication.name)),
+      appBar: AppBar(
+        title: Text(widget.publication.name),
+        actions: [SubstackFollowButton(publication: widget.publication)],
+      ),
       body: ScopedBuilder<SubstackArchiveStore, SubstackFeedSnapshot>(
         store: store,
         onError: (_, error) => FullPageErrorWidget(
@@ -84,6 +91,40 @@ class _SubstackArchiveScreenState extends State<SubstackArchiveScreen> {
           );
         },
       ),
+    );
+  }
+}
+
+/// Follows or unfollows the publication, reflecting whichever it currently is.
+///
+/// Observes the store rather than reading it once, so arriving here from an
+/// article shows the right label without a reload.
+class SubstackFollowButton extends StatelessWidget {
+  final SubstackPublication publication;
+
+  const SubstackFollowButton({super.key, required this.publication});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+    final store = context.read<SubstackPublicationsStore>();
+
+    return ScopedBuilder<SubstackPublicationsStore, List<SubstackPublication>>(
+      store: store,
+      onState: (context, followed) {
+        final isFollowed = followed.any((e) => e.id == publication.id);
+
+        return TextButton.icon(
+          icon: Icon(isFollowed ? Icons.check : Icons.add, size: 18),
+          label: Text(isFollowed ? l10n.unsubscribe : l10n.subscribe),
+          onPressed: () async {
+            final subscriptions = context.read<SubscriptionsModel>();
+            isFollowed ? await store.remove(publication.id) : await store.add(publication);
+            // A publication is a group member too; the editor reads that list.
+            await subscriptions.reloadSubscriptions();
+          },
+        );
+      },
     );
   }
 }
