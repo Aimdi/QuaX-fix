@@ -9,6 +9,7 @@ import 'package:quax/tweet/ticker/ticker_chart.dart';
 import 'package:quax/tweet/ticker/ticker_client.dart';
 import 'package:quax/tweet/ticker/ticker_quote.dart';
 import 'package:quax/tweet/ticker/ticker_range.dart';
+import 'package:quax/tweet/ticker/ticker_stats.dart';
 import 'package:quax/tweet/tweet_context_scope.dart';
 
 class TickerScreenArguments {
@@ -205,6 +206,10 @@ class _TickerScreenState extends State<_TickerScreen> {
         _quoteHeader(context, quote),
         const SizedBox(height: 8),
         TickerChart(quote: quote, onScrub: (point) => setState(() => _scrubbed = point)),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: TickerStats(quote: quote, showCurrency: false),
+        ),
         _rangePicker(context),
         const SizedBox(height: 4),
       ],

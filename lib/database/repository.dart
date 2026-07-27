@@ -21,6 +21,7 @@ const String tableLikedTweet = 'liked_tweet';
 const String tableSearchSubscription = 'search_subscription';
 const String tableSubstackSubscription = 'substack_subscription';
 const String tableRedditSubscription = 'reddit_subscription';
+const String tableStockSubscription = 'stock_subscription';
 const String tableSearchSubscriptionGroupMember = 'search_subscription_group_member';
 const String tableSubscription = 'subscription';
 const String tableSubscriptionGroup = 'subscription_group';
@@ -32,7 +33,7 @@ const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 42;
+const int databaseVersion = 43;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -512,6 +513,18 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
       'in_feed INTEGER NOT NULL DEFAULT 1, '
       'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
       reverseSql: 'DROP TABLE $tableRedditSubscription',
+    ),
+  ],
+  43: [
+    // Watched tickers, for the same reason subreddits got a table in 42: a
+    // group joins profile ids against subscription tables, so a watchlist that
+    // wants members needs rows of its own.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableStockSubscription ('
+      'id VARCHAR PRIMARY KEY, symbol VARCHAR NOT NULL, '
+      'in_feed INTEGER NOT NULL DEFAULT 1, '
+      'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableStockSubscription',
     ),
   ],
 });

@@ -64,6 +64,7 @@ import 'package:quax/plugins/reddit/reddit_auth.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_store.dart';
 import 'package:quax/plugins/reddit/reddit_subreddit_avatar.dart';
+import 'package:quax/plugins/stocks/stocks_store.dart';
 
 Future checkForUpdates(context) async {
   Logger.root.info('Checking for updates');
@@ -321,6 +322,8 @@ Future<void> main() async {
       optionPluginRedditSource: redditSourceAuto,
       optionPluginRedditSubreddits: '[]',
       optionPluginRedditRefreshToken: '',
+      optionPluginStocksEnabled: false,
+      optionPluginStocksShowTab: true,
       optionTtsEngine: '',
       optionTtsVoiceName: '',
       optionTtsVoiceLocale: '',
@@ -415,6 +418,7 @@ Future<void> main() async {
     final redditAuth = RedditAuth();
     final redditSubreddits = RedditSubredditsStore(prefService);
     final redditFeed = RedditFeedStore(redditClient, redditSubreddits, prefService, auth: redditAuth);
+    final stocksWatchlist = StocksWatchlistStore();
     final substackClient = SubstackClient();
     final substackPublications = SubstackPublicationsStore(prefService);
     final substackFeed = SubstackFeedStore(substackClient, substackPublications);
@@ -444,6 +448,7 @@ Future<void> main() async {
         substackPublications.load(),
         substackRead.load(),
       ],
+      if (prefService.get<bool>(optionPluginStocksEnabled) == true) stocksWatchlist.load(),
     ]);
 
     runApp(
@@ -471,6 +476,7 @@ Future<void> main() async {
             Provider(create: (_) => redditAuth),
             Provider(create: (_) => redditSubreddits),
             Provider(create: (_) => redditFeed),
+            Provider(create: (_) => stocksWatchlist),
             Provider(create: (_) => substackClient),
             Provider(create: (_) => substackPublications),
             Provider(create: (_) => substackFeed),

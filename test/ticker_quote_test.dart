@@ -106,6 +106,31 @@ void main() {
     });
   });
 
+  group('what the rest of the market page needs', () {
+    test('volume and the year\'s range are read when the response carries them', () {
+      final quote = TickerQuote.fromChartJson(
+          _chart(meta: {
+            'regularMarketVolume': 48200000,
+            'fiftyTwoWeekHigh': 260.1,
+            'fiftyTwoWeekLow': '169.21',
+          }),
+          symbol: 'AAPL')!;
+
+      expect(quote.volume, closeTo(48200000, 0.001));
+      expect(quote.yearHigh, closeTo(260.1, 0.001));
+      expect(quote.yearLow, closeTo(169.21, 0.001));
+    });
+
+    test('a symbol quoted without them still charts', () {
+      final quote = TickerQuote.fromChartJson(_chart(meta: const {}), symbol: 'AAPL')!;
+
+      expect(quote.volume, isNull);
+      expect(quote.yearHigh, isNull);
+      expect(quote.yearLow, isNull);
+      expect(quote.points, hasLength(3));
+    });
+  });
+
   group('a payload that no longer fits', () {
     test('gives up rather than throwing', () {
       for (final json in <Object?>[

@@ -74,6 +74,10 @@ const optionPluginRedditShowTab = 'plugin.reddit.show_tab';
 /// shows them so the choice is made once.
 const optionPluginRedditSort = 'plugin.reddit.sort';
 
+const pluginIdStocks = 'stocks';
+const optionPluginStocksEnabled = 'plugin.stocks.enabled';
+const optionPluginStocksShowTab = 'plugin.stocks.show_tab';
+
 const pluginIdSubstack = 'substack';
 /// Reading aloud: which engine, which voice, how fast. Shared rather than
 /// per-plugin — a reader picks a voice once, not once per source.

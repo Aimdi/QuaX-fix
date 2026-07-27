@@ -313,6 +313,47 @@ class RedditSubscription extends Subscription {
   }
 }
 
+/// A watched ticker.
+///
+/// The symbol carries the display name, so a watchlist entry can be a group
+/// member on the same terms as every other subscription kind.
+class StockSubscription extends Subscription {
+  StockSubscription({
+    required super.id,
+    required String symbol,
+    required super.createdAt,
+    required super.inFeed,
+  }) : super(name: symbol, screenName: id, verified: false, profileImageUrlHttps: null);
+
+  String get symbol => name;
+
+  factory StockSubscription.fromMap(Map<String, Object?> map) {
+    return StockSubscription(
+      id: map['id'] as String,
+      symbol: map['symbol'] as String,
+      createdAt: map['created_at'] == null ? DateTime.now() : DateTime.parse(map['created_at'] as String),
+      inFeed: map['in_feed'] == null || map['in_feed'] == 1,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is StockSubscription && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'symbol': symbol,
+      'in_feed': inFeed ? 1 : 0,
+      'created_at': sqliteDateFormat.format(createdAt),
+    };
+  }
+}
+
 /// One member shown in a group's avatar preview. [avatarUrl] is nullable: a
 /// member with no picture still appears, as a deterministic monogram keyed by
 /// [id].

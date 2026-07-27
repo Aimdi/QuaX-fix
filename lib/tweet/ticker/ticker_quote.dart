@@ -21,6 +21,13 @@ class TickerQuote {
   final double? price;
   final double? previousClose;
 
+  /// What the rest of the market page is made of: how much changed hands, and
+  /// where today sits inside the year. All optional — the chart endpoint only
+  /// carries them for symbols it has them for.
+  final double? volume;
+  final double? yearHigh;
+  final double? yearLow;
+
   final List<TickerPoint> points;
 
   const TickerQuote({
@@ -29,6 +36,9 @@ class TickerQuote {
     required this.price,
     required this.previousClose,
     required this.points,
+    this.volume,
+    this.yearHigh,
+    this.yearLow,
   });
 
   double? get change {
@@ -116,6 +126,9 @@ class TickerQuote {
       price: _toDouble(meta['regularMarketPrice']),
       previousClose: _toDouble(meta['chartPreviousClose']) ?? _toDouble(meta['previousClose']),
       points: points,
+      volume: _toDouble(meta['regularMarketVolume']),
+      yearHigh: _toDouble(meta['fiftyTwoWeekHigh']),
+      yearLow: _toDouble(meta['fiftyTwoWeekLow']),
     );
   }
 }
