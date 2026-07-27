@@ -6,6 +6,7 @@ import 'package:pref/pref.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/group/combined_groups.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/group/group_switcher.dart';
 
@@ -36,7 +37,12 @@ Widget _wrap(Widget child, List<SubscriptionGroup> groups) {
   return PrefService(
     service: prefs,
     child: MultiProvider(
-      providers: [Provider<GroupsModel>(create: (_) => _FakeGroupsModel(prefs, groups))],
+      providers: [
+        Provider<GroupsModel>(create: (_) => _FakeGroupsModel(prefs, groups)),
+        // The title and the sheet both read which groups are being read
+        // together, so the switcher cannot be built without one.
+        Provider<CombinedGroupsStore>(create: (_) => CombinedGroupsStore()),
+      ],
       child: MaterialApp(
         localizationsDelegates: const [
           L10n.delegate,
