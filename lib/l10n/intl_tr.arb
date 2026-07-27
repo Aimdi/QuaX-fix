@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Subredditler",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Kullanıcılar",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Sırala",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Popüler",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Yeni",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "En iyi",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Yükselen",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Tartışmalı",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Ana akışta göster",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Takip ettiğin subredditlerin gönderilerini Takip ve Sana Özel akışlarına karıştırır",
+  "@plugin_reddit_in_home_feed_description": {}
 }

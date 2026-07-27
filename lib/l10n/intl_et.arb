@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Subredditid",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Kasutajad",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Sortimine",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Popuaarne",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Uued",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Parimad",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Tõusuteel",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Vastuoluline",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Näita avalehe voos",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Lisab jälgitavate subredditide postitused voogudesse „Jälgitavad“ ja „Sulle“",
+  "@plugin_reddit_in_home_feed_description": {}
 }

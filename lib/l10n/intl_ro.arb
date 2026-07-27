@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Subreddituri",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Utilizatori",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Sortează",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Populare",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Noi",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Cele mai bune",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "În creștere",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Controversate",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Afișează în cronologia principală",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Adaugă postările din subredditurile urmărite în „Urmăriți” și „Pentru tine”",
+  "@plugin_reddit_in_home_feed_description": {}
 }

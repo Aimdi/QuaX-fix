@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Subreddit",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Người dùng",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Sắp xếp",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Nổi bật",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Mới",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Hàng đầu",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Đang lên",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Gây tranh cãi",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Hiển thị trong dòng thời gian chính",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Trộn bài viết từ các subreddit bạn theo dõi vào Đang theo dõi và Dành cho bạn",
+  "@plugin_reddit_in_home_feed_description": {}
 }

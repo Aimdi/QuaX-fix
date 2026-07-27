@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Subreddity",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Uživatelé",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Řazení",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Populární",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Nové",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Nejlepší",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Stoupající",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Kontroverzní",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Zobrazovat na hlavní nástěnce",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Přimíchá příspěvky ze subredditů, které sledujete, do „Sleduji“ a „Pro tebe“",
+  "@plugin_reddit_in_home_feed_description": {}
 }

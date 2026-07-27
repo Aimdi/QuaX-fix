@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Сабреддиты",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Пользователи",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Сортировка",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Популярное",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Новое",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Лучшее",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Набирает",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Спорное",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Показывать в главной ленте",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Добавляет записи из сабреддитов, на которые вы подписаны, в «Подписки» и «Для вас»",
+  "@plugin_reddit_in_home_feed_description": {}
 }

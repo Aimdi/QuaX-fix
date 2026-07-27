@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:quax/client/client.dart';
 import 'package:quax/profile/profile.dart';
+import 'package:quax/plugins/reddit/reddit_interleaved.dart';
+import 'package:quax/tweet/interleaved_items.dart';
 import 'package:quax/tweet/paginated_tweet_list.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/user.dart';
@@ -30,10 +32,25 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
   @override
   bool get wantKeepAlive => true;
 
+  /// Reddit posts mixed into this timeline, when the reader asked for them.
+  ///
+  /// Loaded once per mount and slotted between the chains by date: For you
+  /// pages on X's cursor, which nothing else can page on, and a subreddit
+  /// publishes at its own rate rather than X's.
+  List<InterleavedItem> _redditItems = const [];
+
   @override
   void initState() {
     super.initState();
     widget.feed.pageCapProvider = _zenPageCap;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadRedditPosts());
+  }
+
+  Future<void> _loadRedditPosts() async {
+    final items = await loadRedditInterleaved(context, redditHomeSubreddits(context));
+    if (mounted && items.isNotEmpty) {
+      setState(() => _redditItems = items);
+    }
   }
 
   // In zen mode the feed is finite: pagination pauses after this many pages
@@ -89,6 +106,7 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
             return PaginatedTweetList(
               feed: widget.feed,
               loadPage: _loadTweets,
+              interleaved: _redditItems,
               username: user.screenName,
               onRefresh: () async {},
               firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets,

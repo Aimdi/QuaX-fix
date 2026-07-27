@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Subredditoj",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Uzantoj",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Ordigi",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Populara",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Nova",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Plej bona",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Kreskanta",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Disputata",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Montri en la hejma tempolinio",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Miksas afiŝojn el la subredditoj kiujn vi sekvas en «Sekvataj» kaj «Por vi»",
+  "@plugin_reddit_in_home_feed_description": {}
 }

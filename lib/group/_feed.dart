@@ -15,8 +15,7 @@ import 'package:quax/group/group_screen.dart';
 import 'package:quax/profile/media_grid/media_grid.dart';
 import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:logging/logging.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_post_card.dart';
+import 'package:quax/plugins/reddit/reddit_interleaved.dart';
 import 'package:quax/plugins/substack/substack_client.dart';
 import 'package:quax/plugins/substack/substack_post_card.dart';
 import 'package:quax/plugins/substack/substack_store.dart';
@@ -122,34 +121,19 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   List<InterleavedItem> _redditItems = const [];
 
   Future<void> _loadRedditPosts() async {
-    if (widget.subreddits.isEmpty || widget.mediaOnly) {
+    if (widget.mediaOnly) {
       return;
     }
 
-    final client = context.read<RedditClient>();
-    final prefs = PrefService.of(context, listen: false);
-    final clientId = prefs.get<String>(optionPluginRedditClientId) ?? '';
-    final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
+    // The group's own subreddits, plus every followed one when this is the
+    // combined feed and the reader asked for Reddit in it.
+    final names = {
+      ...widget.subreddits.map((e) => e.name),
+      if (widget.group.id == '-1') ...redditHomeSubreddits(context),
+    }.toList(growable: false);
 
-    final items = <InterleavedItem>[];
-    for (final subreddit in widget.subreddits) {
-      try {
-        final listing = await client.fetchSubreddit(subreddit.name,
-            clientId: clientId, limit: 10, preferPublic: preferPublic);
-        for (final post in listing.posts.where((p) => !p.stickied)) {
-          final date = post.createdAt;
-          if (date == null) {
-            continue;
-          }
-          items.add((date: date, build: (context) => RedditPostCard(post: post)));
-        }
-      } catch (e) {
-        // One unreachable subreddit must not empty the feed of the others.
-        _log.warning('Unable to load r/${subreddit.name}: $e');
-      }
-    }
-
-    if (mounted) {
+    final items = await loadRedditInterleaved(context, names);
+    if (mounted && items.isNotEmpty) {
       setState(() => _redditItems = items);
     }
   }

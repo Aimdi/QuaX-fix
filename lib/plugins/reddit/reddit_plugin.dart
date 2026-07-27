@@ -4,6 +4,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/home/home_screen.dart';
 import 'package:quax/plugins/plugin.dart';
 import 'package:quax/plugins/reddit/reddit_screen.dart';
+import 'package:quax/plugins/reddit/reddit_settings_screen.dart';
 
 /// Account-free Reddit reading, in the spirit of Stealth: no login, no posting.
 ///
@@ -41,4 +42,7 @@ class RedditPlugin extends QuaxPlugin {
   Widget homeScreen({required ScrollController scrollController}) {
     return RedditScreen(scrollController: scrollController);
   }
+
+  @override
+  Widget? settingsScreen(BuildContext context) => const RedditSettingsScreen();
 }

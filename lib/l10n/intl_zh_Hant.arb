@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "子版塊",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "使用者",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "排序",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "熱門",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "最新",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "最熱",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "上升",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "爭議",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "顯示在主時間軸中",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "將你追蹤的子版塊的貼文混入「追蹤中」和「為你推薦」",
+  "@plugin_reddit_in_home_feed_description": {}
 }

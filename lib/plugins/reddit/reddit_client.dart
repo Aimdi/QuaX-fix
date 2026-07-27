@@ -161,14 +161,19 @@ class RedditListing {
 }
 
 /// Sort orders a subreddit listing supports.
-enum RedditSort { hot, newest, top, rising }
+enum RedditSort { hot, newest, top, rising, controversial }
 
 String redditSortPath(RedditSort sort) => switch (sort) {
       RedditSort.hot => 'hot',
       RedditSort.newest => 'new',
       RedditSort.top => 'top',
       RedditSort.rising => 'rising',
+      RedditSort.controversial => 'controversial',
     };
+
+/// The stored sort, or hot when nothing is stored or the name is unknown.
+RedditSort redditSortFromName(String? name) =>
+    RedditSort.values.firstWhere((e) => e.name == name, orElse: () => RedditSort.hot);
 
 /// Read-only Reddit client. Nobody has to log in, and by default nobody has to
 /// configure anything either.

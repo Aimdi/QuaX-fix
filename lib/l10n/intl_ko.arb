@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "서브레딧",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "사용자",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "정렬",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "인기",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "최신",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "인기 상위",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "떠오르는",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "논쟁적",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "홈 타임라인에 표시",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "팔로우한 서브레딧의 게시물을 팔로잉과 추천에 함께 표시합니다",
+  "@plugin_reddit_in_home_feed_description": {}
 }

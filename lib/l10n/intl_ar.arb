@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "سابريديتس",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "المستخدمون",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "الترتيب",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "الرائج",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "الأحدث",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "الأعلى",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "الصاعد",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "مثير للجدل",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "إظهار في الصفحة الرئيسية",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "يدمج منشورات السَبريديتس التي تتابعها في \"المتابَعون\" و\"لك\"",
+  "@plugin_reddit_in_home_feed_description": {}
 }

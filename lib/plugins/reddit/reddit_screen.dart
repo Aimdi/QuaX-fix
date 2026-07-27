@@ -9,6 +9,7 @@ import 'package:quax/plugins/reddit/reddit_login_webview.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_post_card.dart';
 import 'package:quax/plugins/reddit/reddit_search_screen.dart';
+import 'package:quax/plugins/reddit/reddit_sort_sheet.dart';
 import 'package:quax/plugins/reddit/reddit_store.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/ui/errors.dart';
@@ -316,6 +317,15 @@ class _RedditScreenState extends State<RedditScreen> {
       appBar: AppBar(
         title: Text(l10n.plugin_reddit_title),
         actions: [
+          IconButton(
+            tooltip: l10n.plugin_reddit_sort,
+            icon: Icon(redditSortLabel(context, storedRedditSort(PrefService.of(context))).icon),
+            onPressed: () async {
+              if (await openRedditSortSheet(context) != null && mounted) {
+                await context.read<RedditFeedStore>().refresh();
+              }
+            },
+          ),
           IconButton(
             tooltip: l10n.plugin_reddit_search_hint,
             icon: const Icon(Icons.search),

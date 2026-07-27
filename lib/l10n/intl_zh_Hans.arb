@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "子版块",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "用户",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "排序",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "热门",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "最新",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "最热",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "上升",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "争议",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "显示在主时间线中",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "把你关注的子版块的帖子混入「关注」和「为你推荐」",
+  "@plugin_reddit_in_home_feed_description": {}
 }

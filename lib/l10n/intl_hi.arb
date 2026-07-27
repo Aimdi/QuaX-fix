@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "सबरेडिट",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "उपयोगकर्ता",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "क्रमबद्ध करें",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "लोकप्रिय",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "नया",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "शीर्ष",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "उभरते",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "विवादित",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "होम टाइमलाइन में दिखाएँ",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "आप जिन सबरेडिट को फ़ॉलो करते हैं उनकी पोस्ट को \"फ़ॉलोइंग\" और \"आपके लिए\" में मिलाता है",
+  "@plugin_reddit_in_home_feed_description": {}
 }

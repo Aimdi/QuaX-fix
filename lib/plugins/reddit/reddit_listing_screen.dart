@@ -7,6 +7,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
 import 'package:quax/plugins/reddit/reddit_post_card.dart';
 import 'package:quax/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
+import 'package:quax/plugins/reddit/reddit_sort_sheet.dart';
 import 'package:quax/plugins/reddit/reddit_store.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/ui/errors.dart';
@@ -71,6 +72,7 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
     final listing = await client.fetchSubreddit(
       subreddit,
       clientId: prefs.get<String>(optionPluginRedditClientId) ?? '',
+      sort: storedRedditSort(prefs),
       preferPublic: prefs.get<String>(optionPluginRedditSource) == redditSourcePublic,
     );
 

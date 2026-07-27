@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Subreddits",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Users",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Sort",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Hot",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "New",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Top",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Rising",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Controversial",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Show in the home timeline",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Mixes posts from the subreddits you follow into Following and For you",
+  "@plugin_reddit_in_home_feed_description": {}
 }

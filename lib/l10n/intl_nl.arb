@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Subreddits",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Gebruikers",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Sorteren",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Populair",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Nieuw",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Top",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Stijgend",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Omstreden",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Weergeven in de hoofdtijdlijn",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Mengt berichten uit de subreddits die je volgt in Volgend en Voor jou",
+  "@plugin_reddit_in_home_feed_description": {}
 }

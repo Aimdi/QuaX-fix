@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Сабрэдыты",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Карыстальнікі",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Сартаванне",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Папулярнае",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Новае",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Лепшае",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Набірае",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Спрэчнае",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Паказваць у галоўнай стужцы",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Дадае запісы з сабрэдытаў, на якія вы падпісаны, у «Падпіскі» і «Для вас»",
+  "@plugin_reddit_in_home_feed_description": {}
 }

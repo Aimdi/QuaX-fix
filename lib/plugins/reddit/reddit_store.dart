@@ -8,6 +8,7 @@ import 'package:quax/database/repository.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:quax/plugins/reddit/reddit_auth.dart';
 import 'package:quax/plugins/reddit/reddit_client.dart';
+import 'package:quax/plugins/reddit/reddit_sort_sheet.dart';
 
 /// Subreddits the reader follows, kept in the database.
 ///
@@ -105,8 +106,11 @@ class RedditFeedStore extends Store<List<RedditPost>> {
       : auth = auth ?? RedditAuth(),
         super(const []);
 
-  Future<void> refresh({RedditSort sort = RedditSort.hot}) async {
+  /// [sort] defaults to the reader's stored choice rather than hot, so the tab
+  /// and the timeline agree about what they are showing.
+  Future<void> refresh({RedditSort? sort}) async {
     await execute(() async {
+      final order = sort ?? storedRedditSort(prefs);
       final clientId = prefs.get<String>(optionPluginRedditClientId) ?? '';
       final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
       final names = subreddits.state;
@@ -130,7 +134,7 @@ class RedditFeedStore extends Store<List<RedditPost>> {
       final posts = <RedditPost>[];
       for (final name in names) {
         final listing =
-            await client.fetchSubreddit(name, clientId: clientId, sort: sort, limit: 15, userToken: userToken, preferPublic: preferPublic);
+            await client.fetchSubreddit(name, clientId: clientId, sort: order, limit: 15, userToken: userToken, preferPublic: preferPublic);
         posts.addAll(listing.posts.where((p) => !p.stickied));
       }
 

@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Subreddit",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Pengguna",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Urutkan",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Populer",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Terbaru",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Teratas",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Sedang naik",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Kontroversial",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Tampilkan di lini masa beranda",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Menggabungkan kiriman dari subreddit yang Anda ikuti ke Mengikuti dan Untuk Anda",
+  "@plugin_reddit_in_home_feed_description": {}
 }

@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Сабредити",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Користувачі",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Сортування",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Популярне",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Нове",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Найкраще",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Набирає",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Спірне",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Показувати в головній стрічці",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Додає дописи із сабредитів, на які ви підписані, у «Підписки» та «Для вас»",
+  "@plugin_reddit_in_home_feed_description": {}
 }

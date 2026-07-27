@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Subredditak",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Erabiltzaileak",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Ordenatu",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Ezagunak",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Berriak",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Onenak",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Gorakoak",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Eztabaidatuak",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Erakutsi hasierako denbora-lerroan",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Jarraitzen dituzun subredditen bidalketak «Jarraitzen» eta «Zuretzat» ataletan tartekatzen ditu",
+  "@plugin_reddit_in_home_feed_description": {}
 }

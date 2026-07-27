@@ -1108,5 +1108,21 @@
   "plugin_reddit_search_subreddits": "Subredyty",
   "@plugin_reddit_search_subreddits": {},
   "plugin_reddit_search_users": "Karystaĺniki",
-  "@plugin_reddit_search_users": {}
+  "@plugin_reddit_search_users": {},
+  "plugin_reddit_sort": "Sartavannie",
+  "@plugin_reddit_sort": {},
+  "plugin_reddit_sort_hot": "Papuliarnaje",
+  "@plugin_reddit_sort_hot": {},
+  "plugin_reddit_sort_new": "Novaje",
+  "@plugin_reddit_sort_new": {},
+  "plugin_reddit_sort_top": "Liepšaje",
+  "@plugin_reddit_sort_top": {},
+  "plugin_reddit_sort_rising": "Nabiraje",
+  "@plugin_reddit_sort_rising": {},
+  "plugin_reddit_sort_controversial": "Sprečnaje",
+  "@plugin_reddit_sort_controversial": {},
+  "plugin_reddit_in_home_feed": "Pakazvać u haloŭnaj stužcy",
+  "@plugin_reddit_in_home_feed": {},
+  "plugin_reddit_in_home_feed_description": "Dadaje zapisy z sabredytaŭ, na jakija vy padpisany, u «Padpiski» i «Dlia vas»",
+  "@plugin_reddit_in_home_feed_description": {}
 }
