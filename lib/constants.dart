@@ -78,6 +78,11 @@ const substackFeedPageSize = 8;
 const substackReadIdsCap = 400;
 
 const optionShouldCheckForUpdates = 'should_check_for_updates';
+
+/// Marks that the update check has been turned off once for this fork. Without
+/// it the change would only reach installs that had never stored the old
+/// default — which is not the installs that were being interrupted.
+const optionUpdateCheckReset = 'should_check_for_updates.reset';
 // This fork's own repository. Releases and crash reports belong here, not on
 // upstream teskann/quax, whose versions this fork never matches.
 const githubRepo = 'Aimdi/QuaX-fix';

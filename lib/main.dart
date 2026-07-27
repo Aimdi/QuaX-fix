@@ -290,6 +290,7 @@ Future<void> main() async {
       // the check was firing constantly and reading as an upstream release
       // notice. The switch in Settings › General still turns it back on.
       optionShouldCheckForUpdates: false,
+      optionUpdateCheckReset: false,
       optionEndpointRegistryEnabled: true,
       optionEndpointRegistryUrl: defaultEndpointRegistryUrl,
       optionEndpointRegistryCache: '',
@@ -535,6 +536,17 @@ class _FritterAppState extends State<FritterApp> {
       prefService.set(optionThemePreset, themePresetNone);
     }
 
+    // Upstream wrote the update check for occasional releases; this fork
+    // publishes a build whenever something is fixed, so it fired on most
+    // launches. Changing the default alone did not reach anyone who already had
+    // the old value stored, which is exactly who was being interrupted — so it
+    // is turned off once, here. Toggling it back on afterwards is the reader's
+    // own choice and is never overridden again.
+    if (prefService.get<bool>(optionUpdateCheckReset) != true) {
+      prefService.set(optionShouldCheckForUpdates, false);
+      prefService.set(optionUpdateCheckReset, true);
+    }
+
     // Set any already-enabled preferences
     setState(() {
       setLocale(prefService.get<String>(optionLocale));
@@ -547,7 +559,10 @@ class _FritterAppState extends State<FritterApp> {
     });
 
     prefService.addKeyListener(optionShouldCheckForUpdates, () {
-      setState(() {});
+      // Re-read rather than only rebuild: the value is held in a field, so a
+      // rebuild alone would keep showing the answer from before the change —
+      // including the one the reset above makes on this very launch.
+      setState(() => _checkUpdates = prefService.get(optionShouldCheckForUpdates));
     });
 
     prefService.addKeyListener(optionLocale, () {
