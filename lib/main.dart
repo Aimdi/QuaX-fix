@@ -300,7 +300,8 @@ Future<void> main() async {
       optionWebDavPassword: '',
       optionWebDavIncludeAccounts: false,
       optionWebDavLastSyncAt: '',
-      optionOpenLinksInEmbeddedBrowser: false,
+      optionOpenLinksInEmbeddedBrowser: true,
+      optionEmbeddedBrowserReset: false,
       optionCrashReportsEnabled: false,
       optionCrashGithubRepo: defaultCrashGithubRepo,
       optionCrashGithubToken: '',
@@ -537,6 +538,15 @@ class _FritterAppState extends State<FritterApp> {
       prefService.set(optionThemePreset, themePresetNone);
     }
 
+    // Leaving the app to read a link is a worse default than staying in it, and
+    // the switch was off, so every link went out to the browser. Turned on
+    // once, the same way and for the same reason as the check below: a stored
+    // value wins over a default, and every install has one.
+    if (prefService.get<bool>(optionEmbeddedBrowserReset) != true) {
+      prefService.set(optionOpenLinksInEmbeddedBrowser, true);
+      prefService.set(optionEmbeddedBrowserReset, true);
+    }
+
     // Upstream wrote the update check for occasional releases; this fork
     // publishes a build whenever something is fixed, so it fired on most
     // launches. Changing the default alone did not reach anyone who already had
@@ -748,7 +758,9 @@ class _DefaultPageState extends State<DefaultPage> {
                 TextButton(
                   child: Text(L10n.of(context).open_in_browser),
                   onPressed: () {
-                    openInDefaultBrowser(link.toString());
+                    // Respects the same setting as every other link: this
+                    // dialog is not a reason to be thrown out of the app.
+                    openUri(context, link.toString());
                     if (context.mounted) {
                       Navigator.of(context).pop();
                     }

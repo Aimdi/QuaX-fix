@@ -93,6 +93,11 @@ const optionUpdateCheckReset = 'should_check_for_updates.reset';
 const githubRepo = 'Aimdi/QuaX-fix';
 const optionConfirmClose = 'confirm_close';
 const optionOpenLinksInEmbeddedBrowser = 'open_links_in_embedded_browser';
+
+/// Marks that links have been switched to the in-app browser once. The default
+/// alone does not reach an install that already stored the old one, which is
+/// every install this has ever run on.
+const optionEmbeddedBrowserReset = 'open_links_in_embedded_browser.reset';
 const optionShareBaseUrl = 'share_base_url';
 
 const optionCrashReportsEnabled = 'crash.reports_enabled';

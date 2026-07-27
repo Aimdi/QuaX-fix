@@ -67,6 +67,10 @@ String cleanUrl(String url) {
   return kept.isEmpty ? cleaned.replaceFirst('?', '') : cleaned;
 }
 
+/// Hands a link to the system browser, bypassing the reader's choice.
+///
+/// Kept for a caller that genuinely needs to leave the app; nothing does today,
+/// and [openUri] is what a link in the feed should go through.
 Future<void> openInDefaultBrowser(String url) async {
   final packageName = await _channel.invokeMethod<String>('getDefaultBrowser');
   final intent = AndroidIntent(
