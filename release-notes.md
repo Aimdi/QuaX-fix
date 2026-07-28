@@ -59,8 +59,16 @@ fit, wide ones are broad and barely two do.
 on the phone, so links from a feed can go somewhere other than the system
 default without changing that default for everything.
 
-**Swiping the top of the screen changes tab**, which it never did before — the
-app bar swallowed the drag.
+**Tabs change from the bottom bar and nowhere else.** A drag anywhere in a page
+used to change them, so every sideways gesture in the app — a media carousel, a
+nested tab view — was competing with the pager for the same finger.
+
+**Groups read together wear their own colours** in the switcher, rather than one
+shared highlight, so which of them are combined is visible at a glance.
+
+**Videos stop reading a film's worth ahead.** libmpv's defaults are built for
+sitting down to one film, not for scrolling past twenty clips, and nothing was
+capping them unless a prefetch had been set by hand.
 
 **A new app icon.**
 
