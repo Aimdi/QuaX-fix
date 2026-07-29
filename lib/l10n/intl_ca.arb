@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Recorda aquesta carpeta",
   "@save_folder_remember": {},
   "save_folder_remember_description": "El que guardis anirà a la darrera carpeta triada, fins que en triïs una altra",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Descodificació directa per maquinari",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Els fotogrames descodificats van directament a la pantalla en lloc de copiar-se abans, de manera que el desplaçament es manté més fluid mentre es reprodueix un vídeo. En alguns dispositius la imatge es queda en negre: en aquest cas, torna a desactivar aquesta opció.",
+  "@direct_hardware_decoding_description": {}
 }

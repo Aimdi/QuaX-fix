@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Bu klasörü hatırla",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Yeni kaydettiklerin, başka birini seçene kadar en son seçtiğin klasöre gider",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Doğrudan donanım kod çözme",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Çözülen video kareleri önce kopyalanmak yerine doğrudan ekrana gönderilir, böylece bir video oynarken kaydırma daha akıcı kalır. Bazı cihazlarda görüntü siyah kalır — bu durumda bu ayarı yeniden kapatın.",
+  "@direct_hardware_decoding_description": {}
 }

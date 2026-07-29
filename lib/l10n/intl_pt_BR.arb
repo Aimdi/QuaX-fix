@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Lembrar esta pasta",
   "@save_folder_remember": {},
   "save_folder_remember_description": "O que você salvar vai para a última pasta escolhida, até escolher outra",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Decodificação direta por hardware",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Os quadros decodificados vão direto para a tela em vez de serem copiados primeiro, deixando a rolagem mais fluida enquanto um vídeo toca. Em alguns aparelhos a imagem fica preta: nesse caso, desative esta opção novamente.",
+  "@direct_hardware_decoding_description": {}
 }

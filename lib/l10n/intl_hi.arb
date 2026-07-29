@@ -1216,5 +1216,9 @@
   "save_folder_remember": "यह फ़ोल्डर याद रखें",
   "@save_folder_remember": {},
   "save_folder_remember_description": "नई सेव की गई पोस्ट अंतिम चुने गए फ़ोल्डर में जाएँगी, जब तक आप दूसरा न चुनें",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "सीधी हार्डवेयर डिकोडिंग",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "डिकोड किए गए वीडियो फ़्रेम पहले कॉपी होने के बजाय सीधे स्क्रीन पर भेजे जाते हैं, जिससे वीडियो चलते समय स्क्रॉल करना ज़्यादा स्मूद रहता है। कुछ डिवाइस पर वीडियो काला दिखता है — ऐसा हो तो इसे फिर से बंद कर दें।",
+  "@direct_hardware_decoding_description": {}
 }

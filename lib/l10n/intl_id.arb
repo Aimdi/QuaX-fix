@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Ingat folder ini",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Simpanan baru akan masuk ke folder terakhir yang kamu pilih, sampai kamu pilih yang lain",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Pendekodean perangkat keras langsung",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Bingkai video yang telah didekode dikirim langsung ke layar alih-alih disalin lebih dulu, sehingga pengguliran tetap lebih mulus saat video diputar. Di sebagian perangkat gambarnya menjadi hitam — matikan lagi opsi ini jika itu terjadi.",
+  "@direct_hardware_decoding_description": {}
 }

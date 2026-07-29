@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Ricorda questa cartella",
   "@save_folder_remember": {},
   "save_folder_remember_description": "I nuovi salvataggi andranno nell’ultima cartella scelta, finché non ne scegli un’altra",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Decodifica hardware diretta",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "I fotogrammi decodificati vengono inviati direttamente allo schermo invece di essere prima copiati, così lo scorrimento resta più fluido durante la riproduzione. Su alcuni dispositivi il video resta nero: in tal caso disattiva di nuovo questa opzione.",
+  "@direct_hardware_decoding_description": {}
 }

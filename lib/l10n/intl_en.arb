@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Remember this folder",
   "@save_folder_remember": {},
   "save_folder_remember_description": "New saves go to the folder you last picked, until you pick another",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Direct hardware decoding",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Sends decoded video frames straight to the screen instead of copying each one first, so scrolling stays smoother while a video plays. On some devices the video shows as a black frame — turn this back off if that happens.",
+  "@direct_hardware_decoding_description": {}
 }

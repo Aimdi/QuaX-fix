@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Diesen Ordner merken",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Neue Speicherungen landen im zuletzt gewählten Ordner, bis du einen anderen wählst",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Direkte Hardware-Dekodierung",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Dekodierte Videobilder gehen direkt auf den Bildschirm, anstatt zuerst kopiert zu werden. Dadurch bleibt das Scrollen flüssiger, während ein Video läuft. Auf manchen Geräten bleibt das Bild schwarz – schalte die Option in diesem Fall wieder aus.",
+  "@direct_hardware_decoding_description": {}
 }

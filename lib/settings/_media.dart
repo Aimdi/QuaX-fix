@@ -105,6 +105,11 @@ class SettingsMediaFragment extends StatelessWidget {
                   ),
               ]),
           PrefSwitch(
+            pref: optionMediaDirectHardwareDecoding,
+            title: Text(L10n.of(context).direct_hardware_decoding),
+            subtitle: Text(L10n.of(context).direct_hardware_decoding_description),
+          ),
+          PrefSwitch(
             pref: optionMediaBackgroundPlayback,
             title: Text(L10n.of(context).allow_background_play),
             subtitle: Text(L10n.of(context).allow_background_play_description),

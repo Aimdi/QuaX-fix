@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Запам’ятати цю теку",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Нові збереження потраплятимуть до останньої вибраної теки, доки ви не виберете іншу",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Пряме апаратне декодування",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Декодовані кадри надсилаються прямо на екран, замість того щоб спершу копіюватися в пам'ять, тому прокручування залишається плавнішим під час відтворення. На деяких пристроях зображення залишається чорним — тоді вимкніть цей параметр знову.",
+  "@direct_hardware_decoding_description": {}
 }

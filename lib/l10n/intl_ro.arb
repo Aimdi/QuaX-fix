@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Ține minte acest dosar",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Ce salvezi va merge în ultimul dosar ales, până alegi altul",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Decodare hardware directă",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Cadrele decodate ajung direct pe ecran în loc să fie copiate mai întâi, astfel derularea rămâne mai fluidă în timp ce rulează un videoclip. Pe unele dispozitive imaginea rămâne neagră — în acest caz dezactivează din nou opțiunea.",
+  "@direct_hardware_decoding_description": {}
 }

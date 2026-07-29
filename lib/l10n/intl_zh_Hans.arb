@@ -1216,5 +1216,9 @@
   "save_folder_remember": "记住这个文件夹",
   "@save_folder_remember": {},
   "save_folder_remember_description": "新保存的内容会放进你上次选择的文件夹，直到你换一个",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "直接硬件解码",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "解码后的画面直接送到屏幕，不再先复制一次，播放视频时滚动更流畅。部分设备上画面会变黑，遇到这种情况请重新关闭此选项。",
+  "@direct_hardware_decoding_description": {}
 }

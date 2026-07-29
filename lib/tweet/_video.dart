@@ -142,6 +142,8 @@ class _TweetVideoState extends State<TweetVideo> {
   bool _hasBeenVisible = false;
   double _lastVisibleFraction = 0.0;
   Timer? _pauseTimer;
+  Timer? _releaseTimer;
+  Timer? _creationGateTimer;
   StreamSubscription<double>? _muteSub;
   StreamSubscription<String>? _errorSub;
   StreamSubscription<bool>? _playingSub;
@@ -171,7 +173,13 @@ class _TweetVideoState extends State<TweetVideo> {
     return q[i.clamp(0, q.length - 1)].url;
   }
 
-  Future<PooledVideo> _createPooled(bool prefLoop, bool startMuted, String quality, int prefetchSeconds) async {
+  Future<PooledVideo> _createPooled(
+    bool prefLoop,
+    bool startMuted,
+    String quality,
+    int prefetchSeconds,
+    bool directHwdec,
+  ) async {
     var urls = await widget.metadata.streamUrlsBuilder();
     var streamUrl = _defaultQualityUrl(urls, quality);
 
@@ -184,7 +192,13 @@ class _TweetVideoState extends State<TweetVideo> {
       // audiotrack JNI crash; falls back to opensles below Android 8.
       await platform.setProperty('ao', 'aaudio,opensles');
       // System MediaCodec decoders, with libmpv's software decoders as fallback.
-      await platform.setProperty('hwdec', 'mediacodec-copy');
+      //
+      // `mediacodec-copy` copies every decoded frame back into system memory
+      // before it is uploaded to a texture; `mediacodec` hands the decoder's own
+      // surface over and copies nothing. The direct path is much cheaper and is
+      // what makes a feed scroll while a video plays, but it renders black on
+      // some devices — hence a setting rather than a default.
+      await platform.setProperty('hwdec', directHwdec ? 'mediacodec' : 'mediacodec-copy');
 
       // How far ahead a feed video reads.
       //
@@ -225,7 +239,8 @@ class _TweetVideoState extends State<TweetVideo> {
     var prefs = PrefService.of(context, listen: false);
     var quality = prefs.get(optionMediaVideoQuality);
     var prefetchSeconds = prefs.get<int>(optionMediaVideoPrefetchSeconds) ?? 0;
-    create() => _createPooled(prefLoop, startMuted, quality, prefetchSeconds);
+    var directHwdec = prefs.get<bool>(optionMediaDirectHardwareDecoding) ?? false;
+    create() => _createPooled(prefLoop, startMuted, quality, prefetchSeconds, directHwdec);
 
     final key = _cacheKey;
     final pool = _pool;
@@ -310,10 +325,17 @@ class _TweetVideoState extends State<TweetVideo> {
       if (key != null) _pool?.markVisible(key, this);
       _pauseTimer?.cancel();
       _pauseTimer = null;
-      if (_autoPlay && !wasVisible && !pooled.player.state.playing) {
+      _releaseTimer?.cancel();
+      _releaseTimer = null;
+      if ((_autoPlay || widget.alwaysPlay) && !wasVisible && !pooled.player.state.playing) {
         pooled.player.play();
       }
-    } else if (!widget.alwaysPlay && wasVisible) {
+    } else if (wasVisible) {
+      // `alwaysPlay` says a looping GIF needs no tap to start, not that it may
+      // keep decoding once nobody can see it. Exempting it here left every GIF
+      // scrolled past still decoding, and each one pinned its pooled player so
+      // the pool could not evict it either — the feed accumulated live libmpv
+      // instances for as long as it was scrolled.
       if (key != null) _pool?.markHidden(key, this);
       _pauseTimer ??= Timer(const Duration(milliseconds: 100), () {
         _pauseTimer = null;
@@ -322,7 +344,40 @@ class _TweetVideoState extends State<TweetVideo> {
           pooled.player.pause();
         }
       });
+      // Pausing stops the decoding; it does not give back the MediaCodec
+      // session, the demuxer thread or the cache behind them. Only letting go
+      // of the pool reference does, and only then can the pool evict. Held off
+      // long enough that a scroll that overshoots and comes back re-attaches to
+      // the same player at the same position instead of restarting it.
+      _releaseTimer ??= Timer(kVideoHiddenReleaseDelay, _releaseWhileHidden);
     }
+  }
+
+  /// Hand the pooled player back while this tile is off screen, and fall back to
+  /// the poster. The pool keeps the entry cached, so scrolling back re-attaches
+  /// to it — but with no reference held it is now evictable, which is what keeps
+  /// the number of live players bounded by the pool's size.
+  void _releaseWhileHidden() {
+    _releaseTimer = null;
+    final key = _cacheKey;
+    if (!mounted || _isFullscreen || key == null || _pool == null) return;
+    if (_pool!.anyVisible(key) || _lastVisibleFraction >= 0.5) return;
+
+    _detachListeners();
+    if (_holdsPoolRef) {
+      _pool!.release(key);
+      _holdsPoolRef = false;
+    }
+
+    setState(() {
+      _pooled = null;
+      _acquireFuture = null;
+      _firstFrameRendered = false;
+      _posterGone = false;
+      // Re-arms the creation gate, so nothing is allocated again until this tile
+      // is actually back on screen.
+      _hasBeenVisible = false;
+    });
   }
 
   Future<void> _restartVideo(bool prefLoop) async {
@@ -438,11 +493,28 @@ class _TweetVideoState extends State<TweetVideo> {
     );
   }
 
+  /// Opens the gate only for a tile that has come to rest on screen.
+  ///
+  /// One visible pixel used to be enough, so a fling allocated a libmpv player
+  /// and a native texture for every video it swept past — the tiles most
+  /// certainly not being watched. Requiring half the tile, and requiring it to
+  /// still be there a moment later, means a fling costs nothing and only the
+  /// video the reader stopped at is built.
   void _onCreationGateVisibilityChanged(VisibilityInfo info) {
-    if (_hasBeenVisible || info.visibleFraction <= 0 || !mounted) {
+    if (!mounted || _hasBeenVisible) return;
+    _lastVisibleFraction = info.visibleFraction;
+
+    if (info.visibleFraction < 0.5) {
+      _creationGateTimer?.cancel();
+      _creationGateTimer = null;
       return;
     }
-    setState(() => _hasBeenVisible = true);
+
+    _creationGateTimer ??= Timer(kVideoCreationSettleDelay, () {
+      _creationGateTimer = null;
+      if (!mounted || _hasBeenVisible || _lastVisibleFraction < 0.5) return;
+      setState(() => _hasBeenVisible = true);
+    });
   }
 
   @override
@@ -487,6 +559,7 @@ class _TweetVideoState extends State<TweetVideo> {
       userRequestedPlay: _userRequestedPlay,
       alreadyCached: alreadyCached,
       hasBeenVisible: _hasBeenVisible,
+      isVisible: _lastVisibleFraction >= 0.5,
     )) {
       return VisibilityDetector(
         key: _creationGateKey,
@@ -548,6 +621,8 @@ class _TweetVideoState extends State<TweetVideo> {
   @override
   void dispose() {
     _pauseTimer?.cancel();
+    _releaseTimer?.cancel();
+    _creationGateTimer?.cancel();
     _detachListeners();
     final key = _cacheKey;
     if (key != null) _pool?.markHidden(key, this);
@@ -562,7 +637,7 @@ class _TweetVideoState extends State<TweetVideo> {
         // A fast fling can dispose this widget before the debounced pause timer
         // fires; releasing the pool ref alone leaves the player running off-screen.
         // Pause it now, unless the same video is still on screen in another widget.
-        if (!widget.alwaysPlay && !(_pool?.anyVisible(key) ?? false)) {
+        if (!(_pool?.anyVisible(key) ?? false)) {
           _pooled?.player.pause();
         }
         _pool?.release(key);

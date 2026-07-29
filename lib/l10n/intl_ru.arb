@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Запомнить эту папку",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Новые сохранения будут попадать в последнюю выбранную папку, пока вы не выберете другую",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Прямое аппаратное декодирование",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Декодированные кадры отправляются прямо на экран, а не копируются сначала в память, поэтому прокрутка остаётся плавнее во время воспроизведения. На некоторых устройствах изображение остаётся чёрным — в этом случае отключите параметр снова.",
+  "@direct_hardware_decoding_description": {}
 }

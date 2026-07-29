@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Zapamiętaj ten folder",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Nowe zapisy trafią do ostatnio wybranego folderu, dopóki nie wybierzesz innego",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Bezpośrednie dekodowanie sprzętowe",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Zdekodowane klatki trafiają wprost na ekran, zamiast być najpierw kopiowane, dzięki czemu przewijanie pozostaje płynniejsze podczas odtwarzania wideo. Na niektórych urządzeniach obraz pozostaje czarny — wtedy wyłącz tę opcję ponownie.",
+  "@direct_hardware_decoding_description": {}
 }

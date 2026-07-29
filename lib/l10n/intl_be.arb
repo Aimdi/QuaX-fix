@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Запомніць гэтую папку",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Новыя захаванні будуць трапляць у апошнюю выбраную папку, пакуль вы не выберыце іншую",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Простае апаратнае дэкадаванне",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Дэкадаваныя кадры перадаюцца адразу на экран, а не капіююцца спярша ў памяць, таму пракрутка застаецца плаўнейшай пры прайграванні відэа. На некаторых прыладах відарыс застаецца чорным — тады выключыце гэты параметр назад.",
+  "@direct_hardware_decoding_description": {}
 }

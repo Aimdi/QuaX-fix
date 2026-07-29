@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Mémoriser ce dossier",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Les nouveaux enregistrements iront dans le dernier dossier choisi, jusqu’à ce que vous en choisissiez un autre",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Décodage matériel direct",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Les images vidéo décodées sont envoyées directement à l'écran au lieu d'être copiées au préalable, ce qui rend le défilement plus fluide pendant la lecture. Sur certains appareils, l'image reste noire : dans ce cas, désactivez à nouveau cette option.",
+  "@direct_hardware_decoding_description": {}
 }

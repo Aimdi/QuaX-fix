@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Husk denne mappen",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Nye lagringer havner i den sist valgte mappen, til du velger en annen",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Direkte maskinvaredekoding",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Dekodede videobilder sendes rett til skjermen i stedet for å kopieres først, slik at rullingen holder seg jevnere mens en video spilles. På noen enheter blir bildet svart – slå da innstillingen av igjen.",
+  "@direct_hardware_decoding_description": {}
 }

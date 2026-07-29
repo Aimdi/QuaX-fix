@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Deze map onthouden",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Nieuwe items komen in de laatst gekozen map, totdat je een andere kiest",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Directe hardwaredecodering",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Gedecodeerde videobeelden gaan rechtstreeks naar het scherm in plaats van eerst te worden gekopieerd, waardoor het scrollen soepeler blijft terwijl een video speelt. Op sommige toestellen blijft het beeld zwart — schakel deze optie dan weer uit.",
+  "@direct_hardware_decoding_description": {}
 }

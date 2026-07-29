@@ -26,6 +26,15 @@ const optionMediaBackgroundPlayback = 'media.allow_background_play';
 const optionMediaAllowBackgroundPlayOtherApps = 'media.allow_background_play.other_apps';
 const optionMediaVideoPrefetchSeconds = 'media.video_prefetch_seconds';
 
+/// Whether decoded frames go straight from the hardware decoder to the screen.
+///
+/// Off, libmpv uses `mediacodec-copy`: every frame is copied out of the decoder
+/// into system memory and then uploaded to a texture, which is memory bandwidth
+/// spent competing with the thread that composites a scrolling feed. On, it uses
+/// `mediacodec` and copies nothing — but the direct path renders black on some
+/// devices, so this is the reader's to turn on rather than a default.
+const optionMediaDirectHardwareDecoding = 'media.direct_hardware_decoding';
+
 /// How far ahead a feed video reads when the reader has not asked for more.
 ///
 /// libmpv's own defaults are built for watching one film, not for scrolling
@@ -37,6 +46,26 @@ const int kVideoReadaheadSeconds = 10;
 /// for scrubbing back. A feed is not somewhere anyone rewinds far.
 const int kVideoDemuxerMaxBytes = 16 * 1024 * 1024;
 const int kVideoDemuxerMaxBackBytes = 4 * 1024 * 1024;
+
+/// How long a video that has scrolled off screen keeps its player before handing
+/// it back to the pool. Long enough that overshooting a video and scrolling back
+/// re-attaches to it at the same position; short enough that a fling does not
+/// leave a trail of live players behind it.
+const Duration kVideoHiddenReleaseDelay = Duration(seconds: 3);
+
+/// How long a video tile must stay at least half on screen before it is allowed
+/// to build a player. A fling sweeps past tiles that are never watched; without
+/// this, each of them allocated libmpv and a native texture on the way by.
+const Duration kVideoCreationSettleDelay = Duration(milliseconds: 250);
+
+/// How many video players may be alive at once.
+///
+/// Each one is a libmpv instance holding a MediaCodec session, a demuxer thread
+/// and its cache — and Android caps how many hardware video decoders exist at
+/// all, across every app. Exhausting that cap does not fail loudly; it silently
+/// drops new videos to software decoding, which is exactly when a timeline stops
+/// keeping up.
+const int kVideoPoolSize = 3;
 
 const optionDownloadType = 'download.type';
 const optionDownloadPath = 'download.path';

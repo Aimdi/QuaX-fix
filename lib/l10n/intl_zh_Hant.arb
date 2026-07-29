@@ -1216,5 +1216,9 @@
   "save_folder_remember": "記住這個資料夾",
   "@save_folder_remember": {},
   "save_folder_remember_description": "新儲存的內容會放進你上次選擇的資料夾，直到你換一個",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "直接硬體解碼",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "解碼後的畫面直接送到螢幕，不再先複製一次，播放影片時捲動更順暢。部分裝置上畫面會變黑，遇到這種情況請重新關閉此選項。",
+  "@direct_hardware_decoding_description": {}
 }

@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Memori ĉi tiun dosierujon",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Novaj konservoj iros al la laste elektita dosierujo, ĝis vi elektos alian",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Rekta aparata malkodado",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Malkoditaj videobildoj iras rekte al la ekrano anstataŭ esti unue kopiitaj, do rulumado restas pli glata dum video ludiĝas. Sur iuj aparatoj la bildo restas nigra — tiuokaze remalŝaltu ĉi tiun agordon.",
+  "@direct_hardware_decoding_description": {}
 }

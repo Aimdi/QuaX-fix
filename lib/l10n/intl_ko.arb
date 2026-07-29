@@ -1216,5 +1216,9 @@
   "save_folder_remember": "이 폴더 기억하기",
   "@save_folder_remember": {},
   "save_folder_remember_description": "새로 저장하는 항목은 다른 폴더를 고르기 전까지 마지막에 고른 폴더로 들어갑니다",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "직접 하드웨어 디코딩",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "디코딩한 영상 프레임을 먼저 복사하지 않고 화면으로 곧바로 보내므로, 동영상이 재생되는 동안에도 스크롤이 더 부드럽습니다. 일부 기기에서는 화면이 검게 나오는데, 그럴 때는 이 설정을 다시 끄세요.",
+  "@direct_hardware_decoding_description": {}
 }

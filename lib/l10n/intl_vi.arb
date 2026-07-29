@@ -1216,5 +1216,9 @@
   "save_folder_remember": "Ghi nhớ thư mục này",
   "@save_folder_remember": {},
   "save_folder_remember_description": "Các mục lưu mới sẽ vào thư mục bạn chọn gần nhất, cho đến khi bạn chọn thư mục khác",
-  "@save_folder_remember_description": {}
+  "@save_folder_remember_description": {},
+  "direct_hardware_decoding": "Giải mã trực tiếp bằng phần cứng",
+  "@direct_hardware_decoding": {},
+  "direct_hardware_decoding_description": "Các khung hình đã giải mã được gửi thẳng lên màn hình thay vì phải sao chép trước, nhờ đó việc cuộn vẫn mượt hơn khi video đang phát. Trên một số thiết bị hình ảnh sẽ bị đen — khi đó hãy tắt lại tuỳ chọn này.",
+  "@direct_hardware_decoding_description": {}
 }

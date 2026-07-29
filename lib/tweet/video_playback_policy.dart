@@ -25,13 +25,17 @@ bool showsPlayButton({
 ///
 /// [alreadyCached] short-circuits the wait — the pool already holds the player,
 /// so attaching to it costs nothing and delaying would only make a scroll-back
-/// flash its poster again.
+/// flash its poster again. It short-circuits only while the tile is [isVisible]:
+/// a tile that has scrolled away gives its player back so the pool can evict it,
+/// and a cached entry that re-attached from `build` alone would pin it again
+/// before it was ever on screen.
 bool shouldCreatePlayer({
   required bool autoPlayPref,
   required bool alwaysPlay,
   required bool userRequestedPlay,
   required bool alreadyCached,
   required bool hasBeenVisible,
+  required bool isVisible,
 }) {
   if (showsPlayButton(
     autoPlayPref: autoPlayPref,
@@ -41,5 +45,5 @@ bool shouldCreatePlayer({
   )) {
     return false;
   }
-  return hasBeenVisible || alreadyCached;
+  return hasBeenVisible || (alreadyCached && isVisible);
 }

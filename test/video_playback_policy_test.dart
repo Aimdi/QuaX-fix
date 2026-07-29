@@ -19,12 +19,14 @@ bool _create({
   bool userRequestedPlay = false,
   bool alreadyCached = false,
   bool hasBeenVisible = false,
+  bool isVisible = false,
 }) => shouldCreatePlayer(
   autoPlayPref: autoPlayPref,
   alwaysPlay: alwaysPlay,
   userRequestedPlay: userRequestedPlay,
   alreadyCached: alreadyCached,
   hasBeenVisible: hasBeenVisible,
+  isVisible: isVisible,
 );
 
 void main() {
@@ -63,12 +65,25 @@ void main() {
     // Reattaching to a pooled player costs nothing, and waiting would flash the
     // poster again every time the reader scrolls back.
     test('an already pooled player reattaches without waiting for visibility', () {
-      expect(_create(alreadyCached: true, hasBeenVisible: false), isTrue);
+      expect(_create(alreadyCached: true, hasBeenVisible: false, isVisible: true), isTrue);
+    });
+
+    // A hidden tile hands its player back so the pool can evict it. If a cached
+    // entry were enough on its own, `build` would re-attach — and re-pin — every
+    // tile the list keeps alive below the fold, which is the leak this closes.
+    test('a cached player is not reattached by a tile that is off screen', () {
+      expect(_create(alreadyCached: true, hasBeenVisible: false, isVisible: false), isFalse);
+    });
+
+    test('a GIF that has been let go stays let go until it is back on screen', () {
+      expect(_create(alwaysPlay: true, alreadyCached: true, hasBeenVisible: false, isVisible: false), isFalse);
+      expect(_create(alwaysPlay: true, alreadyCached: true, hasBeenVisible: false, isVisible: true), isTrue);
     });
 
     test('a video still showing its play button never allocates, visible or not', () {
       expect(_create(hasBeenVisible: true), isFalse);
       expect(_create(hasBeenVisible: false), isFalse);
+      expect(_create(isVisible: true), isFalse);
     });
   });
 }
