@@ -24,6 +24,26 @@ final count = tweet["legacy"]?["favorite_count"] as int? ?? 0;
 final media = tweet["legacy"]?["entities"]?["media"] as List<dynamic>?;
 ```
 
+
+**For new parsing code, prefer `Json` (`lib/utils/json.dart`):** an extension
+type (erased at compile time) whose `[]` cannot throw — a wrong key, a wrong
+shape or an index past the end all read as null at the end of the path.
+
+```dart
+import 'package:xta/utils/json.dart';
+
+final tweet = Json(response);
+final text = tweet['legacy']['full_text'].string;
+final count = tweet['legacy']['favorite_count'].integer ?? 0;
+for (final media in tweet['legacy']['entities']['media'].list) {
+  final url = media['media_url_https'].string;
+}
+```
+
+The deep path is the safe path — there is nothing shorter to reach for. See
+`TickerQuote.fromChartJson` for a parser written this way. Existing `?[]`
+parsers are fine as they are; migrate opportunistically, not wholesale.
+
 **Never use `[]` without null-aware access on API-derived maps:**
 
 ```dart

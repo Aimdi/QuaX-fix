@@ -76,6 +76,14 @@ final count = result["legacy"]?["favorite_count"] as int? ?? 0;
 final text = result["data"]["text"] as String;
 ```
 
+For new parsing code, prefer the `Json` extension type in `lib/utils/json.dart`
+— `Json(result)['data']['legacy']['favorite_count'].integer ?? 0` cannot throw
+at any step, so the deep path is the safe path (see `/parse-api`).
+
+`use_build_context_synchronously` is a build **error** here, not a hint: after
+an `await`, guard with `mounted`/`context.mounted` or capture what you need
+(messenger, navigator, strings) before the await.
+
 The layer is split by responsibility:
 
 | File | Responsibility |

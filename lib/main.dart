@@ -70,7 +70,7 @@ import 'package:xta/plugins/stocks/stocks_store.dart';
 import 'package:xta/speech/speech_bar.dart';
 import 'package:xta/speech/speech_store.dart';
 
-Future checkForUpdates(context) async {
+Future checkForUpdates(BuildContext context) async {
   Logger.root.info('Checking for updates');
 
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -91,6 +91,9 @@ Future checkForUpdates(context) async {
         installedTag: buildReleaseTag,
         installedVersion: packageInfo.version,
       )) {
+        if (!context.mounted) {
+          return;
+        }
         await showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -103,7 +106,9 @@ Future checkForUpdates(context) async {
                   child: Text(L10n.of(context).view_on_github),
                   onPressed: () async {
                     await openUri(context, map['html_url']);
-                    Navigator.of(context).pop();
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
                   },
                 ),
               ],
@@ -115,11 +120,11 @@ Future checkForUpdates(context) async {
   }
 }
 
-Future checkForAccounts(context) async {
+Future checkForAccounts(BuildContext context) async {
   Logger.root.info('Checking for accounts');
 
   final accounts = await getAccounts();
-  if (accounts.isEmpty) {
+  if (accounts.isEmpty && context.mounted) {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
