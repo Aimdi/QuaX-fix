@@ -222,22 +222,24 @@ class _TickerScreenState extends State<_TickerScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text('\$${widget.symbol.toUpperCase()}')),
-      body: Column(
-        children: [
-          if (chart != null) chart,
-          Expanded(
-            child: TweetContextScope(
-              child: PaginatedTweetList(
-                feed: _feed,
-                loadPage: _loadPage,
-                username: null,
-                firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets,
-                newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
-                emptyMessage: L10n.of(context).no_posts_match_your_search,
-              ),
-            ),
-          ),
+      // The chart scrolls away with the posts rather than holding the top of the
+      // screen. It was a fixed child of a Column with the list in an Expanded
+      // below, so posts scrolled under a chart that never moved — and on a
+      // phone that chart is most of the screen.
+      body: NestedScrollView(
+        headerSliverBuilder: (context, _) => [
+          if (chart != null) SliverToBoxAdapter(child: chart),
         ],
+        body: TweetContextScope(
+          child: PaginatedTweetList(
+            feed: _feed,
+            loadPage: _loadPage,
+            username: null,
+            firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets,
+            newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
+            emptyMessage: L10n.of(context).no_posts_match_your_search,
+          ),
+        ),
       ),
     );
   }
