@@ -85,6 +85,18 @@ const optionPluginDeepmarksApiBase = 'plugin.deepmarks.api_base';
 const optionPluginDeepmarksApiKey = 'plugin.deepmarks.api_key';
 const optionPluginDeepmarksSecretKey = 'plugin.deepmarks.secret_key';
 
+const pluginIdImmich = 'immich';
+const optionPluginImmichEnabled = 'plugin.immich.enabled';
+const optionPluginImmichServerUrl = 'plugin.immich.server_url';
+const optionPluginImmichApiKey = 'plugin.immich.api_key';
+
+/// Whether each bookmark folder gets an Immich album of its own, named after it.
+const optionPluginImmichAlbumPerFolder = 'plugin.immich.album_per_folder';
+
+/// Videos and GIFs are sent alongside photos unless this is off. They are much
+/// larger than a photo, which is worth a choice on a metered connection.
+const optionPluginImmichIncludeVideos = 'plugin.immich.include_videos';
+
 const pluginIdKarakeep = 'karakeep';
 const optionPluginKarakeepEnabled = 'plugin.karakeep.enabled';
 const optionPluginKarakeepServerUrl = 'plugin.karakeep.server_url';

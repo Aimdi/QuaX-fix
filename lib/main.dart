@@ -61,6 +61,7 @@ import 'package:app_links/app_links.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:xta/plugins/karakeep/karakeep_client.dart';
 import 'package:xta/plugins/deepmarks/deepmarks_client.dart';
+import 'package:xta/plugins/immich/immich_client.dart';
 import 'package:xta/plugins/reddit/reddit_auth.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_store.dart';
@@ -307,6 +308,11 @@ Future<void> main() async {
       optionPluginDeepmarksApiBase: '',
       optionPluginDeepmarksApiKey: '',
       optionPluginDeepmarksSecretKey: '',
+      optionPluginImmichEnabled: false,
+      optionPluginImmichServerUrl: '',
+      optionPluginImmichApiKey: '',
+      optionPluginImmichAlbumPerFolder: true,
+      optionPluginImmichIncludeVideos: true,
       optionPluginKarakeepEnabled: false,
       optionPluginKarakeepServerUrl: '',
       optionPluginKarakeepApiKey: '',
@@ -410,6 +416,7 @@ Future<void> main() async {
     var trendLocationModel = UserTrendLocationModel(prefService);
 
     final deepmarksClient = DeepmarksClient();
+    final immichClient = ImmichClient();
     final karakeepClient = KarakeepClient();
     final redditClient = RedditClient();
     final redditIcons = RedditIcons(redditClient);
@@ -470,6 +477,7 @@ Future<void> main() async {
             Provider(create: (context) => TrendLocationsModel()),
             Provider(create: (context) => TrendsModel(trendLocationModel)),
             Provider(create: (_) => deepmarksClient),
+            Provider(create: (_) => immichClient),
             Provider(create: (_) => karakeepClient),
             Provider(create: (_) => redditClient),
             Provider(create: (_) => redditAuth),

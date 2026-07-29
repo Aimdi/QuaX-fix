@@ -21,6 +21,7 @@ const String tableLikedTweet = 'liked_tweet';
 const String tableSearchSubscription = 'search_subscription';
 const String tableSubstackSubscription = 'substack_subscription';
 const String tableRedditSubscription = 'reddit_subscription';
+const String tableImmichUpload = 'immich_upload';
 const String tableStockSubscription = 'stock_subscription';
 const String tableSearchSubscriptionGroupMember = 'search_subscription_group_member';
 const String tableSubscription = 'subscription';
@@ -33,7 +34,7 @@ const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 43;
+const int databaseVersion = 44;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -525,6 +526,24 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
       'in_feed INTEGER NOT NULL DEFAULT 1, '
       'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
       reverseSql: 'DROP TABLE $tableStockSubscription',
+    ),
+  ],
+  44: [
+    // Per-folder toggle: send a post's media to Immich when it is filed here.
+    // Sits beside auto_download from 33 for the same reason — it is a property
+    // of the folder, not a global setting.
+    SqlMigration(
+      'ALTER TABLE $tableSavedTweetFolder ADD COLUMN auto_upload BOOLEAN DEFAULT 0',
+      reverseSql: 'ALTER TABLE $tableSavedTweetFolder DROP COLUMN auto_upload',
+    ),
+    // What has already been sent. Immich rejects a second copy of the same bytes
+    // by checksum, so this exists to avoid spending the upload to be told so —
+    // re-filing a post between folders should not re-send its video.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableImmichUpload ('
+      'media_id VARCHAR PRIMARY KEY, asset_id VARCHAR, '
+      'uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableImmichUpload',
     ),
   ],
 });

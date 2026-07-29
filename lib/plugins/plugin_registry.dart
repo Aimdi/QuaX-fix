@@ -1,4 +1,5 @@
 import 'package:xta/plugins/deepmarks/deepmarks_plugin.dart';
+import 'package:xta/plugins/immich/immich_plugin.dart';
 import 'package:xta/plugins/karakeep/karakeep_plugin.dart';
 import 'package:xta/plugins/plugin.dart';
 import 'package:xta/plugins/reddit/reddit_plugin.dart';
@@ -10,6 +11,7 @@ final List<XtaPlugin> builtInPlugins = [
   SubstackPlugin(),
   KarakeepPlugin(),
   DeepmarksPlugin(),
+  ImmichPlugin(),
   RedditPlugin(),
   StocksPlugin(),
 ];

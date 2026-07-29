@@ -71,13 +71,15 @@ class SavedTweetFolder with ToMappable {
   final DateTime createdAt;
   // When true, saving a post into this folder also downloads its images.
   final bool autoDownload;
+  final bool autoUpload;
 
   SavedTweetFolder(
       {required this.id,
       required this.name,
       this.position = 0,
       required this.createdAt,
-      this.autoDownload = false});
+      this.autoDownload = false,
+      this.autoUpload = false});
 
   factory SavedTweetFolder.fromMap(Map<String, Object?> map) {
     return SavedTweetFolder(
@@ -85,16 +87,18 @@ class SavedTweetFolder with ToMappable {
         name: map['name'] as String,
         position: (map['position'] as int?) ?? 0,
         createdAt: DateTime.parse(map['created_at'] as String),
-        autoDownload: (map['auto_download'] as int?) == 1);
+        autoDownload: (map['auto_download'] as int?) == 1,
+        autoUpload: (map['auto_upload'] as int?) == 1);
   }
 
-  SavedTweetFolder copyWith({String? name, int? position, bool? autoDownload}) {
+  SavedTweetFolder copyWith({String? name, int? position, bool? autoDownload, bool? autoUpload}) {
     return SavedTweetFolder(
         id: id,
         name: name ?? this.name,
         position: position ?? this.position,
         createdAt: createdAt,
-        autoDownload: autoDownload ?? this.autoDownload);
+        autoDownload: autoDownload ?? this.autoDownload,
+        autoUpload: autoUpload ?? this.autoUpload);
   }
 
   @override
@@ -105,6 +109,7 @@ class SavedTweetFolder with ToMappable {
       'position': position,
       'created_at': createdAt.toIso8601String(),
       'auto_download': autoDownload ? 1 : 0,
+      'auto_upload': autoUpload ? 1 : 0,
     };
   }
 }
