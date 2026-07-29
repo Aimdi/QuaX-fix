@@ -368,6 +368,8 @@ Future<void> main() async {
       optionSavedTabOrder: '',
       optionSavedFolderHintShown: false,
       optionLikedFirstToastShown: false,
+      optionSavedStickyFolderEnabled: false,
+      optionSavedStickyFolderId: '',
       optionUseAbsoluteTimestamp: false,
       optionDefaultProfileTab: profileTabs[0].id.name,
       optionUserTrendsLocations: jsonEncode({

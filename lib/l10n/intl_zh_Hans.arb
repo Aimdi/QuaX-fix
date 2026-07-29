@@ -1212,5 +1212,9 @@
   "group_combined_count": "正在一起阅读另外 {count} 个",
   "@group_combined_count": {},
   "group_combine_clear": "清除",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "记住这个文件夹",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "新保存的内容会放进你上次选择的文件夹，直到你换一个",
+  "@save_folder_remember_description": {}
 }

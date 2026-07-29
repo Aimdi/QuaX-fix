@@ -1212,5 +1212,9 @@
   "group_combined_count": "{count} andere worden meegelezen",
   "@group_combined_count": {},
   "group_combine_clear": "Wissen",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Deze map onthouden",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Nieuwe items komen in de laatst gekozen map, totdat je een andere kiest",
+  "@save_folder_remember_description": {}
 }

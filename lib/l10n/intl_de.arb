@@ -1212,5 +1212,9 @@
   "group_combined_count": "{count} weitere werden mitgelesen",
   "@group_combined_count": {},
   "group_combine_clear": "Aufheben",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Diesen Ordner merken",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Neue Speicherungen landen im zuletzt gewählten Ordner, bis du einen anderen wählst",
+  "@save_folder_remember_description": {}
 }

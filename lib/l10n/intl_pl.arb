@@ -1212,5 +1212,9 @@
   "group_combined_count": "Czytasz razem jeszcze {count}",
   "@group_combined_count": {},
   "group_combine_clear": "Wyczyść",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Zapamiętaj ten folder",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Nowe zapisy trafią do ostatnio wybranego folderu, dopóki nie wybierzesz innego",
+  "@save_folder_remember_description": {}
 }

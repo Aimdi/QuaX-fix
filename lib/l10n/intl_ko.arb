@@ -1212,5 +1212,9 @@
   "group_combined_count": "{count}개를 함께 보는 중",
   "@group_combined_count": {},
   "group_combine_clear": "지우기",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "이 폴더 기억하기",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "새로 저장하는 항목은 다른 폴더를 고르기 전까지 마지막에 고른 폴더로 들어갑니다",
+  "@save_folder_remember_description": {}
 }

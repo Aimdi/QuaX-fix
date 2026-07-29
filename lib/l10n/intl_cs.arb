@@ -1212,5 +1212,9 @@
   "group_combined_count": "Společně se čte ještě {count}",
   "@group_combined_count": {},
   "group_combine_clear": "Zrušit",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Zapamatovat tuto složku",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Nové uložené příspěvky půjdou do naposledy zvolené složky, dokud nezvolíte jinou",
+  "@save_folder_remember_description": {}
 }

@@ -1212,5 +1212,9 @@
   "group_combined_count": "正在一起閱讀另外 {count} 個",
   "@group_combined_count": {},
   "group_combine_clear": "清除",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "記住這個資料夾",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "新儲存的內容會放進你上次選擇的資料夾，直到你換一個",
+  "@save_folder_remember_description": {}
 }

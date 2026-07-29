@@ -1212,5 +1212,9 @@
   "group_combined_count": "{count} और साथ में पढ़े जा रहे हैं",
   "@group_combined_count": {},
   "group_combine_clear": "हटाएँ",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "यह फ़ोल्डर याद रखें",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "नई सेव की गई पोस्ट अंतिम चुने गए फ़ोल्डर में जाएँगी, जब तक आप दूसरा न चुनें",
+  "@save_folder_remember_description": {}
 }

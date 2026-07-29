@@ -1212,5 +1212,9 @@
   "group_combined_count": "Разом читається ще: {count}",
   "@group_combined_count": {},
   "group_combine_clear": "Скинути",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Запам’ятати цю теку",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Нові збереження потраплятимуть до останньої вибраної теки, доки ви не виберете іншу",
+  "@save_folder_remember_description": {}
 }

@@ -1212,5 +1212,9 @@
   "group_combined_count": "Leser {count} til samtidig",
   "@group_combined_count": {},
   "group_combine_clear": "Fjern",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Husk denne mappen",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Nye lagringer havner i den sist valgte mappen, til du velger en annen",
+  "@save_folder_remember_description": {}
 }

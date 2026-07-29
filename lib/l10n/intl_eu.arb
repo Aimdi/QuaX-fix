@@ -1212,5 +1212,9 @@
   "group_combined_count": "Beste {count} batera irakurtzen",
   "@group_combined_count": {},
   "group_combine_clear": "Garbitu",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Gogoratu karpeta hau",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Gordetzen duzuna azkena aukeratutako karpetara joango da, beste bat aukeratu arte",
+  "@save_folder_remember_description": {}
 }

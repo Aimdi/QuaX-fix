@@ -1212,5 +1212,9 @@
   "group_combined_count": "Đang đọc thêm {count} nhóm cùng lúc",
   "@group_combined_count": {},
   "group_combine_clear": "Xóa",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Ghi nhớ thư mục này",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Các mục lưu mới sẽ vào thư mục bạn chọn gần nhất, cho đến khi bạn chọn thư mục khác",
+  "@save_folder_remember_description": {}
 }

@@ -1212,5 +1212,9 @@
   "group_combined_count": "Lendo mais {count} juntos",
   "@group_combined_count": {},
   "group_combine_clear": "Limpar",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Lembrar esta pasta",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "O que você salvar vai para a última pasta escolhida, até escolher outra",
+  "@save_folder_remember_description": {}
 }

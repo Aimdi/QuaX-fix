@@ -1212,5 +1212,9 @@
   "group_combined_count": "Razam čytajecca jašče: {count}",
   "@group_combined_count": {},
   "group_combine_clear": "Skinuć",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Zapomnić hetuju papku",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Novyja zachavanni buduć traplać u apošniuju vybranuju papku, pakul vy nie vybieryce inšuju",
+  "@save_folder_remember_description": {}
 }

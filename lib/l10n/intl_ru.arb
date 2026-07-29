@@ -1212,5 +1212,9 @@
   "group_combined_count": "Вместе читается ещё: {count}",
   "@group_combined_count": {},
   "group_combine_clear": "Сбросить",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Запомнить эту папку",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Новые сохранения будут попадать в последнюю выбранную папку, пока вы не выберете другую",
+  "@save_folder_remember_description": {}
 }

@@ -230,6 +230,11 @@ const optionSavedTabOrder = 'saved.tab_order';
 const optionSavedFolderHintShown = 'saved.folder_hint_shown';
 const optionLikedFirstToastShown = 'saved.liked_first_toast_shown';
 
+/// Whether a plain tap on the bookmark files a post where the reader last chose
+/// to, and which folder that is. Empty means unfiled.
+const optionSavedStickyFolderEnabled = 'saved.sticky_folder_enabled';
+const optionSavedStickyFolderId = 'saved.sticky_folder_id';
+
 const optionUserTrendsLocations = 'trends.locations';
 
 const optionNonConfirmationBiasMode = 'other.improve_non_confirmation_bias';

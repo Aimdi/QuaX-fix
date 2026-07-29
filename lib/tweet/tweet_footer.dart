@@ -440,7 +440,18 @@ class TweetFooterBar extends StatelessWidget {
                     onChanged();
                   }, L10n.of(context).action_unsave_post)
                 : tweetFooterIconButton(context, Icons.bookmark_border, tint, 0, () async {
-                    await model.saveTweet(tweet.idStr!, tweet.user?.idStr, tweet.toJson());
+                    // Goes wherever the reader last chose, when they have asked
+                    // for that to be remembered; unfiled otherwise, as before.
+                    // Routed through the shared save so a folder set to
+                    // auto-download does so on a plain tap too — inserting the
+                    // row here skipped that entirely.
+                    await fileSavedTweet(
+                      context,
+                      tweetId: tweet.idStr!,
+                      userId: tweet.user?.idStr,
+                      content: tweet.toJson(),
+                      folderId: rememberedSaveFolder(PrefService.of(context, listen: false)),
+                    );
                     onChanged();
                     if (context.mounted) {
                       maybeShowFolderHint(context);

@@ -1212,5 +1212,9 @@
   "group_combined_count": "{count} grup daha birlikte okunuyor",
   "@group_combined_count": {},
   "group_combine_clear": "Temizle",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Bu klasörü hatırla",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Yeni kaydettiklerin, başka birini seçene kadar en son seçtiğin klasöre gider",
+  "@save_folder_remember_description": {}
 }

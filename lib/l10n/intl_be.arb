@@ -1212,5 +1212,9 @@
   "group_combined_count": "Разам чытаецца яшчэ: {count}",
   "@group_combined_count": {},
   "group_combine_clear": "Скінуць",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Запомніць гэтую папку",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Новыя захаванні будуць трапляць у апошнюю выбраную папку, пакуль вы не выберыце іншую",
+  "@save_folder_remember_description": {}
 }

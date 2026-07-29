@@ -1212,5 +1212,9 @@
   "group_combined_count": "{count} autres lus en même temps",
   "@group_combined_count": {},
   "group_combine_clear": "Effacer",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Mémoriser ce dossier",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Les nouveaux enregistrements iront dans le dernier dossier choisi, jusqu’à ce que vous en choisissiez un autre",
+  "@save_folder_remember_description": {}
 }

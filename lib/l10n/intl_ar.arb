@@ -1212,5 +1212,9 @@
   "group_combined_count": "تُقرأ {count} أخرى معها",
   "@group_combined_count": {},
   "group_combine_clear": "مسح",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "تذكّر هذا المجلد",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "ما تحفظه لاحقًا سيذهب إلى آخر مجلد اخترته، حتى تختار غيره",
+  "@save_folder_remember_description": {}
 }

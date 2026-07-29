@@ -3,12 +3,77 @@ import 'package:flutter/services.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
+import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/saved/saved_tweet_folder_model.dart';
 import 'package:quax/saved/saved_tweet_model.dart';
 import 'package:quax/utils/downloads.dart';
 import 'package:quax/utils/iterables.dart';
+
+/// Where a plain tap on the bookmark files a post, or null for unfiled.
+///
+/// Null whenever the reader has not asked for a folder to be remembered, which
+/// is the old behaviour: everything lands unfiled until they say otherwise.
+String? rememberedSaveFolder(BasePrefService prefs) {
+  if (prefs.get<bool>(optionSavedStickyFolderEnabled) != true) {
+    return null;
+  }
+  final id = prefs.get<String>(optionSavedStickyFolderId) ?? '';
+  return id.isEmpty ? null : id;
+}
+
+/// Notes [folderId] as where the next save goes, if remembering is switched on.
+Future<void> rememberSaveFolder(BasePrefService prefs, String? folderId) async {
+  if (prefs.get<bool>(optionSavedStickyFolderEnabled) == true) {
+    await prefs.set(optionSavedStickyFolderId, folderId ?? '');
+  }
+}
+
+/// Files a post in [folderId] and downloads its photos if that folder asks for
+/// it.
+///
+/// Shared by the sheet and by a plain tap on the bookmark. The plain tap used
+/// to insert the row itself and skip the download, so a folder set to
+/// auto-download only did so when the post arrived through the sheet.
+Future<void> fileSavedTweet(
+  BuildContext context, {
+  required String tweetId,
+  required String? userId,
+  required Map<String, dynamic> content,
+  required String? folderId,
+}) async {
+  final savedModel = context.read<SavedTweetModel>();
+  final folderModel = context.read<SavedTweetFolderModel>();
+  final prefs = PrefService.of(context, listen: false);
+  final messenger = ScaffoldMessenger.of(context);
+
+  // Read before the await: the labels come from a context that may be gone by
+  // the time the download starts.
+  final downloadingLabel = L10n.of(context).downloading_media;
+  final doneLabel = L10n.of(context).successfully_saved_the_media;
+  final needFolderLabel = L10n.of(context).set_a_download_folder_to_auto_download;
+
+  final autoDownload =
+      folderId != null && (folderModel.state.firstWhereOrNull((f) => f.id == folderId)?.autoDownload ?? false);
+
+  if (savedModel.isSaved(tweetId)) {
+    await savedModel.setFolder(tweetId, folderId);
+  } else {
+    await savedModel.saveTweet(tweetId, userId, content, folderId: folderId);
+  }
+
+  if (autoDownload) {
+    await autoDownloadTweetPhotos(
+      content: content,
+      prefs: prefs,
+      messenger: messenger,
+      downloadingLabel: downloadingLabel,
+      doneLabel: doneLabel,
+      needFolderLabel: needFolderLabel,
+    );
+  }
+}
 
 /// Opens the "save to folder" bottom sheet for a post, saving it first if needed.
 Future<void> showSaveToFolderSheet(BuildContext context,
@@ -54,36 +119,19 @@ class _SaveToFolderSheet extends StatelessWidget {
       required this.messenger});
 
   Future<void> _file(BuildContext context, String? folderId, String label) async {
-    final autoDownload =
-        folderId != null && (folderModel.state.firstWhereOrNull((f) => f.id == folderId)?.autoDownload ?? false);
     final prefs = PrefService.of(context, listen: false);
-    final downloadingLabel = L10n.of(context).downloading_media;
-    final doneLabel = L10n.of(context).successfully_saved_the_media;
-    final needFolderLabel = L10n.of(context).set_a_download_folder_to_auto_download;
+    final save = fileSavedTweet(context, tweetId: tweetId, userId: userId, content: content, folderId: folderId);
 
     Navigator.pop(context);
+    await save;
 
-    if (savedModel.isSaved(tweetId)) {
-      await savedModel.setFolder(tweetId, folderId);
-    } else {
-      await savedModel.saveTweet(tweetId, userId, content, folderId: folderId);
-    }
+    // The pick is what gets remembered, so the next plain tap lands here too.
+    await rememberSaveFolder(prefs, folderId);
 
     messenger.showSnackBar(SnackBar(
       content: Text(L10n.current.saved_to_folder(label)),
       duration: const Duration(seconds: 3),
     ));
-
-    if (autoDownload) {
-      await autoDownloadTweetPhotos(
-        content: content,
-        prefs: prefs,
-        messenger: messenger,
-        downloadingLabel: downloadingLabel,
-        doneLabel: doneLabel,
-        needFolderLabel: needFolderLabel,
-      );
-    }
   }
 
   Future<void> _createAndFile(BuildContext context) async {
@@ -115,6 +163,27 @@ class _SaveToFolderSheet extends StatelessWidget {
                   ],
                 ),
               ),
+              // Switched off, every plain tap on the bookmark lands unfiled and
+              // filing is a long-press each time. Switched on, the folder just
+              // picked becomes where saves go until another is picked.
+              SwitchListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                secondary: const Icon(Icons.push_pin_outlined),
+                title: Text(L10n.of(context).save_folder_remember),
+                subtitle: Text(L10n.of(context).save_folder_remember_description),
+                value: PrefService.of(context).get<bool>(optionSavedStickyFolderEnabled) == true,
+                onChanged: (value) async {
+                  final prefs = PrefService.of(context, listen: false);
+                  await prefs.set(optionSavedStickyFolderEnabled, value);
+                  // Turning it on adopts wherever this post already is, so the
+                  // switch means something before the next pick rather than
+                  // waiting for one.
+                  if (value) {
+                    await prefs.set(optionSavedStickyFolderId, savedModel.folderOf(tweetId) ?? '');
+                  }
+                },
+              ),
+              const Divider(),
               // Scrolls rather than overflowing the sheet once there are more
               // folders than fit (ported from upstream ffea8688).
               Flexible(

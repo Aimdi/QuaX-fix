@@ -1212,5 +1212,9 @@
   "group_combined_count": "Koos loetakse veel {count}",
   "@group_combined_count": {},
   "group_combine_clear": "Tühjenda",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Jäta see kaust meelde",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Uued salvestused lähevad viimati valitud kausta, kuni valid teise",
+  "@save_folder_remember_description": {}
 }

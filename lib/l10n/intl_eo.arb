@@ -1212,5 +1212,9 @@
   "group_combined_count": "Kune legiĝas ankoraŭ {count}",
   "@group_combined_count": {},
   "group_combine_clear": "Vakigi",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Memori ĉi tiun dosierujon",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Novaj konservoj iros al la laste elektita dosierujo, ĝis vi elektos alian",
+  "@save_folder_remember_description": {}
 }

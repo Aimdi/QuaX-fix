@@ -1212,5 +1212,9 @@
   "group_combined_count": "{count} lainnya dibaca bersamaan",
   "@group_combined_count": {},
   "group_combine_clear": "Bersihkan",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Ingat folder ini",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Simpanan baru akan masuk ke folder terakhir yang kamu pilih, sampai kamu pilih yang lain",
+  "@save_folder_remember_description": {}
 }

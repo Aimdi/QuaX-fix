@@ -1212,5 +1212,9 @@
   "group_combined_count": "Llegint-ne {count} més alhora",
   "@group_combined_count": {},
   "group_combine_clear": "Neteja",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Recorda aquesta carpeta",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "El que guardis anirà a la darrera carpeta triada, fins que en triïs una altra",
+  "@save_folder_remember_description": {}
 }

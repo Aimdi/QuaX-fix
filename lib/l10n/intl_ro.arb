@@ -1212,5 +1212,9 @@
   "group_combined_count": "Se mai citesc {count} împreună",
   "@group_combined_count": {},
   "group_combine_clear": "Șterge",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Ține minte acest dosar",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Ce salvezi va merge în ultimul dosar ales, până alegi altul",
+  "@save_folder_remember_description": {}
 }

@@ -1212,5 +1212,9 @@
   "group_combined_count": "Altri {count} letti insieme",
   "@group_combined_count": {},
   "group_combine_clear": "Azzera",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Ricorda questa cartella",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "I nuovi salvataggi andranno nell’ultima cartella scelta, finché non ne scegli un’altra",
+  "@save_folder_remember_description": {}
 }

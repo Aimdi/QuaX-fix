@@ -1212,5 +1212,9 @@
   "group_combined_count": "Leyendo {count} más a la vez",
   "@group_combined_count": {},
   "group_combine_clear": "Quitar",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Recordar esta carpeta",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "Lo que guardes irá a la última carpeta elegida, hasta que elijas otra",
+  "@save_folder_remember_description": {}
 }

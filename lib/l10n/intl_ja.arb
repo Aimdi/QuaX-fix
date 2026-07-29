@@ -1212,5 +1212,9 @@
   "group_combined_count": "他に {count} 件を一緒に表示中",
   "@group_combined_count": {},
   "group_combine_clear": "解除",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "このフォルダーを記憶する",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "新しい保存は、別のフォルダーを選ぶまで最後に選んだフォルダーに入ります",
+  "@save_folder_remember_description": {}
 }

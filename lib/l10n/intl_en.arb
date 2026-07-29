@@ -1212,5 +1212,9 @@
   "group_combined_count": "Reading {count} more alongside",
   "@group_combined_count": {},
   "group_combine_clear": "Clear",
-  "@group_combine_clear": {}
+  "@group_combine_clear": {},
+  "save_folder_remember": "Remember this folder",
+  "@save_folder_remember": {},
+  "save_folder_remember_description": "New saves go to the folder you last picked, until you pick another",
+  "@save_folder_remember_description": {}
 }
