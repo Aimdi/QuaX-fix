@@ -531,11 +531,9 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
   44: [
     // Per-folder toggle: send a post's media to Immich when it is filed here.
     // Sits beside auto_download from 33 for the same reason — it is a property
-    // of the folder, not a global setting.
-    SqlMigration(
-      'ALTER TABLE $tableSavedTweetFolder ADD COLUMN auto_upload BOOLEAN DEFAULT 0',
-      reverseSql: 'ALTER TABLE $tableSavedTweetFolder DROP COLUMN auto_upload',
-    ),
+    // of the folder, not a global setting. Tolerant like parent_id in 41: an
+    // upgrade must not be stopped by a database whose folder table is gone.
+    Migration(Operation(_addFolderAutoUploadColumn)),
     // What has already been sent. Immich rejects a second copy of the same bytes
     // by checksum, so this exists to avoid spending the upload to be told so —
     // re-filing a post between folders should not re-send its video.
@@ -562,6 +560,17 @@ const Map<String, String> _indexes = {
   'idx_feed_group_chunk_cursor': '$tableFeedGroupChunk (cursor_id, hash)',
   'idx_subscription_group_member_profile': '$tableSubscriptionGroupMember (profile_id)',
 };
+
+/// Adds the Immich column, tolerating a database whose folder table is gone —
+/// which includes every migration-test fixture that only builds the tables its
+/// own path touches. Without the column, folders simply cannot auto-upload.
+Future<void> _addFolderAutoUploadColumn(Database db) async {
+  try {
+    await db.execute('ALTER TABLE $tableSavedTweetFolder ADD COLUMN auto_upload BOOLEAN DEFAULT 0');
+  } catch (e) {
+    Repository.log.warning('Could not add auto_upload to $tableSavedTweetFolder: $e');
+  }
+}
 
 /// Adds the nesting column, tolerating a database whose group table is gone.
 Future<void> _addGroupParentColumn(Database db) async {
