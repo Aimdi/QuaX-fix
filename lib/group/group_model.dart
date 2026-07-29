@@ -102,25 +102,25 @@ class GroupModel extends Store<SubscriptionGroupGet> {
       final placeholders = List.filled(ids.length, '?').join(', ');
 
       var searchSubscriptions = (await database.rawQuery(
-              'SELECT DISTINCT s.* FROM $tableSearchSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders)',
+              'SELECT DISTINCT s.* FROM $tableSearchSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders) ORDER BY s.id',
               ids))
           .map((e) => SearchSubscription.fromMap(e))
           .toList(growable: false);
 
       var userSubscriptions = (await database.rawQuery(
-              'SELECT DISTINCT s.* FROM $tableSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders)',
+              'SELECT DISTINCT s.* FROM $tableSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders) ORDER BY s.id',
               ids))
           .map((e) => UserSubscription.fromMap(e))
           .toList(growable: false);
 
       var substackSubscriptions = (await database.rawQuery(
-              'SELECT DISTINCT s.* FROM $tableSubstackSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders)',
+              'SELECT DISTINCT s.* FROM $tableSubstackSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders) ORDER BY s.id',
               ids))
           .map((e) => SubstackSubscription.fromMap(e))
           .toList(growable: false);
 
       var redditSubscriptions = (await database.rawQuery(
-              'SELECT DISTINCT s.* FROM $tableRedditSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders)',
+              'SELECT DISTINCT s.* FROM $tableRedditSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders) ORDER BY s.id',
               ids))
           .map((e) => RedditSubscription.fromMap(e))
           .toList(growable: false);

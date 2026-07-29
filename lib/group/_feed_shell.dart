@@ -113,7 +113,13 @@ class _GroupFeedShellState extends State<GroupFeedShell> with AutomaticKeepAlive
   // when this changes, otherwise following someone unrelated would needlessly
   // reload the open timeline.
   String _fingerprint(SubscriptionGroupGet group) {
-    final members = group.subscriptions.map((s) => '${s.id}:${s.inFeed}').join(',');
+    // Sorted, because what the feed shows is the *set* of members and not the
+    // order a query happened to return them in. Hashing them unsorted is why
+    // adding someone to a group made the timeline reset over and over: the
+    // membership queries have no ORDER BY, so SQLite is free to hand back the
+    // same members in a different order once the table has changed under it,
+    // and every later reload then looked like a different group.
+    final members = (group.subscriptions.map((s) => '${s.id}:${s.inFeed}').toList()..sort()).join(',');
     return '$members|${group.includeReplies}|${group.includeRetweets}|${group.popular}|${group.custom}|${group.customRules.cacheKey}';
   }
 
