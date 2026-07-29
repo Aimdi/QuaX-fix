@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/home/_saved.dart';
-import 'package:quax/profile/profile.dart';
-import 'package:quax/saved/saved_tweet_model.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/user.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/home/_saved.dart';
+import 'package:xta/profile/profile.dart';
+import 'package:xta/saved/saved_tweet_model.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/user.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:quax/utils/paging.dart';
+import 'package:xta/utils/paging.dart';
 import 'package:provider/provider.dart';
 
 class ProfileSaved extends StatefulWidget {

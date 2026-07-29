@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/reddit/reddit_sort_sheet.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
 
 /// What Reddit does outside its own tab.
 class RedditSettingsScreen extends StatefulWidget {

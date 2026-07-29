@@ -1,6 +1,6 @@
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:quax/tweet/video_quality.dart';
+import 'package:xta/tweet/video_quality.dart';
 
 /// One cached video player: the libmpv [Player] together with the
 /// [VideoController] that renders it, plus the resolved download URL, the

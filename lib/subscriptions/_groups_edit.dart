@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/group/group_tree.dart';
-import 'package:quax/plugins/reddit/reddit_avatar.dart';
-import 'package:quax/subscriptions/_group_add_member.dart';
-import 'package:quax/subscriptions/group_identity.dart';
-import 'package:quax/subscriptions/widgets/group_color_picker.dart';
-import 'package:quax/subscriptions/group_mark_style.dart';
-import 'package:quax/subscriptions/users_model.dart';
-import 'package:quax/user.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/group/group_tree.dart';
+import 'package:xta/plugins/reddit/reddit_avatar.dart';
+import 'package:xta/subscriptions/_group_add_member.dart';
+import 'package:xta/subscriptions/group_identity.dart';
+import 'package:xta/subscriptions/widgets/group_color_picker.dart';
+import 'package:xta/subscriptions/group_mark_style.dart';
+import 'package:xta/subscriptions/users_model.dart';
+import 'package:xta/user.dart';
 import 'package:provider/provider.dart';
 
 Future openSubscriptionGroupDialog(BuildContext context, String? id, String name, String icon) {

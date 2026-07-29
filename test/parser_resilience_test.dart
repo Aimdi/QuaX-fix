@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/user.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/user.dart';
 
 /// The fixtures prove the parsers read *today's* shapes. These prove they
 /// survive tomorrow's.

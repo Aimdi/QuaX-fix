@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:quax/group/group_model.dart';
+import 'package:xta/group/group_model.dart';
 import 'package:logging/logging.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
@@ -9,7 +9,7 @@ import 'package:sqflite_migration_plan/migration/sql.dart';
 import 'package:sqflite_migration_plan/sqflite_migration_plan.dart';
 import 'package:uuid/uuid.dart';
 
-const String databaseName = 'quax.db';
+const String databaseName = 'xta.db';
 
 const String tableFeedGroupChunk = 'feed_group_chunk';
 const String tableTimelineCache = 'timeline_cache';

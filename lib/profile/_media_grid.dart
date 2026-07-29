@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/profile/media_grid/media_grid.dart';
-import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
-import 'package:quax/profile/profile.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/user.dart';
-import 'package:quax/utils/paging.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/profile/media_grid/media_grid.dart';
+import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
+import 'package:xta/profile/profile.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/user.dart';
+import 'package:xta/utils/paging.dart';
 
 class ProfileMediaGrid extends StatefulWidget {
   final UserWithExtra user;

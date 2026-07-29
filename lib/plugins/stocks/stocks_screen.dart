@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/stocks/stocks_card.dart';
-import 'package:quax/plugins/stocks/stocks_format.dart';
-import 'package:quax/plugins/stocks/stocks_store.dart';
-import 'package:quax/plugins/stocks/stocks_watchlist_reel.dart';
-import 'package:quax/tweet/ticker/ticker_client.dart';
-import 'package:quax/tweet/ticker/ticker_quote.dart';
-import 'package:quax/ui/errors.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/stocks/stocks_card.dart';
+import 'package:xta/plugins/stocks/stocks_format.dart';
+import 'package:xta/plugins/stocks/stocks_store.dart';
+import 'package:xta/plugins/stocks/stocks_watchlist_reel.dart';
+import 'package:xta/tweet/ticker/ticker_client.dart';
+import 'package:xta/tweet/ticker/ticker_quote.dart';
+import 'package:xta/ui/errors.dart';
 
 /// The watchlist: a strip of price cards over the same symbols in full.
 ///

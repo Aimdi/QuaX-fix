@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
 
 /// What each sort is called, and the glyph Reddit's own apps use for it.
 ({String label, IconData icon}) redditSortLabel(BuildContext context, RedditSort sort) {

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/reddit/reddit_actions.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_post_card.dart';
-import 'package:quax/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
-import 'package:quax/plugins/reddit/reddit_store.dart';
-import 'package:quax/ui/errors.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/reddit/reddit_actions.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_post_card.dart';
+import 'package:xta/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
+import 'package:xta/plugins/reddit/reddit_store.dart';
+import 'package:xta/ui/errors.dart';
 
 /// Every followed subreddit, newest first.
 ///

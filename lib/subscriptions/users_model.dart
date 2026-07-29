@@ -1,12 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/user.dart';
-import 'package:quax/utils/iterables.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/user.dart';
+import 'package:xta/utils/iterables.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 

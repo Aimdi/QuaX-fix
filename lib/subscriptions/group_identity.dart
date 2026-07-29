@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/subscriptions/group_mark_style.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/subscriptions/group_mark_style.dart';
 
 /// Deterministic fallback color for groups without a chosen color, hashed from
 /// the group name so the same group always gets the same hue.

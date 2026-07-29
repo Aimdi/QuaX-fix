@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:quax/client/account_selector.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
+import 'package:xta/client/account_selector.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
 
 Future<List<Account>> getAccounts() async {
   var database = await Repository.readOnly();

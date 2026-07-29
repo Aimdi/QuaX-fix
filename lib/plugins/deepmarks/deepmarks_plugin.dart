@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/deepmarks/deepmarks_settings_screen.dart';
-import 'package:quax/plugins/plugin.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/deepmarks/deepmarks_settings_screen.dart';
+import 'package:xta/plugins/plugin.dart';
 
 /// Saves links to Deepmarks, the Nostr-backed bookmarking service. Like the
 /// Karakeep plugin this adds an action rather than a feed, plus a settings
 /// screen for the API key and the signing key.
-class DeepmarksPlugin extends QuaxPlugin {
+class DeepmarksPlugin extends XtaPlugin {
   DeepmarksPlugin();
 
   @override

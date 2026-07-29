@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Idempotent toolchain bootstrap for Cursor Cloud agents working on QuaX.
+# Idempotent toolchain bootstrap for Cursor Cloud agents working on XTA.
 set -euo pipefail
 
 export ANDROID_HOME="${ANDROID_HOME:-$HOME/android-sdk}"

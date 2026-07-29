@@ -1,4 +1,4 @@
-# QuaX Wiki
+# XTA Wiki
 
 [](mdtoc)
 ### Table of contents
@@ -10,10 +10,10 @@
 	* [x-client-transaction-id](#x-client-transaction-id)
 		* [Since v4.6.0](#since-v460)
 		* [Before v4.6.0](#before-v460)
-* [Subscriptions in QuaX](#subscriptions-in-quax)
-* [Likes & Saved Posts in QuaX](#likes--saved-posts-in-quax)
+* [Subscriptions in XTA](#subscriptions-in-xta)
+* [Likes & Saved Posts in XTA](#likes--saved-posts-in-xta)
 * [Privacy & Security](#privacy--security)
-	* [Why isn't QuaX available on F-Droid?](#why-isnt-quax-available-on-f-droid)
+	* [Why isn't XTA available on F-Droid?](#why-isnt-xta-available-on-f-droid)
 [](/mdtoc)
 
 ## History – Forks & compatibility
@@ -21,12 +21,12 @@
 [![](https://mermaid.ink/img/pako:eNpVj01OwzAQha8SzTpNk9j5qRdINBFC7BBdIJIuTDJpfogdXEdQ2p6FHYuejiPgVi1SZzVv9L03M1soZInAYKX4UFuLNBeWqduslaKVfdHxzfRONVqjsn6_Dz9LazK52VVSdVjurHm2qPE-eZg-jrzoLsg54opMs3ZSvaoGFU6f3kf-YegzOL8Ck0zjuuNCHDOfl2Cby5oSmFYj2tCj6vlRwvZozkHX2GMOzLQlV10Oudgbz8DFi5T9xabkuKqBVfxtbdQ4lFxj2nDzc_8_VShKVIkchQZGXHIKAbaFT2B0FjsxDYlHaBQGoR_YsAHmu67jesSPAo-GNKYk3tvwdVrrOgEJCaF-HHgzl0RxtP8DogFzzw?type=png)](https://mermaid.live/edit#pako:eNpVj01OwzAQha8SzTpNk9j5qRdINBFC7BBdIJIuTDJpfogdXEdQ2p6FHYuejiPgVi1SZzVv9L03M1soZInAYKX4UFuLNBeWqduslaKVfdHxzfRONVqjsn6_Dz9LazK52VVSdVjurHm2qPE-eZg-jrzoLsg54opMs3ZSvaoGFU6f3kf-YegzOL8Ck0zjuuNCHDOfl2Cby5oSmFYj2tCj6vlRwvZozkHX2GMOzLQlV10Oudgbz8DFi5T9xabkuKqBVfxtbdQ4lFxj2nDzc_8_VShKVIkchQZGXHIKAbaFT2B0FjsxDYlHaBQGoR_YsAHmu67jesSPAo-GNKYk3tvwdVrrOgEJCaF-HHgzl0RxtP8DogFzzw)
 
 > [!NOTE]
-> QuaX and Squawker sometimes share patches.
+> XTA and Squawker sometimes share patches.
 
 ### Compatibility with Squawker
 
-QuaX and Squawker share a lot in common, since both apps stem from the same
-codebase. Because of this, importing a Squawker backup into QuaX will likely
+XTA and Squawker share a lot in common, since both apps stem from the same
+codebase. Because of this, importing a Squawker backup into XTA will likely
 work to some extent, but it's not guaranteed. Some settings may be lost along
 the way, and you may run into bugs. It's not something we'd recommend.
 
@@ -34,41 +34,41 @@ the way, and you may run into bugs. It's not something we'd recommend.
 
 X provides APIs that require credentials for access, but they
 are [very expensive](https://developer.x.com/#pricing) to use. To work around
-this, QuaX uses unofficial X GraphQL APIs, which are the same ones used by web
+this, XTA uses unofficial X GraphQL APIs, which are the same ones used by web
 browsers when accessing X.
 
 The advantage of these APIs is that they are free and should remain so. Without
 them, navigating X from a web browser would not be possible for free.
 
 However, these APIs are neither official nor documented, and their use requires
-reverse-engineering. This is why QuaX may stop working occasionally. X can
+reverse-engineering. This is why XTA may stop working occasionally. X can
 change its APIs at any time, and we will only be informed when we see the app
 stop functioning. That being said, major changes to these APIs are rare, and the
 application has been relatively stable since its launch in 2025.
 
 > [!TIP]
-> Essentially, QuaX makes X believe that the access is coming from a web browser.
+> Essentially, XTA makes X believe that the access is coming from a web browser.
 
 ### X Account
 
-QuaX is forked
+XTA is forked
 from [@jonjomckay Fritter](https://github.com/jonjomckay/fritter). Originally,
 no Twitter account was required to use Fritter. It was **fully designed to work
 without any login.** In 2023, Twitter changed its policies and required
 authentication to use their APIs. As a consequence, Fritter became unusable and
 was progressively abandoned.
 
-This is why QuaX requires you to be logged into an account to work properly. But
+This is why XTA requires you to be logged into an account to work properly. But
 it doesn't have to be *your* account. It needs any account.
 
 **All settings are independent of the account you're logged into.**
 This is why **we recommend logging into an account that has been created
-specifically for the use of QuaX**. You can then import the subscriptions from
+specifically for the use of XTA**. You can then import the subscriptions from
 your real account,
 although [this is limited](https://github.com/Teskann/QuaX/issues/37).
 
 > [!TIP]
-> It's also possible to log into several accounts. In this case, QuaX *prefers* a
+> It's also possible to log into several accounts. In this case, XTA *prefers* a
 > healthy account for each request rather than a purely random one, and
 > automatically retries on another account when one fails. An account is
 > deprioritised (but still used as a fallback, so a request is always attempted)
@@ -80,12 +80,12 @@ although [this is limited](https://github.com/Teskann/QuaX/issues/37).
 > - it returned `404` three times in a row (usually a sign it is no longer
 >   correctly authenticated) — avoided for 6 hours.
 >
-> QuaX only shows an error after actually attempting a request:
+> XTA only shows an error after actually attempting a request:
 > - if every account is rate limited on the requested endpoint, it shows a "rate
 >   limited" message inviting you to retry later or add an account;
 > - if every account it tried returned a 404 (usually a sign they are no longer
 >   correctly authenticated), it suggests signing in with another account;
-> - if you have no account at all, QuaX still tries an unauthenticated (guest)
+> - if you have no account at all, XTA still tries an unauthenticated (guest)
 >   request first, and only invites you to add an account if that also fails.
 >
 > Retrying always sends a fresh request.
@@ -101,12 +101,12 @@ project to enable computation of this header in Python.
 #### Since v4.6.0
 
 XClientTransaction [has been ported to Dart](https://github.com/Teskann/QuaX/commit/95ed1684bbd35690ebb8aee1972fd2d9189b2ca7)
-and fully integrated into QuaX. The `x-client-transaction-id` header is computed
+and fully integrated into XTA. The `x-client-transaction-id` header is computed
 directly within the app, ensuring better performance and privacy.
 
 #### Before v4.6.0
 
-Initially, QuaX relied on XClientTransaction, which was wrapped into
+Initially, XTA relied on XClientTransaction, which was wrapped into
 a [server](https://github.com/Teskann/x-client-transaction-id-generator) by the
 developers, simplifying integration since it was implemented in Python. By
 default, this external service pointed to the developer's instance, but users
@@ -114,25 +114,25 @@ could configure a different endpoint in the settings.
 
 This server was contacted before each request to generate a valid header.
 
-## Subscriptions in QuaX
+## Subscriptions in XTA
 
 Subscriptions are completely unrelated to the subscriptions of the account you
-are logged into. They are stored on the device. Subscribing to a profile in QuaX
+are logged into. They are stored on the device. Subscribing to a profile in XTA
 won't impact the subscriptions of your X account.
 
-To fetch feeds, QuaX runs an advanced searched request with special keywords to
+To fetch feeds, XTA runs an advanced searched request with special keywords to
 filter results on people you follow.
 
-Though X cannot know exactly who you follow in QuaX, it could deduce it from the
+Though X cannot know exactly who you follow in XTA, it could deduce it from the
 requests that are made everytime you refresh your feed.
 
-## Likes & Saved Posts in QuaX
+## Likes & Saved Posts in XTA
 
-Both **saved posts** and **likes** in QuaX are entirely local. They live only in
+Both **saved posts** and **likes** in XTA are entirely local. They live only in
 the app's on-device database and are never sent to X.
 
 > [!IMPORTANT]
-> **Liking a post in QuaX is not the same as liking it on X.** Tapping the heart
+> **Liking a post in XTA is not the same as liking it on X.** Tapping the heart
 > does not send anything to X: it does not register a like on your X account, the
 > author receives no notification, and X has no way of knowing you liked it. It is
 > a private, on-device favourite.
@@ -143,14 +143,14 @@ the app's on-device database and are never sent to X.
   rename, hide or delete these tabs as you like.
 
 Because this data lives on the device, it stays private — but it is also tied to
-your QuaX installation. You can carry it between devices with the backup
+your XTA installation. You can carry it between devices with the backup
 export/import feature, which covers your saved posts, folders and likes along
 with the rest of your settings.
 
 ## Privacy & Security
 
-QuaX collects no data and contains no trackers. Compared to using X in a web
-browser, QuaX only sends the strictly necessary requests and ignores all
+XTA collects no data and contains no trackers. Compared to using X in a web
+browser, XTA only sends the strictly necessary requests and ignores all
 tracking when opening a link.
 
 The source code is 100% open source, and official APKs are built using GitHub
@@ -158,7 +158,7 @@ Actions workflows that are also fully open source and publicly auditable. APK
 signing certificate fingerprints are published alongside each release so users
 can independently verify the authenticity and origin of every build.
 
-QuaX checks for available updates on every startup. It also regularly updates
+XTA checks for available updates on every startup. It also regularly updates
 its dependencies and Flutter/Dart toolchain, and targets the latest Android SDK
 to benefit from the most recent platform security improvements. You can check
 the required Flutter
@@ -166,8 +166,8 @@ the required Flutter
 targeted SDK
 [here](Danhttps://github.com/Teskann/QuaX/blob/master/android/app/build.gradle#L63).
 
-QuaX requires
-[very few Android permissions](https://github.com/search?q=repo%3ATeskann%2FQuaX%20android.permission&type=code)
+XTA requires
+[very few Android permissions](https://github.com/search?q=repo%3ATeskann%2FXTA%20android.permission&type=code)
 to operate:
 
 - Required permission for the app to work:
@@ -179,25 +179,25 @@ to operate:
     - `android.permission.MANAGE_EXTERNAL_STORAGE` (for Android 11 and above)
 
 > [!NOTE]
-> QuaX has never undergone a formal security audit. The project is far too 
+> XTA has never undergone a formal security audit. The project is far too 
 > small to justify the cost of one. Use it with that in mind.
 
-### Why isn't QuaX available on F-Droid?
+### Why isn't XTA available on F-Droid?
 
 F-Droid builds apps from source using its own infrastructure and signs them with
 its own keys, meaning the APK you'd download wouldn't be signed with the
 developer's keys. This creates a security concern: users would have no way to
 verify that the build actually comes from this project's maintainer. On top of
 that, F-Droid updates tend to lag behind releases by days or even weeks, which
-is particularly problematic for an app like QuaX that may need quick fixes when
+is particularly problematic for an app like XTA that may need quick fixes when
 X changes its APIs.
 
-The only way QuaX could be on F-Droid without these drawbacks is through a
+The only way XTA could be on F-Droid without these drawbacks is through a
 reproducible build — a process that lets F-Droid build the app from source while
 still producing a binary identical to the one signed by the developer. This is
 something we haven't gotten around to setting up yet.
 
-Even if QuaX were eventually available on F-Droid via a reproducible build, the
+Even if XTA were eventually available on F-Droid via a reproducible build, the
 recommended way to install and keep the app up to date would still be through 
 **[Obtainium](https://github.com/ImranR98/Obtainium)** combined with 
 **[App Verifier](https://github.com/soupslurpr/AppVerifier)**, which lets you

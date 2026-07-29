@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/group/_settings.dart';
-import 'package:quax/group/feed_refresh_controller.dart';
-import 'package:quax/group/combined_groups.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/subscriptions/users_model.dart';
-import 'package:quax/ui/scroll_to_top.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/group/_settings.dart';
+import 'package:xta/group/feed_refresh_controller.dart';
+import 'package:xta/group/combined_groups.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/subscriptions/users_model.dart';
+import 'package:xta/ui/scroll_to_top.dart';
 
 class GroupFeedShell extends StatefulWidget {
   final ScrollController scrollController;

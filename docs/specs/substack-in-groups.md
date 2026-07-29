@@ -1,6 +1,6 @@
 # Substack in the rest of the app
 
-Recon done on `claude/quax-repo-setup-shh2mn`. The ask: *"Can't Substack
+Recon done on `claude/xta-repo-setup-shh2mn`. The ask: *"Can't Substack
 seamlessly integrate with the rest of the app — can't I just create groups for
 Substack? The Substack UI is fine, I just don't get the extra tab."*
 
@@ -8,7 +8,7 @@ Two separate wishes, with very different costs.
 
 ## 1. No extra tab — shipped
 
-`QuaxPlugin` gained `homeTabPrefKey`; when a plugin declares one, the plugin
+`XtaPlugin` gained `homeTabPrefKey`; when a plugin declares one, the plugin
 store offers **Show as a tab**, and `HomeModel.loadPages` skips its tab when it
 is off. Turned off, the Substack feed appears as a row in the **Groups** tab and
 opens as a pushed route, which is where feeds live. The reader, archive and

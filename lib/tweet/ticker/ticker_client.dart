@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:quax/tweet/ticker/ticker_quote.dart';
+import 'package:xta/tweet/ticker/ticker_quote.dart';
 
 enum TickerErrorKind { notFound, unavailable, badResponse }
 
@@ -31,7 +31,7 @@ class TickerClient {
   static const _timeout = Duration(seconds: 15);
 
   /// A browser-ish agent: the host refuses an empty one outright.
-  static const userAgent = 'Mozilla/5.0 (Android) QuaX';
+  static const userAgent = 'Mozilla/5.0 (Android) XTA';
 
   /// Indices and a few well-known names are spoken as one thing and quoted as
   /// another: `$SPX` is `^GSPC` to the price service, `$DAX` is `^GDAXI`.

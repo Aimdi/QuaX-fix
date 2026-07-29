@@ -1,7 +1,7 @@
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
 
 /// Built from API-shaped JSON rather than by hand: these are the payloads the
 /// grid is handed in the app, so the mapping is exercised as it really runs.

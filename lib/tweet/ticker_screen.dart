@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/tweet/paginated_tweet_list.dart';
-import 'package:quax/tweet/ticker/ticker_chart.dart';
-import 'package:quax/tweet/ticker/ticker_client.dart';
-import 'package:quax/tweet/ticker/ticker_quote.dart';
-import 'package:quax/tweet/ticker/ticker_range.dart';
-import 'package:quax/tweet/ticker/ticker_stats.dart';
-import 'package:quax/tweet/tweet_context_scope.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/paginated_tweet_list.dart';
+import 'package:xta/tweet/ticker/ticker_chart.dart';
+import 'package:xta/tweet/ticker/ticker_client.dart';
+import 'package:xta/tweet/ticker/ticker_quote.dart';
+import 'package:xta/tweet/ticker/ticker_range.dart';
+import 'package:xta/tweet/ticker/ticker_stats.dart';
+import 'package:xta/tweet/tweet_context_scope.dart';
 
 class TickerScreenArguments {
   /// The ticker without its `$`, e.g. `AAPL`.
@@ -24,7 +24,7 @@ class TickerScreenArguments {
 
 /// A ticker: what the symbol has done lately, and the posts talking about it.
 ///
-/// The chart is drawn from price data QuaX fetches itself rather than embedded
+/// The chart is drawn from price data XTA fetches itself rather than embedded
 /// from anyone — no third-party page, no scripts, nothing that could carry a
 /// tracker into the app. The price service is still an outside request though,
 /// so it has a switch, and with it off the posts work exactly as before.

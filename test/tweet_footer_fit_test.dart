@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/tweet/tweet_footer.dart';
+import 'package:xta/tweet/tweet_footer.dart';
 
 /// Width one count action occupies with a label of [labelWidth].
 double _item(double labelWidth) => kFooterCountItemBase + labelWidth;

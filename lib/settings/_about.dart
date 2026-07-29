@@ -4,8 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/utils/urls.dart';
 import 'package:pref/pref.dart';
 
 class SettingsAboutFragment extends StatelessWidget {
@@ -85,7 +86,7 @@ class SettingsAboutFragment extends StatelessWidget {
         leading: const Icon(Icons.favorite),
         title: Text(L10n.of(context).contribute),
         subtitle: Text(L10n.of(context).help_make_fritter_even_better),
-        onTap: () => openUri(context, 'https://github.com/teskann/quax'),
+        onTap: () => openUri(context, 'https://github.com/$githubRepo'),
       ),
       PrefLabel(
         leading: const Icon(Icons.bug_report),
@@ -93,7 +94,7 @@ class SettingsAboutFragment extends StatelessWidget {
         subtitle: Text(
           L10n.of(context).let_the_developers_know_if_something_is_broken,
         ),
-        onTap: () => openUri(context, 'https://github.com/teskann/quax/issues'),
+        onTap: () => openUri(context, 'https://github.com/$githubRepo/issues'),
       ),
       PrefLabel(
         leading: const Icon(Icons.copyright),

@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:quax/generated/l10n.dart';
+import 'package:xta/generated/l10n.dart';
 
 /// How much history a chart shows, and how finely.
 ///

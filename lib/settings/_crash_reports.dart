@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/utils/crash_reporter.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/utils/crash_reporter.dart';
 
 /// Diagnostics: opt-in GitHub crash reports (requires a user-supplied PAT).
 class SettingsCrashReportsSection extends StatelessWidget {

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**QuaX** (formerly Quacker) is a privacy-focused Flutter/Dart **read-oriented
+**XTA** (formerly Quacker) is a privacy-focused Flutter/Dart **read-oriented
 frontend** for X (formerly Twitter), forked from Quacker/Fritter. It is **not**
 X itself and does not implement posting: no compose, reply, quote, repost, or
 server-side like. Accounts are used to *fetch* content; subscriptions, saved

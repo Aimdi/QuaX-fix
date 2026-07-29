@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quax/ui/contrast.dart';
-import 'package:quax/ui/x_look_theme.dart';
+import 'package:xta/ui/contrast.dart';
+import 'package:xta/ui/x_look_theme.dart';
 
 /// Shared timeline chrome for tweet tiles (matches twitter-ui-redesign / X-look).
 const double kTweetMediaRadius = 16;

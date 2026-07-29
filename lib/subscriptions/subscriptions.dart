@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/home/edge_swipe.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/subscriptions/_cleanup.dart';
-import 'package:quax/subscriptions/_groups.dart';
-import 'package:quax/subscriptions/_import.dart';
-import 'package:quax/subscriptions/_import_list.dart';
-import 'package:quax/subscriptions/_list.dart';
-import 'package:quax/subscriptions/users_model.dart';
+import 'package:xta/home/edge_swipe.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/subscriptions/_cleanup.dart';
+import 'package:xta/subscriptions/_groups.dart';
+import 'package:xta/subscriptions/_import.dart';
+import 'package:xta/subscriptions/_import_list.dart';
+import 'package:xta/subscriptions/_list.dart';
+import 'package:xta/subscriptions/users_model.dart';
 import 'package:provider/provider.dart';
 
 /// Subscriptions home tab: Groups | People, with management actions in the app bar.

@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/profile/profile.dart' show profileTabs;
+import 'package:xta/constants.dart';
+import 'package:xta/profile/profile.dart' show profileTabs;
 import 'package:url_launcher/url_launcher_string.dart';
 
 import 'package:android_intent_plus/android_intent.dart';
-import 'package:quax/utils/browsers.dart';
+import 'package:xta/utils/browsers.dart';
 
 const _trackingParams = {'fbclid', 'gclid', 'igshid', 'mc_eid', 'mkt_tok', 'twclid', 'yclid'};
 // Share identifiers X appends to copied links; only meaningful on X hosts,
@@ -126,7 +126,7 @@ ProfileUriInfo? _parseAsProfileLink(List<String> parts) {
   const Map<String, ProfileTabs?> supportedProfileSubpaths = {
     "with_replies": ProfileTabs.postsAndReplies, // https://x.com/DogsTrust/with_replies
     "media": ProfileTabs.media, // https://x.com/DogsTrust/media
-    // All following sublinks are not supported by QuaX, but remain valid for an account link
+    // All following sublinks are not supported by XTA, but remain valid for an account link
     "highlights": null, // https://x.com/DogsTrust/highlights
     "affiliates": null, // https://x.com/DogsTrust/affiliates
     "about": null, // https://x.com/DogsTrust/about

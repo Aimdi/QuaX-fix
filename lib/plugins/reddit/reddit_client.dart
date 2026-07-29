@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:quax/plugins/reddit/reddit_html.dart';
-import 'package:quax/plugins/reddit/reddit_comments.dart';
-import 'package:quax/plugins/reddit/reddit_media_urls.dart';
-import 'package:quax/plugins/reddit/reddit_search_html.dart';
+import 'package:xta/plugins/reddit/reddit_html.dart';
+import 'package:xta/plugins/reddit/reddit_comments.dart';
+import 'package:xta/plugins/reddit/reddit_media_urls.dart';
+import 'package:xta/plugins/reddit/reddit_search_html.dart';
 
 /// How a Reddit request failed, in terms the user can act on.
 enum RedditErrorKind {
@@ -210,7 +210,7 @@ class RedditClient {
 
   /// For [_apiBase] and the token endpoint. Reddit's API rules ask for exactly
   /// this shape and throttle generic agents harder.
-  static const userAgent = 'android:com.teskann.quax:1.0 (read-only, account-free)';
+  static const userAgent = 'android:com.aimdi.xta:1.0 (read-only, account-free)';
 
   /// For [_publicBase] and [_publicFallbackBase], which are the *website*
   /// rather than the API.

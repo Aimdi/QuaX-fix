@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/tweet/video_playback_policy.dart';
+import 'package:xta/tweet/video_playback_policy.dart';
 
 bool _button({
   bool autoPlayPref = false,

@@ -1,6 +1,6 @@
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// The tickers the reader watches, kept in the database.

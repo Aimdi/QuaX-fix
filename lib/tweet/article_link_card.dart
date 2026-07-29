@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/tweet/tweet_chrome.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/utils/urls.dart';
 
 /// A link to a long-form X article, shown as a card rather than a raw URL.
 ///

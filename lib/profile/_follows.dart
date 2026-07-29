@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:quax/client/client.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/user.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/user.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/utils/paging.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/utils/paging.dart';
 
 class ProfileFollows extends StatefulWidget {
   final UserWithExtra user;

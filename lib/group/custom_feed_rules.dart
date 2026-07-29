@@ -1,5 +1,5 @@
-import 'package:quax/client/client.dart';
-import 'package:quax/constants.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/constants.dart';
 
 /// Everything a custom feed filters on, beyond replies and reposts.
 ///

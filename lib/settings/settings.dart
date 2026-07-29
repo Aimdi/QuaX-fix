@@ -1,18 +1,18 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/settings/_about.dart';
-import 'package:quax/settings/_ai.dart';
-import 'package:quax/settings/_accessibility.dart';
-import 'package:quax/settings/_account.dart';
-import 'package:quax/settings/_data.dart';
-import 'package:quax/settings/_general.dart';
-import 'package:quax/settings/_home.dart';
-import 'package:quax/settings/_media.dart';
-import 'package:quax/settings/_plugin_store.dart';
-import 'package:quax/settings/_posts.dart';
-import 'package:quax/settings/_theme.dart';
-import 'package:quax/settings/diagnostics_screen.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/settings/_about.dart';
+import 'package:xta/settings/_ai.dart';
+import 'package:xta/settings/_accessibility.dart';
+import 'package:xta/settings/_account.dart';
+import 'package:xta/settings/_data.dart';
+import 'package:xta/settings/_general.dart';
+import 'package:xta/settings/_home.dart';
+import 'package:xta/settings/_media.dart';
+import 'package:xta/settings/_plugin_store.dart';
+import 'package:xta/settings/_posts.dart';
+import 'package:xta/settings/_theme.dart';
+import 'package:xta/settings/diagnostics_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsScreen extends StatefulWidget {

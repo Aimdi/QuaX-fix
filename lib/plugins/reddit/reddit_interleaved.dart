@@ -2,12 +2,12 @@ import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_post_card.dart';
-import 'package:quax/plugins/reddit/reddit_sort_sheet.dart';
-import 'package:quax/plugins/reddit/reddit_store.dart';
-import 'package:quax/tweet/interleaved_items.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_post_card.dart';
+import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
+import 'package:xta/plugins/reddit/reddit_store.dart';
+import 'package:xta/tweet/interleaved_items.dart';
 
 final _log = Logger('RedditInterleaved');
 

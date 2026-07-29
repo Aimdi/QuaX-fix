@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/plugins/substack/substack_html.dart';
-import 'package:quax/plugins/substack/substack_models.dart';
+import 'package:xta/plugins/substack/substack_html.dart';
+import 'package:xta/plugins/substack/substack_models.dart';
 
 SubstackPost _post({String? audience, String? body}) => SubstackPost.fromJson(
       {

@@ -8,14 +8,14 @@ import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart' as mk;
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/tweet/_video_controls.dart';
-import 'package:quax/tweet/video_audio_focus.dart';
-import 'package:quax/tweet/video_controller_pool.dart';
-import 'package:quax/tweet/video_playback_policy.dart';
-import 'package:quax/tweet/video_quality.dart';
-import 'package:quax/utils/iterables.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/_video_controls.dart';
+import 'package:xta/tweet/video_audio_focus.dart';
+import 'package:xta/tweet/video_controller_pool.dart';
+import 'package:xta/tweet/video_playback_policy.dart';
+import 'package:xta/tweet/video_quality.dart';
+import 'package:xta/utils/iterables.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -367,7 +367,7 @@ class _TweetVideoState extends State<TweetVideo> {
       aspectRatio: widget.metadata.aspectRatio,
       controls: widget.disableControls
           ? null
-          : (state) => QuaxControls(
+          : (state) => XtaControls(
               pooled: pooled,
               username: widget.username,
               allowMuting: true,

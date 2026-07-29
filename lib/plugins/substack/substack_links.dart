@@ -1,4 +1,4 @@
-import 'package:quax/plugins/substack/substack_models.dart';
+import 'package:xta/plugins/substack/substack_models.dart';
 
 /// A Substack post URL split into the publication it belongs to and its slug.
 class SubstackPostLink {

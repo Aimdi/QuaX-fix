@@ -3,14 +3,14 @@ import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/profile/profile.dart';
-import 'package:quax/subscriptions/group_membership_sheet.dart';
-import 'package:quax/subscriptions/users_model.dart';
-import 'package:quax/ui/x_look_theme.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/profile/profile.dart';
+import 'package:xta/subscriptions/group_membership_sheet.dart';
+import 'package:xta/subscriptions/users_model.dart';
+import 'package:xta/ui/x_look_theme.dart';
 import 'package:provider/provider.dart';
 
 Widget _createUserAvatar(String? uri, double size, [int? cacheWidth]) {

@@ -9,8 +9,8 @@ library;
 
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html;
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_html.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_html.dart';
 
 /// A subreddit a search turned up.
 typedef RedditSubredditResult = ({String name, int? subscribers, String? description});

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/stocks/stock_sparkline.dart';
-import 'package:quax/plugins/stocks/stocks_format.dart';
-import 'package:quax/tweet/ticker/ticker_quote.dart';
-import 'package:quax/tweet/ticker/ticker_stats.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/stocks/stock_sparkline.dart';
+import 'package:xta/plugins/stocks/stocks_format.dart';
+import 'package:xta/tweet/ticker/ticker_quote.dart';
+import 'package:xta/tweet/ticker/ticker_stats.dart';
 
 /// One watched symbol, the size a market page gives it.
 ///

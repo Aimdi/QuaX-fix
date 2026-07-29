@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/home/home_model.dart';
-import 'package:quax/plugins/plugin.dart';
-import 'package:quax/plugins/plugin_catalogue.dart';
-import 'package:quax/plugins/plugin_registry.dart';
-import 'package:quax/settings/_plugin_row.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/home/home_model.dart';
+import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/plugin_catalogue.dart';
+import 'package:xta/plugins/plugin_registry.dart';
+import 'package:xta/settings/_plugin_row.dart';
 
 /// What the reader has installed, and what is on offer.
 ///
@@ -62,19 +62,19 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
   /// Installed plugins are listed whatever the catalogue currently says: one
   /// that has been withdrawn still has the reader's data in it, and they need a
   /// way to get it back off.
-  List<QuaxPlugin> get _installed {
+  List<XtaPlugin> get _installed {
     final prefs = PrefService.of(context, listen: false);
     return builtInPlugins.where((plugin) => plugin.isEnabled(prefs)).toList();
   }
 
-  List<QuaxPlugin> get _available {
+  List<XtaPlugin> get _available {
     final prefs = PrefService.of(context, listen: false);
     return builtInPlugins
         .where((plugin) => !plugin.isEnabled(prefs) && _offered.contains(plugin.id))
         .toList();
   }
 
-  Future<void> _install(QuaxPlugin plugin) async {
+  Future<void> _install(XtaPlugin plugin) async {
     final prefs = PrefService.of(context, listen: false);
     await plugin.setEnabled(prefs, true);
     if (!mounted) return;
@@ -83,7 +83,7 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
   }
 
   /// Uninstalling deletes what the plugin saved, so it is asked about first.
-  Future<void> _uninstall(QuaxPlugin plugin) async {
+  Future<void> _uninstall(XtaPlugin plugin) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {

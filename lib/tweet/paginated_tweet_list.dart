@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/feed_refresh_controller.dart';
-import 'package:quax/tweet/cached_tweet_list.dart';
-import 'package:quax/tweet/conversation.dart';
-import 'package:quax/tweet/interleaved_items.dart';
-import 'package:quax/tweet/tweet_skeleton.dart';
-import 'package:quax/ui/caught_up_divider.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/utils/paging.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/feed_refresh_controller.dart';
+import 'package:xta/tweet/cached_tweet_list.dart';
+import 'package:xta/tweet/conversation.dart';
+import 'package:xta/tweet/interleaved_items.dart';
+import 'package:xta/tweet/tweet_skeleton.dart';
+import 'package:xta/ui/caught_up_divider.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/utils/paging.dart';
 
 typedef TweetPageResult = ({List<TweetChain> chains, String? nextCursor});
 typedef TweetPageLoader = Future<TweetPageResult> Function(String? cursor);

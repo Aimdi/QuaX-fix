@@ -8,20 +8,20 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/saved/folder_picker.dart';
-import 'package:quax/saved/liked_tweet_model.dart';
-import 'package:quax/saved/saved_tweet_model.dart';
-import 'package:quax/status.dart';
-import 'package:quax/tweet/_like_button.dart';
-import 'package:quax/tweet/quotes_screen.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/saved/folder_picker.dart';
+import 'package:xta/saved/liked_tweet_model.dart';
+import 'package:xta/saved/saved_tweet_model.dart';
+import 'package:xta/status.dart';
+import 'package:xta/tweet/_like_button.dart';
+import 'package:xta/tweet/quotes_screen.dart';
+import 'package:xta/utils/urls.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:quax/plugins/karakeep/karakeep_save.dart';
-import 'package:quax/plugins/karakeep/karakeep_title.dart';
-import 'package:quax/plugins/deepmarks/deepmarks_save.dart';
+import 'package:xta/plugins/karakeep/karakeep_save.dart';
+import 'package:xta/plugins/karakeep/karakeep_title.dart';
+import 'package:xta/plugins/deepmarks/deepmarks_save.dart';
 
 /// Footer buttons should feel flat: no ripple and no pressed/hover background.
 /// Material's default text button reserves a 64dp minimum width and 16dp of
@@ -249,7 +249,7 @@ TextButton tweetFooterTextButton(IconData icon, String label, [Color? color, Voi
 
 /// Engagement / save / share / translate strip under a tweet tile.
 ///
-/// QuaX is a read-oriented frontend: these controls must not post to X.
+/// XTA is a read-oriented frontend: these controls must not post to X.
 /// Comment opens the conversation, repeat opens quotes, heart/bookmark are
 /// local-only, share uses the OS sheet, translate works on loaded text.
 class TweetFooterBar extends StatelessWidget {

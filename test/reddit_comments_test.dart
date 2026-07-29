@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/plugins/reddit/reddit_comments.dart';
+import 'package:xta/plugins/reddit/reddit_comments.dart';
 
 /// Shaped like old.reddit's comment area: `div.thing.comment` carrying its own
 /// `entry`, with replies inside a `.child > .sitetable`.

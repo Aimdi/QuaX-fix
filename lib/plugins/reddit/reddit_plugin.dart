@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/home/home_screen.dart';
-import 'package:quax/plugins/plugin.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_screen.dart';
-import 'package:quax/plugins/reddit/reddit_store.dart';
-import 'package:quax/plugins/reddit/reddit_settings_screen.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/home/home_screen.dart';
+import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_screen.dart';
+import 'package:xta/plugins/reddit/reddit_store.dart';
+import 'package:xta/plugins/reddit/reddit_settings_screen.dart';
 
 /// Account-free Reddit reading, in the spirit of Stealth: no login, no posting.
 ///
 /// A reimplementation against Reddit's documented API rather than a port of
 /// Stealth itself, which is GPLv3 Kotlin — see docs/specs/reddit-plugin.md.
-class RedditPlugin extends QuaxPlugin {
+class RedditPlugin extends XtaPlugin {
   RedditPlugin();
 
   @override

@@ -17,7 +17,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
+import 'package:xta/constants.dart';
 
 /// Reads the ids a catalogue document offers, tolerating anything that is not
 /// the shape we expect rather than throwing into a screen.

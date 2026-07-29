@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/settings/diagnostics_model.dart';
-import 'package:quax/settings/diagnostics_report.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/settings/diagnostics_model.dart';
+import 'package:xta/settings/diagnostics_report.dart';
 
 /// Makes the account-selection and endpoint machinery visible.
 ///

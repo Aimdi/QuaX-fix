@@ -1,6 +1,6 @@
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
 import 'package:logging/logging.dart';
 import 'package:uuid/uuid.dart';
 

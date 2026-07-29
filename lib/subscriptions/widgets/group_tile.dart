@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/subscriptions/group_identity.dart';
-import 'package:quax/subscriptions/widgets/avatar_mosaic.dart';
-import 'package:quax/ui/group_board_tokens.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/subscriptions/group_identity.dart';
+import 'package:xta/subscriptions/widgets/avatar_mosaic.dart';
+import 'package:xta/ui/group_board_tokens.dart';
 
 /// One group on the board: a flat, hairline-bordered card whose identity is a
 /// mosaic of its members' pictures, plus the group's colour as a left accent

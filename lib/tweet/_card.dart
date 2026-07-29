@@ -4,20 +4,20 @@ import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
-import 'package:quax/client/client.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/tweet/_media.dart';
-import 'package:quax/tweet/_video.dart';
-import 'package:quax/tweet/poll.dart';
-import 'package:quax/tweet/tweet_chrome.dart';
-import 'package:quax/ui/x_look_theme.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/_media.dart';
+import 'package:xta/tweet/_video.dart';
+import 'package:xta/tweet/poll.dart';
+import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/ui/x_look_theme.dart';
+import 'package:xta/utils/urls.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:quax/plugins/plugin_links.dart';
+import 'package:xta/plugins/plugin_links.dart';
 
 class TweetCard extends StatelessWidget {
   static final log = Logger('TweetCard');
@@ -401,7 +401,7 @@ class TweetCard extends StatelessWidget {
         var url = card['binding_values']['card_url']['string_value'];
         var image = card['binding_values']['event_thumbnail$imageKey']?['image_value'];
 
-        // TODO: This opens the URL externally. Create a screen for it in QuaX
+        // TODO: This opens the URL externally. Create a screen for it in XTA
         return _createCard(
             url,
             Column(
@@ -443,7 +443,7 @@ class TweetCard extends StatelessWidget {
         // TODO: Figure out what states we can receive
         //var state = card['binding_values']['broadcast_state']['string_value'];
 
-        // TODO: This opens the URL externally. Create a screen for it in QuaX
+        // TODO: This opens the URL externally. Create a screen for it in XTA
         return _createCard(
             uri,
             Column(

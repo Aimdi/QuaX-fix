@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/plugins/plugin_catalogue.dart';
-import 'package:quax/plugins/plugin_registry.dart';
-import 'package:quax/plugins/plugin_storage.dart';
+import 'package:xta/plugins/plugin_catalogue.dart';
+import 'package:xta/plugins/plugin_registry.dart';
+import 'package:xta/plugins/plugin_storage.dart';
 
 void main() {
   group('reading a published catalogue', () {

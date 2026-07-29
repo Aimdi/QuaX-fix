@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/home/home_screen.dart';
-import 'package:quax/plugins/plugin.dart';
-import 'package:quax/plugins/stocks/stocks_screen.dart';
-import 'package:quax/plugins/stocks/stocks_store.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/home/home_screen.dart';
+import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/stocks/stocks_screen.dart';
+import 'package:xta/plugins/stocks/stocks_store.dart';
 
 /// A watchlist of tickers, read-only like everything else here: quotes are
 /// shown, nothing is traded.
-class StocksPlugin extends QuaxPlugin {
+class StocksPlugin extends XtaPlugin {
   StocksPlugin();
 
   @override

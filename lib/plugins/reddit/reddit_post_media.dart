@@ -2,10 +2,10 @@ import 'dart:ui' as ui;
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/tweet/tweet_chrome.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/utils/urls.dart';
 
 /// How tall a picture is allowed to get before it is cropped.
 ///

@@ -2,7 +2,7 @@
 
 Upstream's FAQ names this as the unsolved blocker for F-Droid:
 
-> The only way QuaX could be on F-Droid without these drawbacks is through a
+> The only way XTA could be on F-Droid without these drawbacks is through a
 > reproducible build — a process that lets F-Droid build the app from source
 > while still producing a binary identical to the one signed by the developer.
 > This is something we haven't gotten around to setting up yet.

@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:quax/tweet/ticker/ticker_client.dart';
-import 'package:quax/tweet/ticker/ticker_quote.dart';
+import 'package:xta/tweet/ticker/ticker_client.dart';
+import 'package:xta/tweet/ticker/ticker_quote.dart';
 
 Map<String, dynamic> _chart({
   List<Object?>? timestamps,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quax/client/client.dart';
+import 'package:xta/client/client.dart';
 
 /// A conversation chain placed at its depth in the reply tree.
 class ThreadNode {

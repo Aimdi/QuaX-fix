@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/utils/urls.dart';
 
 void main() {
   test('cleanUrl strips tracking parameters', () {

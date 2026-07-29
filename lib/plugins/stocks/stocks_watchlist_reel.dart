@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quax/plugins/stocks/stock_sparkline.dart';
-import 'package:quax/plugins/stocks/stocks_format.dart';
-import 'package:quax/tweet/ticker/ticker_quote.dart';
+import 'package:xta/plugins/stocks/stock_sparkline.dart';
+import 'package:xta/plugins/stocks/stocks_format.dart';
+import 'package:xta/tweet/ticker/ticker_quote.dart';
 
 /// The card the reel is built from. Fixed, because a card that grew when its
 /// quote arrived would shuffle every other card sideways under the finger.

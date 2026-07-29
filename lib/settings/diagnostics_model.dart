@@ -1,12 +1,12 @@
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/client/accounts.dart';
-import 'package:quax/client/endpoints.dart';
-import 'package:quax/client/rate_limit_tracker.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/settings/diagnostics_report.dart';
+import 'package:xta/client/accounts.dart';
+import 'package:xta/client/endpoints.dart';
+import 'package:xta/client/rate_limit_tracker.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/settings/diagnostics_report.dart';
 
 class DiagnosticsModel extends Store<DiagnosticsReport> {
   final BasePrefService prefs;

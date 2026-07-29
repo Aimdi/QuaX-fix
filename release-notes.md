@@ -1,4 +1,4 @@
-## QuaX-fix
+## XTA
 
 A read-only fork of [QuaX](https://github.com/Teskann/QuaX). Same idea — read X
 without an account of X's choosing, keep what you follow on your own device —
@@ -76,7 +76,9 @@ capping them unless a prefetch had been set by hand.
 
 First download? Install it with Obtainium 👇
 
-[Add to Obtainium](https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/Aimdi/QuaX-fix)
+[Add to Obtainium](https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/Aimdi/XTA)
 
-This fork is signed with its own key, so Android will not update an install of
-upstream QuaX in place — and upstream will not update this one. Pick one.
+XTA has its own application id (`com.aimdi.xta`), so it installs alongside
+upstream QuaX and alongside earlier builds of this fork rather than over them.
+Nothing carries across from an older install — export a backup first if you want
+your subscriptions, groups and saved posts.

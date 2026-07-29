@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/home/home_model.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/home/home_model.dart';
 
 /// Switching a plugin on should put its tab in the navigation bar. Only
 /// Substack did, so enabling Reddit registered a tab that never appeared —

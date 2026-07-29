@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/plugins/stocks/stocks_store.dart';
+import 'package:xta/plugins/stocks/stocks_store.dart';
 
 void main() {
   group('normaliseTicker', () {

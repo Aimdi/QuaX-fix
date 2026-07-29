@@ -9,7 +9,7 @@ library;
 
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html;
-import 'package:quax/plugins/reddit/reddit_media_urls.dart';
+import 'package:xta/plugins/reddit/reddit_media_urls.dart';
 
 /// One comment, with whatever replies hang off it.
 class RedditComment {

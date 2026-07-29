@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
+import 'package:xta/constants.dart';
 
 /// How long the jump back to the top takes.
 ///

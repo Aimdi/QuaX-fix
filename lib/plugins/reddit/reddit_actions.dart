@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/reddit/reddit_auth.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_login_webview.dart';
-import 'package:quax/plugins/reddit/reddit_search_screen.dart';
-import 'package:quax/plugins/reddit/reddit_sort_sheet.dart';
-import 'package:quax/plugins/reddit/reddit_store.dart';
-import 'package:quax/subscriptions/users_model.dart';
-import 'package:quax/ui/errors.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/reddit/reddit_auth.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_login_webview.dart';
+import 'package:xta/plugins/reddit/reddit_search_screen.dart';
+import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
+import 'package:xta/plugins/reddit/reddit_store.dart';
+import 'package:xta/subscriptions/users_model.dart';
+import 'package:xta/ui/errors.dart';
 
 /// The controls a Reddit feed needs, wherever it is being shown.
 ///

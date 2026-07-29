@@ -1,18 +1,18 @@
 # Groups mark — Iteration 3 (color-dominant + GroupMark)
 
-Verified Phase 0 recon on `claude/quax-repo-setup-shh2mn` (post aimdi42
+Verified Phase 0 recon on `claude/xta-repo-setup-shh2mn` (post aimdi42
 grid). Replaces Iteration 2's full tonal fill + large glyph/monogram with a
 **color-tinted cell** and a single **tonal chip** whose contents resolve through
 one `GroupMark` path.
 
-Parent product constraint: QuaX-gamma is a **read-oriented** X frontend — no
+Parent product constraint: XTA is a **read-oriented** X frontend — no
 compose / reply / like-on-X. Groups are local subscription folders only.
 
 ## Phase 0 — verified facts (authoritative)
 
 | Item | Confirmed |
 |---|---|
-| Package import root | `package:quax/…` (not squawker/fritter) |
+| Package import root | `package:xta/…` (not squawker/fritter) |
 | Groups tab body | `lib/subscriptions/_groups.dart` |
 | Current tile | `lib/subscriptions/_group_tile.dart` |
 | Identity helpers | `lib/subscriptions/group_identity.dart` |

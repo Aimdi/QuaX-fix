@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/reddit/reddit_avatar.dart';
-import 'package:quax/plugins/reddit/reddit_subreddit_avatar.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_comments.dart';
-import 'package:quax/plugins/reddit/reddit_listing_screen.dart';
-import 'package:quax/plugins/reddit/reddit_post_media.dart';
-import 'package:quax/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
-import 'package:quax/ui/dates.dart';
-import 'package:quax/ui/errors.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/reddit/reddit_avatar.dart';
+import 'package:xta/plugins/reddit/reddit_subreddit_avatar.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_comments.dart';
+import 'package:xta/plugins/reddit/reddit_listing_screen.dart';
+import 'package:xta/plugins/reddit/reddit_post_media.dart';
+import 'package:xta/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
+import 'package:xta/ui/dates.dart';
+import 'package:xta/ui/errors.dart';
 
 /// How far each level of replies is indented, and how deep that goes.
 ///

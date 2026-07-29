@@ -1,6 +1,6 @@
-import 'package:quax/client/client.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/utils/iterables.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/utils/iterables.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// The last chain the user is known to have read in a group feed. Compared by

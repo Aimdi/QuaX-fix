@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/tweet/interleaved_items.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/tweet/interleaved_items.dart';
 
 TweetChain _chainAt(String id, List<DateTime?> dates) {
   final tweets = dates.map((date) {

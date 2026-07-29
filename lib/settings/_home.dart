@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/home/home_model.dart';
-import 'package:quax/ui/errors.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/home/home_model.dart';
+import 'package:xta/ui/errors.dart';
 import 'package:provider/provider.dart';
 
 class SettingsHomeFragment extends StatelessWidget {

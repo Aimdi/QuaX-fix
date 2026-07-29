@@ -1,10 +1,10 @@
-package com.teskann.quax;
+package com.aimdi.xta;
 
 import android.app.Application;
 import android.content.Context;
 import androidx.multidex.MultiDex;
 
-public class QuaxApplication extends Application {
+public class XtaApplication extends Application {
 
     @Override
     protected void attachBaseContext(Context base) {

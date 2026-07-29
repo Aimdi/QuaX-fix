@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/database/repository.dart';
+import 'package:xta/database/repository.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 /// The schema had no indexes at all. Creating one proves nothing on its own —
@@ -16,7 +16,7 @@ void main() {
   late Database db;
 
   setUp(() async {
-    final path = '${Directory.systemTemp.path}/quax_idx_${DateTime.now().microsecondsSinceEpoch}.db';
+    final path = '${Directory.systemTemp.path}/xta_idx_${DateTime.now().microsecondsSinceEpoch}.db';
     final plan = buildMigrationPlan();
     db = await openDatabase(path, version: databaseVersion, onCreate: plan.call, onUpgrade: plan.call);
 
@@ -69,7 +69,7 @@ void main() {
   // absent. A database that lost a table to a partly applied earlier migration
   // would then fail to open forever — bricked by an optimisation.
   test('a missing table does not stop the upgrade', () async {
-    final path = '${Directory.systemTemp.path}/quax_idx_partial_${DateTime.now().microsecondsSinceEpoch}.db';
+    final path = '${Directory.systemTemp.path}/xta_idx_partial_${DateTime.now().microsecondsSinceEpoch}.db';
     final partial = await openDatabase(
       path,
       version: 38,

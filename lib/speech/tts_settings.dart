@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
 
 /// Which speech engine and voice reading aloud uses.
 ///
 /// Android lets more than one engine be installed, and an app that never asks
 /// gets whichever one is the system default. A reader who installed a engine of
-/// their own — Sherpa, RHVoice, anything — had no way to tell QuaX to use it
+/// their own — Sherpa, RHVoice, anything — had no way to tell XTA to use it
 /// short of changing the system-wide default, which is why reading aloud
 /// appeared to do nothing.
 class TtsChoice {

@@ -1,9 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:quax/article/article_parser.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/profile/profile.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/article/article_parser.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/profile/profile.dart';
+import 'package:xta/utils/urls.dart';
 
 class Article {
   final String title;

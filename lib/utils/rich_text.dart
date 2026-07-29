@@ -3,14 +3,14 @@ import 'package:html_unescape/html_unescape.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import 'package:quax/constants.dart';
-import 'package:quax/profile/profile.dart';
-import 'package:quax/search/search.dart';
-import 'package:quax/utils/urls.dart';
-import 'package:quax/utils/iterables.dart';
-import 'package:quax/utils/_entities.dart';
-import 'package:quax/tweet/ticker_screen.dart';
-import 'package:quax/plugins/plugin_links.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/profile/profile.dart';
+import 'package:xta/search/search.dart';
+import 'package:xta/utils/urls.dart';
+import 'package:xta/utils/iterables.dart';
+import 'package:xta/utils/_entities.dart';
+import 'package:xta/tweet/ticker_screen.dart';
+import 'package:xta/plugins/plugin_links.dart';
 
 // RichText (not sure if it has an official name) is the way urls, mentions, hashtags... are integrated on
 // twitter content (tweets and descriptions).

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/utils/browsers.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/utils/browsers.dart';
+import 'package:xta/utils/urls.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-/// A long-form X article, read inside QuaX.
+/// A long-form X article, read inside XTA.
 ///
 /// Tapping one used to hand the reader to a browser — a custom tab at best,
 /// which is still leaving the app: their tabs, their history, their session.

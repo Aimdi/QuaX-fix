@@ -2,12 +2,12 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/substack/substack_models.dart';
-import 'package:quax/plugins/substack/substack_reader_screen.dart';
-import 'package:quax/plugins/substack/substack_store.dart';
-import 'package:quax/tweet/tweet_chrome.dart';
-import 'package:quax/ui/dates.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/substack/substack_models.dart';
+import 'package:xta/plugins/substack/substack_reader_screen.dart';
+import 'package:xta/plugins/substack/substack_store.dart';
+import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/ui/dates.dart';
 
 /// A Substack post as a timeline card.
 ///

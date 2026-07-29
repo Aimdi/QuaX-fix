@@ -1,13 +1,13 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/group/group_screen.dart';
-import 'package:quax/subscriptions/group_identity.dart';
-import 'package:quax/subscriptions/widgets/fallback_avatar.dart';
-import 'package:quax/user.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/group/group_screen.dart';
+import 'package:xta/subscriptions/group_identity.dart';
+import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
+import 'package:xta/user.dart';
 import 'package:provider/provider.dart';
 
 /// How far each level of nesting moves a row to the right.

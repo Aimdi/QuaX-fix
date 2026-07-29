@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_listing_screen.dart';
-import 'package:quax/plugins/reddit/reddit_post_card.dart';
-import 'package:quax/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
-import 'package:quax/plugins/reddit/reddit_search_html.dart';
-import 'package:quax/ui/errors.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_listing_screen.dart';
+import 'package:xta/plugins/reddit/reddit_post_card.dart';
+import 'package:xta/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
+import 'package:xta/plugins/reddit/reddit_search_html.dart';
+import 'package:xta/ui/errors.dart';
 
 /// Searching Reddit for posts, subreddits and accounts.
 ///

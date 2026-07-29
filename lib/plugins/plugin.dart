@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/home/home_screen.dart';
-import 'package:quax/plugins/plugin_storage.dart';
+import 'package:xta/home/home_screen.dart';
+import 'package:xta/plugins/plugin_storage.dart';
 
-/// Built-in QuaX plugin descriptor. Plugins are read-oriented feature packs;
+/// Built-in XTA plugin descriptor. Plugins are read-oriented feature packs;
 /// they must not add X posting / compose capabilities.
-abstract class QuaxPlugin {
+abstract class XtaPlugin {
   String get id;
   String get enabledPrefKey;
   IconData get icon;

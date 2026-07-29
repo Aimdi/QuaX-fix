@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/tweet/ticker_screen.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/tweet/ticker_screen.dart';
 
 /// X's own green and red, so a rising price reads the same here as it does on
 /// a cashtag in the timeline.

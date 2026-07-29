@@ -10,7 +10,7 @@ Guide for writing code that parses X (Twitter) API responses in this codebase.
 
 ## Context
 
-The X API used by QuaX is **reverse-engineered**. Endpoints, response shapes, and fields can change or disappear at any time without notice. Every field access on a parsed JSON map must be null-safe.
+The X API used by XTA is **reverse-engineered**. Endpoints, response shapes, and fields can change or disappear at any time without notice. Every field access on a parsed JSON map must be null-safe.
 
 ## Rules
 

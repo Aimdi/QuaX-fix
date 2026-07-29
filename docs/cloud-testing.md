@@ -1,6 +1,6 @@
-# Cloud testing for QuaX
+# Cloud testing for XTA
 
-QuaX is **Android-only**. Cursor Cloud VMs currently **do not expose `/dev/kvm`**, so a
+XTA is **Android-only**. Cursor Cloud VMs currently **do not expose `/dev/kvm`**, so a
 usable Android emulator (hardware-accelerated) is not available. Software
 emulation (`-accel off`) can start but is too slow/unstable for interactive UI
 work.

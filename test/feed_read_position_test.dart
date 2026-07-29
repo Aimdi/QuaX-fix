@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/group/feed_read_position.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/group/feed_read_position.dart';
 
 TweetChain chain(String id, DateTime? createdAt) {
   final tweet = TweetWithCard()..createdAt = createdAt;

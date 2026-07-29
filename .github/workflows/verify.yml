@@ -56,7 +56,7 @@ jobs:
 
       # Only files the PR *adds*. Dart 3.7's tall style would rewrite 195 of the
       # 250 existing files, and this fork regularly ports patches from upstream
-      # QuaX and Squawker — a mass reformat would turn every future port into a
+      # XTA and Squawker — a mass reformat would turn every future port into a
       # conflict. New code is still born formatted.
       - name: Check formatting of new files
         if: github.event_name == 'pull_request'

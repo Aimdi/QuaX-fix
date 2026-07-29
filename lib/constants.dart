@@ -119,8 +119,8 @@ const optionShouldCheckForUpdates = 'should_check_for_updates';
 /// default — which is not the installs that were being interrupted.
 const optionUpdateCheckReset = 'should_check_for_updates.reset';
 // This fork's own repository. Releases and crash reports belong here, not on
-// upstream teskann/quax, whose versions this fork never matches.
-const githubRepo = 'Aimdi/QuaX-fix';
+// upstream teskann/XTA, whose versions this fork never matches.
+const githubRepo = 'Aimdi/XTA';
 const optionConfirmClose = 'confirm_close';
 const optionOpenLinksInEmbeddedBrowser = 'open_links_in_embedded_browser';
 
@@ -144,7 +144,7 @@ const optionDisableWarningsForUnrelatedPostsInFeed = 'disable_warnings_for_unrel
 const alwaysShowFullTweetContents = 'always_show_full_tweet_contents';
 
 // An OpenAI-compatible or Anthropic endpoint the reader supplies themselves.
-// Stored on the device like every other credential here; QuaX calls it only
+// Stored on the device like every other credential here; XTA calls it only
 // when a feature asks it to.
 const optionAiBaseUrl = 'ai.base_url';
 const optionAiApiKey = 'ai.api_key';
@@ -245,7 +245,7 @@ const optionTweetsShowSubscribeBadge = 'tweets.show_subscribe_badge';
 // delay for it.
 const optionGestureDoubleTapLike = 'gestures.double_tap_like';
 
-// The TradingView chart on a ticker screen. It is the one thing QuaX loads
+// The TradingView chart on a ticker screen. It is the one thing XTA loads
 // from outside X, so it is named plainly and can be switched off; the posts
 // about the ticker do not depend on it.
 const optionTickerChart = 'other.ticker_chart';

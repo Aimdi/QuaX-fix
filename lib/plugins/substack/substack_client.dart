@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
-import 'package:quax/plugins/substack/substack_models.dart';
+import 'package:xta/plugins/substack/substack_models.dart';
 
 /// Read-only Substack client using public per-publication JSON endpoints.
 class SubstackClient {

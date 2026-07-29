@@ -10,64 +10,64 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:quax/client/accounts.dart';
-import 'package:quax/client/endpoint_overrides.dart';
-import 'package:quax/client/login_webview.dart';
+import 'package:xta/client/accounts.dart';
+import 'package:xta/client/endpoint_overrides.dart';
+import 'package:xta/client/login_webview.dart';
 
-import 'package:quax/constants.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/feed_session_cache.dart';
-import 'package:quax/tweet/video_controller_pool.dart';
-import 'package:quax/group/combined_groups.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/group/group_screen.dart';
-import 'package:quax/home/_feed.dart';
-import 'package:quax/home/home_model.dart';
-import 'package:quax/home/home_screen.dart';
-import 'package:quax/import_data_model.dart';
-import 'package:quax/profile/profile.dart';
-import 'package:quax/plugins/substack/substack_client.dart';
-import 'package:quax/plugins/substack/substack_store.dart';
-import 'package:quax/saved/liked_tweet_model.dart';
-import 'package:quax/saved/saved_folders_screen.dart';
-import 'package:quax/saved/saved_tweet_folder_model.dart';
-import 'package:quax/saved/saved_tweet_model.dart';
-import 'package:quax/search/search.dart';
-import 'package:quax/search/search_model.dart';
-import 'package:quax/settings/_data.dart';
-import 'package:quax/settings/_home.dart';
-import 'package:quax/settings/settings.dart';
-import 'package:quax/settings/settings_export_screen.dart';
-import 'package:quax/status.dart';
-import 'package:quax/tweet/quotes_screen.dart';
-import 'package:quax/tweet/ticker_screen.dart';
-import 'package:quax/subscriptions/_import_list.dart';
-import 'package:quax/subscriptions/users_model.dart';
-import 'package:quax/trends/trends_model.dart';
-import 'package:quax/tweet/_video.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/ui/x_look_theme.dart';
-import 'package:quax/utils/crash_reporter.dart';
-import 'package:quax/utils/updates.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/feed_session_cache.dart';
+import 'package:xta/tweet/video_controller_pool.dart';
+import 'package:xta/group/combined_groups.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/group/group_screen.dart';
+import 'package:xta/home/_feed.dart';
+import 'package:xta/home/home_model.dart';
+import 'package:xta/home/home_screen.dart';
+import 'package:xta/import_data_model.dart';
+import 'package:xta/profile/profile.dart';
+import 'package:xta/plugins/substack/substack_client.dart';
+import 'package:xta/plugins/substack/substack_store.dart';
+import 'package:xta/saved/liked_tweet_model.dart';
+import 'package:xta/saved/saved_folders_screen.dart';
+import 'package:xta/saved/saved_tweet_folder_model.dart';
+import 'package:xta/saved/saved_tweet_model.dart';
+import 'package:xta/search/search.dart';
+import 'package:xta/search/search_model.dart';
+import 'package:xta/settings/_data.dart';
+import 'package:xta/settings/_home.dart';
+import 'package:xta/settings/settings.dart';
+import 'package:xta/settings/settings_export_screen.dart';
+import 'package:xta/status.dart';
+import 'package:xta/tweet/quotes_screen.dart';
+import 'package:xta/tweet/ticker_screen.dart';
+import 'package:xta/subscriptions/_import_list.dart';
+import 'package:xta/subscriptions/users_model.dart';
+import 'package:xta/trends/trends_model.dart';
+import 'package:xta/tweet/_video.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/ui/x_look_theme.dart';
+import 'package:xta/utils/crash_reporter.dart';
+import 'package:xta/utils/updates.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/utils/urls.dart';
 import 'package:secure_content/secure_content.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:app_links/app_links.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:quax/plugins/karakeep/karakeep_client.dart';
-import 'package:quax/plugins/deepmarks/deepmarks_client.dart';
-import 'package:quax/plugins/reddit/reddit_auth.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_store.dart';
-import 'package:quax/plugins/reddit/reddit_subreddit_avatar.dart';
-import 'package:quax/plugins/stocks/stocks_store.dart';
-import 'package:quax/speech/speech_bar.dart';
-import 'package:quax/speech/speech_store.dart';
+import 'package:xta/plugins/karakeep/karakeep_client.dart';
+import 'package:xta/plugins/deepmarks/deepmarks_client.dart';
+import 'package:xta/plugins/reddit/reddit_auth.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_store.dart';
+import 'package:xta/plugins/reddit/reddit_subreddit_avatar.dart';
+import 'package:xta/plugins/stocks/stocks_store.dart';
+import 'package:xta/speech/speech_bar.dart';
+import 'package:xta/speech/speech_store.dart';
 
 Future checkForUpdates(context) async {
   Logger.root.info('Checking for updates');
@@ -124,7 +124,7 @@ Future checkForAccounts(context) async {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("⚠️ ${L10n.of(context).not_logged_in}"),
-          content: Text(L10n.of(context).quax_doesnt_work_without_account_please_login),
+          content: Text(L10n.of(context).xta_doesnt_work_without_account_please_login),
           actions: [
             TextButton(
               child: Text(L10n.of(context).import_backup),
@@ -217,17 +217,6 @@ Future<void> _migrateMediaQualityPrefs(BasePrefService prefs) async {
   await prefs.set(optionImageQuality, quality);
   await prefs.set(optionMediaVideoQuality, quality);
   await prefs.set(optionMediaQualitySplitMigrated, true);
-}
-
-/// Earlier builds seeded the crash-report repository with a name that does not
-/// exist on GitHub. The stored preference wins over the default, so installs
-/// that already ran keep the dead value until it is rewritten here. Only the
-/// broken value is touched — a repository the user chose is left alone.
-Future<void> _migrateCrashRepoPref(BasePrefService prefs) async {
-  const brokenRepo = 'Aimdi/QuaX-gamma';
-  if (prefs.get<String>(optionCrashGithubRepo)?.trim() == brokenRepo) {
-    await prefs.set(optionCrashGithubRepo, defaultCrashGithubRepo);
-  }
 }
 
 Future<void> main() async {
@@ -382,7 +371,6 @@ Future<void> main() async {
   );
 
   await _migrateMediaQualityPrefs(prefService);
-  await _migrateCrashRepoPref(prefService);
 
   CrashReporter.install(prefService);
 
@@ -679,7 +667,7 @@ class _FritterAppState extends State<FritterApp> {
                 ],
                 supportedLocales: L10n.delegate.supportedLocales,
                 locale: _locale,
-                title: 'QuaX',
+                title: 'XTA',
                 theme: xLookThemeData(xLookTokensFor(xLookBackgroundLight, _xLookAccent), pageTransitions),
                 darkTheme: xLookThemeData(xLookDarkTokensFor(_xLookBackground, _xLookAccent), pageTransitions),
                 themeMode: xLookThemeModeFor(_xLookBackground),
@@ -778,7 +766,7 @@ class _DefaultPageState extends State<DefaultPage> {
               actions: [
                 TextButton(
                   child: Text(L10n.of(context).report),
-                  onPressed: () => openUri(context, 'https://github.com/teskann/quax/issues'),
+                  onPressed: () => openUri(context, 'https://github.com/$githubRepo/issues'),
                 ),
                 TextButton(
                   child: Text(L10n.of(context).open_in_browser),

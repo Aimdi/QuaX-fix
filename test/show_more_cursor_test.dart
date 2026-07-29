@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/client/client.dart';
+import 'package:xta/client/client.dart';
 
 /// X ends a conversation it has censored with a "Show additional replies"
 /// prompt rather than more replies. The cursor behind that prompt was parsed

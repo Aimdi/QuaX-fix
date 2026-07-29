@@ -7,8 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/catcher/exceptions.dart';
-import 'package:quax/constants.dart';
+import 'package:xta/catcher/exceptions.dart';
+import 'package:xta/constants.dart';
 
 /// Opt-in crash reporter that opens GitHub Issues via a user-supplied token.
 ///
@@ -127,7 +127,7 @@ class CrashReporter {
 
   Future<CrashReportResult> sendTestReport() {
     return report(
-      Exception('QuaX crash-report test'),
+      Exception('XTA crash-report test'),
       StackTrace.current,
       context: 'manual test from Settings',
       force: true,

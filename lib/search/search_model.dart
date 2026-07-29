@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
-import 'package:quax/tweet/paginated_tweet_list.dart';
-import 'package:quax/user.dart';
-import 'package:quax/utils/paging.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
+import 'package:xta/tweet/paginated_tweet_list.dart';
+import 'package:xta/user.dart';
+import 'package:xta/utils/paging.dart';
 
 /// Holds the paging controller and loader for one tab of the tweet search
 /// (Top / Latest). The query string is mutable — [updateQuery] swaps it in and

@@ -13,8 +13,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/client/endpoints.dart';
-import 'package:quax/constants.dart';
+import 'package:xta/client/endpoints.dart';
+import 'package:xta/constants.dart';
 
 /// Parses a registry document, tolerating anything that is not the shape we
 /// expect rather than throwing into app startup.

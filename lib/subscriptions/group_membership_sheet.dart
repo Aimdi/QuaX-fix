@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/subscriptions/group_identity.dart';
-import 'package:quax/ui/x_controls.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/subscriptions/group_identity.dart';
+import 'package:xta/ui/x_controls.dart';
 
 /// Picks which groups someone belongs to.
 ///

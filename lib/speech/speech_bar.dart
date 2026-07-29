@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/speech/speech_store.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/speech/speech_store.dart';
 
 /// Puts a "reading aloud" bar under the whole app while something is playing.
 ///

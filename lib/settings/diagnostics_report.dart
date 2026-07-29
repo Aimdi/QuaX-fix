@@ -6,7 +6,7 @@
 /// endpoint, which account, which query id" without a screenshot.
 library;
 
-import 'package:quax/client/endpoints.dart';
+import 'package:xta/client/endpoints.dart';
 
 class AccountDiagnostics {
   final String id;
@@ -83,7 +83,7 @@ class DiagnosticsReport {
   /// than no report.
   String toPlainText() {
     final lines = <String>[
-      'QuaX diagnostics',
+      'XTA diagnostics',
       'app: $appVersion',
       'generated: ${generatedAt.toIso8601String()}',
       '',

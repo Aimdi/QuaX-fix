@@ -3,12 +3,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/combined_groups.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/group/group_switcher.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/combined_groups.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/group/group_switcher.dart';
 
 SubscriptionGroup _group(String id, String name, {int members = 3, bool pinned = false}) => SubscriptionGroup(
       id: id,

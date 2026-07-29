@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/ui/x_look_theme.dart';
+import 'package:xta/ui/x_look_theme.dart';
 
 void main() {
   test('XLookTokens light/dim/lightsOut keep accent blue', () {

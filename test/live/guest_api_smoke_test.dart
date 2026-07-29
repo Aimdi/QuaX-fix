@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logging/logging.dart';
-import 'package:quax/client/client_unauthenticated.dart';
+import 'package:xta/client/client_unauthenticated.dart';
 
 /// Live smoke against x.com guest auth. Opt in with:
 ///   fvm flutter test test/live/guest_api_smoke_test.dart --dart-define=RUN_LIVE=true

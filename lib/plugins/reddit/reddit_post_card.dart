@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/reddit/reddit_subreddit_avatar.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_listing_screen.dart';
-import 'package:quax/plugins/reddit/reddit_post_media.dart';
-import 'package:quax/plugins/reddit/reddit_post_sheet.dart';
-import 'package:quax/plugins/reddit/reddit_thread_screen.dart';
-import 'package:quax/tweet/tweet_chrome.dart';
-import 'package:quax/tweet/tweet_footer.dart';
-import 'package:quax/ui/dates.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/reddit/reddit_subreddit_avatar.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_listing_screen.dart';
+import 'package:xta/plugins/reddit/reddit_post_media.dart';
+import 'package:xta/plugins/reddit/reddit_post_sheet.dart';
+import 'package:xta/plugins/reddit/reddit_thread_screen.dart';
+import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/tweet/tweet_footer.dart';
+import 'package:xta/ui/dates.dart';
+import 'package:xta/utils/urls.dart';
 
 /// The avatar a Reddit post gets, matching the one a tweet gets.
 const double kRedditAvatarSize = 48;

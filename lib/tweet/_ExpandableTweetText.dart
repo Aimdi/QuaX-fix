@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quax/generated/l10n.dart';
+import 'package:xta/generated/l10n.dart';
 
 /// The line cap a post has to break before it is worth collapsing.
 ///

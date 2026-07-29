@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/settings/_data.dart';
-import 'package:quax/utils/webdav_sync.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/settings/_data.dart';
+import 'package:xta/utils/webdav_sync.dart';
 
 /// Carries the same payload as the backup export to a WebDAV server the reader
 /// runs, so moving to a new phone stops being a manual file shuffle.

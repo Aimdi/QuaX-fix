@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:quax/database/repository.dart';
+import 'package:xta/database/repository.dart';
 import 'package:sqflite/sqflite.dart';
 
 final _log = Logger('PluginStorage');

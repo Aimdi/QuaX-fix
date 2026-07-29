@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/profile/media_grid/media_grid.dart';
-import 'package:quax/search/search_model.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/profile/media_grid/media_grid.dart';
+import 'package:xta/search/search_model.dart';
 
 class SearchMediaGrid extends StatelessWidget {
   final SearchMediaPagination model;

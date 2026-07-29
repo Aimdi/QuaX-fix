@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/custom_feed_rules.dart';
-import 'package:quax/group/group_model.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/custom_feed_rules.dart';
+import 'package:xta/group/group_model.dart';
 
 /// Full-screen customization for a group's custom feed mode, opened from the
 /// filter sheet — a bottom sheet is too cramped for these controls.

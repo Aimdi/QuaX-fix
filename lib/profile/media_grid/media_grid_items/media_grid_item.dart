@@ -1,10 +1,10 @@
 import 'package:dart_twitter_api/api/media/data/media.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/tweet/_video.dart';
-import 'package:quax/tweet/_video_controls.dart';
-import 'package:quax/utils/paging.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/tweet/_video.dart';
+import 'package:xta/tweet/_video_controls.dart';
+import 'package:xta/utils/paging.dart';
 
 part 'gif_grid_item.dart';
 part 'video_grid_item.dart';

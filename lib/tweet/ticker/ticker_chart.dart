@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 // intl exports a TextDirection of its own, which has no `ltr` and silently
 // shadows the one TextPainter wants.
 import 'package:intl/intl.dart' hide TextDirection;
-import 'package:quax/tweet/ticker/ticker_quote.dart';
+import 'package:xta/tweet/ticker/ticker_quote.dart';
 
 /// Room reserved for the price labels down the right edge.
 const double kTickerAxisWidth = 54;

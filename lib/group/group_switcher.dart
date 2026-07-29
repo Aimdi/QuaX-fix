@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/combined_groups.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/subscriptions/group_identity.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/combined_groups.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/subscriptions/group_identity.dart';
 
 /// The feed title as a button that opens a group picker, so you can hop between
 /// groups without going back to the Groups tab.

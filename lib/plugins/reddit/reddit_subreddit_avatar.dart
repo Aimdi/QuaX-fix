@@ -2,10 +2,10 @@ import 'package:extended_image/extended_image.dart';
 import 'package:ffcache/ffcache.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/plugins/reddit/reddit_avatar.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/utils/cache.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/plugins/reddit/reddit_avatar.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/utils/cache.dart';
 
 /// How long a subreddit's picture is kept before it is looked up again.
 /// Community artwork changes about as often as a logo does.

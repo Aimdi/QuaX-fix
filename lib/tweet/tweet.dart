@@ -6,28 +6,28 @@ import 'package:dart_twitter_api/twitter_api.dart' show User;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/subscriptions/users_model.dart';
-import 'package:quax/profile/profile.dart';
-import 'package:quax/status.dart';
-import 'package:quax/tweet/_ExpandableTweetText.dart';
-import 'package:quax/tweet/_card.dart';
-import 'package:quax/tweet/_media.dart';
-import 'package:quax/tweet/tweet_chrome.dart';
-import 'package:quax/saved/liked_tweet_model.dart';
-import 'package:quax/tweet/article_link_card.dart';
-import 'package:quax/tweet/article_screen.dart';
-import 'package:quax/tweet/tweet_footer.dart';
-import 'package:quax/article/article.dart';
-import 'package:quax/ui/dates.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/ui/x_look_theme.dart';
-import 'package:quax/user.dart';
-import 'package:quax/utils/rich_text.dart';
-import 'package:quax/utils/translation.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/subscriptions/users_model.dart';
+import 'package:xta/profile/profile.dart';
+import 'package:xta/status.dart';
+import 'package:xta/tweet/_ExpandableTweetText.dart';
+import 'package:xta/tweet/_card.dart';
+import 'package:xta/tweet/_media.dart';
+import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/saved/liked_tweet_model.dart';
+import 'package:xta/tweet/article_link_card.dart';
+import 'package:xta/tweet/article_screen.dart';
+import 'package:xta/tweet/tweet_footer.dart';
+import 'package:xta/article/article.dart';
+import 'package:xta/ui/dates.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/ui/x_look_theme.dart';
+import 'package:xta/user.dart';
+import 'package:xta/utils/rich_text.dart';
+import 'package:xta/utils/translation.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
@@ -674,7 +674,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       if (articleLink != null)
         ArticleLinkCard(
             url: articleLink,
-            // Read in QuaX rather than handed to a browser: the article is the
+            // Read in XTA rather than handed to a browser: the article is the
             // post's own content.
             onTap: () => Navigator.push(
               context,

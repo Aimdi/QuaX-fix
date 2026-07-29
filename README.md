@@ -1,15 +1,15 @@
 <div align="center">
 <img src="assets/readme/icon.png" height="100">
 
-# QuaX-fix
+# XTA
 
 [![Upstream](https://img.shields.io/badge/upstream-Teskann%2FQuaX-1565C0?style=for-the-badge&logo=github)](https://github.com/Teskann/QuaX)
-[![License: MIT](https://img.shields.io/github/license/aimdi/quax-fix?style=for-the-badge&logo=opensourceinitiative&logoColor=FFFFFF&color=750014)](/LICENSE)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/aimdi/quax-fix/ci.yml?style=for-the-badge&logo=github)](https://github.com/Aimdi/QuaX-fix/actions)
+[![License: MIT](https://img.shields.io/github/license/aimdi/xta?style=for-the-badge&logo=opensourceinitiative&logoColor=FFFFFF&color=750014)](/LICENSE)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/aimdi/xta/ci.yml?style=for-the-badge&logo=github)](https://github.com/Aimdi/XTA/actions)
 ![Minimum Android version](https://img.shields.io/badge/Android-7.0+-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![Flutter version](https://img.shields.io/badge/Flutter-3.44.4-54C5F8?style=for-the-badge&logo=flutter&logoColor=white)
 
-**QuaX-fix** is a personal fork of [QuaX](https://github.com/Teskann/QuaX), the free, open-source,
+**XTA** is a personal fork of [QuaX](https://github.com/Teskann/QuaX), the free, open-source,
 privacy-focused client for X (formerly Twitter) — itself forked from
 [Quacker](https://github.com/TheHCJ/Quacker) and [Fritter](https://github.com/jonjomckay/fritter).
 
@@ -30,7 +30,7 @@ What that means for you:
 - Issues in this repo are welcome, but fixes will also be vibe coded.
 
 > [!IMPORTANT]
-> An X account is needed to use QuaX. Subscriptions, saved posts, and all other settings are
+> An X account is needed to use XTA. Subscriptions, saved posts, and all other settings are
 > independent from the account you're logged into. Everything is local to the app.
 
 ## Major differences from [Teskann/QuaX](https://github.com/Teskann/QuaX)
@@ -87,8 +87,8 @@ This fork is based on upstream **v4.12.0**. Everything below is on top of that.
 
 ### Theming & identity
 
-- **New app icon** — the classic Q on a blue gradient with a soft drop shadow instead of flat
-  black, and a small serif *y* signature in the corner.
+- **Its own name, id and icon** — the app is XTA, application id `com.aimdi.xta`, with a
+  black-and-white launcher mark of its own instead of upstream's.
 - **Two theme presets** — *Fairy Forest* and *Pitch Black* (see below).
 
 ### Build & release
@@ -112,7 +112,7 @@ This fork is based on upstream **v4.12.0**. Everything below is on top of that.
 
 ## Themes
 
-QuaX-fix ships two hand-tuned theme presets on top of the regular light/dark/true-black theming
+XTA ships two hand-tuned theme presets on top of the regular light/dark/true-black theming
 (`Settings > Theme`):
 
 | Default · Light | Default · Dark | True Black | Fairy Forest 🧚 | Pitch Black 🌑 |
@@ -122,15 +122,17 @@ QuaX-fix ships two hand-tuned theme presets on top of the regular light/dark/tru
 
 ## Download
 
-Grab the APK from this fork's [GitHub releases](https://github.com/Aimdi/QuaX-gamma/releases), or add
-the repo to [Obtainium](https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/Aimdi/QuaX-gamma).
+Grab the APK from this fork's [GitHub releases](https://github.com/Aimdi/XTA/releases), or add
+the repo to [Obtainium](https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/Aimdi/XTA).
 
 > [!IMPORTANT]
-> Releases must be signed with this fork's own stable keystore (see
-> [`docs/signing.md`](docs/signing.md)). They will **not** update over upstream
-> [Teskann/QuaX](https://github.com/Teskann/QuaX), and older Aimdi builds that
-> were accidentally debug-signed need a one-time uninstall before the first
-> properly signed update.
+> XTA has its own application id (`com.aimdi.xta`), so it installs **alongside**
+> upstream [Teskann/QuaX](https://github.com/Teskann/QuaX) and alongside earlier
+> builds of this fork rather than over them. Android treats it as a different
+> app, so subscriptions, groups and saved posts do not carry across — export a
+> backup from the old install first if you want to keep them.
+> Releases are signed with this fork's own stable keystore (see
+> [`docs/signing.md`](docs/signing.md)).
 
 For upstream releases and APK signature verification, see
 [Teskann/QuaX](https://github.com/Teskann/QuaX/releases).
@@ -168,7 +170,7 @@ fvm flutter build apk --debug
 
 ## More information
 
-- [FAQ (upstream)](./docs/QuaX.md)
+- [FAQ (upstream)](./docs/XTA.md)
 - [LICENSE](./LICENSE)
 - [Contributing](./CONTRIBUTING.md)
 - [Changelog (upstream, up to v4.12.0)](./changelog.md)

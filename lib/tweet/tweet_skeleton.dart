@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quax/ui/x_look_theme.dart';
+import 'package:xta/ui/x_look_theme.dart';
 
 /// Placeholder tiles shown while the first feed page loads.
 class TweetFeedSkeleton extends StatelessWidget {

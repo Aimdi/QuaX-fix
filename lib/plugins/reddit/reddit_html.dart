@@ -14,7 +14,7 @@ library;
 
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html;
-import 'package:quax/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
 
 /// The `after` cursor and posts of one scraped listing page.
 typedef ScrapedListing = ({List<RedditPost> posts, String? after});

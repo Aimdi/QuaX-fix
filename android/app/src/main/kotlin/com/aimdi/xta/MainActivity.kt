@@ -1,4 +1,4 @@
-package com.teskann.quax
+package com.aimdi.xta
 
 import android.content.Intent
 import android.content.pm.PackageManager

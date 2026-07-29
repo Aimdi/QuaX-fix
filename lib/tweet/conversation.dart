@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/tweet/tweet.dart';
-import 'package:quax/tweet/tweet_chrome.dart';
-import 'package:quax/utils/iterables.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/tweet/tweet.dart';
+import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/utils/iterables.dart';
 
 class TweetConversation extends StatefulWidget {
   final String id;

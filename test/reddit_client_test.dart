@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
 
 http.Response _json(Object body, int status) =>
     http.Response(jsonEncode(body), status, headers: {'content-type': 'application/json'});

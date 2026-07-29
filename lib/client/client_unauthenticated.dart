@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
-import 'package:quax/client/http_client.dart';
-import 'package:quax/constants.dart';
+import 'package:xta/client/http_client.dart';
+import 'package:xta/constants.dart';
 
 String? _guestToken;
 

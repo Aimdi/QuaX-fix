@@ -5,18 +5,18 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path/path.dart' as path;
 import 'package:pref/pref.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/tweet/video_controller_pool.dart';
-import 'package:quax/tweet/video_quality.dart';
-import 'package:quax/utils/downloads.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/video_controller_pool.dart';
+import 'package:xta/tweet/video_quality.dart';
+import 'package:xta/utils/downloads.dart';
 
 Player _playerOf(BuildContext context) =>
     VideoStateInheritedWidget.of(context).state.widget.controller.player;
 
 const _kSeekSeconds = 10;
 
-class QuaxControls extends StatefulWidget {
+class XtaControls extends StatefulWidget {
   final PooledVideo pooled;
   final String username;
   final bool allowMuting;
@@ -24,7 +24,7 @@ class QuaxControls extends StatefulWidget {
   final bool subtitlesEnabled;
   final VoidCallback onToggleSubtitles;
 
-  const QuaxControls({
+  const XtaControls({
     super.key,
     required this.pooled,
     required this.username,
@@ -35,10 +35,10 @@ class QuaxControls extends StatefulWidget {
   });
 
   @override
-  State<QuaxControls> createState() => _QuaxControlsState();
+  State<XtaControls> createState() => _XtaControlsState();
 }
 
-class _QuaxControlsState extends State<QuaxControls> {
+class _XtaControlsState extends State<XtaControls> {
   bool _visible = true;
   Timer? _hideTimer;
 

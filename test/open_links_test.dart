@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/utils/urls.dart';
 
 /// Records the launch requests `openUri` makes, so the mode it picks can be
 /// asserted without a platform channel actually opening anything.

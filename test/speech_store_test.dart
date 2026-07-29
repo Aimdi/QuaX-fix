@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/speech/speech_store.dart';
+import 'package:xta/speech/speech_store.dart';
 
 void main() {
   group('splitting an article into utterances', () {

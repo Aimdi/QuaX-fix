@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/home/_for_you.dart';
-import 'package:quax/tweet/paginated_tweet_list.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/_feed_shell.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/group/group_screen.dart';
-import 'package:quax/plugins/reddit/reddit_actions.dart';
-import 'package:quax/plugins/reddit/reddit_feed_list.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/home/_for_you.dart';
+import 'package:xta/tweet/paginated_tweet_list.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/_feed_shell.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/group/group_screen.dart';
+import 'package:xta/plugins/reddit/reddit_actions.dart';
+import 'package:xta/plugins/reddit/reddit_feed_list.dart';
 
 typedef FeedTabTitleBuilder = String Function(BuildContext context);
 

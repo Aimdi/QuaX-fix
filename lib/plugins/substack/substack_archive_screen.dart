@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/substack/substack_models.dart';
-import 'package:quax/plugins/substack/substack_post_card.dart';
-import 'package:quax/plugins/substack/substack_store.dart';
-import 'package:quax/subscriptions/users_model.dart';
-import 'package:quax/ui/errors.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/substack/substack_models.dart';
+import 'package:xta/plugins/substack/substack_post_card.dart';
+import 'package:xta/plugins/substack/substack_store.dart';
+import 'package:xta/subscriptions/users_model.dart';
+import 'package:xta/ui/errors.dart';
 
 class SubstackArchiveScreen extends StatefulWidget {
   final SubstackPublication publication;

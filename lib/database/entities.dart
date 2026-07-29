@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/group/custom_feed_rules.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/subscriptions/group_mark_style.dart';
-import 'package:quax/user.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/group/custom_feed_rules.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/subscriptions/group_mark_style.dart';
+import 'package:xta/user.dart';
 import 'package:intl/intl.dart';
 
 final DateFormat sqliteDateFormat = DateFormat('yyyy-MM-dd hh:mm:ss');

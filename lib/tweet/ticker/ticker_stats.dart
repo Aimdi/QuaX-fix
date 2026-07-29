@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/tweet/ticker/ticker_quote.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/ticker/ticker_quote.dart';
 
 /// What the line cannot say: how much changed hands, and where today's price
 /// sits inside the year.

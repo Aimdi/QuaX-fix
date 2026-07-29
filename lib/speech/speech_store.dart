@@ -1,7 +1,7 @@
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:intl/intl.dart';
-import 'package:quax/speech/tts_settings.dart';
+import 'package:xta/speech/tts_settings.dart';
 
 /// What is being read aloud, if anything.
 class SpeechPlayback {
@@ -30,7 +30,7 @@ class SpeechPlayback {
 /// outlives the screen: leave the article, go anywhere, and it keeps reading
 /// until it finishes or you stop it.
 ///
-/// Leaving the *app* is a different matter. Android keeps speaking while QuaX
+/// Leaving the *app* is a different matter. Android keeps speaking while XTA
 /// is in the background, but there is no media notification behind this and no
 /// foreground service, so the system is free to reclaim the process.
 class SpeechStore extends Store<SpeechPlayback> {

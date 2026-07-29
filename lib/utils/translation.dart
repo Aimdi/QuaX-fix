@@ -4,8 +4,8 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter_cache/flutter_cache.dart' as cache;
-import 'package:quax/client/accounts.dart';
-import 'package:quax/client/headers.dart';
+import 'package:xta/client/accounts.dart';
+import 'package:xta/client/headers.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 

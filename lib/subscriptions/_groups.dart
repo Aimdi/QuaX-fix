@@ -3,22 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/group/group_screen.dart';
-import 'package:quax/group/group_tree.dart';
-import 'package:quax/subscriptions/_group_list_item.dart';
-import 'package:quax/subscriptions/_groups_edit.dart';
-import 'package:quax/subscriptions/widgets/group_tile.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/ui/x_controls.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/group/group_screen.dart';
+import 'package:xta/group/group_tree.dart';
+import 'package:xta/subscriptions/_group_list_item.dart';
+import 'package:xta/subscriptions/_groups_edit.dart';
+import 'package:xta/subscriptions/widgets/group_tile.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/ui/x_controls.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/plugins/plugin.dart';
-import 'package:quax/plugins/plugin_registry.dart';
+import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/plugin_registry.dart';
 
-export 'package:quax/subscriptions/_groups_edit.dart'
+export 'package:xta/subscriptions/_groups_edit.dart'
     show openSubscriptionGroupDialog, SubscriptionGroupEditDialog;
 
 /// Tiles past this index appear without the entrance stagger.
@@ -304,7 +304,7 @@ class SubscriptionGroups extends StatelessWidget {
 /// Hosts a plugin's feed screen as a pushed route, for plugins that no longer
 /// occupy a home tab. The screen brings its own app bar.
 class _PluginFeedRoute extends StatefulWidget {
-  final QuaxPlugin plugin;
+  final XtaPlugin plugin;
 
   const _PluginFeedRoute({required this.plugin});
 

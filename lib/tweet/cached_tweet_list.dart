@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/tweet/conversation.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/tweet/conversation.dart';
 
 /// A plain (non-paginated) list of tweet chains, used to show cached tweets
 /// while a feed's first page loads. Expects the tweet context providers to be

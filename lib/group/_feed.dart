@@ -4,33 +4,33 @@ import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollDirection;
 
-import 'package:quax/client/client.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/feed_cache.dart';
-import 'package:quax/group/feed_read_position.dart';
-import 'package:quax/group/feed_session_cache.dart';
-import 'package:quax/group/group_screen.dart';
-import 'package:quax/profile/media_grid/media_grid.dart';
-import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/feed_cache.dart';
+import 'package:xta/group/feed_read_position.dart';
+import 'package:xta/group/feed_session_cache.dart';
+import 'package:xta/group/group_screen.dart';
+import 'package:xta/profile/media_grid/media_grid.dart';
+import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:logging/logging.dart';
-import 'package:quax/plugins/reddit/reddit_interleaved.dart';
-import 'package:quax/plugins/substack/substack_client.dart';
-import 'package:quax/plugins/substack/substack_post_card.dart';
-import 'package:quax/plugins/substack/substack_store.dart';
-import 'package:quax/profile/profile_feed_settings.dart';
-import 'package:quax/tweet/interleaved_items.dart';
-import 'package:quax/tweet/paginated_tweet_list.dart';
-import 'package:quax/tweet/tweet_context_scope.dart';
-import 'package:quax/utils/iterables.dart';
-import 'package:quax/utils/paging.dart';
+import 'package:xta/plugins/reddit/reddit_interleaved.dart';
+import 'package:xta/plugins/substack/substack_client.dart';
+import 'package:xta/plugins/substack/substack_post_card.dart';
+import 'package:xta/plugins/substack/substack_store.dart';
+import 'package:xta/profile/profile_feed_settings.dart';
+import 'package:xta/tweet/interleaved_items.dart';
+import 'package:xta/tweet/paginated_tweet_list.dart';
+import 'package:xta/tweet/tweet_context_scope.dart';
+import 'package:xta/utils/iterables.dart';
+import 'package:xta/utils/paging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:quax/utils/urls.dart';
-import 'package:quax/group/custom_feed_rules.dart';
+import 'package:xta/utils/urls.dart';
+import 'package:xta/group/custom_feed_rules.dart';
 
 Iterable<BigInt> _tweetIdsOf(Iterable<TweetChain> chains) =>
     chains.expand((c) => c.tweets).map((t) => t.idStr).whereType<String>().map(BigInt.tryParse).whereType<BigInt>();
@@ -447,7 +447,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
               TextButton(
                 child: Text(L10n.of(context).more_info),
                 onPressed: () async {
-                  await openUri(context, "https://github.com/Teskann/QuaX/issues/26");
+                  await openUri(context, "https://github.com/Teskann/XTA/issues/26");
                   if (context.mounted) {
                     Navigator.of(context).pop();
                   }

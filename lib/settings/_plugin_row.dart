@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/home/home_model.dart';
-import 'package:quax/plugins/plugin.dart';
-import 'package:quax/plugins/plugin_storage.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/home/home_model.dart';
+import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/plugin_storage.dart';
 
 /// A plugin on offer but not installed: what it does, and a button.
 class AvailablePluginRow extends StatelessWidget {
-  final QuaxPlugin plugin;
+  final XtaPlugin plugin;
   final VoidCallback onInstall;
 
   const AvailablePluginRow({super.key, required this.plugin, required this.onInstall});
@@ -31,7 +31,7 @@ class AvailablePluginRow extends StatelessWidget {
 /// An installed plugin: what it is holding, its tab, its settings, and the way
 /// back off the device.
 class InstalledPluginRow extends StatelessWidget {
-  final QuaxPlugin plugin;
+  final XtaPlugin plugin;
   final VoidCallback onUninstall;
 
   /// The tab switch and the settings screen both change what the parent should
@@ -118,7 +118,7 @@ class InstalledPluginRow extends StatelessWidget {
 
 /// Reads what a plugin is holding on the device, once, when it is first shown.
 class PluginFootprintText extends StatefulWidget {
-  final QuaxPlugin plugin;
+  final XtaPlugin plugin;
 
   const PluginFootprintText({super.key, required this.plugin});
 
