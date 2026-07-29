@@ -86,7 +86,8 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
   }
 
   /// The board: a compact grid of member-faced tiles.
-  Widget _buildBoard(BuildContext context, List<SubscriptionGroup> groups, {required bool animate}) {
+  Widget _buildBoard(BuildContext context, List<SubscriptionGroup> groups,
+      {required List<Widget> header, required bool animate}) {
     final prefs = PrefService.of(context);
     final columns = (prefs.get<int>(optionSubscriptionGroupsColumns) ?? 2).clamp(2, 3);
 
@@ -96,43 +97,53 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
     final baseRatio = columns == 2 ? 168 / 132 : 1.0;
     final aspectRatio = baseRatio / (1 + (textScale - 1) * 0.55);
 
-    return GridView.builder(
+    return CustomScrollView(
       controller: widget.scrollController,
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 24),
       // Build a row ahead so avatars decode before they scroll into view.
       scrollCacheExtent: const ScrollCacheExtent.pixels(300),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: columns,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: aspectRatio,
-      ),
-      itemCount: groups.length,
-      itemBuilder: (context, index) {
-        final group = groups[index];
-        final tile = GroupTile(
-          key: ValueKey(group.id),
-          group: group,
-          animate: animate,
-          onTap: () => Navigator.pushNamed(context, routeGroup,
-              arguments: GroupScreenArguments(id: group.id, name: group.name)),
-          onLongPress: () => openSubscriptionGroupDialog(context, group.id, group.name, group.icon),
-        );
+      slivers: [
+        SliverToBoxAdapter(child: Column(children: header)),
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 24),
+          sliver: SliverGrid.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: columns,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: aspectRatio,
+            ),
+            itemCount: groups.length,
+            itemBuilder: (context, index) {
+              final group = groups[index];
+              final tile = GroupTile(
+                key: ValueKey(group.id),
+                group: group,
+                animate: animate,
+                onTap: () => Navigator.pushNamed(context, routeGroup,
+                    arguments: GroupScreenArguments(id: group.id, name: group.name)),
+                onLongPress: () => openSubscriptionGroupDialog(context, group.id, group.name, group.icon),
+              );
 
-        // Only the first screenful is staggered; tiles scrolled into view later
-        // appear immediately rather than animating under the user's thumb.
-        if (!animate || index >= _staggerLimit) {
-          return tile;
-        }
-        return _StaggeredEntrance(delay: Duration(milliseconds: 20 * index), child: tile);
-      },
+              // Only the first screenful is staggered; tiles scrolled into view
+              // later appear immediately rather than animating under the thumb.
+              if (!animate || index >= _staggerLimit) {
+                return tile;
+              }
+              return _StaggeredEntrance(delay: Duration(milliseconds: 20 * index), child: tile);
+            },
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildReorderableList(BuildContext context, List<SubscriptionGroup> groups,
-      {required bool canReorder, Map<String, int> depths = const {}}) {
+      {required List<Widget> header, required bool canReorder, Map<String, int> depths = const {}}) {
     return ReorderableListView.builder(
       scrollController: widget.scrollController,
+      // ReorderableListView carries its header inside the list, so it scrolls
+      // with the rows and stays out of the reorder.
+      header: header.isEmpty ? null : Column(children: header),
       padding: const EdgeInsets.fromLTRB(8, 4, 8, 24),
       buildDefaultDragHandles: false,
       itemCount: groups.length,
@@ -216,17 +227,18 @@ class _SubscriptionGroupsPageState extends State<SubscriptionGroupsPage> {
         // How far each group is indented, so a nested one reads as nested.
         final depths = {for (final g in groups) g.id: depthOf(g.id, parents)};
 
-        return Column(
-          children: [
-            if (state.length > 5) _buildSearchBar(context),
-            ..._pluginFeedRows(context),
-            Expanded(
-              child: asList
-                  ? _buildReorderableList(context, groups, canReorder: canReorder, depths: depths)
-                  : _buildBoard(context, groups, animate: animate),
-            ),
-          ],
-        );
+        // The search field and the plugin feeds scroll away with the groups
+        // rather than sitting above them. They used to be fixed children of a
+        // Column with the grid in an Expanded below, so tiles slid under them
+        // and were sliced off mid-card at the top of the viewport.
+        final header = [
+          if (state.length > 5) _buildSearchBar(context),
+          ..._pluginFeedRows(context),
+        ];
+
+        return asList
+            ? _buildReorderableList(context, groups, header: header, canReorder: canReorder, depths: depths)
+            : _buildBoard(context, groups, header: header, animate: animate);
       },
     );
   }
