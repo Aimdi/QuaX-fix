@@ -20,7 +20,6 @@ import 'package:quax/tweet/tweet_chrome.dart';
 import 'package:quax/saved/liked_tweet_model.dart';
 import 'package:quax/tweet/article_link_card.dart';
 import 'package:quax/tweet/article_screen.dart';
-import 'package:quax/utils/urls.dart';
 import 'package:quax/tweet/tweet_footer.dart';
 import 'package:quax/article/article.dart';
 import 'package:quax/ui/dates.dart';
