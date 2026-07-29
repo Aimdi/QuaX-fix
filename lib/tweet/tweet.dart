@@ -262,13 +262,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                   title: Text(L10n.of(context).add_to_group),
                   onTap: () {
                     Navigator.pop(sheetContext);
-                    showDialog(
-                        context: context,
-                        builder: (_) => FollowButtonSelectGroupDialog(
-                              user: user,
-                              followed: false,
-                              groupsForUser: const [],
-                            ));
+                    pickUserGroups(context, user: user, followed: false, groupsForUser: const []);
                   },
                 ),
               ],
