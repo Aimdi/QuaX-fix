@@ -19,6 +19,7 @@ import 'package:quax/tweet/_media.dart';
 import 'package:quax/tweet/tweet_chrome.dart';
 import 'package:quax/saved/liked_tweet_model.dart';
 import 'package:quax/tweet/article_link_card.dart';
+import 'package:quax/tweet/article_screen.dart';
 import 'package:quax/utils/urls.dart';
 import 'package:quax/tweet/tweet_footer.dart';
 import 'package:quax/article/article.dart';
@@ -678,7 +679,15 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       replyToTile,
       if (tweet.article == null) content,
       if (articleLink != null)
-        ArticleLinkCard(url: articleLink, onTap: () async => await openUri(context, articleLink)),
+        ArticleLinkCard(
+            url: articleLink,
+            // Read in QuaX rather than handed to a browser: the article is the
+            // post's own content.
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => ArticleScreen(url: articleLink)),
+            ),
+          ),
       media,
       quotedTweet,
       TweetCard(tweet: tweet, card: tweet.card),
