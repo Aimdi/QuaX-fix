@@ -48,7 +48,7 @@ class TweetCard extends StatelessWidget {
           return;
         }
         // A Substack card opens in the in-app reader when the plugin is on.
-        if (await openWithPlugins(context, url)) {
+        if (await openWithPlugins(context, url) || !context.mounted) {
           return;
         }
         await openUri(context, url);

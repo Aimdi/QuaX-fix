@@ -162,10 +162,9 @@ class _RedditFeedActionsState extends State<RedditFeedActions> {
 
     if (saved == null || !mounted) return;
     await prefs.set(optionPluginRedditClientId, saved);
+    if (!mounted) return;
     context.read<RedditClient>().forgetToken();
-    if (mounted) {
-      await context.read<RedditFeedStore>().refresh();
-    }
+    await context.read<RedditFeedStore>().refresh();
   }
 
   bool get _signedIn => (PrefService.of(context, listen: false).get<String>(optionPluginRedditRefreshToken) ?? '')
@@ -264,7 +263,7 @@ class _RedditFeedActionsState extends State<RedditFeedActions> {
           tooltip: l10n.plugin_reddit_sort,
           icon: Icon(redditSortLabel(context, storedRedditSort(PrefService.of(context))).icon),
           onPressed: () async {
-            if (await openRedditSortSheet(context) != null && mounted) {
+            if (await openRedditSortSheet(context) != null && context.mounted) {
               await context.read<RedditFeedStore>().refresh();
             }
           },

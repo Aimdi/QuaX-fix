@@ -220,10 +220,11 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
               ),
               TextButton(
                 onPressed: () async {
+                  final navigator = Navigator.of(context);
                   await context.read<GroupsModel>().deleteGroup(id);
 
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  navigator.pop();
+                  navigator.pop();
                 },
                 child: Text(L10n.of(context).yes),
               ),
@@ -404,6 +405,7 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
       Builder(builder: (context) {
         onPressed() async {
           if (_formKey.currentState!.validate()) {
+            final navigator = Navigator.of(context);
             await context.read<GroupsModel>().saveGroup(
                   id,
                   name!,
@@ -414,7 +416,7 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
                   markStyle: markStyle,
                 );
 
-            Navigator.pop(context);
+            navigator.pop();
           }
         }
 

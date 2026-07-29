@@ -164,7 +164,7 @@ class _ImmichSettingsScreenState extends State<ImmichSettingsScreen> {
         TextButton(
           onPressed: () async {
             await _save();
-            if (context.mounted) Navigator.pop(context);
+            if (mounted) Navigator.pop(context);
           },
           child: Text(l10n.save),
         ),

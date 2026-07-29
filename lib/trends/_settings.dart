@@ -60,8 +60,9 @@ class _TrendsSettingsState extends State<TrendsSettings> {
                 selectedTileColor: Theme.of(context).primaryColor,
                 selected: place.woeid == item.woeid,
                 onTap: () async {
+                  final navigator = Navigator.of(context);
                   await context.read<UserTrendLocationModel>().set(item);
-                  Navigator.pop(context);
+                  navigator.pop();
                 });
           }
 

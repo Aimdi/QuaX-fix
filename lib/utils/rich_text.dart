@@ -195,9 +195,9 @@ List<Entity> _parseEntities(BuildContext context, dynamic newEntities) {
       }
       // A plugin may be able to read this link in-app (Substack posts); only
       // hand it to the browser when none claims it.
-      if (context.mounted && await openWithPlugins(context, uri)) {
-        return;
-      }
+      if (!context.mounted) return;
+      if (await openWithPlugins(context, uri)) return;
+      if (!context.mounted) return;
       await openUri(context, uri);
     }));
   }
