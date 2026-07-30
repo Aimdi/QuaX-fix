@@ -185,6 +185,24 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     });
   }
 
+  /// X's no-linguistic-content codes: media-only, mentions-only, cashtags-only,
+  /// short/undetermined text. Nothing there to translate.
+  static const _untranslatableLangs = {'zxx', 'qme', 'qam', 'qct', 'qht', 'qst', 'und'};
+
+  /// Whether the post is (or might be) in a language other than [locale]. An
+  /// absent code keeps the offer — better an idle button than a stranded
+  /// reader.
+  bool _offerTranslation(Locale locale) {
+    final lang = tweet.lang;
+    if (lang == null || lang.isEmpty) {
+      return true;
+    }
+    if (_untranslatableLangs.contains(lang)) {
+      return false;
+    }
+    return lang.split('-').first != locale.languageCode;
+  }
+
   Locale _effectiveLocale() {
     var localeStr = PrefService.of(context, listen: false).get<String>(optionLocale);
     final isSystemLocale = (localeStr ?? optionLocaleDefault) == optionLocaleDefault;
@@ -537,8 +555,10 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     final locale = _effectiveLocale();
 
     // The post's top-right, next to the timestamp — not in the footer strip,
-    // which is for engagement and was one control too wide on a phone.
-    final translateButton = tweet.article != null
+    // which is for engagement and was one control too wide on a phone. Only on
+    // posts there is something to translate: X offers nothing on a post
+    // already in your language, and a button on every card was chrome.
+    final translateButton = tweet.article != null || !_offerTranslation(locale)
         ? null
         : TweetTranslateButton(
             status: _translationStatus,
@@ -673,8 +693,12 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         if (createdAt != null)
           DefaultTextStyle(
               style: theme.textTheme.bodySmall!,
-              child:
-                  Timestamp(timestamp: createdAt, absoluteTimestamp: prefs.get(optionUseAbsoluteTimestamp)))
+              child: Timestamp(
+                  timestamp: createdAt,
+                  absoluteTimestamp: prefs.get(optionUseAbsoluteTimestamp),
+                  // X-style "5m" in the timeline; the opened post keeps the
+                  // full wording.
+                  compact: !widget.tweetOpened))
       ],
     );
 

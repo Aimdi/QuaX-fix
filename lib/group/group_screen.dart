@@ -15,6 +15,7 @@ import 'package:xta/group/group_model.dart';
 import 'package:xta/group/group_switcher.dart';
 import 'package:xta/tweet/cached_tweet_list.dart';
 import 'package:xta/tweet/tweet_context_scope.dart';
+import 'package:xta/tweet/tweet_skeleton.dart';
 import 'package:xta/ui/errors.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/utils/iterables.dart';
@@ -131,7 +132,10 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
     if (preview != null && preview.isNotEmpty) {
       return TweetContextScope(child: CachedTweetList(preview));
     }
-    return const Center(child: CircularProgressIndicator());
+    // Post-shaped placeholders, like the paginated list's own first page — a
+    // centred spinner was the one loading state left that didn't look like the
+    // feed it was standing in for.
+    return const TweetFeedSkeleton();
   }
 
   @override

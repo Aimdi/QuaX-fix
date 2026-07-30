@@ -10,6 +10,7 @@ import 'package:xta/group/feed_refresh_controller.dart';
 import 'package:xta/group/combined_groups.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/subscriptions/users_model.dart';
+import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/ui/scroll_to_top.dart';
 
 class GroupFeedShell extends StatefulWidget {
@@ -18,6 +19,14 @@ class GroupFeedShell extends StatefulWidget {
   final WidgetBuilder titleBuilder;
   final WidgetBuilder bodyBuilder;
   final List<Widget> Function(BuildContext) actionsBuilder;
+
+  /// An extra strip under the title row — the home screen puts its feed tabs
+  /// here. The shell finishes the bar with a hairline either way, so content
+  /// scrolling underneath no longer dissolves into it.
+  final PreferredSizeWidget Function(BuildContext)? bottomBuilder;
+
+  /// X centres its logo; group names stay leading like every pushed screen.
+  final bool centerTitle;
   // Whether the body's feed keeps its PagingController in the FeedSessionCache.
   // Only then does a subscription change require remounting the body (to drop
   // the just-invalidated cached controller); other feeds refresh on their own
@@ -31,6 +40,8 @@ class GroupFeedShell extends StatefulWidget {
     required this.titleBuilder,
     required this.bodyBuilder,
     required this.actionsBuilder,
+    this.bottomBuilder,
+    this.centerTitle = false,
     this.usesFeedCache = false,
   });
 
@@ -153,6 +164,20 @@ class _GroupFeedShellState extends State<GroupFeedShell> with AutomaticKeepAlive
     super.dispose();
   }
 
+  PreferredSizeWidget _bottom(BuildContext context) {
+    final inner = widget.bottomBuilder?.call(context);
+    return PreferredSize(
+      preferredSize: Size.fromHeight((inner?.preferredSize.height ?? 0) + kTweetDividerThickness),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (inner != null) inner,
+          tweetHairlineDivider(context),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -171,8 +196,10 @@ class _GroupFeedShellState extends State<GroupFeedShell> with AutomaticKeepAlive
                   pinned: false,
                   snap: true,
                   floating: true,
+                  centerTitle: widget.centerTitle,
                   title: widget.titleBuilder(context),
                   actions: widget.actionsBuilder(context),
+                  bottom: _bottom(context),
                 ),
               ];
             },

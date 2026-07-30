@@ -46,6 +46,7 @@ import 'package:xta/subscriptions/_import_list.dart';
 import 'package:xta/subscriptions/users_model.dart';
 import 'package:xta/trends/trends_model.dart';
 import 'package:xta/tweet/_video.dart';
+import 'package:xta/ui/dates.dart';
 import 'package:xta/ui/errors.dart';
 import 'package:xta/ui/x_look_theme.dart';
 import 'package:xta/utils/crash_reporter.dart';
@@ -209,6 +210,41 @@ void setTimeagoLocales() {
   timeago.setLocaleMessages('vi', timeago.ViMessages());
   timeago.setLocaleMessages('zh_CN', timeago.ZhCnMessages());
   timeago.setLocaleMessages('zh', timeago.ZhMessages());
+
+  // The X-style compact stamps ("5m") the timeline uses. Only the languages
+  // timeago ships short forms for; the rest keep their long form, which
+  // createCompactDate resolves through this same registry.
+  _setCompactLocale('ar', timeago.ArShortMessages());
+  _setCompactLocale('az', timeago.AzShortMessages());
+  _setCompactLocale('ca', timeago.CaShortMessages());
+  _setCompactLocale('cs', timeago.CsShortMessages());
+  _setCompactLocale('da', timeago.DaShortMessages());
+  _setCompactLocale('de', timeago.DeShortMessages());
+  _setCompactLocale('dv', timeago.DvShortMessages());
+  _setCompactLocale('en', timeago.EnShortMessages());
+  _setCompactLocale('es', timeago.EsShortMessages());
+  _setCompactLocale('fr', timeago.FrShortMessages());
+  _setCompactLocale('gr', timeago.GrShortMessages());
+  _setCompactLocale('he', timeago.HeShortMessages());
+  _setCompactLocale('hi', timeago.HiShortMessages());
+  _setCompactLocale('id', timeago.IdShortMessages());
+  _setCompactLocale('it', timeago.ItShortMessages());
+  _setCompactLocale('km', timeago.KmShortMessages());
+  _setCompactLocale('ku', timeago.KuShortMessages());
+  _setCompactLocale('mn', timeago.MnShortMessages());
+  _setCompactLocale('nl', timeago.NlShortMessages());
+  _setCompactLocale('ro', timeago.RoShortMessages());
+  _setCompactLocale('ru', timeago.RuShortMessages());
+  _setCompactLocale('sv', timeago.SvShortMessages());
+  _setCompactLocale('th', timeago.ThShortMessages());
+  _setCompactLocale('tr', timeago.TrShortMessages());
+  _setCompactLocale('uk', timeago.UkShortMessages());
+  _setCompactLocale('vi', timeago.ViShortMessages());
+}
+
+void _setCompactLocale(String locale, timeago.LookupMessages messages) {
+  timeago.setLocaleMessages('${locale}_short', messages);
+  compactDateLocales.add(locale);
 }
 
 // One-time split of the former single "media size" pref into separate image and

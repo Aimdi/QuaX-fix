@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
@@ -65,43 +67,52 @@ class _FeedScreenState extends State<FeedScreen> {
       tab = _tab = FeedTab.following;
     }
 
-    return GroupFeedShell(
-      scrollController: widget.scrollController,
-      groupId: widget.id,
-      titleBuilder: (context) => DropdownMenu<FeedTab>(
-        initialSelection: tab,
-        inputDecorationTheme: const InputDecorationTheme(
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
+    // The feeds are X-style tabs under the title, not a form-field dropdown in
+    // it. Keyed by how many there are so toggling the Reddit plugin rebuilds
+    // the controller instead of leaving it one tab short.
+    return DefaultTabController(
+      key: ValueKey(available.length),
+      length: available.length,
+      initialIndex: max(0, available.indexWhere((e) => e.id == tab)),
+      child: GroupFeedShell(
+        scrollController: widget.scrollController,
+        groupId: widget.id,
+        centerTitle: true,
+        titleBuilder: (context) => Text(L10n.of(context).fritter),
+        bottomBuilder: (context) => TabBar(
+          // The shell draws the bar's hairline; the TabBar's own divider on top
+          // of it would double the line.
+          dividerHeight: 0,
+          tabs: available.map((e) => Tab(text: e.titleBuilder(context))).toList(),
+          onTap: (index) => setState(() => _tab = available[index].id),
         ),
-        dropdownMenuEntries:
-            available.map((e) => DropdownMenuEntry(value: e.id, label: e.titleBuilder(context))).toList(),
-        onSelected: (value) {
-          setState(() => _tab = value!);
+        actionsBuilder: (context) {
+          // Reddit brings its own bar: sorting, search and adding a subreddit
+          // are what this feed is steered with, and the generic feed actions
+          // steer nothing here. Its overflow carries the app settings so they
+          // stay reachable from this tab too.
+          if (tab == FeedTab.reddit) {
+            return const [RedditFeedActions(showAppSettings: true)];
+          }
+
+          // Only the feed filters. Refresh is the pull gesture and settings
+          // live in the drawer — three utility icons where X has none was most
+          // of what made the bar read as chrome.
+          final model = context.read<GroupModel>();
+          return defaultGroupActions(
+            context,
+            model: model,
+            showMore: tab == FeedTab.following,
+            showRefresh: false,
+            showSettings: false,
+          );
+        },
+        bodyBuilder: (context) => switch (tab) {
+          FeedTab.following => SubscriptionGroupScreenContent(id: widget.id),
+          FeedTab.reddit => RedditFeedList(scrollController: widget.scrollController),
+          FeedTab.foryou => ForYouTweets(_feedController, type: 'profile', includeReplies: false, pref: prefs),
         },
       ),
-      actionsBuilder: (context) {
-        // Reddit brings its own bar: sorting, search and adding a subreddit are
-        // what this feed is steered with, and the generic feed actions steer
-        // nothing here. Its overflow carries the app settings so the one thing
-        // the shell would have contributed is not lost.
-        if (tab == FeedTab.reddit) {
-          return const [RedditFeedActions(showAppSettings: true)];
-        }
-
-        final model = context.read<GroupModel>();
-        return defaultGroupActions(
-          context,
-          model: model,
-          showMore: tab == FeedTab.following,
-        );
-      },
-      bodyBuilder: (context) => switch (tab) {
-        FeedTab.following => SubscriptionGroupScreenContent(id: widget.id),
-        FeedTab.reddit => RedditFeedList(scrollController: widget.scrollController),
-        FeedTab.foryou => ForYouTweets(_feedController, type: 'profile', includeReplies: false, pref: prefs),
-      },
     );
   }
 }

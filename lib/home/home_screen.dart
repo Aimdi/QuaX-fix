@@ -5,8 +5,11 @@ import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
 import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/group_model.dart';
 import 'package:xta/group/group_screen.dart';
+import 'package:xta/subscriptions/group_identity.dart';
 import 'package:xta/home/_feed.dart';
 import 'package:xta/home/_missing.dart';
 import 'package:xta/home/_saved.dart';
@@ -258,25 +261,61 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
     return _buildScaffold(context, l10n);
   }
 
-  Widget _buildScaffold(BuildContext context, L10n l10n) {
-    return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.search),
-              title: Text(l10n.search),
-              onTap: () =>
-                  Navigator.pushNamed(context, routeSearch, arguments: SearchArguments(0, focusInputOnOpen: true)),
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: Text(l10n.settings),
-              onTap: () => Navigator.pushNamed(context, routeSettings),
-            )
-          ],
+  /// Closes the drawer before going: navigating from an open drawer left it
+  /// sitting open under the pushed route, waiting behind the Back button.
+  void _goFromDrawer(BuildContext context, String route, {Object? arguments}) {
+    Navigator.pop(context);
+    Navigator.pushNamed(context, route, arguments: arguments);
+  }
+
+  /// What X keeps in its drawer, translated to this app: the groups are its
+  /// Lists, and the utility entries close the set.
+  Widget _buildDrawer(BuildContext context, L10n l10n) {
+    return Drawer(
+      child: SafeArea(
+        child: ScopedBuilder<GroupsModel, List<SubscriptionGroup>>(
+          store: context.read<GroupsModel>(),
+          onState: (context, groups) => ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+                child: Text(l10n.fritter, style: Theme.of(context).textTheme.titleLarge),
+              ),
+              ListTile(
+                leading: const Icon(Icons.search),
+                title: Text(l10n.search),
+                onTap: () => _goFromDrawer(context, routeSearch,
+                    arguments: SearchArguments(0, focusInputOnOpen: true)),
+              ),
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: Text(l10n.settings),
+                onTap: () => _goFromDrawer(context, routeSettings),
+              ),
+              if (groups.isNotEmpty) ...[
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                  child: Text(l10n.groups, style: Theme.of(context).textTheme.bodySmall),
+                ),
+                for (final group in groups)
+                  ListTile(
+                    leading: GroupMark.forGroup(group, size: 32),
+                    title: Text(group.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    onTap: () => _goFromDrawer(context, routeGroup,
+                        arguments: GroupScreenArguments(id: group.id, name: group.name)),
+                  ),
+              ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildScaffold(BuildContext context, L10n l10n) {
+    return Scaffold(
+      drawer: _buildDrawer(context, l10n),
       body: PageView(
         controller: _pageController,
         // Tabs change from the bar and nowhere else. A drag anywhere in a page
