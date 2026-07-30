@@ -47,3 +47,20 @@ bool shouldCreatePlayer({
   }
   return hasBeenVisible || (alreadyCached && isVisible);
 }
+
+/// Whether an off-screen tile may hand its pooled player back.
+///
+/// Fullscreen must never reclaim: the opaque route stops the tile being painted
+/// (VisibilityDetector reports 0), and releasing the pool ref would let eviction
+/// dispose the player still showing on the fullscreen route.
+bool shouldReleaseHiddenPlayer({
+  required bool isFullscreen,
+  required bool mounted,
+  required bool hasPoolKey,
+  required bool anyVisible,
+  required double visibleFraction,
+}) {
+  if (!mounted || isFullscreen || !hasPoolKey) return false;
+  if (anyVisible || visibleFraction >= 0.5) return false;
+  return true;
+}
