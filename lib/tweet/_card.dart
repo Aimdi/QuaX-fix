@@ -289,7 +289,7 @@ class TweetCard extends StatelessWidget {
       return Container();
     }
 
-    var imageSize = PrefService.of(context, listen: false).get<String>(optionImageQuality);
+    var imageSize = PrefService.of(context, listen: false).get<String>(optionImageQuality) ?? '';
     // `small` and anything unknown keep the card's unsuffixed default key.
     var imageKey = switch (MediaQuality.fromStored(imageSize, fallback: MediaQuality.small)) {
       MediaQuality.thumb => '_small',
