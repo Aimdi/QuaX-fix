@@ -110,6 +110,7 @@ dependencies:
 
   # Miscellaneous
   async_button_builder: ^3.0.0+1
+  audio_service: ^0.18.15
   media_kit: ^1.2.6
   media_kit_video: ^2.0.1
   media_kit_libs_video: ^1.0.7

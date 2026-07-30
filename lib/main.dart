@@ -68,6 +68,8 @@ import 'package:xta/plugins/reddit/reddit_store.dart';
 import 'package:xta/plugins/reddit/reddit_subreddit_avatar.dart';
 import 'package:xta/plugins/reddit/reddit_votes_store.dart';
 import 'package:xta/plugins/stocks/stocks_store.dart';
+import 'package:xta/media/xta_audio_handler.dart';
+import 'package:xta/plugins/substack/podcast_store.dart';
 import 'package:xta/speech/speech_bar.dart';
 import 'package:xta/speech/speech_store.dart';
 import 'package:xta/utils/media_quality.dart';
@@ -247,6 +249,7 @@ Future<void> main() async {
   });
 
   MediaKit.ensureInitialized();
+  await initXtaAudio();
 
   setTimeagoLocales();
 
@@ -433,6 +436,7 @@ Future<void> main() async {
     final redditFeed = RedditFeedStore(redditClient, redditSubreddits, prefService, auth: redditAuth);
     final stocksWatchlist = StocksWatchlistStore();
     final speech = SpeechStore();
+    final podcast = PodcastStore();
     final substackClient = SubstackClient();
     final substackPublications = SubstackPublicationsStore(prefService);
     final substackFeed = SubstackFeedStore(substackClient, substackPublications);
@@ -486,6 +490,7 @@ Future<void> main() async {
             Provider(create: (context) => TrendLocationsModel()),
             Provider(create: (context) => TrendsModel(trendLocationModel)),
             Provider(create: (_) => deepmarksClient),
+            Provider(create: (_) => podcast),
             Provider(create: (_) => immichClient),
             Provider(create: (_) => karakeepClient),
             Provider(create: (_) => redditClient),

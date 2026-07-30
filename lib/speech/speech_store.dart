@@ -1,4 +1,5 @@
 import 'package:flutter_triple/flutter_triple.dart';
+import 'package:xta/media/xta_audio_handler.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:intl/intl.dart';
 import 'package:xta/speech/tts_settings.dart';
@@ -54,7 +55,10 @@ class SpeechStore extends Store<SpeechPlayback> {
   /// speak with — and there is only one engine, this one.
   FlutterTts get tts => _tts;
 
-  void _finished() => update(SpeechPlayback.idle);
+  void _finished() {
+    audioHandler?.clearSession();
+    update(SpeechPlayback.idle);
+  }
 
   /// Reads [text] aloud, replacing whatever was being read.
   Future<void> speak({required String title, required String text, required TtsChoice choice}) async {
@@ -68,6 +72,14 @@ class SpeechStore extends Store<SpeechPlayback> {
     await _applyVoice(choice);
 
     final generation = ++_generation;
+    // The media session is what keeps speech alive past the foreground and
+    // puts a stop button on the lockscreen. Read-aloud cannot pause mid-
+    // utterance, so stop is all it offers.
+    audioHandler?.bindSession(
+      title: title,
+      binding: (onPlay: null, onPause: null, onStop: () => stop(), onSeek: null),
+    );
+    audioHandler?.updateSession(playing: true);
     update(SpeechPlayback(title: title, speaking: true));
 
     for (final chunk in chunks) {
@@ -84,6 +96,7 @@ class SpeechStore extends Store<SpeechPlayback> {
 
   Future<void> stop() async {
     _generation++;
+    audioHandler?.clearSession();
     if (state.speaking) {
       update(SpeechPlayback.idle);
     }
