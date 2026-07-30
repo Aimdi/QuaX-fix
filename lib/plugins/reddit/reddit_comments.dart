@@ -218,6 +218,32 @@ List<RedditComment> parseComments(String body) {
   return area == null ? const [] : _commentsIn(area);
 }
 
+/// What the post itself points at, read off its own page.
+///
+/// A post that arrived through search carries only its title — old.reddit's
+/// search results name no link and no media — so the thread page is where its
+/// picture has to come from. The `.thing` row carries the outbound link in
+/// `data-url`, and an expanded gallery or preview leaves its files as `img`
+/// tags under the post's expando.
+({String? url, List<String> images}) parsePostMedia(String body) {
+  final document = html.parse(body);
+  final thing = document.querySelector('#siteTable .thing');
+
+  final url = thing?.attributes['data-url'];
+  final absolute = url != null && url.startsWith('http') ? url : null;
+
+  final images = <String>[];
+  for (final img in document.querySelectorAll('#siteTable .expando img, #siteTable .media-gallery img')) {
+    final src = (img.attributes['src'] ?? img.attributes['data-lazy-src'])?.replaceAll('&amp;', '&');
+    final host = src == null ? null : Uri.tryParse(src)?.host;
+    if (src != null && (host == 'preview.redd.it' || host == 'i.redd.it') && !images.contains(src)) {
+      images.add(src);
+    }
+  }
+
+  return (url: absolute, images: images);
+}
+
 /// The post's own text on a comment page, for a self post whose body the
 /// listing did not carry.
 String? parseSelfText(String body) {

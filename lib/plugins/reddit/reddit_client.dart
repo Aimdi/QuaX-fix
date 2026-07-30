@@ -5,6 +5,7 @@ import 'package:xta/plugins/reddit/reddit_html.dart';
 import 'package:xta/plugins/reddit/reddit_comments.dart';
 import 'package:xta/plugins/reddit/reddit_media_urls.dart';
 import 'package:xta/plugins/reddit/reddit_search_html.dart';
+import 'package:xta/utils/json.dart';
 
 /// How a Reddit request failed, in terms the user can act on.
 enum RedditErrorKind {
@@ -72,6 +73,15 @@ class RedditPost {
   /// `self.dartlang`, or an article's domain.
   final String? domain;
 
+  /// The pictures of a gallery post, in the order the author arranged them.
+  /// Empty for everything that is not a gallery.
+  final List<String> galleryImages;
+
+  /// Reddit's own full-size preview of what the post points at — the poster
+  /// frame of a video, the lead image of an article. Null when Reddit made
+  /// none.
+  final String? previewImage;
+
   const RedditPost({
     required this.id,
     required this.title,
@@ -89,7 +99,38 @@ class RedditPost {
     this.thumbnail,
     this.flair,
     this.domain,
+    this.galleryImages = const [],
+    this.previewImage,
   });
+
+  RedditPost copyWith({
+    String? url,
+    bool? isSelf,
+    String? selfText,
+    List<String>? galleryImages,
+    String? previewImage,
+  }) {
+    return RedditPost(
+      id: id,
+      title: title,
+      subreddit: subreddit,
+      permalink: permalink,
+      author: author,
+      score: score,
+      commentCount: commentCount,
+      createdAt: createdAt,
+      url: url ?? this.url,
+      isSelf: isSelf ?? this.isSelf,
+      selfText: selfText ?? this.selfText,
+      over18: over18,
+      stickied: stickied,
+      thumbnail: thumbnail,
+      flair: flair,
+      domain: domain,
+      galleryImages: galleryImages ?? this.galleryImages,
+      previewImage: previewImage ?? this.previewImage,
+    );
+  }
 
   /// A thumbnail worth showing; Reddit uses sentinels like `self` and `default`
   /// where there is no image.
@@ -107,7 +148,7 @@ class RedditPost {
   /// Deliberately not [thumbnailUrl]: Reddit's listing thumbnails are 70px
   /// wide, and stretching one across a phone gives a smear where a photo should
   /// be.
-  String? get imageUrl => redditImageUrl(url);
+  String? get imageUrl => redditImageUrl(url) ?? (galleryImages.isEmpty ? null : galleryImages.first);
 
   bool get isVideo => isRedditVideoHost(domain ?? (url == null ? null : Uri.tryParse(url!)?.host));
 
@@ -147,8 +188,40 @@ class RedditPost {
       thumbnail: map['thumbnail'] as String?,
       flair: (map['link_flair_text'] as String?)?.trim(),
       domain: map['domain'] as String?,
+      galleryImages: _galleryImagesOf(Json(map)),
+      previewImage: _unescapeRedditUrl(Json(map)['preview']['images'][0]['source']['url'].string),
     );
   }
+
+  /// A gallery's files, in the author's order.
+  ///
+  /// `media_metadata` holds the files keyed by id and `gallery_data` holds the
+  /// order; a crosspost sometimes arrives with the files and no order, in which
+  /// case the files are still worth showing in whatever order the map has.
+  static List<String> _galleryImagesOf(Json data) {
+    final metadata = data['media_metadata'];
+    if (!metadata.exists) {
+      return const [];
+    }
+
+    final ordered = [for (final item in data['gallery_data']['items'].list) item['media_id'].string];
+    final raw = metadata.raw;
+    final ids = ordered.nonNulls.isEmpty && raw is Map
+        ? raw.keys.map((k) => '$k').toList()
+        : ordered.nonNulls.toList();
+
+    return [
+      for (final id in ids)
+        // `s` is the source; a GIF's file sits under `gif` rather than `u`.
+        ...?_pick(_unescapeRedditUrl(metadata[id]['s']['u'].string ?? metadata[id]['s']['gif'].string)),
+    ];
+  }
+
+  static List<String>? _pick(String? url) => url == null ? null : [url];
+
+  /// Reddit serves media URLs HTML-escaped inside its own JSON (`&amp;`), and
+  /// the CDN rejects them in that form.
+  static String? _unescapeRedditUrl(String? url) => url?.replaceAll('&amp;', '&');
 }
 
 class RedditListing {
@@ -506,7 +579,8 @@ class RedditClient {
   ///
   /// Returns the post's own text alongside, because a self post's body is not
   /// always in the listing that led here.
-  Future<({List<RedditComment> comments, String? selfText})> fetchComments(String permalink) async {
+  Future<({List<RedditComment> comments, String? selfText, String? postUrl, List<String> postImages})>
+      fetchComments(String permalink) async {
     final path = permalink.startsWith('/') ? permalink : '/$permalink';
     final uri = Uri.parse('$_publicFallbackBase$path');
 
@@ -523,7 +597,13 @@ class RedditClient {
       throw _errorFor(response, uri);
     }
 
-    return (comments: parseComments(response.body), selfText: parseSelfText(response.body));
+    final media = parsePostMedia(response.body);
+    return (
+      comments: parseComments(response.body),
+      selfText: parseSelfText(response.body),
+      postUrl: media.url,
+      postImages: media.images,
+    );
   }
 
   static String _publicJsonPath(String base, String name, RedditSort sort) =>

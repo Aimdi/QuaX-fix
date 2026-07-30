@@ -200,4 +200,66 @@ void main() {
       expect(parseSelfText(_page(_comment('a', 'x', 'hi'))), isNull);
     });
   });
+
+  group('what the post page says the post points at', () {
+    String postThing({String? dataUrl, String expando = ''}) => '''
+<div class="thing id-t3_p1 link" data-fullname="t3_p1"${dataUrl == null ? '' : ' data-url="$dataUrl"'}>
+  <div class="entry"><p class="title"><a class="title" href="/r/x/comments/p1/t/">A post</a></p></div>
+  <div class="expando">$expando</div>
+</div>
+''';
+
+    test('the outbound link is read off the thing row', () {
+      final media = parsePostMedia(_page('', post: postThing(dataUrl: 'https://i.redd.it/abc.jpg')));
+
+      expect(media.url, 'https://i.redd.it/abc.jpg');
+      expect(media.images, isEmpty);
+    });
+
+    test('a relative link — a self post pointing at itself — is not a link', () {
+      expect(parsePostMedia(_page('', post: postThing(dataUrl: '/r/x/comments/p1/t/'))).url, isNull);
+    });
+
+    test('an expanded gallery leaves its files on the page, in order and unescaped', () {
+      final media = parsePostMedia(_page('',
+          post: postThing(
+            dataUrl: 'https://www.reddit.com/gallery/p1',
+            expando: '<div class="media-gallery">'
+                '<img src="https://preview.redd.it/one.jpg?width=640&amp;s=a">'
+                '<img src="https://preview.redd.it/two.jpg?width=640&amp;s=b">'
+                '</div>',
+          )));
+
+      expect(media.images, [
+        'https://preview.redd.it/one.jpg?width=640&s=a',
+        'https://preview.redd.it/two.jpg?width=640&s=b',
+      ]);
+    });
+
+    test('only Reddit-hosted files count; tracking pixels and avatars do not', () {
+      final media = parsePostMedia(_page('',
+          post: postThing(
+            dataUrl: 'https://example.com/story',
+            expando: '<img src="https://example.com/pixel.gif"><img src="https://i.redd.it/real.png">',
+          )));
+
+      expect(media.images, ['https://i.redd.it/real.png']);
+    });
+
+    test('the same file twice is one file', () {
+      final media = parsePostMedia(_page('',
+          post: postThing(
+            expando: '<img src="https://i.redd.it/a.png"><img src="https://i.redd.it/a.png">',
+          )));
+
+      expect(media.images, ['https://i.redd.it/a.png']);
+    });
+
+    test('a page with no post is nothing, not a throw', () {
+      final media = parsePostMedia('<html><body></body></html>');
+
+      expect(media.url, isNull);
+      expect(media.images, isEmpty);
+    });
+  });
 }

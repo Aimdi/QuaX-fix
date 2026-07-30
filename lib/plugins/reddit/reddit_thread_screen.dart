@@ -30,6 +30,7 @@ class RedditThreadScreen extends StatefulWidget {
 }
 
 class _RedditThreadScreenState extends State<RedditThreadScreen> {
+  late RedditPost _post = widget.post;
   List<FlatComment>? _comments;
   String? _selfText;
   Object? _error;
@@ -44,17 +45,47 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
   Future<void> _load() async {
     setState(() => _error = null);
     try {
-      final result = await context.read<RedditClient>().fetchComments(widget.post.permalink);
+      final result = await context.read<RedditClient>().fetchComments(_post.permalink);
       if (!mounted) return;
       setState(() {
         _comments = flattenComments(result.comments);
         _selfText ??= result.selfText;
+        _adoptPageMedia(result.postUrl, result.postImages);
       });
     } catch (e) {
       if (mounted) {
         setState(() => _error = e);
       }
     }
+  }
+
+  /// Fills in what the listing never carried.
+  ///
+  /// A post that arrived through search names no link and no media — the search
+  /// page simply does not have them — so its own page is where they come from.
+  /// A link that is just the post's permalink says nothing and is not adopted;
+  /// everything else is, which is what turns "the post contained a file but it
+  /// isn't here" into the file being here.
+  void _adoptPageMedia(String? url, List<String> images) {
+    if (_post.imageUrl != null) {
+      return;
+    }
+
+    final external = url != null && !_isOwnPermalink(url);
+    if (!external && images.isEmpty) {
+      return;
+    }
+
+    _post = _post.copyWith(
+      url: external ? url : _post.url,
+      isSelf: external ? false : _post.isSelf,
+      galleryImages: images.isEmpty ? null : images,
+    );
+  }
+
+  bool _isOwnPermalink(String url) {
+    final uri = Uri.tryParse(url);
+    return uri != null && uri.host.endsWith('reddit.com') && uri.path.contains('/comments/');
   }
 
   @override
@@ -106,7 +137,7 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
 
   Widget _header(BuildContext context) {
     final theme = Theme.of(context);
-    final post = widget.post;
+    final post = _post;
     final date = post.createdAt;
 
     return Padding(
