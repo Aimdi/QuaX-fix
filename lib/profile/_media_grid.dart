@@ -25,7 +25,6 @@ class _ProfileMediaGridState extends State<ProfileMediaGrid> {
   late CursorPagingController<String, MediaGridItem> _paging;
 
   static const int pageSize = 20;
-  int loadTweetsCounter = 0;
 
   /// Successive media pages overlap at their boundaries, so an entry already
   /// shown must not come round again.
@@ -53,12 +52,16 @@ class _ProfileMediaGridState extends State<ProfileMediaGrid> {
     super.dispose();
   }
 
-  void incrementLoadTweetsCounter() {
-    ++loadTweetsCounter;
-  }
+  // Deliberately inert. The parser's sparse-page counter exists to stop
+  // regex-filtered feeds paging forever, and it does that by nulling the
+  // cursor after a handful of thin pages — but thin pages are the media tab's
+  // normal condition (twenty text posts map to no media), and the lookahead
+  // above this owns when to stop. Feeding the real counter here ended long
+  // text-heavy profiles' grids early.
+  void incrementLoadTweetsCounter() {}
 
   int getLoadTweetsCounter() {
-    return loadTweetsCounter;
+    return 0;
   }
 
   Future<CursorPage<String, MediaGridItem>> _fetchPage(String? cursor) async {

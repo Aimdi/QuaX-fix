@@ -123,4 +123,28 @@ void main() {
       expect(items.where(MediaFilter.videos.accepts), hasLength(2));
     });
   });
+
+  test('a first page that is only a cursor is followed, not shown as empty', () async {
+    // Every leading entry tombstoned away: no chains, but the feed goes on.
+    final pages = <String?, ChainPage>{
+      null: (chains: <TweetChain>[], nextCursor: 'c1'),
+      'c1': (chains: [_chain(_tweetWith('1', ['photo']))], nextCursor: 'c2'),
+    };
+
+    final page = await mediaPageWithLookahead(null, (cursor) async => pages[cursor]!, mediaItemsFromChains);
+
+    expect(page.items, hasLength(1));
+    expect(page.nextCursor, 'c2');
+  });
+
+  test('a feed that is cursors all the way down still ends at the bound', () async {
+    var calls = 0;
+    final page = await mediaPageWithLookahead(null, (cursor) async {
+      calls++;
+      return (chains: <TweetChain>[], nextCursor: 'c$calls');
+    }, mediaItemsFromChains);
+
+    expect(page.items, isEmpty);
+    expect(calls, 5, reason: 'the first page plus maxLookahead more');
+  });
 }

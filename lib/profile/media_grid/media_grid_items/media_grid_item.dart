@@ -134,7 +134,13 @@ Future<CursorPage<String, MediaGridItem>> mediaPageWithLookahead(
   var items = itemsOf(result.chains);
 
   var lookahead = 0;
-  while (items.isEmpty && result.chains.isNotEmpty && result.nextCursor != null && lookahead < maxLookahead) {
+  // Notably NOT gated on the page carrying chains: UserMedia's first page for
+  // some profiles is a cursor and nothing else — every leading entry tombstoned
+  // away — and refusing to follow it showed "no tweets" for an account with a
+  // grid full of media one page on. The end of the feed is a null cursor
+  // (mediaPageFromStatus already turns X's repeated cursor into one), not an
+  // empty page.
+  while (items.isEmpty && result.nextCursor != null && lookahead < maxLookahead) {
     result = await fetch(result.nextCursor);
     items = itemsOf(result.chains);
     lookahead++;
