@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart' as mk;
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:pref/pref.dart';
@@ -13,31 +11,13 @@ import 'package:xta/generated/l10n.dart';
 import 'package:xta/tweet/_video_controls.dart';
 import 'package:xta/tweet/video_audio_focus.dart';
 import 'package:xta/tweet/video_controller_pool.dart';
+import 'package:xta/tweet/video_fullscreen.dart';
 import 'package:xta/tweet/video_playback_policy.dart';
 import 'package:xta/tweet/video_quality.dart';
 import 'package:xta/utils/iterables.dart';
 import 'package:xta/utils/media_quality.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-
-// Picks orientation from the video's shape so a portrait video isn't forced
-// into landscape like media_kit's `defaultEnterNativeFullscreen` does.
-Future<void> _enterFullscreen(double aspectRatio) async {
-  if (!Platform.isAndroid && !Platform.isIOS) {
-    return defaultEnterNativeFullscreen();
-  }
-  try {
-    final portrait = aspectRatio < 1.0;
-    await Future.wait([
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: []),
-      SystemChrome.setPreferredOrientations(
-        portrait
-            ? [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
-            : [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight],
-      ),
-    ]);
-  } catch (_) {}
-}
 
 class TweetVideoUrls {
   final String streamUrl;
@@ -315,6 +295,13 @@ class _TweetVideoState extends State<TweetVideo> {
     _playingSub = null;
   }
 
+  void _cancelVisibilityTimers() {
+    _pauseTimer?.cancel();
+    _pauseTimer = null;
+    _releaseTimer?.cancel();
+    _releaseTimer = null;
+  }
+
   void _onVisibilityChanged(VisibilityInfo info, PooledVideo pooled) {
     if (!mounted) return;
     final key = _cacheKey;
@@ -322,12 +309,16 @@ class _TweetVideoState extends State<TweetVideo> {
     final isVisible = info.visibleFraction >= 0.5;
     _lastVisibleFraction = info.visibleFraction;
 
+    // Native fullscreen covers this tile (opaque route → not painted). Treat that
+    // as still "in use": reclaim must not release the pool ref under the route.
+    if (_isFullscreen) {
+      _cancelVisibilityTimers();
+      return;
+    }
+
     if (isVisible) {
       if (key != null) _pool?.markVisible(key, this);
-      _pauseTimer?.cancel();
-      _pauseTimer = null;
-      _releaseTimer?.cancel();
-      _releaseTimer = null;
+      _cancelVisibilityTimers();
       if ((_autoPlay || widget.alwaysPlay) && !wasVisible && !pooled.player.state.playing) {
         pooled.player.play();
       }
@@ -361,12 +352,19 @@ class _TweetVideoState extends State<TweetVideo> {
   void _releaseWhileHidden() {
     _releaseTimer = null;
     final key = _cacheKey;
-    if (!mounted || _isFullscreen || key == null || _pool == null) return;
-    if (_pool!.anyVisible(key) || _lastVisibleFraction >= 0.5) return;
+    if (!shouldReleaseHiddenPlayer(
+      isFullscreen: _isFullscreen,
+      mounted: mounted,
+      hasPoolKey: key != null && _pool != null,
+      anyVisible: key != null && (_pool?.anyVisible(key) ?? false),
+      visibleFraction: _lastVisibleFraction,
+    )) {
+      return;
+    }
 
     _detachListeners();
     if (_holdsPoolRef) {
-      _pool!.release(key);
+      _pool!.release(key!);
       _holdsPoolRef = false;
     }
 
@@ -379,6 +377,31 @@ class _TweetVideoState extends State<TweetVideo> {
       // is actually back on screen.
       _hasBeenVisible = false;
     });
+  }
+
+  Future<void> _openFullscreen(PooledVideo pooled, bool prefBackgroundPlayback) async {
+    if (_isFullscreen) return;
+    _isFullscreen = true;
+    _cancelVisibilityTimers();
+    // Capture navigator before awaits — orientation change / list recycle may
+    // unmount this tile while fullscreen is still showing.
+    final navigator = Navigator.of(context, rootNavigator: true);
+    final accent = Theme.of(context).colorScheme.secondary;
+    try {
+      await enterTweetVideoFullscreenUi(widget.metadata.aspectRatio);
+      await pushTweetVideoFullscreen(
+        navigator: navigator,
+        pooled: pooled,
+        username: widget.username,
+        accentColor: accent,
+        subtitlesEnabled: _subtitlesEnabled,
+        onToggleSubtitles: () => _toggleSubtitles(pooled),
+        pauseUponEnteringBackgroundMode: !prefBackgroundPlayback,
+      );
+    } finally {
+      _isFullscreen = false;
+      await defaultExitNativeFullscreen();
+    }
   }
 
   Future<void> _restartVideo(bool prefLoop) async {
@@ -406,7 +429,8 @@ class _TweetVideoState extends State<TweetVideo> {
 
   void _toggleSubtitles(PooledVideo pooled) {
     final enable = !_subtitlesEnabled;
-    setState(() => _subtitlesEnabled = enable);
+    _subtitlesEnabled = enable;
+    if (mounted) setState(() {});
     if (enable) {
       final subs = pooled.player.state.tracks.subtitle;
       final track = subs.firstWhere((t) => t.id != 'no' && t.id != 'auto', orElse: () => mk.SubtitleTrack.auto());
@@ -430,18 +454,11 @@ class _TweetVideoState extends State<TweetVideo> {
               accentColor: accent,
               subtitlesEnabled: _subtitlesEnabled,
               onToggleSubtitles: () => _toggleSubtitles(pooled),
+              onToggleFullscreen: () => _openFullscreen(pooled, prefBackgroundPlayback),
             ),
       wakelock: !widget.disableControls,
       pauseUponEnteringBackgroundMode: !prefBackgroundPlayback,
       subtitleViewConfiguration: SubtitleViewConfiguration(visible: _subtitlesEnabled),
-      onEnterFullscreen: () async {
-        _isFullscreen = true;
-        await _enterFullscreen(widget.metadata.aspectRatio);
-      },
-      onExitFullscreen: () async {
-        _isFullscreen = false;
-        await defaultExitNativeFullscreen();
-      },
     );
 
     if (_posterGone) {
@@ -637,10 +654,9 @@ class _TweetVideoState extends State<TweetVideo> {
     _detachListeners();
     final key = _cacheKey;
     if (key != null) _pool?.markHidden(key, this);
-    // Keep the controller alive across the native fullscreen handoff; just don't
-    // dispose/release it here. Detaching listeners and releasing the pool ref,
-    // though, is always safe (the pool owns the player) and must happen even in
-    // fullscreen, or this widget leaks its subscriptions and pins the entry.
+    // Keep the pool ref across the native fullscreen handoff. The fullscreen
+    // route uses the same player; releasing here would let eviction dispose it
+    // while it is still on screen. Detaching listeners is always safe.
     if (!_isFullscreen) {
       if (_ownsControllers) {
         _pooled?.dispose();

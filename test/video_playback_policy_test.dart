@@ -86,4 +86,58 @@ void main() {
       expect(_create(isVisible: true), isFalse);
     });
   });
+
+  group('shouldReleaseHiddenPlayer', () {
+    // Regression for #116: the opaque fullscreen route stops the tile being
+    // painted, so VisibilityDetector reports 0. Reclaim must not fire then —
+    // releasing the pool ref lets eviction dispose the player still on screen.
+    test('fullscreen never reclaims, even when the tile looks fully hidden', () {
+      expect(
+        shouldReleaseHiddenPlayer(
+          isFullscreen: true,
+          mounted: true,
+          hasPoolKey: true,
+          anyVisible: false,
+          visibleFraction: 0,
+        ),
+        isFalse,
+      );
+    });
+
+    test('a truly off-screen tile may reclaim', () {
+      expect(
+        shouldReleaseHiddenPlayer(
+          isFullscreen: false,
+          mounted: true,
+          hasPoolKey: true,
+          anyVisible: false,
+          visibleFraction: 0,
+        ),
+        isTrue,
+      );
+    });
+
+    test('a half-visible tile, or one still marked visible elsewhere, stays', () {
+      expect(
+        shouldReleaseHiddenPlayer(
+          isFullscreen: false,
+          mounted: true,
+          hasPoolKey: true,
+          anyVisible: false,
+          visibleFraction: 0.5,
+        ),
+        isFalse,
+      );
+      expect(
+        shouldReleaseHiddenPlayer(
+          isFullscreen: false,
+          mounted: true,
+          hasPoolKey: true,
+          anyVisible: true,
+          visibleFraction: 0,
+        ),
+        isFalse,
+      );
+    });
+  });
 }

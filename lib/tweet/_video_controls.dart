@@ -8,6 +8,7 @@ import 'package:pref/pref.dart';
 import 'package:xta/ui/errors.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/tweet/video_controller_pool.dart';
+import 'package:xta/tweet/video_fullscreen.dart';
 import 'package:xta/tweet/video_quality.dart';
 import 'package:xta/utils/downloads.dart';
 
@@ -23,6 +24,9 @@ class XtaControls extends StatefulWidget {
   final Color accentColor;
   final bool subtitlesEnabled;
   final VoidCallback onToggleSubtitles;
+  /// When set, replaces media_kit's [MaterialFullscreenButton] so fullscreen can
+  /// use a self-contained route that does not share the inline tile's notifiers.
+  final VoidCallback? onToggleFullscreen;
 
   const XtaControls({
     super.key,
@@ -32,6 +36,7 @@ class XtaControls extends StatefulWidget {
     required this.accentColor,
     required this.subtitlesEnabled,
     required this.onToggleSubtitles,
+    this.onToggleFullscreen,
   });
 
   @override
@@ -164,6 +169,7 @@ class _XtaControlsState extends State<XtaControls> {
             accentColor: widget.accentColor,
             subtitlesEnabled: widget.subtitlesEnabled,
             onToggleSubtitles: widget.onToggleSubtitles,
+            onToggleFullscreen: widget.onToggleFullscreen,
           ),
         ),
       ],
@@ -195,6 +201,7 @@ class _BottomBar extends StatelessWidget {
   final Color accentColor;
   final bool subtitlesEnabled;
   final VoidCallback onToggleSubtitles;
+  final VoidCallback? onToggleFullscreen;
 
   const _BottomBar({
     required this.pooled,
@@ -203,6 +210,7 @@ class _BottomBar extends StatelessWidget {
     required this.accentColor,
     required this.subtitlesEnabled,
     required this.onToggleSubtitles,
+    this.onToggleFullscreen,
   });
 
   @override
@@ -223,7 +231,10 @@ class _BottomBar extends StatelessWidget {
                 subtitlesEnabled: subtitlesEnabled,
                 onToggleSubtitles: onToggleSubtitles,
               ),
-              const MaterialFullscreenButton(),
+              if (onToggleFullscreen != null)
+                _FullscreenButton(onPressed: onToggleFullscreen!, exit: TweetVideoFullscreenScope.activeOf(context))
+              else
+                const MaterialFullscreenButton(),
             ],
           ),
         ),
@@ -587,6 +598,23 @@ class _MuteButtonState extends State<_MuteButton> {
       icon: Icon(_volume > 0 ? Icons.volume_up : Icons.volume_off),
       onPressed: () => _playerOf(context)
           .setVolume(_volume > 0 ? 0.0 : (_lastNonZero > 0 ? _lastNonZero : 100.0)),
+    );
+  }
+}
+
+class _FullscreenButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final bool exit;
+
+  const _FullscreenButton({required this.onPressed, required this.exit});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      iconSize: 24.0,
+      color: Colors.white,
+      icon: Icon(exit ? Icons.fullscreen_exit : Icons.fullscreen),
+      onPressed: onPressed,
     );
   }
 }
