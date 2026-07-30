@@ -3,6 +3,7 @@ import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:pref/pref.dart';
 import 'package:xta/utils/download_directory.dart';
+import 'package:xta/utils/media_quality.dart';
 
 class SettingsMediaFragment extends StatelessWidget {
   const SettingsMediaFragment({super.key});
@@ -12,10 +13,10 @@ class SettingsMediaFragment extends StatelessWidget {
     var prefs = PrefService.of(context);
 
     List<DropdownMenuItem<String>> qualityItems() => [
-          DropdownMenuItem(value: 'thumb', child: Text(L10n.of(context).quality_low)),
-          DropdownMenuItem(value: 'small', child: Text(L10n.of(context).quality_medium)),
-          DropdownMenuItem(value: 'medium', child: Text(L10n.of(context).quality_high)),
-          DropdownMenuItem(value: 'large', child: Text(L10n.of(context).quality_maximum)),
+          DropdownMenuItem(value: MediaQuality.thumb.stored, child: Text(L10n.of(context).quality_low)),
+          DropdownMenuItem(value: MediaQuality.small.stored, child: Text(L10n.of(context).quality_medium)),
+          DropdownMenuItem(value: MediaQuality.medium.stored, child: Text(L10n.of(context).quality_high)),
+          DropdownMenuItem(value: MediaQuality.large.stored, child: Text(L10n.of(context).quality_maximum)),
         ];
 
     return Scaffold(

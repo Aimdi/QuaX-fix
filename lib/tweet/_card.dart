@@ -18,6 +18,7 @@ import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:xta/plugins/plugin_links.dart';
+import 'package:xta/utils/media_quality.dart';
 
 class TweetCard extends StatelessWidget {
   static final log = Logger('TweetCard');
@@ -288,15 +289,14 @@ class TweetCard extends StatelessWidget {
       return Container();
     }
 
-    var imageKey = '';
-    var imageSize = PrefService.of(context, listen: false).get(optionImageQuality);
-    if (imageSize == 'thumb') {
-      imageKey = '_small';
-    } else if (imageSize == 'medium') {
-      imageKey = '_large';
-    } else if (imageSize == 'large') {
-      imageKey = '_x_large';
-    }
+    var imageSize = PrefService.of(context, listen: false).get<String>(optionImageQuality);
+    // `small` and anything unknown keep the card's unsuffixed default key.
+    var imageKey = switch (MediaQuality.fromStored(imageSize, fallback: MediaQuality.small)) {
+      MediaQuality.thumb => '_small',
+      MediaQuality.small => '',
+      MediaQuality.medium => '_large',
+      MediaQuality.large => '_x_large',
+    };
 
     switch (card['name']) {
       case 'summary':

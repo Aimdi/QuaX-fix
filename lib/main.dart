@@ -69,6 +69,7 @@ import 'package:xta/plugins/reddit/reddit_subreddit_avatar.dart';
 import 'package:xta/plugins/stocks/stocks_store.dart';
 import 'package:xta/speech/speech_bar.dart';
 import 'package:xta/speech/speech_store.dart';
+import 'package:xta/utils/media_quality.dart';
 
 Future checkForUpdates(BuildContext context) async {
   Logger.root.info('Checking for updates');
@@ -217,7 +218,7 @@ Future<void> _migrateMediaQualityPrefs(BasePrefService prefs) async {
   final previous = prefs.get<String>(optionImageQuality);
   final disabled = previous == 'disabled';
   // The old "disabled" value carried no real quality, so fall back to Maximum.
-  final quality = disabled ? 'large' : (previous ?? 'medium');
+  final quality = disabled ? MediaQuality.large.stored : (previous ?? MediaQuality.medium.stored);
 
   await prefs.set(optionMediaDisableAutoload, disabled);
   await prefs.set(optionImageQuality, quality);
@@ -264,8 +265,8 @@ Future<void> main() async {
       optionLocale: optionLocaleDefault,
       optionHomeInitialTab: 'feed',
       optionHomeDefaultFeedTab: feedTabs[0].id.name,
-      optionImageQuality: 'medium',
-      optionMediaVideoQuality: 'medium',
+      optionImageQuality: MediaQuality.medium.stored,
+      optionMediaVideoQuality: MediaQuality.medium.stored,
       optionMediaDisableAutoload: false,
       optionMediaQualitySplitMigrated: false,
       optionMediaGridColumns: 3,

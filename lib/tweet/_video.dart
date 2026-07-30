@@ -16,6 +16,7 @@ import 'package:xta/tweet/video_controller_pool.dart';
 import 'package:xta/tweet/video_playback_policy.dart';
 import 'package:xta/tweet/video_quality.dart';
 import 'package:xta/utils/iterables.dart';
+import 'package:xta/utils/media_quality.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -164,11 +165,11 @@ class _TweetVideoState extends State<TweetVideo> {
   static String _defaultQualityUrl(TweetVideoUrls urls, String quality) {
     final q = urls.qualities;
     if (q.isEmpty) return urls.streamUrl;
-    final i = switch (quality) {
-      'thumb' => q.length - 1,
-      'small' => (q.length * 3) ~/ 4,
-      'medium' => q.length ~/ 2,
-      _ => 0,
+    final i = switch (MediaQuality.fromStored(quality, fallback: MediaQuality.large)) {
+      MediaQuality.thumb => q.length - 1,
+      MediaQuality.small => (q.length * 3) ~/ 4,
+      MediaQuality.medium => q.length ~/ 2,
+      MediaQuality.large => 0,
     };
     return q[i.clamp(0, q.length - 1)].url;
   }

@@ -17,6 +17,7 @@ import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/ui/errors.dart';
 import 'package:xta/ui/x_look_theme.dart';
 import 'package:xta/utils/downloads.dart';
+import 'package:xta/utils/media_quality.dart';
 import 'package:path/path.dart' as path;
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
@@ -430,10 +431,9 @@ class _TweetMediaViewState extends State<TweetMediaView> {
     String? size;
     var prefs = PrefService.of(context, listen: false);
     if (widget.tweetMedia) {
-      var size = prefs.get(optionImageQuality);
-      if (size == 'disabled') {
-        size = 'medium';
-      }
+      // `var size` here used to declare a shadow, so the outer one stayed null
+      // and the image-quality setting never reached the photo URL.
+      size = MediaQuality.fromStored(prefs.get<String>(optionImageQuality), fallback: MediaQuality.medium).stored;
     }
 
     return Scaffold(
