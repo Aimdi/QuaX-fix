@@ -1274,5 +1274,11 @@
   "plugin_substack_comments": "コメント",
   "@plugin_substack_comments": {},
   "plugin_substack_no_comments": "コメントはまだありません",
-  "@plugin_substack_no_comments": {}
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "ベスト",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "古い順",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "さらに返信を表示",
+  "@plugin_reddit_more_replies": {}
 }

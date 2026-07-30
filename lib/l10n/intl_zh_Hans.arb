@@ -1274,5 +1274,11 @@
   "plugin_substack_comments": "评论",
   "@plugin_substack_comments": {},
   "plugin_substack_no_comments": "还没有评论",
-  "@plugin_substack_no_comments": {}
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "最佳",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "最早",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "更多回复",
+  "@plugin_reddit_more_replies": {}
 }

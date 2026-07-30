@@ -82,6 +82,14 @@ class RedditPost {
   /// none.
   final String? previewImage;
 
+  /// A v.redd.it post's streams: the DASH manifest libmpv can play whole, and
+  /// the progressive fallback (video-only) kept as the download target.
+  final String? videoDashUrl;
+  final String? videoFallbackUrl;
+
+  /// The video's own shape, from the payload; null reads as 16:9.
+  final double? videoAspectRatio;
+
   const RedditPost({
     required this.id,
     required this.title,
@@ -101,6 +109,9 @@ class RedditPost {
     this.domain,
     this.galleryImages = const [],
     this.previewImage,
+    this.videoDashUrl,
+    this.videoFallbackUrl,
+    this.videoAspectRatio,
   });
 
   RedditPost copyWith({
@@ -109,12 +120,13 @@ class RedditPost {
     String? selfText,
     List<String>? galleryImages,
     String? previewImage,
+    String? permalink,
   }) {
     return RedditPost(
       id: id,
       title: title,
       subreddit: subreddit,
-      permalink: permalink,
+      permalink: permalink ?? this.permalink,
       author: author,
       score: score,
       commentCount: commentCount,
@@ -129,8 +141,13 @@ class RedditPost {
       domain: domain,
       galleryImages: galleryImages ?? this.galleryImages,
       previewImage: previewImage ?? this.previewImage,
+      videoDashUrl: videoDashUrl,
+      videoFallbackUrl: videoFallbackUrl,
+      videoAspectRatio: videoAspectRatio,
     );
   }
+
+  bool get hasPlayableVideo => videoDashUrl != null || videoFallbackUrl != null;
 
   /// A thumbnail worth showing; Reddit uses sentinels like `self` and `default`
   /// where there is no image.
@@ -190,7 +207,32 @@ class RedditPost {
       domain: map['domain'] as String?,
       galleryImages: _galleryImagesOf(Json(map)),
       previewImage: _unescapeRedditUrl(Json(map)['preview']['images'][0]['source']['url'].string),
+      videoDashUrl: _unescapeRedditUrl(_redditVideo(Json(map))['dash_url'].string),
+      videoFallbackUrl: _unescapeRedditUrl(_redditVideo(Json(map))['fallback_url'].string),
+      videoAspectRatio: _videoAspectOf(_redditVideo(Json(map))),
     );
+  }
+
+  /// `secure_media` on the post itself; a crosspost carries it on the original.
+  static Json _redditVideo(Json data) {
+    final own = data['secure_media']['reddit_video'];
+    if (own.exists) {
+      return own;
+    }
+    final media = data['media']['reddit_video'];
+    if (media.exists) {
+      return media;
+    }
+    return data['crosspost_parent_list'][0]['secure_media']['reddit_video'];
+  }
+
+  static double? _videoAspectOf(Json video) {
+    final width = video['width'].number;
+    final height = video['height'].number;
+    if (width == null || height == null || height <= 0) {
+      return null;
+    }
+    return width / height;
   }
 
   /// A gallery's files, in the author's order.
@@ -580,9 +622,12 @@ class RedditClient {
   /// Returns the post's own text alongside, because a self post's body is not
   /// always in the listing that led here.
   Future<({List<RedditComment> comments, String? selfText, String? postUrl, List<String> postImages})>
-      fetchComments(String permalink) async {
+      fetchComments(String permalink, {String? sort}) async {
     final path = permalink.startsWith('/') ? permalink : '/$permalink';
-    final uri = Uri.parse('$_publicFallbackBase$path');
+    var uri = Uri.parse('$_publicFallbackBase$path');
+    if (sort != null && sort.isNotEmpty) {
+      uri = uri.replace(queryParameters: {'sort': sort});
+    }
 
     var response = await _read(uri);
 

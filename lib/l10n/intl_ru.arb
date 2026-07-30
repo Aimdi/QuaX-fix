@@ -1274,5 +1274,11 @@
   "plugin_substack_comments": "Комментарии",
   "@plugin_substack_comments": {},
   "plugin_substack_no_comments": "Комментариев пока нет",
-  "@plugin_substack_no_comments": {}
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Лучшие",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Старые",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Ещё ответы",
+  "@plugin_reddit_more_replies": {}
 }

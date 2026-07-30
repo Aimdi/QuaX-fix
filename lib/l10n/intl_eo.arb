@@ -1274,5 +1274,11 @@
   "plugin_substack_comments": "Komentoj",
   "@plugin_substack_comments": {},
   "plugin_substack_no_comments": "Ankoraŭ neniuj komentoj",
-  "@plugin_substack_no_comments": {}
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Plej bonaj",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Plej malnovaj",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Pliaj respondoj",
+  "@plugin_reddit_more_replies": {}
 }

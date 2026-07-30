@@ -1274,5 +1274,11 @@
   "plugin_substack_comments": "Kamientaryi",
   "@plugin_substack_comments": {},
   "plugin_substack_no_comments": "Kamientaryjaŭ pakul niama",
-  "@plugin_substack_no_comments": {}
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Najlepšyja",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Najstarejšyja",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Jašče adkazy",
+  "@plugin_reddit_more_replies": {}
 }

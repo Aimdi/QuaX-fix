@@ -1274,5 +1274,11 @@
   "plugin_substack_comments": "댓글",
   "@plugin_substack_comments": {},
   "plugin_substack_no_comments": "아직 댓글이 없습니다",
-  "@plugin_substack_no_comments": {}
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "베스트",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "오래된 순",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "답글 더 보기",
+  "@plugin_reddit_more_replies": {}
 }

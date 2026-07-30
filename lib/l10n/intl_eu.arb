@@ -1274,5 +1274,11 @@
   "plugin_substack_comments": "Iruzkinak",
   "@plugin_substack_comments": {},
   "plugin_substack_no_comments": "Oraindik ez dago iruzkinik",
-  "@plugin_substack_no_comments": {}
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Onenak",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Zaharrenak",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Erantzun gehiago",
+  "@plugin_reddit_more_replies": {}
 }

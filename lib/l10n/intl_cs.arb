@@ -1274,5 +1274,11 @@
   "plugin_substack_comments": "Komentáře",
   "@plugin_substack_comments": {},
   "plugin_substack_no_comments": "Zatím žádné komentáře",
-  "@plugin_substack_no_comments": {}
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Nejlepší",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Nejstarší",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Další odpovědi",
+  "@plugin_reddit_more_replies": {}
 }

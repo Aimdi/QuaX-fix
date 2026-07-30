@@ -262,4 +262,77 @@ void main() {
       expect(media.images, isEmpty);
     });
   });
+
+  group('what a page holds back', () {
+    test('a load-more control becomes a stub pointing at its parent', () {
+      final page = _page(
+        _comment('a', 'ann', 'Parent', replies: '''
+<div class="thing morechildren"><a href="javascript:void(0)">load more comments</a> (34 replies)</div>
+'''),
+      );
+      // The parent needs a permalink for the stub to point at.
+      final withPermalink = page.replaceFirst('data-author="ann"', 'data-author="ann" data-permalink="/r/x/comments/p/t/a/"');
+
+      final flat = flattenComments(parseComments(withPermalink));
+
+      expect(flat, hasLength(2));
+      expect(flat[1].comment.isStub, isTrue);
+      expect(flat[1].comment.moreCount, 34);
+      expect(flat[1].comment.permalink, '/r/x/comments/p/t/a/');
+      expect(flat[1].depth, 1, reason: 'the held-back replies sit under their parent');
+    });
+
+    test('a deep-thread continuation carries its own target', () {
+      final page = _page(
+        _comment('a', 'ann', 'Deep', replies: '''
+<div class="thing morerecursion"><a href="/r/x/comments/p/t/deep/">continue this thread</a></div>
+'''),
+      );
+
+      final flat = flattenComments(parseComments(page));
+
+      expect(flat[1].comment.isStub, isTrue);
+      expect(flat[1].comment.permalink, '/r/x/comments/p/t/deep/');
+    });
+
+    test('a control with nowhere to go is dropped rather than dead on screen', () {
+      final page = _page(
+        _comment('a', 'ann', 'Parent', replies: '''
+<div class="thing morechildren"><a href="javascript:void(0)">load more comments</a></div>
+'''),
+      );
+
+      expect(flattenComments(parseComments(page)), hasLength(1));
+    });
+  });
+
+  group('folding a thread', () {
+    List<FlatComment> flat() => [
+          (comment: RedditComment(id: 'a', body: 'top'), depth: 0),
+          (comment: RedditComment(id: 'b', body: 'reply'), depth: 1),
+          (comment: RedditComment(id: 'c', body: 'reply to reply'), depth: 2),
+          (comment: RedditComment(id: 'd', body: 'second top'), depth: 0),
+        ];
+
+    test('nothing collapsed shows everything, hiding nothing', () {
+      final rows = visibleComments(flat(), const {});
+
+      expect(rows, hasLength(4));
+      expect(rows.every((r) => r.hidden == 0), isTrue);
+    });
+
+    test('a collapsed comment keeps its row, its subtree does not', () {
+      final rows = visibleComments(flat(), {'a'});
+
+      expect(rows.map((r) => r.entry.comment.id), ['a', 'd']);
+      expect(rows.first.hidden, 2);
+    });
+
+    test('collapsing a leaf hides nothing but still marks the row', () {
+      final rows = visibleComments(flat(), {'c'});
+
+      expect(rows, hasLength(4));
+      expect(rows[2].hidden, 0);
+    });
+  });
 }

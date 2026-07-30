@@ -1274,5 +1274,11 @@
   "plugin_substack_comments": "Commentaires",
   "@plugin_substack_comments": {},
   "plugin_substack_no_comments": "Pas encore de commentaires",
-  "@plugin_substack_no_comments": {}
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Meilleurs",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Anciens",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Plus de réponses",
+  "@plugin_reddit_more_replies": {}
 }
