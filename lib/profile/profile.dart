@@ -698,6 +698,12 @@ class _MediaFilterButton extends StatelessWidget {
         MediaFilter.videos => L10n.of(context).videos,
       };
 
+  IconData _iconFor(MediaFilter filter) => switch (filter) {
+        MediaFilter.all => Icons.perm_media_outlined,
+        MediaFilter.photos => Icons.photo_library_outlined,
+        MediaFilter.videos => Icons.video_library_outlined,
+      };
+
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<MediaFilter>(
@@ -707,7 +713,16 @@ class _MediaFilterButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       itemBuilder: (context) => [
         for (final filter in MediaFilter.values)
-          PopupMenuItem(value: filter, child: Text(_labelFor(context, filter))),
+          PopupMenuItem(
+            value: filter,
+            child: Row(
+              children: [
+                Icon(_iconFor(filter), size: 20),
+                const SizedBox(width: 12),
+                Text(_labelFor(context, filter)),
+              ],
+            ),
+          ),
       ],
       child: Padding(
         padding: const EdgeInsets.only(left: 2),
