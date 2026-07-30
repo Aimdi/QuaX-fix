@@ -10,9 +10,21 @@ class SavedTweetModel extends Store<List<SavedTweet>> {
 
   SavedTweetModel() : super([]);
 
-  bool isSaved(String id) {
-    return state.any((e) => e.id == id);
+  // Rebuilt only when the list itself is replaced; every visible footer asks
+  // this on every build, and a linear scan of the full list per card made a
+  // large collection a per-frame cost.
+  List<Object>? _idsSource;
+  Set<String> _ids = const {};
+
+  Set<String> get _currentIds {
+    if (!identical(_idsSource, state)) {
+      _idsSource = state;
+      _ids = {for (final e in state) e.id};
+    }
+    return _ids;
   }
+
+  bool isSaved(String id) => _currentIds.contains(id);
 
   String? folderOf(String id) {
     var match = state.where((e) => e.id == id);

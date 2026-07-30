@@ -101,29 +101,23 @@ class GroupModel extends Store<SubscriptionGroupGet> {
       }.toList(growable: false);
       final placeholders = List.filled(ids.length, '?').join(', ');
 
-      var searchSubscriptions = (await database.rawQuery(
-              'SELECT DISTINCT s.* FROM $tableSearchSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders) ORDER BY s.id',
-              ids))
-          .map((e) => SearchSubscription.fromMap(e))
-          .toList(growable: false);
+      // The four membership queries are independent of each other; issued
+      // together instead of one after another, since this runs on every shell
+      // mount and every debounced reload.
+      String membership(String table) =>
+          'SELECT DISTINCT s.* FROM $table s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders) ORDER BY s.id';
 
-      var userSubscriptions = (await database.rawQuery(
-              'SELECT DISTINCT s.* FROM $tableSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders) ORDER BY s.id',
-              ids))
-          .map((e) => UserSubscription.fromMap(e))
-          .toList(growable: false);
+      final rows = await Future.wait([
+        database.rawQuery(membership(tableSearchSubscription), ids),
+        database.rawQuery(membership(tableSubscription), ids),
+        database.rawQuery(membership(tableSubstackSubscription), ids),
+        database.rawQuery(membership(tableRedditSubscription), ids),
+      ]);
 
-      var substackSubscriptions = (await database.rawQuery(
-              'SELECT DISTINCT s.* FROM $tableSubstackSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders) ORDER BY s.id',
-              ids))
-          .map((e) => SubstackSubscription.fromMap(e))
-          .toList(growable: false);
-
-      var redditSubscriptions = (await database.rawQuery(
-              'SELECT DISTINCT s.* FROM $tableRedditSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders) ORDER BY s.id',
-              ids))
-          .map((e) => RedditSubscription.fromMap(e))
-          .toList(growable: false);
+      var searchSubscriptions = rows[0].map((e) => SearchSubscription.fromMap(e)).toList(growable: false);
+      var userSubscriptions = rows[1].map((e) => UserSubscription.fromMap(e)).toList(growable: false);
+      var substackSubscriptions = rows[2].map((e) => SubstackSubscription.fromMap(e)).toList(growable: false);
+      var redditSubscriptions = rows[3].map((e) => RedditSubscription.fromMap(e)).toList(growable: false);
 
       // TODO: Factory
       return SubscriptionGroupGet(

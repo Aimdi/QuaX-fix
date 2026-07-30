@@ -75,6 +75,14 @@ class EndpointRegistry {
       return 0;
     }
 
+    // Once a day is plenty for a file that changes when X rotates a query id.
+    // fetchedAt was recorded on every fetch and read by nothing; now it is the
+    // throttle. The cached document has already been applied at startup.
+    final fetchedAt = DateTime.tryParse(prefs.get<String>(optionEndpointRegistryFetchedAt) ?? '');
+    if (fetchedAt != null && DateTime.now().difference(fetchedAt) < const Duration(hours: 24)) {
+      return 0;
+    }
+
     try {
       final response = await client.get(uri).timeout(endpointRegistryTimeout);
       if (response.statusCode != 200) {

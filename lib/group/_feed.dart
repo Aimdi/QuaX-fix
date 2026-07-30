@@ -150,23 +150,28 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     final client = context.read<SubstackClient>();
     final items = <InterleavedItem>[];
 
-    for (final publication in widget.publications) {
+    // All publications at once; the feed used to wait on the sum of the round
+    // trips. One unreachable publication must not empty the whole feed of the
+    // others, nor replace a working timeline with an error screen.
+    final fetched = await Future.wait(widget.publications.map((publication) async {
       try {
-        final posts = await client.fetchPosts(publicationOf(publication), limit: substackFeedPageSize);
-        for (final post in posts) {
-          final date = post.publishedAt;
-          if (date == null) {
-            continue;
-          }
-          items.add((
-            date: date,
-            build: (context) => SubstackPostCard(post: post, logoUrl: publication.logoUrl),
-          ));
-        }
+        return (publication, await client.fetchPosts(publicationOf(publication), limit: substackFeedPageSize));
       } catch (e) {
-        // One unreachable publication must not empty the whole feed of the
-        // others, nor replace a working timeline with an error screen.
         _log.warning('Unable to load Substack posts for ${publication.id}: $e');
+        return null;
+      }
+    }));
+
+    for (final (publication, posts) in fetched.nonNulls) {
+      for (final post in posts) {
+        final date = post.publishedAt;
+        if (date == null) {
+          continue;
+        }
+        items.add((
+          date: date,
+          build: (context) => SubstackPostCard(post: post, logoUrl: publication.logoUrl),
+        ));
       }
     }
 
@@ -615,12 +620,12 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       return (chains: <TweetChain>[], nextCursor: null);
     }
 
-    if (PrefService.of(context).get(optionZenMode) == true) {
+    if (PrefService.of(context, listen: false).get(optionZenMode) == true) {
       threads = _applyZenMode(threads);
     }
 
     if (shouldShowUnrelatedPostsInFeedWarning &&
-        !PrefService.of(context).get(optionDisableWarningsForUnrelatedPostsInFeed)) {
+        !PrefService.of(context, listen: false).get(optionDisableWarningsForUnrelatedPostsInFeed)) {
       await showUnrelatedPostsInFeedWarning();
     }
 

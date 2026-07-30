@@ -588,21 +588,45 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
   }
 }
 
-class SavedTweetTile extends StatelessWidget {
+class SavedTweetTile extends StatefulWidget {
   final String id;
   final String? content;
 
   const SavedTweetTile({super.key, required this.id, this.content});
 
   @override
-  Widget build(BuildContext context) {
-    var content = this.content;
-    if (content == null) {
-      // The tweet is probably too big to fit inside the cursor and has been removed from the result set
-      return SavedTweetTooLarge(id: id);
-    }
+  State<SavedTweetTile> createState() => _SavedTweetTileState();
+}
 
-    var tweet = TweetWithCard.fromJson(jsonDecode(content));
+class _SavedTweetTileState extends State<SavedTweetTile> {
+  // Decoded once per mount: the JSON of a saved post runs to tens of KB, and
+  // decoding it on every build made scrolling the saved list a parsing loop.
+  late TweetWithCard? _tweet = _decode();
+
+  TweetWithCard? _decode() {
+    final content = widget.content;
+    if (content == null) {
+      return null;
+    }
+    return TweetWithCard.fromJson(jsonDecode(content));
+  }
+
+  @override
+  void didUpdateWidget(SavedTweetTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.id != oldWidget.id || widget.content != oldWidget.content) {
+      _tweet = _decode();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tweet = _tweet;
+    if (tweet == null) {
+      // The tweet is probably too big to fit inside the cursor and has been
+      // removed from the result set.
+      return SavedTweetTooLarge(id: widget.id);
+    }
 
     return TweetTile(key: Key(tweet.idStr!), tweet: tweet, clickable: true);
   }

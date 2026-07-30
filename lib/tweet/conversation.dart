@@ -30,6 +30,7 @@ class _TweetConversationState extends State<TweetConversation> {
   Widget build(BuildContext context) {
     if (widget.tweets.length == 1) {
       return TweetTile(
+          key: ValueKey(widget.tweets.first.idStr),
           clickable: true,
           tweet: widget.tweets.first,
           currentUsername: widget.username,
@@ -43,6 +44,7 @@ class _TweetConversationState extends State<TweetConversation> {
 
     for (var i = 0; i < tweets.length; i++) {
       tiles.add(TweetTile(
+          key: ValueKey(tweets[i].idStr),
           clickable: true,
           tweet: tweets[i],
           currentUsername: widget.username,

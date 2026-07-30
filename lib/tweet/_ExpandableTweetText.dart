@@ -14,11 +14,18 @@ class ExpandableTweetText extends StatefulWidget {
   final VoidCallback? onTap;
   final int? maxLines;
 
+  /// Whether the text can be selected. Off in the feed: SelectableText builds
+  /// the whole editable-text stack — focus node, selection overlay, caret
+  /// ticker — per tile, which is an order of magnitude more work than Text
+  /// and is only ever used on a post the reader has actually opened.
+  final bool selectable;
+
   const ExpandableTweetText({
     super.key,
     required this.textSpans,
     this.onTap,
     this.maxLines = kTweetTextMaxLines,
+    this.selectable = false,
   });
 
   @override
@@ -27,6 +34,14 @@ class ExpandableTweetText extends StatefulWidget {
 
 class ExpandableTweetTextState extends State<ExpandableTweetText> {
   bool _isExpanded = false;
+
+  // The truncation answer, remembered per (spans, width, scale): laying the
+  // paragraph out to count its lines costs as much as painting it, and
+  // LayoutBuilder re-runs this on every relayout of the tile.
+  List<InlineSpan>? _memoSpans;
+  double? _memoWidth;
+  TextScaler? _memoScaler;
+  bool _memoTruncated = false;
 
   /// Whether the text needs more than [ExpandableTweetText.maxLines] at the
   /// width it is actually painted at, in the style it is actually painted in.
@@ -41,6 +56,11 @@ class ExpandableTweetTextState extends State<ExpandableTweetText> {
       return false;
     }
 
+    final scaler = MediaQuery.textScalerOf(context);
+    if (identical(_memoSpans, widget.textSpans) && _memoWidth == maxWidth && _memoScaler == scaler) {
+      return _memoTruncated;
+    }
+
     final painter = TextPainter(
       text: TextSpan(style: style, children: widget.textSpans),
       textDirection: Directionality.of(context),
@@ -52,6 +72,10 @@ class ExpandableTweetTextState extends State<ExpandableTweetText> {
     final truncated = painter.computeLineMetrics().length > maxLines;
     painter.dispose();
 
+    _memoSpans = widget.textSpans;
+    _memoWidth = maxWidth;
+    _memoScaler = scaler;
+    _memoTruncated = truncated;
     return truncated;
   }
 
@@ -62,13 +86,24 @@ class ExpandableTweetTextState extends State<ExpandableTweetText> {
         final style = DefaultTextStyle.of(context).style;
         final clipped = !_isExpanded && _isTruncated(context, constraints.maxWidth, style);
 
-        final text = SelectableText.rich(
-          TextSpan(children: widget.textSpans),
-          scrollPhysics: const NeverScrollableScrollPhysics(),
-          maxLines: clipped ? widget.maxLines : null,
-          style: style,
-          onTap: widget.onTap,
-        );
+        final Widget text = widget.selectable
+            ? SelectableText.rich(
+                TextSpan(children: widget.textSpans),
+                scrollPhysics: const NeverScrollableScrollPhysics(),
+                maxLines: clipped ? widget.maxLines : null,
+                style: style,
+                onTap: widget.onTap,
+              )
+            : GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: widget.onTap,
+                child: Text.rich(
+                  TextSpan(children: widget.textSpans),
+                  maxLines: clipped ? widget.maxLines : null,
+                  overflow: clipped ? TextOverflow.clip : null,
+                  style: style,
+                ),
+              );
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -103,6 +103,7 @@ class RedditCommentImages extends StatelessWidget {
                 child: Image.network(
                   url,
                   fit: BoxFit.contain,
+                  cacheWidth: (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).ceil(),
                   alignment: Alignment.centerLeft,
                   errorBuilder: (context, _, __) => _RedditBrokenImage(url: url),
                 ),
@@ -175,6 +176,7 @@ class _RedditImageState extends State<_RedditImage> {
               widget.url,
               width: double.infinity,
               fit: BoxFit.cover,
+              cacheWidth: (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).ceil(),
               loadStateChanged: _placeholderWhileLoading,
             ),
             if (widget.badge != null)
@@ -216,18 +218,24 @@ class _RedditImageState extends State<_RedditImage> {
 
   Widget _cover(BuildContext context) {
     return Positioned.fill(
-      child: ClipRect(
-        child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-          child: Material(
-            color: Colors.black26,
-            child: InkWell(
-              onTap: () => setState(() => _hidden = false),
-              child: Center(
-                child: Text(
-                  L10n.of(context).possibly_sensitive,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+      // Contained in its own layer, and σ8 rather than 24: a backdrop blur
+      // re-filters every frame it is on screen, and its cost grows with sigma.
+      // At 8 the picture is still unreadable and a mid-range phone keeps its
+      // frame budget.
+      child: RepaintBoundary(
+        child: ClipRect(
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            child: Material(
+              color: Colors.black26,
+              child: InkWell(
+                onTap: () => setState(() => _hidden = false),
+                child: Center(
+                  child: Text(
+                    L10n.of(context).possibly_sensitive,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
             ),
@@ -301,7 +309,10 @@ class _RedditLinkCard extends StatelessWidget {
       child: Stack(
         fit: StackFit.passthrough,
         children: [
-          ExtendedImage.network(preview, width: double.infinity, fit: BoxFit.cover),
+          ExtendedImage.network(preview,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              cacheWidth: (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).ceil()),
           if (post.isVideo)
             const Positioned.fill(
               child: Center(
@@ -329,7 +340,9 @@ class _RedditLinkCard extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           if (thumbnail != null)
-            ExtendedImage.network(thumbnail, fit: BoxFit.cover)
+            ExtendedImage.network(thumbnail,
+                fit: BoxFit.cover,
+                cacheWidth: (88 * MediaQuery.devicePixelRatioOf(context)).ceil())
           else
             Container(
               color: theme.colorScheme.surfaceContainerHighest,

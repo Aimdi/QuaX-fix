@@ -466,7 +466,12 @@ class _TweetVideoState extends State<TweetVideo> {
               alignment: Alignment.center,
               children: [
                 if (widget.metadata.imageUrl != null)
-                  ExtendedImage.network(widget.metadata.imageUrl!, cache: true, fit: BoxFit.cover),
+                  ExtendedImage.network(widget.metadata.imageUrl!,
+                  cache: true,
+                  fit: BoxFit.cover,
+                  // Posters are served at 1200px+; decode at the tile's own size.
+                  cacheWidth:
+                      (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).ceil()),
                 if (!widget.disableControls) const Center(child: CircularProgressIndicator()),
               ],
             ),
@@ -486,7 +491,12 @@ class _TweetVideoState extends State<TweetVideo> {
         children: [
           if (widget.metadata.imageUrl != null)
             Positioned.fill(
-              child: ExtendedImage.network(widget.metadata.imageUrl!, cache: true, fit: BoxFit.cover),
+              child: ExtendedImage.network(widget.metadata.imageUrl!,
+                  cache: true,
+                  fit: BoxFit.cover,
+                  // Posters are served at 1200px+; decode at the tile's own size.
+                  cacheWidth:
+                      (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).ceil()),
             ),
           ?child,
         ],
@@ -520,7 +530,7 @@ class _TweetVideoState extends State<TweetVideo> {
 
   @override
   Widget build(BuildContext context) {
-    final prefs = PrefService.of(context);
+    final prefs = PrefService.of(context, listen: false);
     final prefLoop = prefs.get(optionMediaDefaultLoop);
     final prefAutoPlay = prefs.get(optionMediaDefaultAutoPlay);
     final prefBackgroundPlayback = prefs.get(optionMediaBackgroundPlayback);

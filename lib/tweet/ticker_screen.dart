@@ -76,7 +76,7 @@ class _TickerScreenState extends State<_TickerScreen> {
     }
   }
 
-  bool get _chartEnabled => PrefService.of(context).get<bool>(optionTickerChart) == true;
+  bool get _chartEnabled => PrefService.of(context, listen: false).get<bool>(optionTickerChart) == true;
 
   Future<void> _loadQuote() async {
     final range = _range;

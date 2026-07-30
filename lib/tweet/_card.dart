@@ -207,8 +207,14 @@ class TweetCard extends StatelessWidget {
         context);
   }
 
+  /// The decoded unified card, remembered per card object: the string is a
+  /// few KB of JSON and this used to be decoded on every build of every tweet
+  /// that carried one.
+  static final Expando<Map<String, dynamic>> _unifiedCards = Expando();
+
   dynamic _createUnifiedCard(BuildContext context, Map<String, dynamic> card, String imageKey, String imageSize) {
-    var unifiedCard = jsonDecode(card['binding_values']['unified_card']['string_value']) as Map<String, dynamic>;
+    var unifiedCard = _unifiedCards[card] ??=
+        jsonDecode(card['binding_values']['unified_card']['string_value']) as Map<String, dynamic>;
 
     switch (unifiedCard['type']) {
       case 'image_website':

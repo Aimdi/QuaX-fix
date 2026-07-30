@@ -18,7 +18,7 @@ typedef MediaGridConfig = ({int columns, double spacing, double radius});
 /// setting; the feed layout is one full-width item per row (a timeline
 /// without text); the two-per-row layout is a roomier two-column masonry.
 MediaGridConfig mediaGridConfigOf(BuildContext context) {
-  var prefs = PrefService.of(context);
+  var prefs = PrefService.of(context, listen: false);
   var layout = prefs.get<String>(optionMediaGridLayout) ?? mediaGridLayoutMasonry;
   return switch (layout) {
     mediaGridLayoutFeed => (columns: 1, spacing: 8.0, radius: 12.0),

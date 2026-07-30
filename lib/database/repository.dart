@@ -570,6 +570,12 @@ const Map<String, String> _indexes = {
   'idx_feed_group_chunk_hash': '$tableFeedGroupChunk (hash, created_at)',
   'idx_feed_group_chunk_cursor': '$tableFeedGroupChunk (cursor_id, hash)',
   'idx_subscription_group_member_profile': '$tableSubscriptionGroupMember (profile_id)',
+  // The cache preview reads newest-first with no WHERE, and the weekly cleanup
+  // deletes by age; without this both walk the largest table in the schema.
+  'idx_feed_group_chunk_created': '$tableFeedGroupChunk (created_at)',
+  'idx_saved_tweet_saved_at': '$tableSavedTweet (saved_at)',
+  'idx_saved_tweet_folder_id': '$tableSavedTweet (folder_id)',
+  'idx_liked_tweet_liked_at': '$tableLikedTweet (liked_at)',
 };
 
 /// Adds the Immich column, tolerating a database whose folder table is gone —
@@ -669,6 +675,19 @@ class Repository {
     return openDatabase(databaseName);
   }
 
+  static bool _cleanedUp = false;
+
+  Future<void> _cleanUpOldCaches() async {
+    try {
+      final repository = await writable();
+      await repository.delete(tableFeedGroupChunk, where: "created_at <= date('now', '-7 day')");
+      await repository.delete(tableFeedGroupCursor, where: "created_at <= date('now', '-7 day')");
+      await repository.delete(tableTimelineCache, where: "created_at <= date('now', '-7 day')");
+    } catch (e) {
+      log.warning('Could not clean up old cached feeds: $e');
+    }
+  }
+
   Future<bool> migrate() async {
     final myMigrationPlan = buildMigrationPlan();
 
@@ -680,11 +699,15 @@ class Repository {
       onDowngrade: myMigrationPlan.call,
     );
 
-    // Clean up any old feed chunks and cursors
-    var repository = await writable();
-    await repository.delete(tableFeedGroupChunk, where: "created_at <= date('now', '-7 day')");
-    await repository.delete(tableFeedGroupCursor, where: "created_at <= date('now', '-7 day')");
-    await repository.delete(tableTimelineCache, where: "created_at <= date('now', '-7 day')");
+    // The weekly cache cleanup walks the largest tables in the schema, and it
+    // used to be awaited here — twice, since migrate() runs twice per launch —
+    // so a week of feed JSON was scanned before the first frame. It gains
+    // nothing from blocking startup: run it once per process, in the
+    // background, after the schema work is done.
+    if (!_cleanedUp) {
+      _cleanedUp = true;
+      unawaited(_cleanUpOldCaches());
+    }
 
     log.info('Finished migrating database');
 

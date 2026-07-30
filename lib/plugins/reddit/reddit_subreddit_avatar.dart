@@ -109,6 +109,8 @@ class _RedditSubredditAvatarState extends State<RedditSubredditAvatar> {
       child: ExtendedImage.network(
         icon,
         fit: BoxFit.contain,
+        // A community icon can be served at 1024px; decode at avatar size.
+        cacheWidth: (widget.size * MediaQuery.devicePixelRatioOf(context)).ceil(),
         loadStateChanged: (state) => state.extendedImageLoadState == LoadState.completed
             ? null
             : RedditAvatar(name: 'r/${widget.subreddit}', size: widget.size),

@@ -85,11 +85,16 @@ void _handleTextParts(BuildContext context, String? text, List<RichTextPart> ric
   }
 }
 
+// Compiled once: this runs per text segment of every tweet scrolled in, and
+// Dart does not cache RegExp construction.
+final _mentionOrHashtag = RegExp(r'(#|(?<=\W|^)@)\w+');
+final _unescape = HtmlUnescape();
+
 List _parseMentionsAndHashtags(BuildContext context, String content) {
   List contentWidgets = [];
 
   // Split the string by any mentions or hashtags, and turn those into links
-  content.splitMapJoin(RegExp(r'(#|(?<=\W|^)@)\w+'), onMatch: (match) {
+  content.splitMapJoin(_mentionOrHashtag, onMatch: (match) {
     var full = match.group(0);
     var type = match.group(1);
     if (type == null || full == null) {
@@ -130,7 +135,7 @@ String? _convertRunesToText(Iterable<int> runes, int start, [int? end]) {
   if (string.isEmpty) {
     return null;
   }
-  return HtmlUnescape().convert(string);
+  return _unescape.convert(string);
 }
 
 List<Entity> _parseEntities(BuildContext context, dynamic newEntities) {

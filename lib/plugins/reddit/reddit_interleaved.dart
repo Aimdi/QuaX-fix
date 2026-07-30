@@ -55,21 +55,26 @@ Future<List<InterleavedItem>> loadRedditInterleaved(
   final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
   final sort = storedRedditSort(prefs);
 
-  final items = <InterleavedItem>[];
-  for (final name in subreddits) {
+  // Fetched together rather than one after another: a group with six
+  // subreddits paid six round trips end to end, and the feed waited on the sum.
+  final listings = await Future.wait(subreddits.map((name) async {
     try {
-      final listing = await client.fetchSubreddit(name,
+      return await client.fetchSubreddit(name,
           clientId: clientId, sort: sort, limit: limit, preferPublic: preferPublic);
-
-      for (final post in listing.posts.where((p) => !p.stickied)) {
-        final date = post.createdAt;
-        if (date == null) {
-          continue;
-        }
-        items.add((date: date, build: (context) => RedditPostCard(post: post)));
-      }
     } catch (e) {
       _log.warning('Unable to load r/$name: $e');
+      return null;
+    }
+  }));
+
+  final items = <InterleavedItem>[];
+  for (final listing in listings.nonNulls) {
+    for (final post in listing.posts.where((p) => !p.stickied)) {
+      final date = post.createdAt;
+      if (date == null) {
+        continue;
+      }
+      items.add((date: date, build: (context) => RedditPostCard(post: post)));
     }
   }
 

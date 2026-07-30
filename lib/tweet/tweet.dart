@@ -77,15 +77,16 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   // Short K/M suffixes: locale-specific compact forms like "12 Tsd." or
   // "1,2 Mio." eat the footer's width and push the trailing buttons away.
   static final NumberFormat _numberFormat = NumberFormat.compact(locale: 'en_US');
+  static final RegExp _localeSeparator = RegExp(r'[-_]');
 
-  late final bool clickable;
-  late final String? currentUsername;
-  late final TweetWithCard tweet;
-  late final bool isPinned;
-  late final bool isThread;
-  late final bool isQuotedTweet;
-  late final bool addSeparator;
-  late final bool isBirdwatchQuote;
+  late bool clickable;
+  late String? currentUsername;
+  late TweetWithCard tweet;
+  late bool isPinned;
+  late bool isThread;
+  late bool isQuotedTweet;
+  late bool addSeparator;
+  late bool isBirdwatchQuote;
 
   TranslationStatus _translationStatus = TranslationStatus.original;
   TranslationBroadcast? _translationBroadcast;
@@ -95,8 +96,6 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   List<RichTextPart> _translatedParts = [];
 
   bool _isInitialized = false;
-
-  final GlobalKey _globalKey = GlobalKey(); // needed for "share tweet as image"
 
   @override
   void initState() {
@@ -110,6 +109,27 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     isQuotedTweet = widget.isQuotedTweet;
     addSeparator = widget.addSeparator;
     isBirdwatchQuote = widget.isBirdwatchQuote;
+  }
+
+  /// The element can be reused for a different tweet — a soft refresh prepends
+  /// chains and the list re-associates by index — and a State that froze its
+  /// widget's fields in initState would keep showing the old post's text.
+  @override
+  void didUpdateWidget(TweetTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.tweet.idStr != oldWidget.tweet.idStr) {
+      clickable = widget.clickable;
+      currentUsername = widget.currentUsername;
+      tweet = widget.tweet;
+      isPinned = widget.isPinned;
+      isThread = widget.isThread;
+      isQuotedTweet = widget.isQuotedTweet;
+      addSeparator = widget.addSeparator;
+      isBirdwatchQuote = widget.isBirdwatchQuote;
+      _translationStatus = TranslationStatus.original;
+      _translatedParts = [];
+      _initializeTweetParts();
+    }
   }
 
   @override
@@ -163,7 +183,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       localeStr = Platform.localeName;
     }
 
-    final splitLocale = localeStr!.split(RegExp(r'[-_]'));
+    final splitLocale = localeStr!.split(_localeSeparator);
     return splitLocale.length == 1 ? Locale(splitLocale[0]) : Locale(splitLocale[0], splitLocale[1]);
   }
 
@@ -284,10 +304,16 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   }
 
   Future<Uint8List?> captureWidget() async {
-    if (_globalKey.currentContext == null) {
+    // The RepaintBoundary is the root of this State's build, so the State's own
+    // render object is it — no per-tile GlobalKey needed (each one costs a trip
+    // through the global registry on every mount and unmount while scrolling).
+    if (!mounted) {
       return null;
     }
-    final RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    final boundary = context.findRenderObject();
+    if (boundary is! RenderRepaintBoundary) {
+      return null;
+    }
     final ui.Image image = await boundary.toImage(pixelRatio: 3.0);
     final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     if (byteData == null) {
@@ -492,7 +518,9 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
             child: ExpandableTweetText(
               textSpans: displayRichText(_displayParts),
               onTap: () => !widget.tweetOpened ? onClickOpenTweet(tweet) : null,
-              maxLines: PrefService.of(context).get(alwaysShowFullTweetContents) ? null : kTweetTextMaxLines,
+              selectable: widget.tweetOpened,
+              maxLines:
+                  PrefService.of(context, listen: false).get(alwaysShowFullTweetContents) ? null : kTweetTextMaxLines,
             ),
           ));
     }
@@ -553,10 +581,9 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     final avatarSize = isQuotedTweet ? 32.0 : 48.0;
     final plainAvatar = hideAuthorInformation
         ? Icon(Icons.account_circle, size: avatarSize)
-        : ClipRRect(
-            borderRadius: BorderRadius.circular(64),
-            child: UserAvatar(uri: tweet.user!.profileImageUrlHttps, size: avatarSize),
-          );
+        // UserAvatar clips itself; a second ClipRRect here was one more
+        // antialiased clip layer per visible tile for nothing.
+        : UserAvatar(uri: tweet.user!.profileImageUrlHttps, size: avatarSize);
 
     final showSubscribeBadge = prefs.get(optionTweetsShowSubscribeBadge) != false;
     final avatar = hideAuthorInformation || !showSubscribeBadge || !_canSubscribeTo(tweet.user)
@@ -697,7 +724,6 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
     if (isThreadTile) {
       return RepaintBoundary(
-              key: _globalKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -735,7 +761,6 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     }
 
     return RepaintBoundary(
-            key: _globalKey,
             child: Column(children: [
               _withDoubleTapToLike(
                 context,

@@ -21,7 +21,9 @@ double tweetMediaRadiusOf(BuildContext context) =>
 Widget tweetFlatCard({
   required Color? color,
   required Widget child,
-  Clip clipBehavior = Clip.antiAlias,
+  // The shape is a zero-radius rectangle, so an antialiased clip per tile was
+  // a clip-path layer spent clipping nothing.
+  Clip clipBehavior = Clip.none,
 }) {
   return Card(
     elevation: 0,

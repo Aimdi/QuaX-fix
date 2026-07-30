@@ -724,7 +724,7 @@ Future<void> downloadTweetVideo(BuildContext context, String username, String? d
     context,
     videoUri,
     fileName,
-    prefs: PrefService.of(context),
+    prefs: PrefService.of(context, listen: false),
     onStart: () {
       showWorkingSnackBar(context, L10n.of(context).downloading_media);
     },

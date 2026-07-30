@@ -101,7 +101,13 @@ class SubstackPostCard extends StatelessWidget {
                   color: theme.colorScheme.surfaceContainerHighest,
                   child: Icon(Icons.article_outlined, size: 14, color: theme.colorScheme.onSurfaceVariant),
                 )
-              : ExtendedImage.network(logo, width: 24, height: 24, fit: BoxFit.cover),
+              : ExtendedImage.network(logo,
+                  width: 24,
+                  height: 24,
+                  fit: BoxFit.cover,
+                  // width: constrains layout only; without cacheWidth the full
+                  // logo still rasterises into the image cache.
+                  cacheWidth: (24 * MediaQuery.devicePixelRatioOf(context)).ceil()),
         ),
         const SizedBox(width: 8),
         Flexible(
@@ -147,7 +153,9 @@ class SubstackPostCard extends StatelessWidget {
         children: [
           AspectRatio(
             aspectRatio: 16 / 9,
-            child: ExtendedImage.network(post.coverImage!, fit: BoxFit.cover),
+            child: ExtendedImage.network(post.coverImage!,
+                fit: BoxFit.cover,
+                cacheWidth: (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).ceil()),
           ),
           if (post.isVideo)
             Container(
