@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "把媒体上传到 Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "把归入此文件夹的帖子的照片和视频发送到你的 Immich 服务器",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "评论",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "还没有评论",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "最佳",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "最早",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "更多回复",
+  "@plugin_reddit_more_replies": {}
 }

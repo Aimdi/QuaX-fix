@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Завантажувати медіа до Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Надсилати фото та відео постів із цієї папки на ваш сервер Immich",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Коментарі",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Коментарів поки немає",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Найкращі",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Найстаріші",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Ще відповіді",
+  "@plugin_reddit_more_replies": {}
 }

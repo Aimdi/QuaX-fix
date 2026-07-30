@@ -80,6 +80,46 @@ class SubstackClient {
     return _PostsResult(base: effectiveBase, posts: posts);
   }
 
+  /// The discussion under a post, in reading order. An unreadable payload is
+  /// an empty discussion rather than an error — the article is already shown.
+  Future<List<SubstackComment>> fetchComments(SubstackPublication publication, String postId) async {
+    final base = Uri.parse(publication.baseUrl);
+    final uri = base.replace(path: '/api/v1/post/$postId/comments', queryParameters: {
+      'all_comments': 'true',
+      'sort': 'best_first',
+    });
+    try {
+      final response = await _get(uri);
+      return flattenSubstackComments(jsonDecode(response.body));
+    } on SubstackClientException {
+      rethrow;
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Posts matching [query] in the publication's archive, newest first.
+  Future<List<SubstackPost>> searchPosts(SubstackPublication publication, String query, {int limit = 25}) async {
+    final base = Uri.parse(publication.baseUrl);
+    final uri = base.replace(path: '/api/v1/archive', queryParameters: {
+      'sort': 'new',
+      'search': query,
+      'limit': '$limit',
+      'offset': '0',
+    });
+    final response = await _get(uri);
+    final decoded = jsonDecode(response.body);
+    if (decoded is! List) {
+      return const [];
+    }
+    return decoded
+        .whereType<Map>()
+        .map((e) => SubstackPost.fromJson(Map<String, dynamic>.from(e),
+            publicationBaseUrl: publication.baseUrl, publicationName: publication.name, includeBody: false))
+        .where((post) => post.title.isNotEmpty && post.slug.isNotEmpty)
+        .toList();
+  }
+
   Future<http.Response> _get(Uri uri) async {
     final response = await httpClient.get(uri, headers: {
       'Accept': 'application/json',

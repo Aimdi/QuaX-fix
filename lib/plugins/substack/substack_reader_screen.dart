@@ -7,6 +7,8 @@ import 'package:xta/plugins/substack/substack_client.dart';
 import 'package:xta/plugins/substack/substack_html.dart';
 import 'package:xta/plugins/substack/substack_models.dart';
 import 'package:xta/plugins/substack/substack_archive_screen.dart';
+import 'package:xta/plugins/substack/substack_audio_player.dart';
+import 'package:xta/plugins/substack/substack_comments_screen.dart';
 import 'package:xta/plugins/substack/substack_store.dart';
 import 'package:xta/speech/speech_store.dart';
 import 'package:xta/speech/tts_settings.dart';
@@ -217,6 +219,14 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
               ),
             ),
           IconButton(
+            tooltip: L10n.of(context).plugin_substack_comments,
+            icon: const Icon(Icons.mode_comment_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => SubstackCommentsScreen(post: _post)),
+            ),
+          ),
+          IconButton(
             tooltip: L10n.of(context).plugin_substack_publication,
             icon: const Icon(Icons.newspaper_outlined),
             onPressed: () => Navigator.push(
@@ -287,10 +297,19 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
                 )
               : _empty
                   ? Center(child: Text(L10n.of(context).plugin_substack_no_content))
-                  : Stack(
+                  : Column(
                       children: [
-                        WebViewWidget(controller: _controller),
-                        if (_loading) const Center(child: CircularProgressIndicator()),
+                        // A podcast post's episode, above its show notes.
+                        if (_post.isPodcast)
+                          SubstackAudioPlayer(url: _post.audioUrl!, title: _post.title),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              WebViewWidget(controller: _controller),
+                              if (_loading) const Center(child: CircularProgressIndicator()),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
     );

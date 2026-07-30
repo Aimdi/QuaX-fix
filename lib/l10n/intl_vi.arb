@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Tải phương tiện lên Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Gửi ảnh và video của các bài đăng lưu ở đây tới máy chủ Immich của bạn",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Bình luận",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Chưa có bình luận nào",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Hay nhất",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Cũ nhất",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Thêm trả lời",
+  "@plugin_reddit_more_replies": {}
 }

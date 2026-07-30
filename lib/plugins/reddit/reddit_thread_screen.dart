@@ -35,6 +35,10 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
   String? _selfText;
   Object? _error;
 
+  /// Reddit's comment orders; null is the site's default (best).
+  String? _sort;
+  final _collapsed = <String>{};
+
   @override
   void initState() {
     super.initState();
@@ -45,7 +49,7 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
   Future<void> _load() async {
     setState(() => _error = null);
     try {
-      final result = await context.read<RedditClient>().fetchComments(_post.permalink);
+      final result = await context.read<RedditClient>().fetchComments(_post.permalink, sort: _sort);
       if (!mounted) return;
       setState(() {
         _comments = flattenComments(result.comments);
@@ -94,13 +98,37 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
     final comments = _comments;
 
     return Scaffold(
-      appBar: AppBar(title: Text('r/${widget.post.subreddit}')),
+      appBar: AppBar(
+        title: Text('r/${widget.post.subreddit}'),
+        actions: [
+          PopupMenuButton<String>(
+            tooltip: l10n.plugin_reddit_sort,
+            icon: const Icon(Icons.sort),
+            initialValue: _sort ?? '',
+            onSelected: (value) {
+              setState(() {
+                _sort = value.isEmpty ? null : value;
+                _comments = null;
+                _collapsed.clear();
+              });
+              _load();
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(value: '', child: Text(l10n.plugin_reddit_sort_best)),
+              PopupMenuItem(value: 'top', child: Text(l10n.plugin_reddit_sort_top)),
+              PopupMenuItem(value: 'new', child: Text(l10n.plugin_reddit_sort_new)),
+              PopupMenuItem(value: 'controversial', child: Text(l10n.plugin_reddit_sort_controversial)),
+              PopupMenuItem(value: 'old', child: Text(l10n.plugin_reddit_sort_old)),
+            ],
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView.builder(
           // One header plus the flattened tree: nesting the widgets instead
           // would build every reply of every collapsed branch up front.
-          itemCount: 1 + (comments?.length ?? 1),
+          itemCount: 1 + (comments == null ? 1 : visibleComments(comments, _collapsed).length),
           itemBuilder: (context, index) {
             if (index == 0) {
               return _header(context);
@@ -108,7 +136,11 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
             if (comments == null) {
               return _pending(context, l10n);
             }
-            return _commentRow(context, comments[index - 1]);
+            final visible = visibleComments(comments, _collapsed)[index - 1];
+            if (visible.entry.comment.isStub) {
+              return _stubRow(context, visible.entry);
+            }
+            return _commentRow(context, visible.entry, hidden: visible.hidden);
           },
         ),
       ),
@@ -176,13 +208,18 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
     );
   }
 
-  Widget _commentRow(BuildContext context, FlatComment entry) {
+  /// A row that folds on tap. [hidden] is how many replies its fold is
+  /// holding, shown as a chip so a collapsed argument says how big it was.
+  Widget _commentRow(BuildContext context, FlatComment entry, {int hidden = 0}) {
     final theme = Theme.of(context);
     final comment = entry.comment;
     final depth = entry.depth;
+    final folded = _collapsed.contains(comment.id);
     final indent = kRedditIndentPerLevel * (depth > kRedditMaxIndentDepth ? kRedditMaxIndentDepth : depth);
 
-    return Padding(
+    return InkWell(
+      onTap: () => setState(() => folded ? _collapsed.remove(comment.id) : _collapsed.add(comment.id)),
+      child: Padding(
       padding: EdgeInsets.fromLTRB(12 + indent, 6, 12, 6),
       child: Container(
         padding: EdgeInsets.only(left: depth == 0 ? 0 : 8),
@@ -230,8 +267,57 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
               ),
             ),
             const SizedBox(height: 2),
-            if (comment.body.isNotEmpty) Text(comment.body, style: theme.textTheme.bodyMedium),
-            RedditCommentImages(urls: comment.mediaUrls),
+            if (folded)
+              Container(
+                margin: const EdgeInsets.only(top: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text('+${hidden + 1}', style: theme.textTheme.labelSmall),
+              )
+            else ...[
+              if (comment.body.isNotEmpty) Text(comment.body, style: theme.textTheme.bodyMedium),
+              RedditCommentImages(urls: comment.mediaUrls),
+            ],
+          ],
+        ),
+      ),
+      ),
+    );
+  }
+
+  /// Replies Reddit held back. The row says how many and opens the subtree's
+  /// own page, rather than the thread ending mid-air with no sign anything is
+  /// missing — which is what silently dropping these rows did.
+  Widget _stubRow(BuildContext context, FlatComment entry) {
+    final theme = Theme.of(context);
+    final comment = entry.comment;
+    final depth = entry.depth;
+    final indent = kRedditIndentPerLevel * (depth > kRedditMaxIndentDepth ? kRedditMaxIndentDepth : depth);
+    final count = (comment.moreCount ?? -1) > 0 ? ' · ${comment.moreCount}' : '';
+
+    return InkWell(
+      onTap: comment.permalink == null
+          ? null
+          : () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => RedditThreadScreen(post: _post.copyWith(permalink: comment.permalink)),
+                ),
+              ),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(12.0 + indent, 10, 12, 10),
+        child: Row(
+          children: [
+            Icon(Icons.subdirectory_arrow_right, size: 16, color: theme.colorScheme.primary),
+            const SizedBox(width: 6),
+            Text(
+              '${L10n.of(context).plugin_reddit_more_replies}$count',
+              style: theme.textTheme.bodySmall!
+                  .copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w600),
+            ),
           ],
         ),
       ),

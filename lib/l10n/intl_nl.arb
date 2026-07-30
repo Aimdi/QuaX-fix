@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Media naar Immich uploaden",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "De foto's en video's van posts in deze map naar je Immich-server sturen",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Reacties",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Nog geen reacties",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Beste",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Oudste",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Meer reacties",
+  "@plugin_reddit_more_replies": {}
 }

@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "أرسل الوسائط إلى Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "أرسل صور ومقاطع المنشورات المحفوظة هنا إلى خادم Immich الخاص بك",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "التعليقات",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "لا تعليقات بعد",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "الأفضل",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "الأقدم",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "مزيد من الردود",
+  "@plugin_reddit_more_replies": {}
 }

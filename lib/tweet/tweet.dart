@@ -127,6 +127,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       addSeparator = widget.addSeparator;
       isBirdwatchQuote = widget.isBirdwatchQuote;
       _translationStatus = TranslationStatus.original;
+      disposeRichTextParts(_translatedParts);
       _translatedParts = [];
       _initializeTweetParts();
     }
@@ -158,6 +159,8 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
   @override
   void dispose() {
+    disposeRichTextParts(_originalParts);
+    disposeRichTextParts(_translatedParts);
     _translationBroadcast?.removeListener(_onTranslationBroadcast);
     super.dispose();
   }
@@ -170,6 +173,12 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     var entitiesFinal = actualTweet.noteEntities ?? actualTweet.entities;
 
     List<RichTextPart> tweetParts = buildRichText(context, tweetTextFinal, entitiesFinal);
+    // A re-initialisation (element reused for another tweet) replaces the
+    // lists; the old ones' recognizers go with them.
+    if (!identical(_originalParts, tweetParts)) {
+      disposeRichTextParts(_originalParts);
+      disposeRichTextParts(_translatedParts);
+    }
     setState(() {
       _displayParts = tweetParts;
       _originalParts = tweetParts;

@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Medyayı Immich'e yükle",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Buraya kaydedilen gönderilerin fotoğraf ve videolarını Immich sunucunuza gönder",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Yorumlar",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Henüz yorum yok",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "En iyiler",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "En eskiler",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Daha fazla yanıt",
+  "@plugin_reddit_more_replies": {}
 }

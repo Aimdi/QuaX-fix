@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Laadi meedia Immichisse",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Saada siia salvestatud postituste fotod ja videod oma Immichi serverisse",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Kommentaarid",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Kommentaare veel pole",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Parimad",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Vanimad",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Veel vastuseid",
+  "@plugin_reddit_more_replies": {}
 }

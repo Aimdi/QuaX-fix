@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Puja els mitjans a l'Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Envia les fotos i els vídeos de les publicacions desades aquí al teu servidor Immich",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Comentaris",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Encara no hi ha comentaris",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Millors",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Antics",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Més respostes",
+  "@plugin_reddit_more_replies": {}
 }

@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Zahružać medyja ŭ Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Adpraŭliać fota i vidėa pastoŭ z hetaj papki na vaš server Immich",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Kamientaryi",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Kamientaryjaŭ pakul niama",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Najlepšyja",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Najstarejšyja",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Jašče adkazy",
+  "@plugin_reddit_more_replies": {}
 }

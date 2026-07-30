@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Загружаць медыя ў Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Адпраўляць фота і відэа пастоў з гэтай папкі на ваш сервер Immich",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Каментарыі",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Каментарыяў пакуль няма",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Найлепшыя",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Найстарэйшыя",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Яшчэ адказы",
+  "@plugin_reddit_more_replies": {}
 }

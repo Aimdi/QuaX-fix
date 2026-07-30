@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "मीडिया Immich पर अपलोड करें",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "इस फ़ोल्डर में सहेजी गई पोस्ट की फ़ोटो और वीडियो अपने Immich सर्वर पर भेजें",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "टिप्पणियाँ",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "अभी कोई टिप्पणी नहीं",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "सर्वश्रेष्ठ",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "सबसे पुराने",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "और जवाब",
+  "@plugin_reddit_more_replies": {}
 }

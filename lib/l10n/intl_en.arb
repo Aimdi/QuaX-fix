@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Upload media to Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Send the photos and videos of posts filed here to your Immich server",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Comments",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "No comments yet",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Best",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Old",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "More replies",
+  "@plugin_reddit_more_replies": {}
 }

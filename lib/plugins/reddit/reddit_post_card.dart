@@ -53,6 +53,21 @@ class RedditPostCard extends StatelessWidget {
                 _RedditPostHeader(post: post, showSourceBadge: showSourceBadge),
                 _title(context),
                 if (post.flair != null) _RedditFlair(label: post.flair!),
+                // On a discussion subreddit the body is most of the post; a
+                // card that showed only the title said almost nothing.
+                if (post.isSelf && (post.selfText?.isNotEmpty ?? false))
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+                    child: Text(
+                      post.selfText!,
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    ),
+                  ),
                 RedditPostMedia(post: post),
                 _RedditPostFooter(post: post, onComments: () => _open(context)),
               ],

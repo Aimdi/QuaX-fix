@@ -4,6 +4,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/tweet/_video.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/utils/urls.dart';
 
@@ -35,6 +36,30 @@ class RedditPostMedia extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // v.redd.it plays in the same stack as every X video: same pool, same
+    // creation gate, same controls. libmpv reads the DASH manifest whole —
+    // video and its separate audio track together; the progressive fallback
+    // is video-only and serves as the download target.
+    final dash = post.videoDashUrl ?? post.videoFallbackUrl;
+    if (dash != null) {
+      return Padding(
+        padding: padding,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(tweetMediaRadiusOf(context)),
+          child: TweetVideo(
+            username: post.subreddit,
+            loop: false,
+            tweetId: 'reddit-${post.id}',
+            metadata: TweetVideoMetadata(
+              post.videoAspectRatio ?? 16 / 9,
+              post.previewImage ?? post.thumbnailUrl,
+              () async => TweetVideoUrls(dash, post.videoFallbackUrl),
+            ),
+          ),
+        ),
+      );
+    }
+
     final gallery = post.galleryImages;
     if (gallery.length > 1) {
       return Padding(

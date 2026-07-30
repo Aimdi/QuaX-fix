@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Igo multimedia Immich-era",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Bidali hemen gordetako bidalketen argazkiak eta bideoak zure Immich zerbitzarira",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Iruzkinak",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Oraindik ez dago iruzkinik",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Onenak",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Zaharrenak",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Erantzun gehiago",
+  "@plugin_reddit_more_replies": {}
 }

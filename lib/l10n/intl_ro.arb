@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Încarcă fișierele media în Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Trimite fotografiile și clipurile postărilor păstrate aici către serverul tău Immich",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Comentarii",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Încă nu există comentarii",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Cele mai bune",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Cele mai vechi",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Mai multe răspunsuri",
+  "@plugin_reddit_more_replies": {}
 }

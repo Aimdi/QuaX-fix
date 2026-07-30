@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "メディアを Immich にアップロード",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "このフォルダーに保存した投稿の写真と動画を Immich サーバーへ送ります",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "コメント",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "コメントはまだありません",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "ベスト",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "古い順",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "さらに返信を表示",
+  "@plugin_reddit_more_replies": {}
 }

@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Medien zu Immich hochladen",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Fotos und Videos von Beiträgen in diesem Ordner an den Immich-Server senden",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Kommentare",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Noch keine Kommentare",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Beste",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Älteste",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Weitere Antworten",
+  "@plugin_reddit_more_replies": {}
 }

@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "把媒體上傳到 Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "把歸入此資料夾的貼文的照片和影片傳送到你的 Immich 伺服器",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "留言",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "還沒有留言",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "最佳",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "最早",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "更多回覆",
+  "@plugin_reddit_more_replies": {}
 }

@@ -1270,5 +1270,15 @@
   "auto_upload_immich": "Unggah media ke Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Kirim foto dan video kiriman yang disimpan di sini ke server Immich Anda",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Komentar",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Belum ada komentar",
+  "@plugin_substack_no_comments": {},
+  "plugin_reddit_sort_best": "Terbaik",
+  "@plugin_reddit_sort_best": {},
+  "plugin_reddit_sort_old": "Terlama",
+  "@plugin_reddit_sort_old": {},
+  "plugin_reddit_more_replies": "Balasan lainnya",
+  "@plugin_reddit_more_replies": {}
 }
