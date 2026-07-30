@@ -6,43 +6,30 @@ with the plugins, feeds and fixes below on top.
 
 ### What's new
 
-**The app is XTA now.** New name, new icon label, new application id
-(`com.aimdi.xta`). Android therefore treats it as a different app: it installs
-**alongside** your existing QuaX-fix, and nothing carries across on its own —
-**export a backup from the old install first**, import it here, then uninstall
-the old one when you are satisfied.
+**Scrolling got cheaper, measurably.** A performance audit of the timeline
+found and fixed a stack of quiet costs: every post's text was laid out twice
+per frame and carried text-selection machinery it never used; the whole list
+rebuilt twice on every page load; a settings write rebuilt every visible post;
+saved/liked checks scanned your full lists per post per frame; video posters
+and small logos decoded at their served size rather than their shown size; and
+the weekly cache cleanup scanned a week of feed JSON before the first frame,
+twice. Also fixed on the way: a recycled post tile could briefly show the
+previous post's text after a refresh.
 
-**Scrolling past videos stopped costing.** Three leaks went together: a GIF
-scrolled past kept decoding forever; a video that left the screen kept its
-decoder, its demuxer and its cache; and a fast fling allocated a player for
-every tile it swept over. Now GIFs pause off screen and resume on the way back,
-a tile off screen for a few seconds hands its player back (scrolling back
-re-attaches at the same position), and a fling costs nothing — only the video
-you stop at is built. There is also a new experiment in Settings → Media:
-**Direct hardware decoding** skips a per-frame copy so scrolling stays smoother
-while a video plays; on some devices video renders black — turn it back off if
-yours is one.
+**Upvote Reddit posts — on your device.** The arrow in a Reddit post's footer
+is now a button, in the same spirit as the X likes: nothing is sent to Reddit,
+no account is involved, the arrow just remembers what you thought and the
+score counts your vote. Removing the plugin forgets the votes.
 
-**Immich.** A new plugin: tell a bookmark folder to send its posts' photos and
-videos to your own Immich server. Configured with a server address and API key
-(with a connection test), an album per folder if you want one, videos optional.
-Filing a post uploads its media once — re-filing it later does not re-send.
+**The profile media tab loads.** Two faults: a first page that carried only a
+"next page" marker — common on sensitive profiles — was shown as "no tweets",
+and long text-heavy profiles had their media grid cut short by a guard meant
+for filtered feeds. The grid now follows the feed to where the media actually
+is.
 
-**Reddit shows the files now.** Galleries render every picture with an n/N
-badge instead of a bare link. A post opened from search shows its image — the
-search page never carried it, so the post's own page is read instead. Video and
-article posts show Reddit's full-width preview with a play badge, not a 70px
-thumbnail smear.
-
-**The image-quality setting reaches the photo viewer.** A shadowed variable had
-kept it from ever applying there, so viewer photos loaded at X's default size
-regardless of the setting.
-
-**Sixteen navigate-at-the-wrong-moment crashes removed**, found by turning the
-compiler check for them into a hard build error so the class cannot return.
-
-**The media filter menu got its icons** — All / Photos / Videos each lead with
-their symbol, like X's own.
+**Fewer stalls opening group feeds.** Subreddits and Substack publications in
+a group fetch together instead of one after another, and the endpoint registry
+stops re-downloading itself on every launch.
 
 ---
 
