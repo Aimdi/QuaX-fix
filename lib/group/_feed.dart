@@ -237,7 +237,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       return;
     }
     _readPositionLoadStarted = true;
-    readFeedReadPosition(widget.group.id).then((position) {
+    readFeedReadPosition(feedReadPositionKey(widget.group.id)).then((position) {
       if (mounted && position != null) {
         setState(() => _lastSeen = position);
       }
@@ -285,14 +285,14 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   }
 
   void _recordReadPosition(List<TweetChain> threads) {
-    final newest = threads.where((c) => c.tweets.firstOrNull?.createdAt != null).firstOrNull;
+    final newest = newestRecordableChain(threads);
     if (newest == null || newest.id == _lastRecordedChainId) {
       return;
     }
     _lastRecordedChainId = newest.id;
     // Fire-and-forget: a failed position save must never surface as an
     // unhandled async error.
-    writeFeedReadPosition(widget.group.id, newest).catchError((_) {});
+    writeFeedReadPosition(feedReadPositionKey(widget.group.id), newest).catchError((_) {});
   }
 
   // Called with each finalized first page. The first one decides between
