@@ -55,7 +55,7 @@ class RedditPlugin extends XtaPlugin {
   Widget? settingsScreen(BuildContext context) => const RedditSettingsScreen();
 
   @override
-  List<String> get tables => const [tableRedditSubscription];
+  List<String> get tables => const [tableRedditSubscription, tableRedditLocalVote];
 
   @override
   List<String> get caches => const [redditIconsCacheName];

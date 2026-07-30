@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
+import 'package:provider/provider.dart';
+import 'package:xta/plugins/reddit/reddit_votes_store.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/reddit/reddit_subreddit_avatar.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
@@ -182,7 +185,7 @@ class _RedditPostFooter extends StatelessWidget {
       padding: const EdgeInsets.only(left: 8, right: 8, top: 4),
       child: Row(
         children: [
-          _stat(context, Icons.arrow_upward, '${post.score}'),
+          _UpvoteButton(post: post),
           TextButton.icon(
             style: footerButtonStyle,
             onPressed: onComments,
@@ -200,24 +203,38 @@ class _RedditPostFooter extends StatelessWidget {
     );
   }
 
-  /// A count with no action behind it, sized to match the buttons beside it so
-  /// the row does not step up and down.
-  Widget _stat(BuildContext context, IconData icon, String value) {
+}
+
+/// The upvote, kept on the device the way X likes are: Reddit is never told,
+/// the arrow remembers. The shown score includes the reader's own vote, which
+/// is what the number would be if the vote had been cast.
+class _UpvoteButton extends StatelessWidget {
+  final RedditPost post;
+
+  const _UpvoteButton({required this.post});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final muted = theme.colorScheme.onSurfaceVariant;
+    final votes = context.read<RedditVotesStore>();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kFooterButtonPadding),
-      child: SizedBox(
-        height: kFooterButtonHeight,
-        child: Row(
-          children: [
-            Icon(icon, size: 18, color: muted),
-            const SizedBox(width: 6),
-            Text(value, style: theme.textTheme.bodySmall!.copyWith(color: muted)),
-          ],
-        ),
-      ),
+    return ScopedBuilder<RedditVotesStore, Set<String>>(
+      store: votes,
+      onState: (context, state) {
+        final upvoted = state.contains(post.id);
+        final color = upvoted ? theme.colorScheme.primary : muted;
+
+        return TextButton.icon(
+          style: footerButtonStyle,
+          onPressed: () => votes.toggle(post.id),
+          icon: Icon(upvoted ? Icons.arrow_circle_up : Icons.arrow_upward, size: 18, color: color),
+          label: Text(
+            '${post.score + (upvoted ? 1 : 0)}',
+            style: theme.textTheme.bodySmall!.copyWith(color: color, fontWeight: upvoted ? FontWeight.w700 : null),
+          ),
+        );
+      },
     );
   }
 }

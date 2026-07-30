@@ -22,6 +22,7 @@ const String tableSearchSubscription = 'search_subscription';
 const String tableSubstackSubscription = 'substack_subscription';
 const String tableRedditSubscription = 'reddit_subscription';
 const String tableImmichUpload = 'immich_upload';
+const String tableRedditLocalVote = 'reddit_local_vote';
 const String tableStockSubscription = 'stock_subscription';
 const String tableSearchSubscriptionGroupMember = 'search_subscription_group_member';
 const String tableSubscription = 'subscription';
@@ -34,7 +35,7 @@ const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 44;
+const int databaseVersion = 45;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -542,6 +543,16 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
       'media_id VARCHAR PRIMARY KEY, asset_id VARCHAR, '
       'uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
       reverseSql: 'DROP TABLE $tableImmichUpload',
+    ),
+  ],
+  45: [
+    // Upvotes that stay on the device, like the X likes: Reddit is never told,
+    // the arrow just remembers. Only the id is needed — the post itself is
+    // refetched wherever it is shown.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableRedditLocalVote ('
+      'id VARCHAR PRIMARY KEY, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableRedditLocalVote',
     ),
   ],
 });

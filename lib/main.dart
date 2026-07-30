@@ -66,6 +66,7 @@ import 'package:xta/plugins/reddit/reddit_auth.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_store.dart';
 import 'package:xta/plugins/reddit/reddit_subreddit_avatar.dart';
+import 'package:xta/plugins/reddit/reddit_votes_store.dart';
 import 'package:xta/plugins/stocks/stocks_store.dart';
 import 'package:xta/speech/speech_bar.dart';
 import 'package:xta/speech/speech_store.dart';
@@ -428,6 +429,7 @@ Future<void> main() async {
     final redditIcons = RedditIcons(redditClient);
     final redditAuth = RedditAuth();
     final redditSubreddits = RedditSubredditsStore(prefService);
+    final redditVotes = RedditVotesStore();
     final redditFeed = RedditFeedStore(redditClient, redditSubreddits, prefService, auth: redditAuth);
     final stocksWatchlist = StocksWatchlistStore();
     final speech = SpeechStore();
@@ -451,6 +453,7 @@ Future<void> main() async {
     // a group came down to which of the two finished first.
     if (prefService.get<bool>(optionPluginRedditEnabled) == true) {
       await redditSubreddits.load();
+      unawaited(redditVotes.load());
     }
 
     await Future.wait([
@@ -486,6 +489,7 @@ Future<void> main() async {
             Provider(create: (_) => immichClient),
             Provider(create: (_) => karakeepClient),
             Provider(create: (_) => redditClient),
+            Provider(create: (_) => redditVotes),
             Provider(create: (_) => redditAuth),
             Provider(create: (_) => redditSubreddits),
             Provider(create: (_) => redditFeed),
