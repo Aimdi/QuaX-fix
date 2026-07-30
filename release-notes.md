@@ -6,30 +6,34 @@ with the plugins, feeds and fixes below on top.
 
 ### What's new
 
-**Scrolling got cheaper, measurably.** A performance audit of the timeline
-found and fixed a stack of quiet costs: every post's text was laid out twice
-per frame and carried text-selection machinery it never used; the whole list
-rebuilt twice on every page load; a settings write rebuilt every visible post;
-saved/liked checks scanned your full lists per post per frame; video posters
-and small logos decoded at their served size rather than their shown size; and
-the weekly cache cleanup scanned a week of feed JSON before the first frame,
-twice. Also fixed on the way: a recycled post tile could briefly show the
-previous post's text after a refresh.
+**Large feeds stop stampeding the API.** Following and group chunk searches
+used to fire every chunk at once — with a thousand subscriptions that meant
+dozens of concurrent searches, a cascade of 404s, and accounts getting flagged.
+Chunks now run a few at a time, membership refreshes are debounced, and For You
+app-bar refresh actually remounts the active tab instead of waiting for a tab
+switch.
 
-**Upvote Reddit posts — on your device.** The arrow in a Reddit post's footer
-is now a button, in the same spirit as the X likes: nothing is sent to Reddit,
-no account is involved, the arrow just remembers what you thought and the
-score counts your vote. Removing the plugin forgets the votes.
+**You land where you left off.** Following and For You remember reading
+position the same way groups already did — a caught-up divider and a restore
+when you come back (Settings → Remember reading position).
 
-**The profile media tab loads.** Two faults: a first page that carried only a
-"next page" marker — common on sensitive profiles — was shown as "no tweets",
-and long text-heavy profiles had their media grid cut short by a guard meant
-for filtered feeds. The grid now follows the feed to where the media actually
-is.
+**Fullscreen video lets you out again.** After off-screen player reclaim,
+exiting fullscreen could strand you with dead controls. Fullscreen now owns its
+own player surface so reclaim cannot dispose the exit path; scrolling still
+reclaims tiles that leave the screen.
 
-**Fewer stalls opening group feeds.** Subreddits and Substack publications in
-a group fetch together instead of one after another, and the endpoint registry
-stops re-downloading itself on every launch.
+**Timeline parsers survive a bad entry.** One reshaped GraphQL node no longer
+wipes a whole page — cursors and tweet builders skip junk instead of throwing.
+
+**Reddit threads have their depth back**, with a proper v.redd.it player.
+**Substack** picks up comments, podcast audio, and archive bits it was missing.
+**Rich text** is typed and themed, and it lets go of its tap recognizers.
+
+**The README matches the product** — Obtainium up front, plugins listed, X Look
+instead of retired Fairy Forest / Pitch Black.
+
+**Cold Cloud VMs can install again** — `cloud_install.sh` bootstraps FVM and
+the Android SDK when a snapshot is missing.
 
 ---
 
