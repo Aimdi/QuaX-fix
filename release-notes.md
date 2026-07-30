@@ -6,71 +6,43 @@ with the plugins, feeds and fixes below on top.
 
 ### What's new
 
-**Stocks.** A tab of its own, off until you install it. A reel of price cards
-across the top, then each symbol at the size a market page gives it: the price
-large, the day's move beside it, the line drawn against the previous close, and
-the volume and the year's high and low underneath. Tickers are a subscription
-like any other, so they can join a group.
+**The app is XTA now.** New name, new icon label, new application id
+(`com.aimdi.xta`). Android therefore treats it as a different app: it installs
+**alongside** your existing QuaX-fix, and nothing carries across on its own —
+**export a backup from the old install first**, import it here, then uninstall
+the old one when you are satisfied.
 
-**The ticker chart, readable.** Both axes are labelled, and dragging across the
-chart reports the price under your finger instead of only the latest one.
-Cashtags that are spoken one way and quoted another — `$SPX`, `$DAX`, `$BTC` —
-now find their symbol instead of charting as "no data".
+**Scrolling past videos stopped costing.** Three leaks went together: a GIF
+scrolled past kept decoding forever; a video that left the screen kept its
+decoder, its demuxer and its cache; and a fast fling allocated a player for
+every tile it swept over. Now GIFs pause off screen and resume on the way back,
+a tile off screen for a few seconds hands its player back (scrolling back
+re-attaches at the same position), and a fling costs nothing — only the video
+you stop at is built. There is also a new experiment in Settings → Media:
+**Direct hardware decoding** skips a per-frame copy so scrolling stays smoother
+while a video plays; on some devices video renders black — turn it back off if
+yours is one.
 
-**Plugins are published, not just shipped.** The plugin store reads its list
-from `plugins.json` in this repository, so a plugin can be added or withdrawn
-without a new APK. Uninstalling one now deletes what it saved: its
-subscriptions, the group entries pointing at them, its cache on disk and its
-settings — including the Reddit sign-in and the Deepmarks signing key. Each
-installed plugin says what it is currently holding.
+**Immich.** A new plugin: tell a bookmark folder to send its posts' photos and
+videos to your own Immich server. Configured with a server address and API key
+(with a connection test), an album per folder if you want one, videos optional.
+Filing a post uploads its media once — re-filing it later does not re-send.
 
-**Substack.** A paid post that gives away its opening now shows that opening,
-with a note where the free part ends, instead of a lock over an article you were
-sent. Reading aloud lets you pick the engine and the voice, so an installed
-speech engine of your own is actually used.
+**Reddit shows the files now.** Galleries render every picture with an n/N
+badge instead of a bare link. A post opened from search shows its image — the
+search page never carried it, so the post's own page is read instead. Video and
+article posts show Reddit's full-width preview with a play badge, not a 70px
+thumbnail smear.
 
-**Reddit.** The feed carries the same bar wherever it appears — sort, search,
-add a subreddit, manage them — rather than only in its own tab.
+**The image-quality setting reaches the photo viewer.** A shadowed variable had
+kept it from ever applying there, so viewer photos loaded at X's default size
+regardless of the setting.
 
-**Links open inside the app** by default, instead of handing you to a browser.
+**Sixteen navigate-at-the-wrong-moment crashes removed**, found by turning the
+compiler check for them into a hard build error so the class cannot return.
 
-**Reading aloud keeps going when you close the article.** It used to stop
-mid-sentence the moment you left the tab. While something is being read, a bar
-under every screen says what it is and stops it on a tap, so the control is
-wherever you are rather than back in the article you left. Leaving the app
-itself is not covered — there is no media notification behind this yet, so
-Android may reclaim the process.
-
-**Subreddits in a group actually show their posts.** A group with a subreddit
-in it asked for its posts once, before the group knew its own members, and
-never asked again — so it sat there empty. Substack publications in a group had
-the same fault and are fixed with it.
-
-**Read several groups at once.** Hold a group in the switcher and it is read
-alongside the one you are in; hold it again and it is not. Nothing is written
-down — the combination lives for as long as you are using it.
-
-**A post's pictures are laid out along a row**, all at one height and each as
-wide as its own shape, instead of one at a time behind a swipe. That is why the
-number you can see changes from post to post: tall photos are narrow and three
-fit, wide ones are broad and barely two do.
-
-**Choose which browser links open in.** Settings → General lists every browser
-on the phone, so links from a feed can go somewhere other than the system
-default without changing that default for everything.
-
-**Tabs change from the bottom bar and nowhere else.** A drag anywhere in a page
-used to change them, so every sideways gesture in the app — a media carousel, a
-nested tab view — was competing with the pager for the same finger.
-
-**Groups read together wear their own colours** in the switcher, rather than one
-shared highlight, so which of them are combined is visible at a glance.
-
-**Videos stop reading a film's worth ahead.** libmpv's defaults are built for
-sitting down to one film, not for scrolling past twenty clips, and nothing was
-capping them unless a prefetch had been set by hand.
-
-**A new app icon.**
+**The media filter menu got its icons** — All / Photos / Videos each lead with
+their symbol, like X's own.
 
 ---
 
