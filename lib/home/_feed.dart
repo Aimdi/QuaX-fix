@@ -8,10 +8,12 @@ import 'package:xta/home/_for_you.dart';
 import 'package:xta/tweet/paginated_tweet_list.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/group/_feed_shell.dart';
+import 'package:xta/group/feed_refresh_controller.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/group/group_screen.dart';
 import 'package:xta/plugins/reddit/reddit_actions.dart';
 import 'package:xta/plugins/reddit/reddit_feed_list.dart';
+import 'package:xta/ui/scroll_to_top.dart';
 
 typedef FeedTabTitleBuilder = String Function(BuildContext context);
 
@@ -54,8 +56,39 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  final TweetFeedController _feedController = TweetFeedController();
+  TweetFeedController _forYouFeed = TweetFeedController();
   FeedTab? _tab;
+  // Bumped on For-you refresh so the tab remounts with a fresh controller —
+  // softRefresh alone left mid-scroll users looking at stale tiles until they
+  // switched tabs (#168).
+  int _forYouEpoch = 0;
+
+  @override
+  void dispose() {
+    _forYouFeed.dispose();
+    super.dispose();
+  }
+
+  Future<void> _refreshActiveTab(FeedTab tab) async {
+    await scrollToTop(context, widget.scrollController);
+    if (!mounted) {
+      return;
+    }
+
+    if (tab == FeedTab.foryou) {
+      final previous = _forYouFeed;
+      setState(() {
+        _forYouFeed = TweetFeedController();
+        _forYouEpoch++;
+      });
+      // Dispose after the remount so the outgoing ForYouTweets isn't holding a
+      // dead controller for the rest of this frame.
+      WidgetsBinding.instance.addPostFrameCallback((_) => previous.dispose());
+      return;
+    }
+
+    await context.read<FeedRefreshController>().refresh();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,21 +129,28 @@ class _FeedScreenState extends State<FeedScreen> {
           }
 
           // Only the feed filters. Refresh is the pull gesture and settings
-          // live in the drawer — three utility icons where X has none was most
-          // of what made the bar read as chrome.
+          // live in the drawer — except on For you, whose pull gesture cannot
+          // rebuild the timeline, so it keeps the explicit refresh (#168).
           final model = context.read<GroupModel>();
           return defaultGroupActions(
             context,
             model: model,
             showMore: tab == FeedTab.following,
-            showRefresh: false,
+            showRefresh: tab == FeedTab.foryou,
+            onRefresh: () => _refreshActiveTab(tab),
             showSettings: false,
           );
         },
         bodyBuilder: (context) => switch (tab) {
           FeedTab.following => SubscriptionGroupScreenContent(id: widget.id),
           FeedTab.reddit => RedditFeedList(scrollController: widget.scrollController),
-          FeedTab.foryou => ForYouTweets(_feedController, type: 'profile', includeReplies: false, pref: prefs),
+          FeedTab.foryou => ForYouTweets(
+                _forYouFeed,
+                key: ValueKey(_forYouEpoch),
+                type: 'profile',
+                includeReplies: false,
+                pref: prefs,
+              ),
         },
       ),
     );

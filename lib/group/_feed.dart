@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart' show listEquals;
@@ -9,9 +10,12 @@ import 'package:xta/constants.dart';
 import 'package:xta/database/entities.dart';
 import 'package:xta/database/repository.dart';
 import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/custom_feed_rules.dart';
 import 'package:xta/group/feed_cache.dart';
+import 'package:xta/group/feed_gap.dart';
 import 'package:xta/group/feed_read_position.dart';
 import 'package:xta/group/feed_session_cache.dart';
+import 'package:xta/group/future_pool.dart';
 import 'package:xta/group/group_screen.dart';
 import 'package:xta/profile/media_grid/media_grid.dart';
 import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
@@ -30,16 +34,15 @@ import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:xta/utils/urls.dart';
-import 'package:xta/group/custom_feed_rules.dart';
 
-Iterable<BigInt> _tweetIdsOf(Iterable<TweetChain> chains) =>
-    chains.expand((c) => c.tweets).map((t) => t.idStr).whereType<String>().map(BigInt.tryParse).whereType<BigInt>();
+/// Max in-flight X search requests for feed chunks. Large subscription sets
+/// (1000+ → 60+ chunks) used to open every search at once via [Future.wait],
+/// which cascaded into 404s and flagged accounts (#165 / #170).
+const int feedChunkFetchConcurrency = 3;
 
-BigInt? _newestTweetIdOf(Iterable<TweetChain> chains) =>
-    _tweetIdsOf(chains).fold<BigInt?>(null, (max, id) => max == null || id > max ? id : max);
-
-BigInt? _oldestTweetIdOf(Iterable<TweetChain> chains) =>
-    _tweetIdsOf(chains).fold<BigInt?>(null, (min, id) => min == null || id < min ? id : min);
+/// Wait this long after a membership/filter change before refetching, so a
+/// burst of subscribe/unsubscribe actions collapses into one refresh (#170).
+const Duration feedChunkRefreshDebounce = Duration(milliseconds: 600);
 
 class SubscriptionGroupFeed extends StatefulWidget {
   final SubscriptionGroupGet group;
@@ -105,6 +108,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   bool _userHasScrolled = false;
   String? _lastRecordedChainId;
   final GlobalKey _caughtUpKey = GlobalKey();
+  Timer? _chunkRefreshDebounce;
 
   static final _log = Logger('SubscriptionGroupFeed');
 
@@ -237,7 +241,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       return;
     }
     _readPositionLoadStarted = true;
-    readFeedReadPosition(widget.group.id).then((position) {
+    readFeedReadPosition(feedReadPositionKey(widget.group.id)).then((position) {
       if (mounted && position != null) {
         setState(() => _lastSeen = position);
       }
@@ -285,14 +289,14 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   }
 
   void _recordReadPosition(List<TweetChain> threads) {
-    final newest = threads.where((c) => c.tweets.firstOrNull?.createdAt != null).firstOrNull;
+    final newest = newestRecordableChain(threads);
     if (newest == null || newest.id == _lastRecordedChainId) {
       return;
     }
     _lastRecordedChainId = newest.id;
     // Fire-and-forget: a failed position save must never surface as an
     // unhandled async error.
-    writeFeedReadPosition(widget.group.id, newest).catchError((_) {});
+    writeFeedReadPosition(feedReadPositionKey(widget.group.id), newest).catchError((_) {});
   }
 
   // Called with each finalized first page. The first one decides between
@@ -373,6 +377,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
   @override
   void dispose() {
+    _chunkRefreshDebounce?.cancel();
     _mediaPaging?.dispose();
     if (!_usesCache) {
       _feedController.dispose();
@@ -404,9 +409,22 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
         oldWidget.group.custom != widget.group.custom ||
         oldWidget.group.customRules.cacheKey != widget.group.customRules.cacheKey ||
         !_chunksMatch(oldWidget.chunks, widget.chunks)) {
+      // Subscribe/unsubscribe (and filter toggles) rebuild chunks and used to
+      // refresh immediately — with large sets that re-fired every search at
+      // once and rate-limited the feed (#170). Debounce into one refresh.
+      _scheduleChunkRefresh();
+    }
+  }
+
+  void _scheduleChunkRefresh() {
+    _chunkRefreshDebounce?.cancel();
+    _chunkRefreshDebounce = Timer(feedChunkRefreshDebounce, () {
+      if (!mounted) {
+        return;
+      }
       _feedController.controller.refresh();
       _mediaPaging?.pagingController.refresh();
-    }
+    });
   }
 
   bool _chunksMatch(List<SubscriptionGroupFeedChunk> a, List<SubscriptionGroupFeedChunk> b) {
@@ -515,103 +533,99 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   /// set. We store this along with the top and bottom pagination cursors, which we use to perform pagination for all
   /// sets at the same time, allowing us to create a feed made up of individual search queries.
   Future<TweetPageResult> _listTweets(String? cursorKey) async {
-    List<Future<List<TweetChain>>> futures = [];
-
     var repository = await Repository.writable();
     var nextCursor = await createCursor(repository);
     bool shouldShowUnrelatedPostsInFeedWarning = false;
 
-    for (var chunk in widget.chunks) {
+    // Cap in-flight chunk searches — unbounded Future.wait was the #165 failure
+    // mode for 1000+ subscriptions (60+ concurrent searches → 404 cascade).
+    final chunkResults = await mapWithConcurrency(widget.chunks, feedChunkFetchConcurrency, (chunk) async {
       var hash = chunk.hash;
+      var tweets = <TweetChain>[];
 
-      futures.add(Future(() async {
-        var tweets = <TweetChain>[];
+      String? searchCursor;
+      BigInt? storedNewestId;
 
-        String? searchCursor;
-        BigInt? storedNewestId;
+      if (cursorKey == null) {
+        // We're loading the initial content for the feed screen, so load all the chunks we already have
+        var storedChunks = await repository.query(tableFeedGroupChunk,
+            where: 'hash = ?', whereArgs: [hash], orderBy: 'created_at DESC');
 
-        if (cursorKey == null) {
-          // We're loading the initial content for the feed screen, so load all the chunks we already have
-          var storedChunks = await repository.query(tableFeedGroupChunk,
-              where: 'hash = ?', whereArgs: [hash], orderBy: 'created_at DESC');
+        // Make sure we load any existing stored tweets from the chunk
+        tweets.addAll(chainsFromStoredChunks(storedChunks));
+        storedNewestId = newestTweetIdOf(tweets);
 
-          // Make sure we load any existing stored tweets from the chunk
-          tweets.addAll(chainsFromStoredChunks(storedChunks));
-          storedNewestId = _newestTweetIdOf(tweets);
-
-          // Use the latest chunk's top cursor to load any new tweets since the last time we checked
-          var latestChunk = storedChunks.firstOrNull;
-          if (latestChunk != null) {
-            searchCursor = latestChunk['cursor_top'] as String;
-          } else {
-            // Otherwise we need to perform a fresh load from scratch for this chunk
-            searchCursor = null;
-          }
+        // Use the latest chunk's top cursor to load any new tweets since the last time we checked
+        var latestChunk = storedChunks.firstOrNull;
+        if (latestChunk != null) {
+          searchCursor = latestChunk['cursor_top'] as String;
         } else {
-          // We're currently at the end of our current feed, so load the oldest chunk and use its cursor to load more
-          var storedChunks = await repository.query(tableFeedGroupChunk,
-              where: 'cursor_id = ? AND hash = ?', whereArgs: [int.parse(cursorKey), hash]);
-          if (storedChunks.isNotEmpty) {
-            searchCursor = storedChunks.first['cursor_bottom'] as String;
-          } else {
-            searchCursor = null;
-          }
+          // Otherwise we need to perform a fresh load from scratch for this chunk
+          searchCursor = null;
         }
+      } else {
+        // We're currently at the end of our current feed, so load the oldest chunk and use its cursor to load more
+        var storedChunks = await repository.query(tableFeedGroupChunk,
+            where: 'cursor_id = ? AND hash = ?', whereArgs: [int.parse(cursorKey), hash]);
+        if (storedChunks.isNotEmpty) {
+          searchCursor = storedChunks.first['cursor_bottom'] as String;
+        } else {
+          searchCursor = null;
+        }
+      }
 
-        // Perform our search for the next page of results for this chunk, and add those tweets to our collection
-        var query = _buildSearchQuery(chunk.users);
-        TweetStatus result =
-            await Twitter.searchTweets(query, widget.includeReplies, cursor: searchCursor);
-        shouldShowUnrelatedPostsInFeedWarning |= feedContainsUnrelatedTweets(result, chunk.users);
+      // Perform our search for the next page of results for this chunk, and add those tweets to our collection
+      var query = _buildSearchQuery(chunk.users);
+      TweetStatus result = await Twitter.searchTweets(query, widget.includeReplies, cursor: searchCursor);
+      shouldShowUnrelatedPostsInFeedWarning |= feedContainsUnrelatedTweets(result, chunk.users);
 
-        if (result.chains.isNotEmpty) {
-          tweets.addAll(result.chains);
+      if (result.chains.isNotEmpty) {
+        tweets.addAll(result.chains);
 
-          // Make sure we insert the set of cursors for this latest chunk, ready for the next time we paginate
+        // Make sure we insert the set of cursors for this latest chunk, ready for the next time we paginate
+        await repository.insert(tableFeedGroupChunk, {
+          'cursor_id': int.parse(nextCursor),
+          'hash': hash,
+          'cursor_top': result.cursorTop,
+          'cursor_bottom': result.cursorBottom,
+          'response': jsonEncode(result.chains.map((e) => e.toJson()).toList())
+        });
+      }
+
+      // A single fetch returns only the newest page, so a long absence
+      // leaves a hole between it and the stored posts. Keep paging down
+      // until the fresh content overlaps what was stored (bounded, so a
+      // week away can't trigger dozens of requests).
+      var page = result;
+      var gapFills = 0;
+      while (shouldContinueGapFill(
+        storedNewestId: storedNewestId,
+        oldestFetchedId: oldestTweetIdOf(page.chains),
+        pageNonEmpty: page.chains.isNotEmpty,
+        hasCursor: page.cursorBottom != null,
+        gapFillsSoFar: gapFills,
+      )) {
+        page = await Twitter.searchTweets(query, widget.includeReplies, cursor: page.cursorBottom);
+        gapFills++;
+
+        if (page.chains.isNotEmpty) {
+          tweets.addAll(page.chains);
           await repository.insert(tableFeedGroupChunk, {
             'cursor_id': int.parse(nextCursor),
             'hash': hash,
-            'cursor_top': result.cursorTop,
-            'cursor_bottom': result.cursorBottom,
-            'response': jsonEncode(result.chains.map((e) => e.toJson()).toList())
+            'cursor_top': page.cursorTop,
+            'cursor_bottom': page.cursorBottom,
+            'response': jsonEncode(page.chains.map((e) => e.toJson()).toList())
           });
         }
+      }
 
-        // A single fetch returns only the newest page, so a long absence
-        // leaves a hole between it and the stored posts. Keep paging down
-        // until the fresh content overlaps what was stored (bounded, so a
-        // week away can't trigger dozens of requests).
-        var page = result;
-        var gapFills = 0;
-        while (storedNewestId != null &&
-            page.chains.isNotEmpty &&
-            (_oldestTweetIdOf(page.chains) ?? BigInt.zero) > storedNewestId &&
-            page.cursorBottom != null &&
-            gapFills < maxFeedGapFillPages) {
-          page = await Twitter.searchTweets(query, widget.includeReplies, cursor: page.cursorBottom);
-          gapFills++;
+      return tweets;
+    });
 
-          if (page.chains.isNotEmpty) {
-            tweets.addAll(page.chains);
-            await repository.insert(tableFeedGroupChunk, {
-              'cursor_id': int.parse(nextCursor),
-              'hash': hash,
-              'cursor_top': page.cursorTop,
-              'cursor_bottom': page.cursorBottom,
-              'response': jsonEncode(page.chains.map((e) => e.toJson()).toList())
-            });
-          }
-        }
-
-        return tweets;
-      }));
-    }
-
-    // Wait for all our searches to complete, then build our list of tweet conversations.
     // The stored chunks and the fresh fetch overlap at their window boundaries,
     // so drop repeated chains before display.
-    var result = (await Future.wait(futures));
-    var threads = _sortChains(dedupeChainsById(result.expand((element) => element).toList()));
+    var threads = _sortChains(dedupeChainsById(chunkResults.expand((element) => element).toList()));
     threads = filterHiddenRetweets(threads, await hiddenRetweetScreenNames());
     threads = filterHiddenReplies(threads, await hiddenReplyScreenNames());
     threads = applyCustomFeedRules(threads, widget.group.customRules);

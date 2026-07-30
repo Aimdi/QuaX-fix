@@ -21,6 +21,10 @@ import 'package:provider/provider.dart';
 import 'package:xta/utils/iterables.dart';
 import 'package:quiver/iterables.dart';
 
+/// Users per X search query. Search queries are capped at ~512 characters;
+/// 16 screen names stay under that, while 32 does not (upstream #165).
+const int feedChunkSize = 16;
+
 class GroupScreenArguments {
   final String id;
   final String name;
@@ -167,7 +171,7 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
         final users =
             members.where((e) => e is! SubstackSubscription && e is! RedditSubscription).toList(growable: false);
 
-        var chunks = partition(users, 16)
+        var chunks = partition(users, feedChunkSize)
             .map((e) => SubscriptionGroupFeedChunk(e, includeReplies, includeRetweets))
             .toList();
 
