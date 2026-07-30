@@ -1270,5 +1270,9 @@
   "auto_upload_immich": "미디어를 Immich에 업로드",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "이 폴더에 보관한 게시물의 사진과 동영상을 Immich 서버로 보냅니다",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "댓글",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "아직 댓글이 없습니다",
+  "@plugin_substack_no_comments": {}
 }

@@ -1270,5 +1270,9 @@
   "auto_upload_immich": "メディアを Immich にアップロード",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "このフォルダーに保存した投稿の写真と動画を Immich サーバーへ送ります",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "コメント",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "コメントはまだありません",
+  "@plugin_substack_no_comments": {}
 }

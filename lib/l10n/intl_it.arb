@@ -1270,5 +1270,9 @@
   "auto_upload_immich": "Carica i media su Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Invia le foto e i video dei post archiviati qui al tuo server Immich",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Commenti",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Ancora nessun commento",
+  "@plugin_substack_no_comments": {}
 }

@@ -1270,5 +1270,9 @@
   "auto_upload_immich": "Alŝuti aŭdvidaĵojn al Immich",
   "@auto_upload_immich": {},
   "auto_upload_immich_description": "Sendu la fotojn kaj videojn de afiŝoj konservitaj ĉi tie al via Immich-servilo",
-  "@auto_upload_immich_description": {}
+  "@auto_upload_immich_description": {},
+  "plugin_substack_comments": "Komentoj",
+  "@plugin_substack_comments": {},
+  "plugin_substack_no_comments": "Ankoraŭ neniuj komentoj",
+  "@plugin_substack_no_comments": {}
 }
