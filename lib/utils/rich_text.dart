@@ -64,8 +64,7 @@ List<InlineSpan> displayRichText(List<RichTextPart> richText) {
 /// All of a post's runs, in order: the entities where X placed them, and the
 /// text between them scanned for what descriptions leave unmarked.
 List<RichTextPart> buildRichText(BuildContext context, String rawText, Object? rawEntities) {
-  final runes = Runes(rawText);
-  final runesAsIterable = runes.getRange(0, runes.length);
+  final runes = rawText.runes.toList(growable: false);
 
   final recognizers = <GestureRecognizer>[];
   final spanContext = EntitySpanContext(
@@ -84,11 +83,11 @@ List<RichTextPart> buildRichText(BuildContext context, String rawText, Object? r
 
   var index = 0;
   for (final entity in entities) {
-    _addTextRuns(context, parts, spanContext, _runesToText(runesAsIterable, index, entity.getEntityStart()));
+    _addTextRuns(context, parts, spanContext, _runesToText(runes, index, entity.getEntityStart()));
     parts.add(RichTextPart(entity.getContent(spanContext), null));
     index = entity.getEntityEnd();
   }
-  _addTextRuns(context, parts, spanContext, _runesToText(runesAsIterable, index));
+  _addTextRuns(context, parts, spanContext, _runesToText(runes, index));
 
   _recognizersOf[parts] = recognizers;
   return parts;
@@ -132,8 +131,12 @@ void _addTextRuns(BuildContext context, List<RichTextPart> parts, EntitySpanCont
   });
 }
 
-String? _runesToText(Iterable<int> runes, int start, [int? end]) {
-  final string = String.fromCharCodes(runes.getRange(start, end ?? runes.length));
+String? _runesToText(List<int> runes, int start, [int? end]) {
+  // Clamped: the indices come off the wire, and an entity past the end of the
+  // text must cost a missing run, not a RangeError in every tile after it.
+  final from = start.clamp(0, runes.length);
+  final to = (end ?? runes.length).clamp(from, runes.length);
+  final string = String.fromCharCodes(runes.getRange(from, to));
   if (string.isEmpty) {
     return null;
   }
