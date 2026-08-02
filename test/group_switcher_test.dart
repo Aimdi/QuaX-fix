@@ -9,6 +9,7 @@ import 'package:xta/generated/l10n.dart';
 import 'package:xta/group/combined_groups.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/group/group_switcher.dart';
+import 'package:xta/home/_feed.dart';
 
 SubscriptionGroup _group(String id, String name, {int members = 3, bool pinned = false}) => SubscriptionGroup(
       id: id,
@@ -42,6 +43,8 @@ Widget _wrap(Widget child, List<SubscriptionGroup> groups) {
         // The title and the sheet both read which groups are being read
         // together, so the switcher cannot be built without one.
         Provider<CombinedGroupsStore>(create: (_) => CombinedGroupsStore()),
+        // The title's menu offers the home feeds as well as the groups.
+        Provider<FeedTabStore>(create: (_) => FeedTabStore(FeedTab.following)),
       ],
       child: MaterialApp(
         localizationsDelegates: const [
@@ -55,6 +58,15 @@ Widget _wrap(Widget child, List<SubscriptionGroup> groups) {
       ),
     ),
   );
+}
+
+/// Opens the title's menu and goes through to the full list of groups, which is
+/// where the sheet now lives.
+Future<void> _openGroupSheet(WidgetTester tester, String title) async {
+  await tester.tap(find.text(title));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Groups'));
+  await tester.pumpAndSettle();
 }
 
 void main() {
@@ -75,7 +87,7 @@ void main() {
     expect(find.byIcon(Icons.expand_more), findsOneWidget);
   });
 
-  testWidgets('tapping it lists every group with the current one checked', (tester) async {
+  testWidgets('the menu offers the home feeds and a way to every group', (tester) async {
     await tester.pumpWidget(_wrap(
       GroupSwitcherTitle(name: 'Ai Art', currentGroupId: 'a', onSwitch: (_) {}),
       groups,
@@ -84,6 +96,38 @@ void main() {
 
     await tester.tap(find.text('Ai Art'));
     await tester.pumpAndSettle();
+
+    expect(find.text('Following'), findsOneWidget);
+    expect(find.text('For you'), findsOneWidget);
+    expect(find.text('Groups'), findsOneWidget);
+    // The full list is a row away, not spilled into the menu.
+    expect(find.text('Demographics'), findsNothing);
+  });
+
+  testWidgets('a pinned group is one tap, without opening the full list', (tester) async {
+    SubscriptionGroup? chosen;
+    await tester.pumpWidget(_wrap(
+      GroupSwitcherTitle(name: 'Anime', currentGroupId: 'b', onSwitch: (g) => chosen = g),
+      groups,
+    ));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Anime'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ai Art'));
+    await tester.pumpAndSettle();
+
+    expect(chosen?.id, 'a');
+  });
+
+  testWidgets('tapping it lists every group with the current one checked', (tester) async {
+    await tester.pumpWidget(_wrap(
+      GroupSwitcherTitle(name: 'Ai Art', currentGroupId: 'a', onSwitch: (_) {}),
+      groups,
+    ));
+    await tester.pumpAndSettle();
+
+    await _openGroupSheet(tester, 'Ai Art');
 
     expect(find.text('Anime'), findsOneWidget);
     expect(find.text('Demographics'), findsOneWidget);
@@ -99,8 +143,7 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Ai Art'));
-    await tester.pumpAndSettle();
+    await _openGroupSheet(tester, 'Ai Art');
     await tester.tap(find.text('Demographics'));
     await tester.pumpAndSettle();
 
@@ -116,8 +159,7 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Ai Art'));
-    await tester.pumpAndSettle();
+    await _openGroupSheet(tester, 'Ai Art');
     // The sheet's own row for the current group, not the app bar title.
     await tester.tap(find.text('15 subscriptions'));
     await tester.pumpAndSettle();
@@ -132,8 +174,7 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Ai Art'));
-    await tester.pumpAndSettle();
+    await _openGroupSheet(tester, 'Ai Art');
 
     expect(find.text('No groups yet'), findsOneWidget);
   });

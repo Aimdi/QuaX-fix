@@ -537,6 +537,8 @@ Future<void> main() async {
             Provider(create: (_) => stocksWatchlist),
             Provider(create: (_) => speech),
             Provider(create: (_) => CombinedGroupsStore()),
+            Provider(
+                create: (_) => FeedTabStore(feedTabFromId(prefService.get<String>(optionHomeDefaultFeedTab)))),
             Provider(create: (_) => substackClient),
             Provider(create: (_) => substackPublications),
             Provider(create: (_) => substackFeed),

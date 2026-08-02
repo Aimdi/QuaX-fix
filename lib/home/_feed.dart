@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
@@ -45,6 +46,17 @@ List<FeedTabOption> availableFeedTabs(BasePrefService prefs) => feedTabs
 FeedTab feedTabFromId(String? id) =>
     FeedTab.values.firstWhere((e) => e.name == id, orElse: () => FeedTab.following);
 
+/// Which feed the home screen is showing.
+///
+/// A store rather than screen state, because the feed can be chosen from
+/// somewhere else — the group screen's switcher jumps straight to Following —
+/// and the tabs have to follow when it is.
+class FeedTabStore extends Store<FeedTab> {
+  FeedTabStore(super.initialState);
+
+  void select(FeedTab tab) => update(tab);
+}
+
 class FeedScreen extends StatefulWidget {
   final ScrollController scrollController;
   final String id;
@@ -63,6 +75,34 @@ class _FeedScreenState extends State<FeedScreen> {
   // softRefresh alone left mid-scroll users looking at stale tiles until they
   // switched tabs (#168).
   int _forYouEpoch = 0;
+
+  /// Bumped only when the feed is chosen from somewhere other than these tabs,
+  /// so the bar is rebuilt at the new index. A tap on the bar itself leaves it
+  /// alone: the controller survives and the indicator slides, as it should.
+  int _externalTabEpoch = 0;
+  FeedTabStore? _tabStore;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final store = context.read<FeedTabStore>();
+    if (identical(store, _tabStore)) {
+      return;
+    }
+    _tabStore = store;
+    _tab ??= store.state;
+    store.observer(onState: _onFeedChosenElsewhere);
+  }
+
+  void _onFeedChosenElsewhere(FeedTab tab) {
+    if (!mounted || tab == _tab) {
+      return;
+    }
+    setState(() {
+      _tab = tab;
+      _externalTabEpoch++;
+    });
+  }
 
   @override
   void dispose() {
@@ -105,7 +145,7 @@ class _FeedScreenState extends State<FeedScreen> {
     // it. Keyed by how many there are so toggling the Reddit plugin rebuilds
     // the controller instead of leaving it one tab short.
     return DefaultTabController(
-      key: ValueKey(available.length),
+      key: ValueKey('${available.length}:$_externalTabEpoch'),
       length: available.length,
       initialIndex: max(0, available.indexWhere((e) => e.id == tab)),
       child: GroupFeedShell(
@@ -119,7 +159,13 @@ class _FeedScreenState extends State<FeedScreen> {
           // of it would double the line.
           dividerHeight: 0,
           tabs: available.map((e) => Tab(text: e.titleBuilder(context))).toList(),
-          onTap: (index) => setState(() => _tab = available[index].id),
+          onTap: (index) => setState(() {
+            _tab = available[index].id;
+            // Kept in step so a switcher opened elsewhere marks the right feed.
+            // The observer sees the value it already holds and does nothing, so
+            // this does not bump the epoch and the indicator keeps sliding.
+            _tabStore?.select(_tab!);
+          }),
         ),
         actionsBuilder: (context) {
           // Reddit brings its own bar: sorting, search and adding a subreddit

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
+import 'package:xta/constants.dart';
 import 'package:xta/database/entities.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/group/combined_groups.dart';
+import 'package:xta/group/feed_switcher_menu.dart';
 import 'package:xta/group/group_model.dart';
+import 'package:xta/home/_feed.dart';
+import 'package:xta/subscriptions/_groups_edit.dart' show openSubscriptionGroupDialog;
 import 'package:xta/subscriptions/group_identity.dart';
 
 /// The feed title as a button that opens a group picker, so you can hop between
@@ -21,6 +25,27 @@ class GroupSwitcherTitle extends StatelessWidget {
     required this.onSwitch,
   });
 
+  /// Opens the short menu, and does whatever it came back with.
+  ///
+  /// A feed means leaving this route for the home screen it lives on; a pinned
+  /// group swaps in place; Groups opens the full list.
+  Future<void> _open(BuildContext context) async {
+    final choice = await showFeedSwitcherMenu(context, currentGroupId: currentGroupId);
+    if (choice == null || !context.mounted) {
+      return;
+    }
+
+    switch (choice) {
+      case FeedTabChoice(:final tab):
+        context.read<FeedTabStore>().select(tab);
+        Navigator.popUntil(context, ModalRoute.withName(routeHome));
+      case GroupJumpChoice(:final group):
+        onSwitch(group);
+      case AllGroupsChoice():
+        await showGroupSwitcher(context, currentGroupId: currentGroupId, onSwitch: onSwitch);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -29,7 +54,7 @@ class GroupSwitcherTitle extends StatelessWidget {
       message: L10n.of(context).switch_group,
       child: InkWell(
         borderRadius: BorderRadius.circular(9999),
-        onTap: () => showGroupSwitcher(context, currentGroupId: currentGroupId, onSwitch: onSwitch),
+        onTap: () => _open(context),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: Row(
@@ -99,6 +124,32 @@ class _CombineHint extends StatelessWidget {
   }
 }
 
+/// Closes the list of groups by offering another one, the way the reference
+/// menus end with what you can do rather than only what you can pick.
+class _NewGroupRow extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _NewGroupRow({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Divider(),
+        ListTile(
+          leading: Icon(Icons.add, color: theme.colorScheme.primary),
+          title: Text(L10n.of(context).create_subscription_group,
+              style: TextStyle(color: theme.colorScheme.primary)),
+          onTap: onTap,
+        ),
+      ],
+    );
+  }
+}
+
 /// Lists the groups in the order the Groups tab shows them (pinned first), with
 /// the current one marked. Picking one calls [onSwitch]; holding one reads it
 /// alongside instead of instead of.
@@ -134,10 +185,19 @@ Future<void> showGroupSwitcher(
               onState: (_, alsoRead) => ListView.builder(
                 shrinkWrap: true,
                 padding: const EdgeInsets.only(bottom: 16),
-                itemCount: groups.length + 1,
+                // The hint above, the groups, and a way to make another one at
+                // the end — the list of groups is exactly where wanting a new
+                // one occurs to you.
+                itemCount: groups.length + 2,
                 itemBuilder: (context, index) {
                   if (index == 0) {
                     return _CombineHint(count: alsoRead.length, onClear: combined.clear);
+                  }
+                  if (index == groups.length + 1) {
+                    return _NewGroupRow(onTap: () {
+                      Navigator.pop(sheetContext);
+                      openSubscriptionGroupDialog(context, null, '', defaultGroupIcon);
+                    });
                   }
 
                   final group = groups[index - 1];
