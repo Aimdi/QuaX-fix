@@ -1,4 +1,5 @@
 {
+  "search_settings": "Hledat nastavení",
   "accessibility": "Přístupnost",
   "account": "Účty",
   "account_suspended": "Účet pozastaven",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Přesto načíst další",
   "zen_mode_page_cap": "Délka kanálu v zen režimu",
   "zen_mode_page_cap_description": "Kolik stránek kanál v zen režimu načte, než se pozastaví.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

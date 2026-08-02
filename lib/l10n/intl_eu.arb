@@ -1,4 +1,5 @@
 {
+  "search_settings": "Bilatu ezarpenak",
   "accessibility": "Irisgarritasuna",
   "account": "Kontuak",
   "account_suspended": "Etendako kontua",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Kargatu gehiago hala ere",
   "zen_mode_page_cap": "Jarioaren luzera zen moduan",
   "zen_mode_page_cap_description": "Zenbat orrialde kargatzen dituen jarioak zen moduan gelditu aurretik.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

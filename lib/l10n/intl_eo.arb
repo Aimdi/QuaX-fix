@@ -1,4 +1,5 @@
 {
+  "search_settings": "Serĉi agordojn",
   "accessibility": "Alirebleco",
   "account": "Kontoj",
   "account_suspended": "Konto haltiĝis",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Tamen ŝargi pli",
   "zen_mode_page_cap": "Longo de la fluo en zena reĝimo",
   "zen_mode_page_cap_description": "Kiom da paĝoj la fluo ŝargas en zena reĝimo antaŭ ol paŭzi.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

@@ -1,4 +1,5 @@
 {
+  "search_settings": "Пошук налад",
   "accessibility": "Даступнасць",
   "account": "Уліковыя запісы",
   "account_suspended": "Уліковы запіс прыпынены",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Усё роўна загрузіць яшчэ",
   "zen_mode_page_cap": "Даўжыня стужкі ў дзэн-рэжыме",
   "zen_mode_page_cap_description": "Колькі старонак загружае стужка ў дзэн-рэжыме перад паўзай.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

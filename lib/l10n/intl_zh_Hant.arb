@@ -1,4 +1,5 @@
 {
+  "search_settings": "搜尋設定",
   "accessibility": "無障礙設定",
   "account": "帳號",
   "account_suspended": "帳號已遭停權",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "仍要載入更多",
   "zen_mode_page_cap": "禪模式時間軸長度",
   "zen_mode_page_cap_description": "禪模式下時間軸暫停前載入的頁數。",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

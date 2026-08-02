@@ -1,4 +1,5 @@
 {
+  "search_settings": "設定を検索",
   "accessibility": "アクセシビリティ",
   "account": "アカウント",
   "account_suspended": "凍結済みアカウント",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "それでももっと読み込む",
   "zen_mode_page_cap": "禅モードのフィードの長さ",
   "zen_mode_page_cap_description": "禅モードでフィードが一時停止するまでに読み込むページ数。",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

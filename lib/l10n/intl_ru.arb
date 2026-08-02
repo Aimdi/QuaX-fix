@@ -1,4 +1,5 @@
 {
+  "search_settings": "Поиск настроек",
   "accessibility": "Специальные возможности",
   "account": "Аккаунты",
   "account_suspended": "Учётная запись приостановлена",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Всё равно загрузить ещё",
   "zen_mode_page_cap": "Длина ленты в дзен-режиме",
   "zen_mode_page_cap_description": "Сколько страниц загружает лента в дзен-режиме перед паузой.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

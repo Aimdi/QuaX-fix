@@ -1,4 +1,5 @@
 {
+  "search_settings": "Pošuk naladaŭ",
   "accessibility": "Daśtupnaść",
   "account": "Akaunty",
   "account_suspended": "Akaunt pryzynieneny",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Usio roŭna zahruzić jašče",
   "zen_mode_page_cap": "Daŭžynia stužki ŭ dzen-režymie",
   "zen_mode_page_cap_description": "Kolki staronak zahružaje stužka ŭ dzen-režymie pierad paŭzaj.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

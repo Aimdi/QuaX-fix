@@ -1,4 +1,5 @@
 {
+  "search_settings": "Otsi seadetest",
   "accessibility": "Juurdepääsetavus",
   "account": "Kontod",
   "account_suspended": "Kasutajakonto on ajutiselt peatatud",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Laadi ikkagi rohkem",
   "zen_mode_page_cap": "Voo pikkus Zen-režiimis",
   "zen_mode_page_cap_description": "Mitu lehte voog Zen-režiimis enne pausi laadib.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

@@ -9,6 +9,7 @@ import 'package:xta/database/entities.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/group/group_screen.dart';
+import 'package:xta/home/_account_avatar.dart';
 import 'package:xta/subscriptions/group_identity.dart';
 import 'package:xta/home/_feed.dart';
 import 'package:xta/home/_missing.dart';
@@ -268,19 +269,18 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
     Navigator.pushNamed(context, route, arguments: arguments);
   }
 
-  /// What X keeps in its drawer, translated to this app: the groups are its
-  /// Lists, and the utility entries close the set.
+  /// What X keeps in its drawer, translated to this app: the account at the
+  /// top, then search and settings, then the groups — which are this app's
+  /// Lists, and the part the reader actually reaches for.
   Widget _buildDrawer(BuildContext context, L10n l10n) {
     return Drawer(
       child: SafeArea(
         child: ScopedBuilder<GroupsModel, List<SubscriptionGroup>>(
           store: context.read<GroupsModel>(),
           onState: (context, groups) => ListView(
+            padding: EdgeInsets.zero,
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
-                child: Text(l10n.fritter, style: Theme.of(context).textTheme.titleLarge),
-              ),
+              _drawerAccountHeader(context, l10n),
               ListTile(
                 leading: const Icon(Icons.search),
                 title: Text(l10n.search),
@@ -298,18 +298,58 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
                   child: Text(l10n.groups, style: Theme.of(context).textTheme.bodySmall),
                 ),
-                for (final group in groups)
-                  ListTile(
-                    leading: GroupMark.forGroup(group, size: 32),
-                    title: Text(group.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-                    onTap: () => _goFromDrawer(context, routeGroup,
-                        arguments: GroupScreenArguments(id: group.id, name: group.name)),
-                  ),
+                for (final group in groups) _drawerGroupTile(context, l10n, group),
               ],
             ],
           ),
         ),
       ),
+    );
+  }
+
+  /// The account block at the top of the drawer. Fetch accounts carry a screen
+  /// name but no picture, so the mark is a monogram and the counts X would show
+  /// (followers) are replaced with the honest thing the app knows: how many
+  /// accounts it is fetching through. Tapping opens account settings.
+  Widget _drawerAccountHeader(BuildContext context, L10n l10n) {
+    final theme = Theme.of(context);
+    return FutureBuilder<Account?>(
+      future: primaryAccount(),
+      builder: (context, snapshot) {
+        final account = snapshot.data;
+        return InkWell(
+          onTap: () => _goFromDrawer(context, routeSettings),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AccountAvatar(account: account, size: 44),
+                const SizedBox(height: 10),
+                Text(l10n.fritter, style: theme.textTheme.titleLarge),
+                if (account?.screenName != null)
+                  Text('@${account!.screenName}',
+                      style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// One group shortcut: its colour disc, its name, a muted member count, and a
+  /// pin when it is pinned (the pinned ones already float to the top).
+  Widget _drawerGroupTile(BuildContext context, L10n l10n, SubscriptionGroup group) {
+    final theme = Theme.of(context);
+    return ListTile(
+      leading: GroupMark.forGroup(group, size: 36),
+      title: Text(group.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+      subtitle: Text(l10n.subscription_group_member_count(group.numberOfMembers),
+          maxLines: 1, overflow: TextOverflow.ellipsis),
+      trailing: group.pinned ? Icon(Icons.push_pin, size: 16, color: theme.colorScheme.primary) : null,
+      onTap: () =>
+          _goFromDrawer(context, routeGroup, arguments: GroupScreenArguments(id: group.id, name: group.name)),
     );
   }
 

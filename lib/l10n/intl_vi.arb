@@ -1,4 +1,5 @@
 {
+  "search_settings": "Tìm cài đặt",
   "accessibility": "Trợ năng",
   "account": "Tài khoản",
   "account_suspended": "Tài khoản đã dừng hoạt động",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Vẫn tải thêm",
   "zen_mode_page_cap": "Độ dài bảng tin ở chế độ zen",
   "zen_mode_page_cap_description": "Số trang bảng tin tải ở chế độ zen trước khi tạm dừng.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

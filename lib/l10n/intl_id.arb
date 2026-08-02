@@ -1,4 +1,5 @@
 {
+  "search_settings": "Cari pengaturan",
   "accessibility": "Aksesibilitas",
   "account": "Akun",
   "account_suspended": "Akun ditangguhkan",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Tetap muat lebih banyak",
   "zen_mode_page_cap": "Panjang beranda di mode zen",
   "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

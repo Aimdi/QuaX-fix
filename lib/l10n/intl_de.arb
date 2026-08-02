@@ -1,4 +1,5 @@
 {
+  "search_settings": "Einstellungen durchsuchen",
   "accessibility": "Barrierefreiheit",
   "account": "Konten",
   "account_suspended": "Nutzerkonto gesperrt",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Trotzdem mehr laden",
   "zen_mode_page_cap": "Feed-Länge im Zen-Modus",
   "zen_mode_page_cap_description": "Wie viele Seiten ein Feed im Zen-Modus lädt, bevor er pausiert.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

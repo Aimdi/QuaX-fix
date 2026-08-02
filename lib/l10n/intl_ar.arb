@@ -1,4 +1,5 @@
 {
+  "search_settings": "البحث في الإعدادات",
   "accessibility": "إمكانية الوصول",
   "account": "الحسابات",
   "account_suspended": "الحساب معلق",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "تحميل المزيد على أي حال",
   "zen_mode_page_cap": "طول الخلاصة في وضع الهدوء",
   "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

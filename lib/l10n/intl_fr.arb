@@ -1,4 +1,5 @@
 {
+  "search_settings": "Rechercher dans les réglages",
   "accessibility": "Accessibilité",
   "account": "Comptes",
   "account_suspended": "Compte suspendu",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Charger plus quand même",
   "zen_mode_page_cap": "Longueur du fil en mode zen",
   "zen_mode_page_cap_description": "Nombre de pages chargées par le fil en mode zen avant de faire une pause.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

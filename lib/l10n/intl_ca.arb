@@ -1,4 +1,5 @@
 {
+  "search_settings": "Cerca la configuració",
   "accessibility": "Accessibilitat",
   "account": "Comptes",
   "account_suspended": "Compte suspés",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Carrega'n més igualment",
   "zen_mode_page_cap": "Longitud del feed en mode zen",
   "zen_mode_page_cap_description": "Quantes pàgines carrega el feed en mode zen abans de fer una pausa.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

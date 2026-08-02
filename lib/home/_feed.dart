@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
+import 'package:xta/home/_account_avatar.dart';
 import 'package:xta/home/_for_you.dart';
 import 'package:xta/tweet/paginated_tweet_list.dart';
 import 'package:xta/generated/l10n.dart';
@@ -111,6 +112,7 @@ class _FeedScreenState extends State<FeedScreen> {
         scrollController: widget.scrollController,
         groupId: widget.id,
         centerTitle: true,
+        leading: const DrawerAvatarButton(),
         titleBuilder: (context) => Text(L10n.of(context).fritter),
         bottomBuilder: (context) => TabBar(
           // The shell draws the bar's hairline; the TabBar's own divider on top

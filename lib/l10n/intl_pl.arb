@@ -1,4 +1,5 @@
 {
+  "search_settings": "Szukaj ustawień",
   "accessibility": "Dostępność",
   "account": "Konta",
   "account_suspended": "Konto zawieszone",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Mimo to wczytaj więcej",
   "zen_mode_page_cap": "Długość kanału w trybie zen",
   "zen_mode_page_cap_description": "Ile stron kanał wczytuje w trybie zen, zanim się zatrzyma.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

@@ -1,4 +1,5 @@
 {
+  "search_settings": "Ayarlarda ara",
   "accessibility": "Erişilebilirlik",
   "account": "Hesaplar",
   "account_suspended": "Hesap askıya alındı",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Yine de daha fazla yükle",
   "zen_mode_page_cap": "Zen modunda akış uzunluğu",
   "zen_mode_page_cap_description": "Zen modunda akışın duraklamadan önce kaç sayfa yükleyeceği.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

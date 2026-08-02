@@ -1,4 +1,5 @@
 {
+  "search_settings": "Search settings",
   "accessibility": "Accessibility",
   "account": "Accounts",
   "account_suspended": "Account suspended",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Load more anyway",
   "zen_mode_page_cap": "Zen feed length",
   "zen_mode_page_cap_description": "How many pages a feed loads in zen mode before pausing.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

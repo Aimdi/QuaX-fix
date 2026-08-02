@@ -1,4 +1,5 @@
 {
+  "search_settings": "Søk i innstillinger",
   "accessibility": "Tilgjengelighet",
   "account": "Kontoer",
   "account_suspended": "Kontoen er suspendert",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "Last inn mer likevel",
   "zen_mode_page_cap": "Feed-lengde i zen-modus",
   "zen_mode_page_cap_description": "Hvor mange sider en feed laster i zen-modus før den tar en pause.",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},

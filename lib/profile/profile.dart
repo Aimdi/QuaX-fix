@@ -546,6 +546,8 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
                             ],
                           ),
                         ),
+                        // The follow / feed-settings controls sit by the
+                        // avatar, where X keeps its profile actions.
                         Container(
                           alignment: Alignment.topRight,
                           margin: EdgeInsets.fromLTRB(128, profileImageTop + 64, 16, 16),
@@ -558,21 +560,41 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
                               user: UserSubscription.fromUser(user),
                               color: theme.colorScheme.primary,
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.search),
-                              color: theme.colorScheme.primary,
-                              onPressed: () => Navigator.pushNamed(context, routeSearch,
-                                  arguments: SearchArguments(1,
-                                      focusInputOnOpen: true, query: 'from:@${(user.screenName!)} ')),
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.share,
-                                color: theme.colorScheme.primary,
-                              ),
-                              onPressed: () => Share.share("$shareBaseUrl/${user.screenName}"),
-                            ),
                           ]),
+                        ),
+                        // Circular translucent buttons floating over the banner,
+                        // as on X: a back affordance a pushed profile otherwise
+                        // lacked on screen, then search and share.
+                        Positioned(
+                          top: 0,
+                          left: 4,
+                          right: 4,
+                          child: SafeArea(
+                            bottom: false,
+                            child: Row(
+                              children: [
+                                _BannerButton(
+                                  icon: Icons.arrow_back,
+                                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                                  onPressed: () => Navigator.maybePop(context),
+                                ),
+                                const Spacer(),
+                                _BannerButton(
+                                  icon: Icons.search,
+                                  tooltip: L10n.of(context).search,
+                                  onPressed: () => Navigator.pushNamed(context, routeSearch,
+                                      arguments: SearchArguments(1,
+                                          focusInputOnOpen: true, query: 'from:@${(user.screenName!)} ')),
+                                ),
+                                const SizedBox(width: 8),
+                                _BannerButton(
+                                  icon: Icons.share,
+                                  tooltip: L10n.of(context).share_link,
+                                  onPressed: () => Share.share("$shareBaseUrl/${user.screenName}"),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                         Container(
                           alignment: Alignment.topLeft,
@@ -649,6 +671,31 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
               onPressed: _scrollToTop,
               child: const Icon(Icons.arrow_upward),
             ),
+    );
+  }
+}
+
+/// A circular translucent button floating over the profile banner, the way X
+/// draws the back / search / more controls there — legible over any banner
+/// because it carries its own scrim rather than relying on the image behind it.
+class _BannerButton extends StatelessWidget {
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onPressed;
+
+  const _BannerButton({required this.icon, required this.tooltip, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black38,
+      shape: const CircleBorder(),
+      clipBehavior: Clip.antiAlias,
+      child: IconButton(
+        icon: Icon(icon, size: 20, color: Colors.white),
+        tooltip: tooltip,
+        onPressed: onPressed,
+      ),
     );
   }
 }

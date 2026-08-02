@@ -27,6 +27,11 @@ class GroupFeedShell extends StatefulWidget {
 
   /// X centres its logo; group names stay leading like every pushed screen.
   final bool centerTitle;
+
+  /// The app bar's leading slot. The home feed puts the account avatar here (it
+  /// opens the drawer, as X's does); a pushed group leaves it null for the
+  /// default back button.
+  final Widget? leading;
   // Whether the body's feed keeps its PagingController in the FeedSessionCache.
   // Only then does a subscription change require remounting the body (to drop
   // the just-invalidated cached controller); other feeds refresh on their own
@@ -42,6 +47,7 @@ class GroupFeedShell extends StatefulWidget {
     required this.actionsBuilder,
     this.bottomBuilder,
     this.centerTitle = false,
+    this.leading,
     this.usesFeedCache = false,
   });
 
@@ -197,6 +203,7 @@ class _GroupFeedShellState extends State<GroupFeedShell> with AutomaticKeepAlive
                   snap: true,
                   floating: true,
                   centerTitle: widget.centerTitle,
+                  leading: widget.leading,
                   title: widget.titleBuilder(context),
                   actions: widget.actionsBuilder(context),
                   bottom: _bottom(context),

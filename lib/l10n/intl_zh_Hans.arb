@@ -1,4 +1,5 @@
 {
+  "search_settings": "搜索设置",
   "accessibility": "无障碍",
   "account": "账户",
   "account_suspended": "账号已被冻结",
@@ -532,6 +533,7 @@
   "zen_mode_load_more": "仍然加载更多",
   "zen_mode_page_cap": "禅模式信息流长度",
   "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
+  "@search_settings": {},
   "@accessibility": {},
   "@account": {},
   "@account_suspended": {},
