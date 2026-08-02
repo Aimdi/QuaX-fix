@@ -153,6 +153,19 @@ const optionPluginSubstackReadIds = 'plugin.substack.read_ids';
 const substackFeedPageSize = 8;
 const substackReadIdsCap = 400;
 
+/// Threads, read through the reader's own RSSHub instance.
+///
+/// There is no public instance default on purpose: the shared one is rate
+/// limited to the point of uselessness for this route, and pointing everyone's
+/// app at somebody else's server is neither reliable nor private.
+const pluginIdThreads = 'threads';
+const optionPluginThreadsEnabled = 'plugin.threads.enabled';
+const optionPluginThreadsShowTab = 'plugin.threads.show_tab';
+const optionPluginThreadsInstance = 'plugin.threads.instance';
+
+/// How many posts one account contributes to the merged feed.
+const threadsPostsPerAccount = 20;
+
 const optionShouldCheckForUpdates = 'should_check_for_updates';
 
 /// Marks that the update check has been turned off once for this fork. Without

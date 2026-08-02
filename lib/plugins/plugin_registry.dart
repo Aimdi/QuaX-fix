@@ -5,6 +5,7 @@ import 'package:xta/plugins/plugin.dart';
 import 'package:xta/plugins/reddit/reddit_plugin.dart';
 import 'package:xta/plugins/stocks/stocks_plugin.dart';
 import 'package:xta/plugins/substack/substack_plugin.dart';
+import 'package:xta/plugins/threads/threads_plugin.dart';
 
 /// Built-in plugins shipped with XTA.
 final List<XtaPlugin> builtInPlugins = [
@@ -14,6 +15,7 @@ final List<XtaPlugin> builtInPlugins = [
   ImmichPlugin(),
   RedditPlugin(),
   StocksPlugin(),
+  ThreadsPlugin(),
 ];
 
 XtaPlugin? pluginById(String id) {

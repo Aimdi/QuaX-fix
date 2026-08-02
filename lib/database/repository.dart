@@ -20,6 +20,7 @@ const String tableSavedTweetFolder = 'saved_tweet_folder';
 const String tableLikedTweet = 'liked_tweet';
 const String tableSearchSubscription = 'search_subscription';
 const String tableSubstackSubscription = 'substack_subscription';
+const String tableThreadsSubscription = 'threads_subscription';
 const String tableRedditSubscription = 'reddit_subscription';
 const String tableImmichUpload = 'immich_upload';
 const String tableRedditLocalVote = 'reddit_local_vote';
@@ -35,7 +36,7 @@ const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 45;
+const int databaseVersion = 46;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -553,6 +554,18 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
       'CREATE TABLE IF NOT EXISTS $tableRedditLocalVote ('
       'id VARCHAR PRIMARY KEY, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
       reverseSql: 'DROP TABLE $tableRedditLocalVote',
+    ),
+  ],
+  46: [
+    // Threads accounts, for the same reason publications got a table in 40:
+    // group membership joins profile ids against subscription tables, so an
+    // account the reader follows needs a row to be joinable at all.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableThreadsSubscription ('
+      'id VARCHAR PRIMARY KEY, name VARCHAR NOT NULL, avatar_url VARCHAR, '
+      'in_feed INTEGER NOT NULL DEFAULT 1, '
+      'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableThreadsSubscription',
     ),
   ],
 });

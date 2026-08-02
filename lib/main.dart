@@ -29,6 +29,8 @@ import 'package:xta/import_data_model.dart';
 import 'package:xta/profile/profile.dart';
 import 'package:xta/plugins/substack/substack_client.dart';
 import 'package:xta/plugins/substack/substack_store.dart';
+import 'package:xta/plugins/threads/threads_client.dart';
+import 'package:xta/plugins/threads/threads_store.dart';
 import 'package:xta/saved/liked_tweet_model.dart';
 import 'package:xta/saved/saved_folders_screen.dart';
 import 'package:xta/saved/saved_tweet_folder_model.dart';
@@ -478,6 +480,9 @@ Future<void> main() async {
     final substackFeed = SubstackFeedStore(substackClient, substackPublications);
     final substackAdd = SubstackAddPublicationStore(substackClient);
     final substackRead = SubstackReadStore(prefService);
+    final threadsClient = ThreadsClient();
+    final threadsAccounts = ThreadsAccountsStore();
+    final threadsFeed = ThreadsFeedStore(threadsClient, prefService, threadsAccounts);
 
     // Everything above only constructs; the reads all happen here. They were a
     // chain of awaits, each waiting on the last for no reason — none of them
@@ -504,6 +509,7 @@ Future<void> main() async {
         substackRead.load(),
       ],
       if (prefService.get<bool>(optionPluginStocksEnabled) == true) stocksWatchlist.load(),
+      if (prefService.get<bool>(optionPluginThreadsEnabled) == true) threadsAccounts.load(),
     ]);
 
     runApp(
@@ -544,6 +550,9 @@ Future<void> main() async {
             Provider(create: (_) => substackFeed),
             Provider(create: (_) => substackAdd),
             Provider(create: (_) => substackRead),
+            Provider(create: (_) => threadsClient),
+            Provider(create: (_) => threadsAccounts),
+            Provider(create: (_) => threadsFeed),
             ChangeNotifierProvider(create: (_) => VideoContextState(prefService.get(optionMediaDefaultMute))),
           ],
           child: FritterApp(),
