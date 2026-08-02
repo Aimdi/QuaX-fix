@@ -29,6 +29,7 @@ import 'package:xta/import_data_model.dart';
 import 'package:xta/profile/profile.dart';
 import 'package:xta/plugins/substack/substack_client.dart';
 import 'package:xta/plugins/substack/substack_store.dart';
+import 'package:xta/plugins/threads/threads_api.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
 import 'package:xta/plugins/threads/threads_store.dart';
 import 'package:xta/saved/liked_tweet_model.dart';
@@ -481,6 +482,7 @@ Future<void> main() async {
     final substackAdd = SubstackAddPublicationStore(substackClient);
     final substackRead = SubstackReadStore(prefService);
     final threadsClient = ThreadsClient();
+    final threadsApi = ThreadsApi();
     final threadsAccounts = ThreadsAccountsStore();
     final threadsFeed = ThreadsFeedStore(threadsClient, prefService, threadsAccounts);
 
@@ -551,6 +553,7 @@ Future<void> main() async {
             Provider(create: (_) => substackAdd),
             Provider(create: (_) => substackRead),
             Provider(create: (_) => threadsClient),
+            Provider(create: (_) => threadsApi),
             Provider(create: (_) => threadsAccounts),
             Provider(create: (_) => threadsFeed),
             ChangeNotifierProvider(create: (_) => VideoContextState(prefService.get(optionMediaDefaultMute))),

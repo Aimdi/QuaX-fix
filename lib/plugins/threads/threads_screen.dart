@@ -5,6 +5,7 @@ import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 import 'package:xta/plugins/threads/threads_post_card.dart';
+import 'package:xta/plugins/threads/threads_profile_screen.dart';
 import 'package:xta/plugins/threads/threads_settings.dart';
 import 'package:xta/plugins/threads/threads_store.dart';
 import 'package:xta/ui/errors.dart';
@@ -45,6 +46,20 @@ class _ThreadsScreenState extends State<ThreadsScreen> {
     });
   }
 
+  /// Looks a handle up on the Xy server and shows whoever it finds, so an
+  /// account can be seen before it is followed.
+  Future<void> _lookUpProfile() async {
+    final handle = await showThreadsAddAccountDialog(context, lookup: true);
+    if (handle == null || !mounted) {
+      return;
+    }
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => ThreadsProfileScreen(username: handle)),
+    );
+  }
+
   Future<void> _addAccount() async {
     final handle = await showThreadsAddAccountDialog(context);
     if (handle == null || !mounted) {
@@ -65,6 +80,11 @@ class _ThreadsScreenState extends State<ThreadsScreen> {
       appBar: AppBar(
         title: Text(l10n.plugin_threads_title),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            tooltip: l10n.plugin_threads_lookup,
+            onPressed: _lookUpProfile,
+          ),
           IconButton(
             icon: const Icon(Icons.person_add_alt),
             tooltip: l10n.plugin_threads_add_account,
@@ -124,7 +144,7 @@ class _ThreadsScreenState extends State<ThreadsScreen> {
 }
 
 /// Asks for a handle, and hands back the normalised one.
-Future<String?> showThreadsAddAccountDialog(BuildContext context) {
+Future<String?> showThreadsAddAccountDialog(BuildContext context, {bool lookup = false}) {
   final controller = TextEditingController();
 
   return showDialog<String>(
@@ -135,7 +155,7 @@ Future<String?> showThreadsAddAccountDialog(BuildContext context) {
 
       return StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: Text(l10n.plugin_threads_add_account),
+          title: Text(lookup ? l10n.plugin_threads_lookup : l10n.plugin_threads_add_account),
           content: TextField(
             controller: controller,
             autofocus: true,

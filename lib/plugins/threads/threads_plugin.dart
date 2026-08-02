@@ -55,6 +55,8 @@ class ThreadsPlugin extends XtaPlugin {
   @override
   Future<void> resetPreferences(BasePrefService prefs) async {
     await prefs.set(optionPluginThreadsInstance, '');
+    await prefs.set(optionPluginThreadsApiBase, kThreadsApiDefaultBase);
+    await prefs.set(optionPluginThreadsApiToken, '');
   }
 
   @override

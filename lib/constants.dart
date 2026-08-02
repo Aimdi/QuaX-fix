@@ -166,6 +166,13 @@ const optionPluginThreadsInstance = 'plugin.threads.instance';
 /// How many posts one account contributes to the merged feed.
 const threadsPostsPerAccount = 20;
 
+/// The reader's own Xy server, which answers the profile lookups Threads will
+/// not serve anonymously. Separate from the RSSHub instance above: that one
+/// brings the posts, this one brings who wrote them.
+const optionPluginThreadsApiBase = 'plugin.threads.api_base';
+const optionPluginThreadsApiToken = 'plugin.threads.api_token';
+const kThreadsApiDefaultBase = 'https://xy-threads.fly.dev';
+
 const optionShouldCheckForUpdates = 'should_check_for_updates';
 
 /// Marks that the update check has been turned off once for this fork. Without

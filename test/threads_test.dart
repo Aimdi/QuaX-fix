@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:xta/plugins/threads/threads_api.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 import 'package:xta/utils/json.dart';
@@ -126,6 +127,75 @@ void main() {
     test('a reshaped feed yields nothing rather than throwing', () {
       expect(parseThreadsFeed(const Json(null), 'zuck'), isEmpty);
       expect(parseThreadsFeed(const Json({'items': 'not a list'}), 'zuck'), isEmpty);
+    });
+  });
+
+  group('ThreadsProfile.fromJson', () {
+    const live = {
+      'pk': '314216',
+      'id': '314216',
+      'username': 'zuck',
+      'full_name': 'Mark Zuckerberg',
+      'is_verified': true,
+      'is_private': false,
+      'profile_pic_url': 'https://example.org/zuck.jpg',
+      'biography': 'Building things',
+      'follower_count': 4200000,
+      'following_count': 812,
+      'media_count': 1330,
+      'external_url': 'https://example.org',
+    };
+
+    test('reads every documented field', () {
+      final profile = ThreadsProfile.fromJson(live);
+
+      expect(profile.pk, '314216');
+      expect(profile.username, 'zuck');
+      expect(profile.fullName, 'Mark Zuckerberg');
+      expect(profile.isVerified, isTrue);
+      expect(profile.isPrivate, isFalse);
+      expect(profile.followerCount, 4200000);
+      expect(profile.followingCount, 812);
+      expect(profile.mediaCount, 1330);
+      expect(profile.externalUrl, 'https://example.org');
+    });
+
+    test('external_url is nullable, and blank counts as absent', () {
+      expect(ThreadsProfile.fromJson({...live, 'external_url': null}).externalUrl, isNull);
+      expect(ThreadsProfile.fromJson({...live, 'external_url': '  '}).externalUrl, isNull);
+    });
+
+    test('a field that stopped being sent leaves a blank, not a crash', () {
+      final profile = ThreadsProfile.fromJson({'username': 'zuck'});
+
+      expect(profile.username, 'zuck');
+      expect(profile.fullName, '');
+      expect(profile.isVerified, isFalse);
+      expect(profile.followerCount, 0);
+      // With no display name the handle stands in for it.
+      expect(profile.displayName, 'zuck');
+    });
+
+    test('a reshaped response yields an empty profile rather than throwing', () {
+      expect(ThreadsProfile.fromJson(null).username, '');
+      expect(ThreadsProfile.fromJson('not an object').username, '');
+    });
+
+    test('a profile becomes a followable account, carrying its face', () {
+      final account = ThreadsProfile.fromJson(live).toAccount();
+
+      expect(account.handle, 'zuck');
+      expect(account.name, 'Mark Zuckerberg');
+      expect(account.avatarUrl, 'https://example.org/zuck.jpg');
+    });
+  });
+
+  group('ThreadsApi', () {
+    test('builds endpoints under the configured base, trailing slashes and all', () {
+      expect(ThreadsApi.endpoint('https://xy.example.org', '/health').toString(),
+          'https://xy.example.org/health');
+      expect(ThreadsApi.endpoint('https://xy.example.org//', '/profile/zuck').toString(),
+          'https://xy.example.org/profile/zuck');
     });
   });
 }
