@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Imagine în imagine",
+  "video_fit_cover": "Umple ecranul",
+  "video_fit_contain": "Încadrează în ecran",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Citește conturi Threads prin propria instanță RSSHub",
   "plugin_threads_settings_intro": "Threads se citește prin RSSHub, pe care îl rulezi tu. Introdu adresa lui, apoi adaugă conturile pe care vrei să le urmărești. Nu există instanță comună: cea publică e limitată până la a fi inutilă pentru această rută.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Încarcă mai mult oricum",
   "zen_mode_page_cap": "Lungimea fluxului în modul zen",
   "zen_mode_page_cap_description": "Câte pagini încarcă fluxul în modul zen înainte de a se opri.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

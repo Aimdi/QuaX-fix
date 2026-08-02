@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "子母畫面",
+  "video_fit_cover": "填滿螢幕",
+  "video_fit_contain": "符合螢幕",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "透過自架的 RSSHub 執行個體閱讀 Threads 帳號",
   "plugin_threads_settings_intro": "Threads 透過你自己執行的 RSSHub 讀取。填入它的位址，再加入想追蹤的帳號。沒有公用執行個體：公開的那個對這條路由限流嚴重，幾乎無法使用。",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "仍要載入更多",
   "zen_mode_page_cap": "禪模式時間軸長度",
   "zen_mode_page_cap_description": "禪模式下時間軸暫停前載入的頁數。",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

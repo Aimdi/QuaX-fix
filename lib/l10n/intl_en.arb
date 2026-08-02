@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Picture-in-picture",
+  "video_fit_cover": "Fill the screen",
+  "video_fit_contain": "Fit the screen",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Read Threads accounts through your own RSSHub instance",
   "plugin_threads_settings_intro": "Threads is read through RSSHub, which you run yourself. Enter its address, then add the accounts you want to follow. There is no shared instance: the public one is rate limited to the point of uselessness for this route.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Load more anyway",
   "zen_mode_page_cap": "Zen feed length",
   "zen_mode_page_cap_description": "How many pages a feed loads in zen mode before pausing.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "화면 속 화면",
+  "video_fit_cover": "화면 채우기",
+  "video_fit_contain": "화면에 맞추기",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "직접 운영하는 RSSHub 인스턴스로 Threads 계정 읽기",
   "plugin_threads_settings_intro": "Threads는 직접 운영하는 RSSHub를 통해 읽습니다. 주소를 입력한 다음 팔로우할 계정을 추가하세요. 공용 인스턴스는 없습니다. 공개 인스턴스는 이 경로에서 쓸모없을 만큼 제한이 심합니다.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "그래도 더 불러오기",
   "zen_mode_page_cap": "젠 모드 피드 길이",
   "zen_mode_page_cap_description": "젠 모드에서 피드가 일시 중지되기 전에 불러올 페이지 수입니다.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Obraz v obraze",
+  "video_fit_cover": "Vyplnit obrazovku",
+  "video_fit_contain": "Přizpůsobit obrazovce",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Čtěte účty Threads přes vlastní instanci RSSHub",
   "plugin_threads_settings_intro": "Threads se čte přes RSSHub, který si provozujete sami. Zadejte jeho adresu a pak přidejte účty, které chcete sledovat. Sdílená instance neexistuje: veřejná je pro tuto trasu omezená natolik, že je nepoužitelná.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Přesto načíst další",
   "zen_mode_page_cap": "Délka kanálu v zen režimu",
   "zen_mode_page_cap_description": "Kolik stránek kanál v zen režimu načte, než se pozastaví.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

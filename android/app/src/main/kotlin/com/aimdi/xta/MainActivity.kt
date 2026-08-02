@@ -1,7 +1,10 @@
 package com.aimdi.xta
 
+import android.app.PictureInPictureParams
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
+import android.util.Rational
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.provider.DocumentsContract
@@ -30,9 +33,41 @@ class MainActivity : AudioServiceActivity() {
                     "pickDownloadDirectory" -> pickDownloadDirectory(result)
                     "hasDownloadDirectoryAccess" -> hasDownloadDirectoryAccess(call, result)
                     "saveToDownloadDirectory" -> saveToDownloadDirectory(call, result)
+                    "enterPictureInPicture" -> enterPictureInPicture(call, result)
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    /**
+     * Shrinks the activity into a floating window, shaped like the video.
+     *
+     * Android clamps the aspect ratio to roughly between 1:2.39 and 2.39:1 and
+     * throws outside that, so an extreme clip is nudged inside the range rather
+     * than taking the whole call down with it.
+     */
+    private fun enterPictureInPicture(call: MethodCall, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            result.success(false)
+            return
+        }
+
+        val ratio = (call.argument<Double>("aspectRatio") ?: (16.0 / 9.0))
+            .coerceIn(0.42, 2.39)
+        val numerator = (ratio * 1000).toInt()
+
+        return try {
+            val params = PictureInPictureParams.Builder()
+                .setAspectRatio(Rational(numerator, 1000))
+                .build()
+            result.success(enterPictureInPictureMode(params))
+        } catch (e: IllegalStateException) {
+            // Picture-in-picture can be switched off per app in system settings,
+            // and some devices refuse it outright.
+            result.success(false)
+        } catch (e: IllegalArgumentException) {
+            result.success(false)
+        }
     }
 
     private fun scanMediaFile(call: MethodCall, result: MethodChannel.Result) {

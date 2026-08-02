@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "صورة داخل صورة",
+  "video_fit_cover": "ملء الشاشة",
+  "video_fit_contain": "ملاءمة الشاشة",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "اقرأ حسابات Threads عبر نسخة RSSHub الخاصة بك",
   "plugin_threads_settings_intro": "تُقرأ Threads عبر RSSHub الذي تشغّله بنفسك. أدخل عنوانه ثم أضف الحسابات التي تريد متابعتها. لا توجد نسخة مشتركة: النسخة العامة مقيّدة لدرجة تجعلها بلا فائدة لهذا المسار.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "تحميل المزيد على أي حال",
   "zen_mode_page_cap": "طول الخلاصة في وضع الهدوء",
   "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Pilt pildis",
+  "video_fit_cover": "Täida ekraan",
+  "video_fit_contain": "Mahuta ekraanile",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Loe Threadsi kontosid oma RSSHubi kaudu",
   "plugin_threads_settings_intro": "Threadsi loetakse RSSHubi kaudu, mida sa ise majutad. Sisesta selle aadress ja lisa siis kontod, keda soovid jälgida. Ühist eksemplari pole: avalik on selle marsruudi jaoks nii piiratud, et kasutu.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Laadi ikkagi rohkem",
   "zen_mode_page_cap": "Voo pikkus Zen-režiimis",
   "zen_mode_page_cap_description": "Mitu lehte voog Zen-režiimis enne pausi laadib.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

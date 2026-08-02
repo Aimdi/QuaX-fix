@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Bild-in-Bild",
+  "video_fit_cover": "Bildschirm ausfüllen",
+  "video_fit_contain": "Ins Bild einpassen",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Threads-Konten über die eigene RSSHub-Instanz lesen",
   "plugin_threads_settings_intro": "Threads wird über RSSHub gelesen, das du selbst betreibst. Trage seine Adresse ein und füge dann die Konten hinzu, denen du folgen willst. Eine gemeinsame Instanz gibt es nicht: Die öffentliche ist für diese Route so stark gedrosselt, dass sie unbrauchbar ist.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Trotzdem mehr laden",
   "zen_mode_page_cap": "Feed-Länge im Zen-Modus",
   "zen_mode_page_cap_description": "Wie viele Seiten ein Feed im Zen-Modus lädt, bevor er pausiert.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

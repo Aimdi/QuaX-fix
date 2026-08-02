@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "画中画",
+  "video_fit_cover": "填满屏幕",
+  "video_fit_contain": "适应屏幕",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "通过自建的 RSSHub 实例阅读 Threads 账号",
   "plugin_threads_settings_intro": "Threads 通过你自己运行的 RSSHub 读取。填入它的地址，然后添加想关注的账号。没有公用实例：公共实例对这条路由限流严重，基本无法使用。",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "仍然加载更多",
   "zen_mode_page_cap": "禅模式信息流长度",
   "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

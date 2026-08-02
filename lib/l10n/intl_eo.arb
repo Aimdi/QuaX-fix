@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Bildo en bildo",
+  "video_fit_cover": "Plenigi la ekranon",
+  "video_fit_contain": "Adapti al la ekrano",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Legu Threads-kontojn per via propra RSSHub-nodo",
   "plugin_threads_settings_intro": "Threads estas legata per RSSHub, kiun vi mem funkciigas. Enigu ĝian adreson, poste aldonu la kontojn kiujn vi volas sekvi. Ne ekzistas komuna nodo: la publika estas tiom limigita ke ĝi estas senutila por ĉi tiu vojo.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Tamen ŝargi pli",
   "zen_mode_page_cap": "Longo de la fluo en zena reĝimo",
   "zen_mode_page_cap_description": "Kiom da paĝoj la fluo ŝargas en zena reĝimo antaŭ ol paŭzi.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

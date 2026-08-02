@@ -28,6 +28,14 @@ class XtaControls extends StatefulWidget {
   /// use a self-contained route that does not share the inline tile's notifiers.
   final VoidCallback? onToggleFullscreen;
 
+  /// Fullscreen only: whether the video is filling the screen rather than
+  /// fitting inside it, and how to swap between the two.
+  final bool? zoomedToFill;
+  final VoidCallback? onToggleZoom;
+
+  /// Fullscreen only: shrink the app into a floating window.
+  final VoidCallback? onPictureInPicture;
+
   const XtaControls({
     super.key,
     required this.pooled,
@@ -37,6 +45,9 @@ class XtaControls extends StatefulWidget {
     required this.subtitlesEnabled,
     required this.onToggleSubtitles,
     this.onToggleFullscreen,
+    this.zoomedToFill,
+    this.onToggleZoom,
+    this.onPictureInPicture,
   });
 
   @override
@@ -170,6 +181,9 @@ class _XtaControlsState extends State<XtaControls> {
             subtitlesEnabled: widget.subtitlesEnabled,
             onToggleSubtitles: widget.onToggleSubtitles,
             onToggleFullscreen: widget.onToggleFullscreen,
+            zoomedToFill: widget.zoomedToFill,
+            onToggleZoom: widget.onToggleZoom,
+            onPictureInPicture: widget.onPictureInPicture,
           ),
         ),
       ],
@@ -202,6 +216,9 @@ class _BottomBar extends StatelessWidget {
   final bool subtitlesEnabled;
   final VoidCallback onToggleSubtitles;
   final VoidCallback? onToggleFullscreen;
+  final bool? zoomedToFill;
+  final VoidCallback? onToggleZoom;
+  final VoidCallback? onPictureInPicture;
 
   const _BottomBar({
     required this.pooled,
@@ -211,6 +228,9 @@ class _BottomBar extends StatelessWidget {
     required this.subtitlesEnabled,
     required this.onToggleSubtitles,
     this.onToggleFullscreen,
+    this.zoomedToFill,
+    this.onToggleZoom,
+    this.onPictureInPicture,
   });
 
   @override
@@ -225,11 +245,21 @@ class _BottomBar extends StatelessWidget {
               const _PositionIndicator(),
               const Spacer(),
               if (allowMuting) const _MuteButton(),
+              if (onPictureInPicture != null)
+                IconButton(
+                  iconSize: 24.0,
+                  color: Colors.white,
+                  tooltip: L10n.of(context).picture_in_picture,
+                  icon: const Icon(Icons.picture_in_picture_alt),
+                  onPressed: onPictureInPicture,
+                ),
               _MoreButton(
                 pooled: pooled,
                 username: username,
                 subtitlesEnabled: subtitlesEnabled,
                 onToggleSubtitles: onToggleSubtitles,
+                zoomedToFill: zoomedToFill,
+                onToggleZoom: onToggleZoom,
               ),
               if (onToggleFullscreen != null)
                 _FullscreenButton(onPressed: onToggleFullscreen!, exit: TweetVideoFullscreenScope.activeOf(context))
@@ -624,12 +654,16 @@ class _MoreButton extends StatelessWidget {
   final String username;
   final bool subtitlesEnabled;
   final VoidCallback onToggleSubtitles;
+  final bool? zoomedToFill;
+  final VoidCallback? onToggleZoom;
 
   const _MoreButton({
     required this.pooled,
     required this.username,
     required this.subtitlesEnabled,
     required this.onToggleSubtitles,
+    this.zoomedToFill,
+    this.onToggleZoom,
   });
 
   @override
@@ -679,6 +713,17 @@ class _MoreButton extends StatelessWidget {
                 onTap: () {
                   Navigator.of(sheetContext).pop();
                   onToggleSubtitles();
+                },
+              ),
+            if (onToggleZoom != null)
+              ListTile(
+                leading: Icon(zoomedToFill == true ? Icons.fullscreen_exit : Icons.aspect_ratio),
+                title: Text(zoomedToFill == true
+                    ? L10n.of(sheetContext).video_fit_contain
+                    : L10n.of(sheetContext).video_fit_cover),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  onToggleZoom!();
                 },
               ),
             ListTile(

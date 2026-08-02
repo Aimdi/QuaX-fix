@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Mini oynatıcı",
+  "video_fit_cover": "Ekranı doldur",
+  "video_fit_contain": "Ekrana sığdır",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Threads hesaplarını kendi RSSHub örneğin üzerinden oku",
   "plugin_threads_settings_intro": "Threads, kendi çalıştırdığın RSSHub üzerinden okunur. Adresini gir, sonra takip etmek istediğin hesapları ekle. Ortak bir örnek yok: herkese açık olan bu rota için işe yaramayacak kadar kısıtlı.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Yine de daha fazla yükle",
   "zen_mode_page_cap": "Zen modunda akış uzunluğu",
   "zen_mode_page_cap_description": "Zen modunda akışın duraklamadan önce kaç sayfa yükleyeceği.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

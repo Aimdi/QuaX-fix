@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Obraz w obrazie",
+  "video_fit_cover": "Wypełnij ekran",
+  "video_fit_contain": "Dopasuj do ekranu",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Czytaj konta Threads przez własną instancję RSSHub",
   "plugin_threads_settings_intro": "Threads czytany jest przez RSSHub, który uruchamiasz sam. Podaj jego adres, a potem dodaj konta, które chcesz śledzić. Nie ma wspólnej instancji: publiczna jest tak ograniczona, że dla tej trasy jest bezużyteczna.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Mimo to wczytaj więcej",
   "zen_mode_page_cap": "Długość kanału w trybie zen",
   "zen_mode_page_cap_description": "Ile stron kanał wczytuje w trybie zen, zanim się zatrzyma.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

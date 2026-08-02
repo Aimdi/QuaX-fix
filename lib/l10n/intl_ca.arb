@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Imatge sobre imatge",
+  "video_fit_cover": "Omple la pantalla",
+  "video_fit_contain": "Ajusta a la pantalla",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Llegeix comptes de Threads a través de la teva instància de RSSHub",
   "plugin_threads_settings_intro": "Threads es llegeix mitjançant RSSHub, que allotges tu. Escriu-ne l'adreça i després afegeix els comptes que vulguis seguir. No hi ha instància compartida: la pública està tan limitada que és inservible per a aquesta ruta.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Carrega'n més igualment",
   "zen_mode_page_cap": "Longitud del feed en mode zen",
   "zen_mode_page_cap_description": "Quantes pàgines carrega el feed en mode zen abans de fer una pausa.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

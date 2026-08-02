@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Irudia irudian",
+  "video_fit_cover": "Bete pantaila",
+  "video_fit_contain": "Doitu pantailara",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Irakurri Threads kontuak zure RSSHub instantziaren bidez",
   "plugin_threads_settings_intro": "Threads zeuk darabilzun RSSHub bidez irakurtzen da. Idatzi haren helbidea eta gehitu jarraitu nahi dituzun kontuak. Ez dago instantzia partekaturik: publikoa hain mugatuta dago, ezen ibilbide honetarako erabilezina baita.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Kargatu gehiago hala ere",
   "zen_mode_page_cap": "Jarioaren luzera zen moduan",
   "zen_mode_page_cap_description": "Zenbat orrialde kargatzen dituen jarioak zen moduan gelditu aurretik.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

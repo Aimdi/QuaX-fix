@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Відарыс у відарысе",
+  "video_fit_cover": "Запоўніць экран",
+  "video_fit_contain": "Упісаць у экран",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Чытайце ўліковыя запісы Threads праз уласны асобнік RSSHub",
   "plugin_threads_settings_intro": "Threads чытаецца праз RSSHub, які вы запускаеце самі. Увядзіце яго адрас, а потым дадайце ўліковыя запісы, за якімі хочаце сачыць. Агульнага асобніка няма: публічны абмежаваны настолькі, што для гэтага маршруту бескарысны.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Усё роўна загрузіць яшчэ",
   "zen_mode_page_cap": "Даўжыня стужкі ў дзэн-рэжыме",
   "zen_mode_page_cap_description": "Колькі старонак загружае стужка ў дзэн-рэжыме перад паўзай.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Picture-in-picture",
+  "video_fit_cover": "Penuhi layar",
+  "video_fit_contain": "Sesuaikan layar",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Baca akun Threads lewat instans RSSHub milikmu sendiri",
   "plugin_threads_settings_intro": "Threads dibaca lewat RSSHub yang kamu jalankan sendiri. Masukkan alamatnya, lalu tambahkan akun yang ingin kamu ikuti. Tidak ada instans bersama: yang publik dibatasi sampai tak berguna untuk rute ini.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Tetap muat lebih banyak",
   "zen_mode_page_cap": "Panjang beranda di mode zen",
   "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

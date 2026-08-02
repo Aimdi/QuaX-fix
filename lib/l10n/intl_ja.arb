@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "ピクチャーインピクチャー",
+  "video_fit_cover": "画面いっぱいに",
+  "video_fit_contain": "画面に合わせる",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "自分の RSSHub インスタンス経由で Threads のアカウントを読む",
   "plugin_threads_settings_intro": "Threads は自分で動かす RSSHub 経由で読み込みます。そのアドレスを入力し、フォローしたいアカウントを追加してください。共用インスタンスはありません。公開インスタンスはこのルートでは制限が厳しく使い物になりません。",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "それでももっと読み込む",
   "zen_mode_page_cap": "禅モードのフィードの長さ",
   "zen_mode_page_cap_description": "禅モードでフィードが一時停止するまでに読み込むページ数。",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

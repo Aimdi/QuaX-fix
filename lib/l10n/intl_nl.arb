@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Beeld-in-beeld",
+  "video_fit_cover": "Scherm vullen",
+  "video_fit_contain": "In beeld passen",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Lees Threads-accounts via je eigen RSSHub-instantie",
   "plugin_threads_settings_intro": "Threads wordt gelezen via RSSHub, dat je zelf draait. Vul het adres in en voeg daarna de accounts toe die je wilt volgen. Er is geen gedeelde instantie: de openbare is voor deze route zo sterk beperkt dat je er niets aan hebt.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Toch meer laden",
   "zen_mode_page_cap": "Feedlengte in zen-modus",
   "zen_mode_page_cap_description": "Hoeveel pagina's een feed in zen-modus laadt voordat deze pauzeert.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

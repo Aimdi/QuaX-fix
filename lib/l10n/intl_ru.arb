@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Картинка в картинке",
+  "video_fit_cover": "Заполнить экран",
+  "video_fit_contain": "Вписать в экран",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Читайте аккаунты Threads через собственный экземпляр RSSHub",
   "plugin_threads_settings_intro": "Threads читается через RSSHub, который вы запускаете сами. Укажите его адрес, затем добавьте аккаунты, за которыми хотите следить. Общего экземпляра нет: публичный ограничен настолько, что для этого маршрута бесполезен.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Всё равно загрузить ещё",
   "zen_mode_page_cap": "Длина ленты в дзен-режиме",
   "zen_mode_page_cap_description": "Сколько страниц загружает лента в дзен-режиме перед паузой.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

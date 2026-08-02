@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Picture-in-picture",
+  "video_fit_cover": "Preencher a tela",
+  "video_fit_contain": "Ajustar à tela",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Leia contas do Threads pela sua própria instância do RSSHub",
   "plugin_threads_settings_intro": "O Threads é lido pelo RSSHub, que você mesmo hospeda. Informe o endereço e depois adicione as contas que quer seguir. Não existe instância compartilhada: a pública tem limite tão baixo que fica inútil para essa rota.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Carregar mais mesmo assim",
   "zen_mode_page_cap": "Comprimento do feed no modo zen",
   "zen_mode_page_cap_description": "Quantas páginas o feed carrega no modo zen antes de fazer uma pausa.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

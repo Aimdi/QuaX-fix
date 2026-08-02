@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:xta/tweet/_video_controls.dart';
 import 'package:xta/tweet/video_controller_pool.dart';
+import 'package:xta/tweet/video_pip.dart';
 
 /// Inherited marker so controls know they are already on the fullscreen route
 /// and should pop instead of pushing again.
@@ -52,6 +53,7 @@ Future<void> pushTweetVideoFullscreen({
   required bool subtitlesEnabled,
   required VoidCallback onToggleSubtitles,
   required bool pauseUponEnteringBackgroundMode,
+  double aspectRatio = 16 / 9,
 }) {
   return navigator.push<void>(
     PageRouteBuilder<void>(
@@ -63,6 +65,7 @@ Future<void> pushTweetVideoFullscreen({
           subtitlesEnabled: subtitlesEnabled,
           onToggleSubtitles: onToggleSubtitles,
           pauseUponEnteringBackgroundMode: pauseUponEnteringBackgroundMode,
+          aspectRatio: aspectRatio,
         ),
       ),
       transitionDuration: Duration.zero,
@@ -78,6 +81,7 @@ class _TweetVideoFullscreenPage extends StatefulWidget {
   final bool subtitlesEnabled;
   final VoidCallback onToggleSubtitles;
   final bool pauseUponEnteringBackgroundMode;
+  final double aspectRatio;
 
   const _TweetVideoFullscreenPage({
     required this.pooled,
@@ -86,6 +90,7 @@ class _TweetVideoFullscreenPage extends StatefulWidget {
     required this.subtitlesEnabled,
     required this.onToggleSubtitles,
     required this.pauseUponEnteringBackgroundMode,
+    required this.aspectRatio,
   });
 
   @override
@@ -94,6 +99,13 @@ class _TweetVideoFullscreenPage extends StatefulWidget {
 
 class _TweetVideoFullscreenPageState extends State<_TweetVideoFullscreenPage> {
   late bool _subtitlesEnabled = widget.subtitlesEnabled;
+
+  /// Whether the video fills the screen rather than fitting inside it.
+  ///
+  /// A 16:9 clip on a 20:9 phone leaves a band of black at each end; filling
+  /// crops the sides instead. Which one is wanted depends on the video, so it
+  /// is a control rather than a setting.
+  bool _zoomedToFill = false;
 
   void _toggleSubtitles() {
     widget.onToggleSubtitles();
@@ -107,7 +119,7 @@ class _TweetVideoFullscreenPageState extends State<_TweetVideoFullscreenPage> {
       body: Video(
         controller: widget.pooled.videoController,
         // Own notifiers — do not inherit the inline tile's VideoState.
-        fit: BoxFit.contain,
+        fit: _zoomedToFill ? BoxFit.cover : BoxFit.contain,
         controls: (_) => XtaControls(
           pooled: widget.pooled,
           username: widget.username,
@@ -116,6 +128,13 @@ class _TweetVideoFullscreenPageState extends State<_TweetVideoFullscreenPage> {
           subtitlesEnabled: _subtitlesEnabled,
           onToggleSubtitles: _toggleSubtitles,
           onToggleFullscreen: () => Navigator.of(context, rootNavigator: true).maybePop(),
+          zoomedToFill: _zoomedToFill,
+          onToggleZoom: () => setState(() => _zoomedToFill = !_zoomedToFill),
+          // Only offered where the platform has it. Picture-in-picture keeps
+          // the video playing in a floating window while the rest of the phone
+          // is used, which is the one thing fullscreen cannot do.
+          onPictureInPicture:
+              VideoPictureInPicture.isSupported ? () => VideoPictureInPicture.enter(aspectRatio: widget.aspectRatio) : null,
         ),
         wakelock: true,
         pauseUponEnteringBackgroundMode: widget.pauseUponEnteringBackgroundMode,

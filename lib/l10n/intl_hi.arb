@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "पिक्चर-इन-पिक्चर",
+  "video_fit_cover": "स्क्रीन भरें",
+  "video_fit_contain": "स्क्रीन में फ़िट करें",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "अपने खुद के RSSHub इंस्टेंस से Threads खाते पढ़ें",
   "plugin_threads_settings_intro": "Threads को RSSHub के ज़रिए पढ़ा जाता है, जिसे आप खुद चलाते हैं। उसका पता डालें, फिर जिन खातों को फ़ॉलो करना है उन्हें जोड़ें। कोई साझा इंस्टेंस नहीं है: सार्वजनिक इंस्टेंस इस रूट के लिए इतना सीमित है कि बेकार है।",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "फिर भी और लोड करें",
   "zen_mode_page_cap": "ज़ेन मोड में फ़ीड की लंबाई",
   "zen_mode_page_cap_description": "ज़ेन मोड में रुकने से पहले फ़ीड कितने पेज लोड करेगी।",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

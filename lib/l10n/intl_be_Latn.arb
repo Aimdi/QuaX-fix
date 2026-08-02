@@ -1,4 +1,7 @@
 {
+  "picture_in_picture": "Vidaryś u vidaryse",
+  "video_fit_cover": "Zapoŭnić ekran",
+  "video_fit_contain": "Upisać u ekran",
   "plugin_threads_title": "Threads",
   "plugin_threads_description": "Čytajcie ŭlikovyja zapisy Threads praz ulasny asobnik RSSHub",
   "plugin_threads_settings_intro": "Threads čytajecca praz RSSHub, jaki vy zapuskajecie sami. Uviadzicie jaho adras, a potym dadajcie ŭlikovyja zapisy, za jakimi chočacie sačyć. Ahulnaha asobnika niama: publičny abmiežavany nastolki, što dlia hetaha maršrutu bieskaryšny.",
@@ -551,6 +554,9 @@
   "zen_mode_load_more": "Usio roŭna zahruzić jašče",
   "zen_mode_page_cap": "Daŭžynia stužki ŭ dzen-režymie",
   "zen_mode_page_cap_description": "Kolki staronak zahružaje stužka ŭ dzen-režymie pierad paŭzaj.",
+  "@picture_in_picture": {},
+  "@video_fit_cover": {},
+  "@video_fit_contain": {},
   "@plugin_threads_title": {},
   "@plugin_threads_description": {},
   "@plugin_threads_settings_intro": {},

@@ -397,6 +397,7 @@ class _TweetVideoState extends State<TweetVideo> {
         subtitlesEnabled: _subtitlesEnabled,
         onToggleSubtitles: () => _toggleSubtitles(pooled),
         pauseUponEnteringBackgroundMode: !prefBackgroundPlayback,
+        aspectRatio: widget.metadata.aspectRatio,
       );
     } finally {
       _isFullscreen = false;
