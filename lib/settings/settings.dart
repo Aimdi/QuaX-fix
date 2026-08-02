@@ -141,7 +141,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
-    final theme = Theme.of(context);
     var key = widget.key ?? const Key("Settings");
     var appVersion = 'v${_packageInfo.version}+${_packageInfo.buildNumber}';
     final query = _query.trim().toLowerCase();
