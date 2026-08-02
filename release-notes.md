@@ -6,19 +6,26 @@ with the plugins, feeds and fixes below on top.
 
 ### What's new
 
-**The homepage looks like X now.** Following, For you and Reddit are proper
-tabs with the accent underline instead of a dropdown; the top bar keeps the
-feed filters and little else (refresh is the pull gesture, settings moved into
-the drawer) and ends in a hairline so posts no longer dissolve into it while
-scrolling. The drawer carries your groups the way X's carries Lists. Timeline
-stamps are compact ("5 min." instead of "vor 5 Minuten"), the translate button
-only appears on posts in another language, and the last loading spinner is now
-the same post-shaped placeholders the rest of the app uses. Tapping a
-timestamp to see the exact date also works on the first tap now.
+**The chrome leans further into X.** The top-left is your account's mark now,
+and it opens the drawer — where X wears your avatar and does the same. The
+drawer itself gained an account block at the top, and its group shortcuts each
+carry a member count and a pin marker, with pinned groups first.
 
-**Audio keeps playing when you leave.** Read-aloud and Substack podcasts
-continue past the app going to the background, with play/pause/stop on the
-lock screen and in the notification shade.
+**Groups are one menu away from anywhere.** Tapping a feed's name no longer
+jumps straight to a list of every group. It opens a short menu under the title:
+the home feeds first, then your pinned groups as one-tap jumps, then Groups for
+the full list — which is still the sheet, because thirty groups and
+hold-a-row-to-read-it-alongside do not fit in a menu. The sheet now ends with a
+way to make another group, and picking a feed from inside a group takes you
+back to the home tab it belongs to.
+
+**Settings reads like X's.** Bold titles with plain descriptions instead of
+italics, no Material cards, and a search field at the top that filters the
+sections by name or by what they contain.
+
+**A profile has a back button again.** Circular translucent back, search and
+share buttons float over the banner, the way X draws them — a profile opened
+from a post used to offer nothing on screen to leave it with.
 
 ---
 
