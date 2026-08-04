@@ -5,6 +5,7 @@ import 'package:xta/database/repository.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/immich/immich_settings_screen.dart';
 import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/plugin_category.dart';
 
 /// Sends the media of chosen bookmark folders to a self-hosted Immich instance.
 /// No home tab: the plugin adds a per-folder switch where folders already are,
@@ -19,7 +20,13 @@ class ImmichPlugin extends XtaPlugin {
   String get enabledPrefKey => optionPluginImmichEnabled;
 
   @override
-  IconData get icon => Icons.photo_library_outlined;
+  IconData get icon => Icons.photo_library;
+
+  @override
+  PluginCategory get category => PluginCategory.media;
+
+  @override
+  Color get brandColor => const Color(0xFF4250AF);
 
   @override
   String title(BuildContext context) => L10n.of(context).plugin_immich_title;

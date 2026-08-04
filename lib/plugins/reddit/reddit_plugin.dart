@@ -6,6 +6,7 @@ import 'package:xta/database/repository.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/home/home_screen.dart';
 import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/plugin_category.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_screen.dart';
 import 'package:xta/plugins/reddit/reddit_store.dart';
@@ -25,7 +26,13 @@ class RedditPlugin extends XtaPlugin {
   String get enabledPrefKey => optionPluginRedditEnabled;
 
   @override
-  IconData get icon => Icons.forum_outlined;
+  IconData get icon => Icons.reddit;
+
+  @override
+  PluginCategory get category => PluginCategory.reading;
+
+  @override
+  Color get brandColor => const Color(0xFFFF4500);
 
   @override
   String? get homeTabPrefKey => optionPluginRedditShowTab;
@@ -41,8 +48,8 @@ class RedditPlugin extends XtaPlugin {
     return NavigationPage(
       pluginIdReddit,
       (c) => L10n.of(c).plugin_reddit_title,
-      const Icon(Icons.forum_outlined),
-      const Icon(Icons.forum),
+      const Icon(Icons.reddit_outlined),
+      const Icon(Icons.reddit),
     );
   }
 

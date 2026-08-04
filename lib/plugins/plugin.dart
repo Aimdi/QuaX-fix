@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:xta/home/home_screen.dart';
+import 'package:xta/plugins/plugin_category.dart';
 import 'package:xta/plugins/plugin_storage.dart';
 
 /// Built-in XTA plugin descriptor. Plugins are read-oriented feature packs;
@@ -9,6 +10,13 @@ abstract class XtaPlugin {
   String get id;
   String get enabledPrefKey;
   IconData get icon;
+
+  /// Store grouping (reading, markets, bookmarks, media).
+  PluginCategory get category;
+
+  /// Accent for the store / tab mark — the colour people associate with the
+  /// service, not a logo asset.
+  Color get brandColor;
 
   String title(BuildContext context);
   String description(BuildContext context);
