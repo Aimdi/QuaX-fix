@@ -408,7 +408,6 @@ class _StatusScreenState extends State<_StatusScreen> {
       fetchNextPage: fetchNextPage,
       scrollController: _scrollController,
       addAutomaticKeepAlives: false,
-      shrinkWrap: true,
       builderDelegate: PagedChildBuilderDelegate(
         itemBuilder: (context, chain, index) => _conversationTile(context, chain, index),
         firstPageErrorIndicatorBuilder: (context) => FullPageErrorWidget(
@@ -460,7 +459,6 @@ class _StatusScreenState extends State<_StatusScreen> {
     return ListView.builder(
       controller: _scrollController,
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-      shrinkWrap: true,
       itemCount: nodes.length + 1,
       itemBuilder: (context, index) {
         if (index == nodes.length) {
