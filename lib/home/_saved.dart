@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,7 @@ import 'package:quax/profile/profile.dart';
 import 'package:quax/saved/folder_picker.dart';
 import 'package:quax/saved/liked_tweet_model.dart';
 import 'package:quax/saved/saved_cleanup.dart';
+import 'package:quax/saved/saved_content_index.dart';
 import 'package:quax/saved/saved_tab_order.dart';
 import 'package:quax/saved/saved_tweet_folder_model.dart';
 import 'package:quax/saved/saved_tweet_model.dart';
@@ -40,7 +41,13 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
   String _filter = savedTabAll;
   bool _mediaOnly = false;
   bool _searching = false;
+
+  /// Lowercased and trimmed, so filtering compares without re-allocating.
   String _query = '';
+
+  /// A fast typist would otherwise filter the whole table once per character.
+  Timer? _searchDebounce;
+  static const _searchDebounceDuration = Duration(milliseconds: 200);
 
   /// Whether likes are broken out by the group their author belongs to.
   bool _likesByGroup = false;
@@ -83,6 +90,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchFocusNode.dispose();
     super.dispose();
   }
@@ -135,33 +143,22 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
     );
   }
 
-  /// Case-insensitive match of a stored tweet's JSON against the search query:
+  /// Case-insensitive match against the parsed post the store already holds:
   /// post text (including long-post note text) plus author name and handle.
-  bool _matchesQuery(String? content) {
-    if (content == null) {
-      return false;
-    }
-    final needle = _query.toLowerCase();
-    try {
-      final json = jsonDecode(content);
-      final haystacks = [
-        json['full_text'] as String?,
-        json['text'] as String?,
-        json['noteText'] as String?,
-        json['user']?['name'] as String?,
-        json['user']?['screen_name'] as String?,
-      ];
-      return haystacks.any((h) => h != null && h.toLowerCase().contains(needle));
-    } catch (_) {
-      return false;
-    }
-  }
-
-  List<T> _applySearch<T>(List<T> items, String? Function(T) contentOf) {
+  List<T> _applySearch<T>(List<T> items, String Function(T) idOf, SavedContent? Function(String) contentOf) {
     if (_query.isEmpty) {
       return items;
     }
-    return items.where((e) => _matchesQuery(contentOf(e))).toList();
+    return items.where((e) => contentOf(idOf(e))?.matches(_query) ?? false).toList();
+  }
+
+  void _onQueryChanged(String value) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(_searchDebounceDuration, () {
+      if (mounted) {
+        setState(() => _query = value.trim().toLowerCase());
+      }
+    });
   }
 
   Widget _buildSearchField() {
@@ -175,7 +172,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
           isDense: true,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
         ),
-        onChanged: (value) => setState(() => _query = value.trim()),
+        onChanged: _onQueryChanged,
       ),
     );
   }
@@ -191,26 +188,21 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
   }
 
   /// Media entries of the given saved posts, for the media-only grid.
-  List<MediaGridItem> _mediaItemsOf(Iterable<String?> contents) {
-    var chains = <TweetChain>[];
-    for (var content in contents) {
-      if (content == null) {
-        continue;
-      }
-      var tweet = TweetWithCard.fromJson(jsonDecode(content));
-      if (tweet.idStr == null) {
-        continue;
-      }
-      chains.add(TweetChain(id: tweet.idStr!, tweets: [tweet], isPinned: false));
-    }
+  List<MediaGridItem> _mediaItemsOf(Iterable<TweetWithCard?> tweets) {
+    var chains = tweets
+        .whereType<TweetWithCard>()
+        .where((tweet) => tweet.idStr != null)
+        .map((tweet) => TweetChain(id: tweet.idStr!, tweets: [tweet], isPinned: false))
+        .toList();
+
     return mediaItemsFromChains(chains);
   }
 
-  Widget _buildMediaGrid(Iterable<String?> contents, {required Future<void> Function(String id) onDelete}) {
+  Widget _buildMediaGrid(Iterable<TweetWithCard?> tweets, {required Future<void> Function(String id) onDelete}) {
     return RefreshIndicator(
       onRefresh: _refresh,
       child: StaticMediaGrid(
-        items: _mediaItemsOf(contents),
+        items: _mediaItemsOf(tweets),
         emptyMessage: L10n.of(context).could_not_find_any_posts_with_media,
         onLongPressItem: (item) => _confirmRemoveFromGallery(item.tweetId, onDelete),
       ),
@@ -416,11 +408,11 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
       ),
       onLoading: (_) => const Center(child: CircularProgressIndicator()),
       onState: (_, data) {
-        var filtered = _applySearch(_applyFilter(data), (SavedTweet e) => e.content);
+        var filtered = _applySearch(_applyFilter(data), (SavedTweet e) => e.id, model.contentOf);
 
         if (_mediaOnly && filtered.isNotEmpty) {
-          return _buildMediaGrid(filtered.map((e) => e.content),
-              onDelete: (id) => context.read<SavedTweetModel>().deleteSavedTweet(id));
+          return _buildMediaGrid(filtered.map((e) => model.contentOf(e.id)?.tweet),
+              onDelete: (id) => model.deleteSavedTweet(id));
         }
 
         return RefreshIndicator(
@@ -429,7 +421,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
               ? _buildEmptyState()
               : _buildList(
                   itemCount: filtered.length,
-                  tileAt: (i) => SavedTweetTile(id: filtered[i].id, content: filtered[i].content)),
+                  tileAt: (i) => SavedTweetTile(id: filtered[i].id, tweet: model.contentOf(filtered[i].id)?.tweet)),
         );
       },
     );
@@ -439,7 +431,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
   ///
   /// One flat list with headings rather than a list of lists: the reader is
   /// still scrolling their likes, just with the feeds they came from marked.
-  Widget _buildLikesByGroup(List<LikedTweet> likes) {
+  Widget _buildLikesByGroup(List<LikedTweet> likes, LikedTweetModel model) {
     final sections = likesByGroup<LikedTweet>(
       likes,
       authorOf: (like) => like.user,
@@ -457,7 +449,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
           style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w700),
         ),
       ));
-      rows.addAll(section.items.map((like) => SavedTweetTile(id: like.id, content: like.content)));
+      rows.addAll(section.items.map((like) => SavedTweetTile(id: like.id, tweet: model.contentOf(like.id)?.tweet)));
     }
 
     return ListView(
@@ -480,15 +472,15 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
       ),
       onLoading: (_) => const Center(child: CircularProgressIndicator()),
       onState: (_, data) {
-        var filtered = _applySearch(data, (LikedTweet e) => e.content);
+        var filtered = _applySearch(data, (LikedTweet e) => e.id, model.contentOf);
 
         if (_mediaOnly && filtered.isNotEmpty) {
-          return _buildMediaGrid(filtered.map((e) => e.content),
-              onDelete: (id) => context.read<LikedTweetModel>().unlikeTweet(id));
+          return _buildMediaGrid(filtered.map((e) => model.contentOf(e.id)?.tweet),
+              onDelete: (id) => model.unlikeTweet(id));
         }
 
         if (_likesByGroup && filtered.isNotEmpty) {
-          return RefreshIndicator(onRefresh: _refresh, child: _buildLikesByGroup(filtered));
+          return RefreshIndicator(onRefresh: _refresh, child: _buildLikesByGroup(filtered, model));
         }
 
         return RefreshIndicator(
@@ -497,7 +489,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
               ? _buildEmptyState()
               : _buildList(
                   itemCount: filtered.length,
-                  tileAt: (i) => SavedTweetTile(id: filtered[i].id, content: filtered[i].content)),
+                  tileAt: (i) => SavedTweetTile(id: filtered[i].id, tweet: model.contentOf(filtered[i].id)?.tweet)),
         );
       },
     );
@@ -530,6 +522,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
                     if (_searching) {
                       WidgetsBinding.instance.addPostFrameCallback((_) => _searchFocusNode.requestFocus());
                     } else {
+                      _searchDebounce?.cancel();
                       _query = '';
                       _searchFocusNode.unfocus();
                     }
@@ -588,23 +581,26 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
   }
 }
 
+/// A stored post, rendered from an already-parsed [tweet] where the caller has
+/// one — the store parses each blob once, so a scrolling list does not re-parse
+/// tens of kilobytes of JSON per tile per build. [content] is the fallback for
+/// callers that only hold the raw blob.
 class SavedTweetTile extends StatelessWidget {
   final String id;
   final String? content;
+  final TweetWithCard? tweet;
 
-  const SavedTweetTile({super.key, required this.id, this.content});
+  const SavedTweetTile({super.key, required this.id, this.content, this.tweet});
 
   @override
   Widget build(BuildContext context) {
-    var content = this.content;
-    if (content == null) {
+    var parsed = tweet ?? parseSavedContent(content).tweet;
+    if (parsed == null || parsed.idStr == null) {
       // The tweet is probably too big to fit inside the cursor and has been removed from the result set
       return SavedTweetTooLarge(id: id);
     }
 
-    var tweet = TweetWithCard.fromJson(jsonDecode(content));
-
-    return TweetTile(key: Key(tweet.idStr!), tweet: tweet, clickable: true);
+    return TweetTile(key: Key(parsed.idStr!), tweet: parsed, clickable: true);
   }
 }
 
