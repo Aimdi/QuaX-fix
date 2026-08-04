@@ -633,11 +633,17 @@ class RedditClient {
     bool preferPublic = false,
   }) async {
     final anonymous = preferPublic || (userToken == null && clientId.trim().isEmpty);
-    if (!anonymous) {
-      final token = userToken ?? await _authorize(clientId);
-      return _commentsFromOauth(permalink, sort: sort, token: token);
+    if (anonymous) {
+      return _commentsFromScrape(permalink, sort: sort);
     }
-    return _commentsFromScrape(permalink, sort: sort);
+
+    // Thread UX should still work when OAuth is flaky — scrape already does.
+    try {
+      final token = userToken ?? await _authorize(clientId);
+      return await _commentsFromOauth(permalink, sort: sort, token: token);
+    } on RedditException {
+      return _commentsFromScrape(permalink, sort: sort);
+    }
   }
 
   Future<({List<RedditComment> comments, String? selfText, String? postUrl, List<String> postImages})>
