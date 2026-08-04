@@ -25,6 +25,7 @@ import 'package:quax/tweet/catch_up_split.dart';
 import 'package:quax/tweet/interleaved_items.dart';
 import 'package:quax/tweet/paginated_tweet_list.dart';
 import 'package:quax/tweet/tweet_context_scope.dart';
+import 'package:quax/utils/bounded.dart';
 import 'package:quax/utils/iterables.dart';
 import 'package:quax/utils/paging.dart';
 import 'package:pref/pref.dart';
@@ -672,8 +673,11 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     // Wait for all our searches to complete, then build our list of tweet conversations.
     // The stored chunks and the fresh fetch overlap at their window boundaries,
     // so drop repeated chains before display.
-    var result = await Future.wait(
-        widget.chunks.map((chunk) => _loadChunk(repository, nextCursor, chunk, cursorKey)).toList());
+    // Bounded rather than all at once: 200 follows is 13 chunks, and opening 13
+    // searches together on one mobile link makes them contend and get rate
+    // limited as a group.
+    var result = await mapBounded(widget.chunks, (chunk) => _loadChunk(repository, nextCursor, chunk, cursorKey),
+        concurrency: maxConcurrentChunkLoads);
     var threads = _sortChains(dedupeChainsById(result.expand((element) => element.chains).toList()));
     threads = filterHiddenRetweets(threads, await hiddenRetweetScreenNames());
     threads = filterHiddenReplies(threads, await hiddenReplyScreenNames());

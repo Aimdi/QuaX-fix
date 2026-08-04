@@ -239,6 +239,11 @@ const zenModePageCapChoices = [3, 5, 10, 20];
 // gap between freshly fetched posts and the previously stored ones
 const maxFeedGapFillPages = 4;
 
+// How many of a feed's chunk searches run at once. Each chunk is a separate
+// search request; all of them together saturate a phone's connection and trip
+// the same rate limit at the same moment.
+const maxConcurrentChunkLoads = 4;
+
 // How many stored chunk rows a cache read decodes, newest first. Each row is a
 // whole page of chains and rows accumulate until the 7-day purge, so reading
 // them all decoded tens of MB of JSON on the UI isolate before the feed had
