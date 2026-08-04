@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Dadaje zapisy z sabredytaŭ, na jakija vy padpisany, u «Padpiski» i «Dlia vas»",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Zahruzić jašče",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Jašče adkazy",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Spačatku dadajcie svoj client ID Reddit",

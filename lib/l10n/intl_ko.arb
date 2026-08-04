@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "팔로우한 서브레딧의 게시물을 팔로잉과 추천에 함께 표시합니다",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "더 불러오기",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "답글 더 보기",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "먼저 Reddit client ID를 입력하세요",

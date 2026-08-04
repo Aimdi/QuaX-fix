@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Добавляет записи из сабреддитов, на которые вы подписаны, в «Подписки» и «Для вас»",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Загрузить ещё",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Ещё ответы",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Сначала укажите client ID Reddit",

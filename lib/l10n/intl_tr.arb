@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Takip ettiğin subredditlerin gönderilerini Takip ve Sana Özel akışlarına karıştırır",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Daha fazla yükle",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Daha fazla yanıt",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Önce Reddit client ID’nizi girin",

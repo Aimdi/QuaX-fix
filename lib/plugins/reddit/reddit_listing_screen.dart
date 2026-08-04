@@ -13,9 +13,6 @@ import 'package:xta/plugins/reddit/reddit_store.dart';
 import 'package:xta/subscriptions/users_model.dart';
 import 'package:xta/ui/errors.dart';
 
-/// How close to the end of the list (in px) triggers the next page.
-const double _loadMoreExtent = 400;
-
 /// A list of Reddit posts under a title.
 ///
 /// A subreddit and an account differ only in where the posts come from and
@@ -43,8 +40,9 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
   List<RedditPost>? _posts;
   String? _after;
   bool _loadingMore = false;
-  Object? _loadingMoreError;
   Object? _error;
+
+  bool get canLoadMore => _after != null;
 
   @override
   void initState() {
@@ -58,7 +56,6 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
       _posts = null;
       _after = null;
       _loadingMore = false;
-      _loadingMoreError = null;
     });
     try {
       final listing = await _read();
@@ -80,10 +77,7 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
     if (after == null || _loadingMore || _posts == null) {
       return;
     }
-    setState(() {
-      _loadingMore = true;
-      _loadingMoreError = null;
-    });
+    setState(() => _loadingMore = true);
     try {
       final listing = await _read(after: after);
       if (!mounted) {
@@ -94,30 +88,11 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
         _after = listing.after;
         _loadingMore = false;
       });
-    } catch (e) {
+    } catch (_) {
       if (mounted) {
-        setState(() {
-          _loadingMore = false;
-          _loadingMoreError = e;
-        });
+        setState(() => _loadingMore = false);
       }
     }
-  }
-
-  bool _onScroll(ScrollNotification notification) {
-    if (_after == null || _loadingMore || _posts == null) {
-      return false;
-    }
-    if (notification.metrics.pixels < notification.metrics.maxScrollExtent - _loadMoreExtent) {
-      return false;
-    }
-    // After a failure, wait for scroll-end near the bottom so continuous
-    // ScrollUpdate notifications do not hammer the next page.
-    if (_loadingMoreError != null && notification is! ScrollEndNotification) {
-      return false;
-    }
-    _loadMore();
-    return false;
   }
 
   /// Reads through whichever route the reader chose, the same as the feed —
@@ -179,21 +154,29 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
       ]);
     }
 
-    final showSpinner = _loadingMore;
-    return NotificationListener<ScrollNotification>(
-      onNotification: _onScroll,
-      child: ListView.builder(
-        itemCount: posts.length + (showSpinner ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index >= posts.length) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-          return RedditPostCard(post: posts[index], showSourceBadge: false);
-        },
-      ),
+    return ListView.builder(
+      padding: const EdgeInsets.only(bottom: 24),
+      itemCount: posts.length + (canLoadMore ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index >= posts.length) {
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: Center(
+              child: OutlinedButton(
+                onPressed: _loadingMore ? null : _loadMore,
+                child: _loadingMore
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(l10n.plugin_reddit_load_more),
+              ),
+            ),
+          );
+        }
+        return RedditPostCard(post: posts[index], showSourceBadge: false);
+      },
     );
   }
 }

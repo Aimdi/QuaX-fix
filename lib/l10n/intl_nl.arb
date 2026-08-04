@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Mengt berichten uit de subreddits die je volgt in Volgend en Voor jou",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Meer laden",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Meer reacties",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Vul eerst je Reddit client ID in",

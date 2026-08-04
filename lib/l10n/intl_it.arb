@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Inserisce i post dei subreddit che segui in «Seguiti» e «Per te»",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Carica altri",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Altre risposte",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Inserisci prima il client ID di Reddit",

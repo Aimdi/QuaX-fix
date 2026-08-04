@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Jarraitzen dituzun subredditen bidalketak «Jarraitzen» eta «Zuretzat» ataletan tartekatzen ditu",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Kargatu gehiago",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Erantzun gehiago",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Gehitu lehenik zure Reddit client ID-a",

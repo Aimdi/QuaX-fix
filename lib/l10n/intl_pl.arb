@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Dodaje wpisy z obserwowanych subredditów do zakładek „Obserwowane” i „Dla Ciebie”",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Załaduj więcej",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Więcej odpowiedzi",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Najpierw podaj client ID Reddita",

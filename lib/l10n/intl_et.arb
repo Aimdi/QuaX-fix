@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Lisab jälgitavate subredditide postitused voogudesse „Jälgitavad“ ja „Sulle“",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Laadi rohkem",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Veel vastuseid",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Lisa esmalt oma Redditi client ID",

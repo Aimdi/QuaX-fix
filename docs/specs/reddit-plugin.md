@@ -75,7 +75,7 @@ there is a follow-up.
 ## Done (recent P0)
 
 - For You pull-to-refresh reloads the Reddit mix (`onRefresh: _loadRedditPosts`)
-- Subreddit / user listing infinite-scroll pagination (`after` cursor)
+- Subreddit / user listing pagination via trailing Load more (`after` cursor)
 
 ## Non-goals
 

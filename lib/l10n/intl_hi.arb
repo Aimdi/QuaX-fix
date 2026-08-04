@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "आप जिन सबरेडिट को फ़ॉलो करते हैं उनकी पोस्ट को \"फ़ॉलोइंग\" और \"आपके लिए\" में मिलाता है",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "और लोड करें",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "और जवाब",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "पहले अपना Reddit client ID जोड़ें",

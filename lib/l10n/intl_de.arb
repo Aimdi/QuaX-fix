@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Mischt Beiträge aus deinen abonnierten Subreddits unter „Folge ich“ und „Für dich“",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Mehr laden",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Weitere Antworten",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Bitte zuerst die Reddit-Client-ID eintragen",

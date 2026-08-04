@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Intègre les publications des subreddits que vous suivez dans « Abonnements » et « Pour vous »",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Charger plus",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Plus de réponses",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Renseignez d’abord votre client ID Reddit",

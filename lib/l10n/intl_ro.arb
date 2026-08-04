@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Adaugă postările din subredditurile urmărite în „Urmăriți” și „Pentru tine”",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Încarcă mai mult",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Mai multe răspunsuri",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Adaugă mai întâi client ID-ul Reddit",

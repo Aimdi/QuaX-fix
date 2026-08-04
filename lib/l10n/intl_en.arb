@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Mixes posts from the subreddits you follow into Following and For you",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Load more",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "More replies",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Add your Reddit client ID first",

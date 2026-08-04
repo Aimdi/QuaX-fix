@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Mistura as publicações dos subreddits que segue em «A seguir» e «Para si»",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Carregar mais",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Mais respostas",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Indique primeiro o seu client ID do Reddit",

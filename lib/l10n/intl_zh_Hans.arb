@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "把你关注的子版块的帖子混入「关注」和「为你推荐」",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "加载更多",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "更多回复",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "请先填写 Reddit client ID",

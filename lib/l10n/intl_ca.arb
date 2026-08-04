@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Barreja les publicacions dels subreddits que segueixes a «Seguint» i «Per a tu»",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Carrega’n més",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Més respostes",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Afegeix primer el teu client ID de Reddit",

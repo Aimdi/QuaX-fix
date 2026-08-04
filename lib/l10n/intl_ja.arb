@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "フォロー中のサブレディットの投稿を「フォロー中」と「おすすめ」に混ぜます",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "さらに読み込む",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "さらに返信を表示",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "先に Reddit の client ID を設定してください",

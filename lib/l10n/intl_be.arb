@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Дадае запісы з сабрэдытаў, на якія вы падпісаны, у «Падпіскі» і «Для вас»",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Загрузіць яшчэ",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Яшчэ адказы",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Спачатку дадайце свой client ID Reddit",

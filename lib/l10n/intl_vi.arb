@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Trộn bài viết từ các subreddit bạn theo dõi vào Đang theo dõi và Dành cho bạn",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Tải thêm",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Thêm trả lời",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Hãy nhập client ID Reddit của bạn trước",

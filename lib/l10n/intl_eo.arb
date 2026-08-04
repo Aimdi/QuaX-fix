@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Miksas afiŝojn el la subredditoj kiujn vi sekvas en «Sekvataj» kaj «Por vi»",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Ŝargi pli",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Pliaj respondoj",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Unue aldonu vian Reddit-client ID",

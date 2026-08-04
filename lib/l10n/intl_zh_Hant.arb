@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "將你追蹤的子版塊的貼文混入「追蹤中」和「為你推薦」",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "載入更多",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "更多回覆",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "請先填寫 Reddit client ID",

@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Mezcla las publicaciones de los subreddits que sigues en «Siguiendo» y «Para ti»",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Cargar más",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Más respuestas",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Añade primero tu client ID de Reddit",

@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Додає дописи із сабредитів, на які ви підписані, у «Підписки» та «Для вас»",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Завантажити ще",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Ще відповіді",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Спочатку вкажіть client ID Reddit",

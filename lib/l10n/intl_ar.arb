@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "يدمج منشورات السَبريديتس التي تتابعها في \"المتابَعون\" و\"لك\"",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "تحميل المزيد",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "مزيد من الردود",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "أضف أولًا مُعرِّف عميل Reddit",

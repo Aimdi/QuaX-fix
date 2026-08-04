@@ -819,6 +819,8 @@
   "@plugin_reddit_in_home_feed": {},
   "plugin_reddit_in_home_feed_description": "Menggabungkan kiriman dari subreddit yang Anda ikuti ke Mengikuti dan Untuk Anda",
   "@plugin_reddit_in_home_feed_description": {},
+  "plugin_reddit_load_more": "Muat lebih banyak",
+  "@plugin_reddit_load_more": {},
   "plugin_reddit_more_replies": "Balasan lainnya",
   "@plugin_reddit_more_replies": {},
   "plugin_reddit_not_configured": "Tambahkan dulu client ID Reddit Anda",
