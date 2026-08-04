@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
+import 'package:quax/group/feed_rules.dart';
 import 'package:quax/group/_settings.dart';
 import 'package:quax/group/feed_refresh_controller.dart';
 import 'package:quax/group/group_model.dart';
@@ -77,7 +78,7 @@ class _GroupFeedShellState extends State<GroupFeedShell> with AutomaticKeepAlive
   // reload the open timeline.
   String _fingerprint(SubscriptionGroupGet group) {
     final members = group.subscriptions.map((s) => '${s.id}:${s.inFeed}').join(',');
-    return '$members|${group.includeReplies}|${group.includeRetweets}|${group.popular}|${group.custom}|${group.customRules.cacheKey}';
+    return '$members|${group.includeReplies}|${group.includeRetweets}|${group.popular}|${group.custom}|${feedRulesOf(group).cacheKey}';
   }
 
   // Triggered when subscriptions or group memberships change. A single user

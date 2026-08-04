@@ -30,6 +30,7 @@ import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:quax/utils/urls.dart';
 import 'package:quax/group/custom_feed_rules.dart';
+import 'package:quax/group/feed_rules.dart';
 
 Iterable<BigInt> _tweetIdsOf(Iterable<TweetChain> chains) =>
     chains.expand((c) => c.tweets).map((t) => t.idStr).whereType<String>().map(BigInt.tryParse).whereType<BigInt>();
@@ -395,7 +396,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
         oldWidget.includeRetweets != widget.includeRetweets ||
         oldWidget.group.popular != widget.group.popular ||
         oldWidget.group.custom != widget.group.custom ||
-        oldWidget.group.customRules.cacheKey != widget.group.customRules.cacheKey ||
+        feedRulesOf(oldWidget.group).cacheKey != feedRulesOf(widget.group).cacheKey ||
         !_chunksMatch(oldWidget.chunks, widget.chunks)) {
       _feedController.controller.refresh();
       _mediaPaging?.pagingController.refresh();
@@ -612,7 +613,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     var threads = _sortChains(dedupeChainsById(result.expand((element) => element).toList()));
     threads = filterHiddenRetweets(threads, await hiddenRetweetScreenNames());
     threads = filterHiddenReplies(threads, await hiddenReplyScreenNames());
-    threads = applyCustomFeedRules(threads, widget.group.customRules);
+    threads = applyCustomFeedRules(threads, feedRulesOf(widget.group));
 
     if (!mounted) {
       return (chains: <TweetChain>[], nextCursor: null);
