@@ -36,7 +36,9 @@ class _SettingsAccountFragment extends State<SettingsAccountFragment> {
                   itemCount: data.length,
                   itemBuilder: (BuildContext itemContext, int index) {
                     return Dismissible(
-                        key: widget.key!,
+                        // Every row shared one key, so dismissing an account
+                        // handed its dismissed state to the row beneath it.
+                        key: ValueKey(data[index].id),
                         onDismissed: (DismissDirection direction) async {
                           await model.deleteAccount(data[index].id.toString());
                           setState(() {});

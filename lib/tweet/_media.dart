@@ -163,6 +163,34 @@ Future<void> downloadMediaItem(BuildContext context, Media media, String usernam
   );
 }
 
+/// As tall as a media frame is allowed to get: a full-height portrait shot.
+const kMediaFrameMinAspectRatio = 9 / 16;
+
+/// Used when no item reports a usable size, rather than failing the tile.
+const kMediaFrameFallbackAspectRatio = 16 / 9;
+
+double? _aspectRatioOf(Media media) {
+  final size = media.sizes?.large;
+  final w = size?.w ?? 0;
+  final h = size?.h ?? 0;
+  return w > 0 && h > 0 ? w / h : null;
+}
+
+/// The single frame every page of a post's media carousel is laid out in.
+///
+/// The tallest item wins, so no page is cropped. It is bounded, though: one
+/// full-length screenshot next to three landscape photos would otherwise
+/// letterbox all three inside enormous empty bands and push the post's footer
+/// off screen.
+double mediaFrameAspectRatio(List<Media> media) {
+  final ratios = media.map(_aspectRatioOf).whereType<double>().toList();
+  if (ratios.isEmpty) {
+    return kMediaFrameFallbackAspectRatio;
+  }
+
+  return math.max(ratios.reduce(math.min), kMediaFrameMinAspectRatio);
+}
+
 class TweetMedia extends StatefulWidget {
   final bool? sensitive;
   final List<Media> media;
@@ -194,8 +222,7 @@ class _TweetMediaState extends State<TweetMedia> {
 
   @override
   Widget build(BuildContext context) {
-    var largestAspectRatio =
-    widget.media.map((e) => ((e.sizes!.large!.w) ?? 1) / ((e.sizes!.large!.h) ?? 1)).reduce(math.min);
+    final aspectRatio = mediaFrameAspectRatio(widget.media);
 
     return Consumer<TweetContextState>(builder: (context, model, child) {
       if (model.hideSensitive && (widget.sensitive ?? false)) {
@@ -220,7 +247,7 @@ class _TweetMediaState extends State<TweetMedia> {
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
           child: AspectRatio(
-            aspectRatio: largestAspectRatio,
+            aspectRatio: aspectRatio,
             // A carousel of several images owns horizontal drags that start on
             // it, so without this a swipe over a post's media could not reach
             // the home page view. (One image scrolls nowhere, so Flutter never
