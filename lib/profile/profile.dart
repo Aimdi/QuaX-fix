@@ -225,7 +225,10 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
     var bannerImage = banner == null
         ? Container(height: bannerHeight, color: Colors.white)
         : GestureDetector(
-      child: ExtendedImage.network(banner, fit: BoxFit.fitWidth, height: bannerHeight),
+      child: ExtendedImage.network(banner,
+          fit: BoxFit.fitWidth,
+          height: bannerHeight,
+          cacheWidth: (deviceSize.width * mediaQuery.devicePixelRatio).ceil()),
       onTap: () {
         Navigator.push(
           context,

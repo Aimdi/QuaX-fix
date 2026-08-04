@@ -13,50 +13,38 @@ List<Media> _media(List<Map<String, int>?> sizes) {
           'type': 'photo',
           'media_url_https': 'https://pbs.example/photo.jpg',
           if (size != null) 'sizes': {'large': size},
-        }
-    ]
+        },
+    ],
   }).media!;
 }
 
 void main() {
   group('mediaFrameAspectRatio', () {
     test('a single photo keeps its own shape', () {
-      final ratio = mediaFrameAspectRatio(_media([
-        {'w': 1200, 'h': 675}
-      ]));
+      final ratio = mediaFrameAspectRatio(_media([landscape]));
 
       expect(ratio, closeTo(1200 / 675, 0.0001));
     });
 
     test('the tallest item sets the frame, so no page is cropped', () {
-      final ratio = mediaFrameAspectRatio(_media([
-        {'w': 1200, 'h': 675},
-        {'w': 1000, 'h': 1000},
-      ]));
+      final ratio = mediaFrameAspectRatio(_media([landscape, square]));
 
       expect(ratio, closeTo(1.0, 0.0001));
     });
 
     test('one very tall screenshot cannot stretch the whole carousel', () {
-      // 1080x2400 is 0.45 — laid out unbounded, the three landscape photos
+      // 1080x2400 is 0.45. Laid out unbounded, the three landscape photos
       // beside it render inside enormous empty bands and the post's footer is
       // pushed off screen.
-      final ratio = mediaFrameAspectRatio(_media([
-        {'w': 1200, 'h': 675},
-        {'w': 1200, 'h': 675},
-        {'w': 1200, 'h': 675},
-        {'w': 1080, 'h': 2400},
-      ]));
+      final ratio = mediaFrameAspectRatio(_media([landscape, landscape, landscape, tallScreenshot]));
 
       expect(ratio, closeTo(kMediaFrameMinAspectRatio, 0.0001));
     });
 
     test('an ordinary portrait photo is left alone', () {
-      final ratio = mediaFrameAspectRatio(_media([
-        {'w': 1080, 'h': 1350}
-      ]));
+      final ratio = mediaFrameAspectRatio(_media([portrait]));
 
-      expect(ratio, closeTo(1080 / 1350, 0.0001), reason: '4:5 is taller than wide but not extreme');
+      expect(ratio, closeTo(1080 / 1350, 0.0001), reason: '4:5 is taller than wide, but not extreme');
     });
 
     test('media with no sizes falls back instead of failing the tile', () {
@@ -65,21 +53,22 @@ void main() {
     });
 
     test('a degenerate size is ignored rather than producing infinity', () {
-      final ratio = mediaFrameAspectRatio(_media([
-        {'w': 1200, 'h': 0},
-        {'w': 1200, 'h': 675},
-      ]));
+      final ratio = mediaFrameAspectRatio(_media([zeroHeight, landscape]));
 
       expect(ratio, closeTo(1200 / 675, 0.0001));
     });
 
     test('every item degenerate still yields a usable frame', () {
-      final ratio = mediaFrameAspectRatio(_media([
-        {'w': 0, 'h': 0}
-      ]));
+      final ratio = mediaFrameAspectRatio(_media([zeroHeight]));
 
       expect(ratio.isFinite, isTrue);
       expect(ratio, kMediaFrameFallbackAspectRatio);
     });
   });
 }
+
+const landscape = {'w': 1200, 'h': 675};
+const square = {'w': 1000, 'h': 1000};
+const portrait = {'w': 1080, 'h': 1350};
+const tallScreenshot = {'w': 1080, 'h': 2400};
+const zeroHeight = {'w': 1200, 'h': 0};

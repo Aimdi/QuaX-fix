@@ -8,6 +8,7 @@ import 'package:quax/generated/l10n.dart';
 import 'package:quax/profile/media_grid/gif_playback_gate.dart';
 import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:quax/profile/media_grid/media_grid_lightbox.dart';
+import 'package:quax/ui/capped_network_image.dart';
 import 'package:quax/ui/errors.dart';
 import 'package:quax/utils/paging.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -280,7 +281,7 @@ class _GifGridCellState extends State<_GifGridCell> {
       onVisibilityChanged: (info) => widget.gate.report(this, info.visibleFraction),
       child: widget.gate.isGranted(this)
           ? widget.item.toWidget(context)
-          : ExtendedImage.network(widget.item.thumbnailUrl, cache: true, fit: BoxFit.cover),
+          : CappedNetworkImage(url: widget.item.thumbnailUrl),
     );
   }
 }

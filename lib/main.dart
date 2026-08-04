@@ -238,6 +238,10 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Flutter's 100 MiB default is a lot of decoded bitmaps to hold on a phone
+  // that is also running a video player; 64 MiB still covers a few screenfuls.
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 64 * 1024 * 1024;
+
   // The bundled Inter font ships under the SIL Open Font License, which
   // requires the licence to travel with the software.
   LicenseRegistry.addLicense(() async* {

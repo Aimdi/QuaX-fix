@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_twitter_api/twitter_api.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart' as mk;
@@ -15,6 +14,7 @@ import 'package:quax/tweet/video_audio_focus.dart';
 import 'package:quax/tweet/video_controller_pool.dart';
 import 'package:quax/tweet/video_playback_policy.dart';
 import 'package:quax/tweet/video_quality.dart';
+import 'package:quax/ui/capped_network_image.dart';
 import 'package:quax/utils/iterables.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -395,7 +395,7 @@ class _TweetVideoState extends State<TweetVideo> {
               alignment: Alignment.center,
               children: [
                 if (widget.metadata.imageUrl != null)
-                  ExtendedImage.network(widget.metadata.imageUrl!, cache: true, fit: BoxFit.cover),
+                  CappedNetworkImage(url: widget.metadata.imageUrl!),
                 if (!widget.disableControls) const Center(child: CircularProgressIndicator()),
               ],
             ),
@@ -415,7 +415,7 @@ class _TweetVideoState extends State<TweetVideo> {
         children: [
           if (widget.metadata.imageUrl != null)
             Positioned.fill(
-              child: ExtendedImage.network(widget.metadata.imageUrl!, cache: true, fit: BoxFit.cover),
+              child: CappedNetworkImage(url: widget.metadata.imageUrl!),
             ),
           ?child,
         ],

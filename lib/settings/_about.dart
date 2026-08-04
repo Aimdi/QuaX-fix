@@ -64,6 +64,9 @@ class SettingsAboutFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The launcher asset is 2000x2000, which is ~16 MB of ARGB for a 48pt icon.
+    final iconCachePx = (48 * MediaQuery.devicePixelRatioOf(context)).ceil();
+
     return Column(children: [
       InkWell(
           onLongPress: () => _appInfo(context),
@@ -112,6 +115,8 @@ class SettingsAboutFragment extends StatelessWidget {
                   'assets/icon.png',
                   height: 48.0,
                   width: 48.0,
+                  cacheWidth: iconCachePx,
+                  cacheHeight: iconCachePx,
                 ),
               ),
             )),
