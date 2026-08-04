@@ -31,6 +31,8 @@ import 'package:xta/import_data_model.dart';
 import 'package:xta/profile/profile.dart';
 import 'package:xta/plugins/substack/substack_client.dart';
 import 'package:xta/plugins/substack/substack_store.dart';
+import 'package:xta/plugins/bluesky/bluesky_client.dart';
+import 'package:xta/plugins/bluesky/bluesky_store.dart';
 import 'package:xta/plugins/threads/threads_api.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
 import 'package:xta/plugins/threads/threads_store.dart';
@@ -452,6 +454,8 @@ Future<void> main() async {
       optionPluginSubstackShowTab: true,
       optionPluginSubstackPublications: '[]',
       optionPluginSubstackReadIds: '[]',
+      optionPluginBlueskyEnabled: false,
+      optionPluginBlueskyShowTab: true,
       optionSubscriptionGroupsOrderByAscending: true,
       optionDisableWarningsForUnrelatedPostsInFeed: false,
       // Reading is the whole point of the app, so posts are not clipped unless
@@ -560,6 +564,9 @@ Future<void> main() async {
     final threadsApi = ThreadsApi();
     final threadsAccounts = ThreadsAccountsStore();
     final threadsFeed = ThreadsFeedStore(threadsClient, prefService, threadsAccounts);
+    final blueskyClient = BlueskyClient();
+    final blueskyAccounts = BlueskyAccountsStore();
+    final blueskyFeed = BlueskyFeedStore(blueskyClient, blueskyAccounts);
 
     // Everything above only constructs; the reads all happen here. They were a
     // chain of awaits, each waiting on the last for no reason — none of them
@@ -587,6 +594,7 @@ Future<void> main() async {
       ],
       if (prefService.get<bool>(optionPluginStocksEnabled) == true) stocksWatchlist.load(),
       if (prefService.get<bool>(optionPluginThreadsEnabled) == true) threadsAccounts.load(),
+      if (prefService.get<bool>(optionPluginBlueskyEnabled) == true) blueskyAccounts.load(),
     ]);
 
     runApp(
@@ -631,6 +639,9 @@ Future<void> main() async {
             Provider(create: (_) => threadsApi),
             Provider(create: (_) => threadsAccounts),
             Provider(create: (_) => threadsFeed),
+            Provider(create: (_) => blueskyClient),
+            Provider(create: (_) => blueskyAccounts),
+            Provider(create: (_) => blueskyFeed),
             ChangeNotifierProvider(create: (_) => VideoContextState(prefService.get(optionMediaDefaultMute))),
           ],
           child: FritterApp(),

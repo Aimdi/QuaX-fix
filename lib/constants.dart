@@ -173,6 +173,14 @@ const optionPluginThreadsApiBase = 'plugin.threads.api_base';
 const optionPluginThreadsApiToken = 'plugin.threads.api_token';
 const kThreadsApiDefaultBase = 'https://xy-threads.fly.dev';
 
+/// Bluesky, read through the public AppView — local follows, no Bluesky account.
+const pluginIdBluesky = 'bluesky';
+const optionPluginBlueskyEnabled = 'plugin.bluesky.enabled';
+const optionPluginBlueskyShowTab = 'plugin.bluesky.show_tab';
+
+/// How many posts one account contributes to the merged Bluesky feed.
+const blueskyPostsPerAccount = 20;
+
 const optionShouldCheckForUpdates = 'should_check_for_updates';
 
 /// Marks that the update check has been turned off once for this fork. Without

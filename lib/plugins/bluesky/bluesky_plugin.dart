@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/home/home_screen.dart';
+import 'package:xta/plugins/bluesky/bluesky_screen.dart';
+import 'package:xta/plugins/bluesky/bluesky_store.dart';
+import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/plugin_category.dart';
+
+/// Account-free Bluesky reading: local follows, public AppView feeds.
+///
+/// Skylib (AGPL) inspired the approach — not the code. See
+/// docs/specs/bluesky-plugin.md.
+class BlueskyPlugin extends XtaPlugin {
+  BlueskyPlugin();
+
+  @override
+  String get id => pluginIdBluesky;
+
+  @override
+  String get enabledPrefKey => optionPluginBlueskyEnabled;
+
+  @override
+  String? get homeTabPrefKey => optionPluginBlueskyShowTab;
+
+  @override
+  IconData get icon => Icons.cloud;
+
+  @override
+  PluginCategory get category => PluginCategory.reading;
+
+  @override
+  Color get brandColor => const Color(0xFF0085FF);
+
+  @override
+  String title(BuildContext context) => L10n.of(context).plugin_bluesky_title;
+
+  @override
+  String description(BuildContext context) => L10n.of(context).plugin_bluesky_description;
+
+  @override
+  NavigationPage homePage(BuildContext context) {
+    return NavigationPage(
+      pluginIdBluesky,
+      (c) => L10n.of(c).plugin_bluesky_title,
+      const Icon(Icons.cloud_outlined),
+      const Icon(Icons.cloud),
+    );
+  }
+
+  @override
+  Widget homeScreen({required ScrollController scrollController}) {
+    return BlueskyScreen(scrollController: scrollController);
+  }
+
+  @override
+  Widget? settingsScreen(BuildContext context) => null;
+
+  @override
+  List<String> get tables => const [tableBlueskySubscription];
+
+  @override
+  Future<void> forgetLoadedData(BuildContext context) async {
+    await context.read<BlueskyAccountsStore>().load();
+  }
+}

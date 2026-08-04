@@ -21,6 +21,7 @@ const String tableLikedTweet = 'liked_tweet';
 const String tableSearchSubscription = 'search_subscription';
 const String tableSubstackSubscription = 'substack_subscription';
 const String tableThreadsSubscription = 'threads_subscription';
+const String tableBlueskySubscription = 'bluesky_subscription';
 const String tableRedditSubscription = 'reddit_subscription';
 const String tableImmichUpload = 'immich_upload';
 const String tableRedditLocalVote = 'reddit_local_vote';
@@ -36,7 +37,7 @@ const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 46;
+const int databaseVersion = 47;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -571,6 +572,17 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
       'in_feed INTEGER NOT NULL DEFAULT 1, '
       'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
       reverseSql: 'DROP TABLE $tableThreadsSubscription',
+    ),
+  ],
+  47: [
+    // Bluesky accounts followed locally (not on Bluesky itself). Same shape as
+    // Threads so they can sit in subscription groups.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableBlueskySubscription ('
+      'id VARCHAR PRIMARY KEY, name VARCHAR NOT NULL, avatar_url VARCHAR, '
+      'in_feed INTEGER NOT NULL DEFAULT 1, '
+      'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableBlueskySubscription',
     ),
   ],
 });

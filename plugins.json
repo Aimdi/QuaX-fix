@@ -3,6 +3,8 @@
   "plugins": [
     { "id": "substack" },
     { "id": "reddit" },
+    { "id": "threads" },
+    { "id": "bluesky" },
     { "id": "stocks" },
     { "id": "karakeep" },
     { "id": "deepmarks" },
