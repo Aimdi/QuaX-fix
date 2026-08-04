@@ -121,6 +121,13 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   /// Reddit posts for this group's subreddits, newest first.
   List<InterleavedItem> _redditItems = const [];
 
+  /// The two sources merged, rebuilt only when one of them arrives. Built in
+  /// `build` it was a fresh list every frame, so nothing downstream could tell
+  /// by identity that the interleave had not changed.
+  List<InterleavedItem> _interleaved = const [];
+
+  void _mergeInterleaved() => _interleaved = [..._substackItems, ..._redditItems];
+
   Future<void> _loadRedditPosts() async {
     if (widget.mediaOnly) {
       return;
@@ -135,7 +142,10 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
     final items = await loadRedditInterleaved(context, names);
     if (mounted && items.isNotEmpty) {
-      setState(() => _redditItems = items);
+      setState(() {
+        _redditItems = items;
+        _mergeInterleaved();
+      });
     }
   }
 
@@ -179,7 +189,10 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     }));
 
     if (mounted) {
-      setState(() => _substackItems = perPublication.expand((e) => e).toList());
+      setState(() {
+        _substackItems = perPublication.expand((e) => e).toList();
+        _mergeInterleaved();
+      });
     }
   }
 
@@ -758,7 +771,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
             emptyMessage: L10n.of(context).could_not_find_any_tweets_from_the_last_7_days,
             isSeen: _tracksReadPosition && _lastSeen != null ? _isSeen : null,
             caughtUpDividerKey: _caughtUpKey,
-            interleaved: [..._substackItems, ..._redditItems],
+            interleaved: _interleaved,
           ),
         ),
       ),
