@@ -4,11 +4,16 @@ What six audits of this codebase turned up, what has been done, and what has
 not. Anchors are `file.dart:line` at the time of writing — re-grep rather than
 trusting them after a refactor.
 
-Everything here was found by reading, not by running: there is no Flutter
-toolchain in the cloud VM (see `AGENTS.md`), so nothing below was profiled. The
-"measurable win" claims are mechanism arguments, and a real baseline
-(`docs/perf-baseline.md`, still TBD on device) would be worth more than any of
-them.
+The findings were made by reading. The code that came out of them has since
+been analysed and tested against the pinned SDK (Flutter 3.44.4 / Dart 3.12.2,
+fetched into a scratch directory): `flutter analyze` reports zero errors and
+zero warnings, and `flutter test` passes.
+
+What still has not happened is measurement. Nothing here was profiled, so every
+"measurable win" is a mechanism argument, and a real device baseline
+(`docs/perf-baseline.md`, still TBD) would be worth more than any of them. Nor
+has an APK been built here: the Android SDK host is denied by this
+environment's network policy, so the Gradle side is only ever exercised in CI.
 
 ## Done
 
@@ -37,16 +42,19 @@ only applied when it happened to be sorted by Custom.
 
 Backup covered 8 of 18 tables; it now covers 14, with a format version.
 
+Since a toolchain became available: the fan-out is bounded to four concurrent
+searches, the session feed cache is LRU-bounded, timeline photos no longer
+build the zoom stack, and the three tables the startup purge deletes from are
+indexed on `created_at` (migration, additively, tests green).
+
+A `timeline_cache` row cap is still open — the index is in, the bound is not.
+
 ## Not done — worth doing
 
-**Bound the feed fan-out.** `lib/group/_feed.dart` builds one future per chunk
-and `Future.wait`s them, so 200 follows opens 13 simultaneous searches on one
-mobile link, and up to 65 requests once gap-fill triggers. Cancellation is in;
-bounding is not, because it means turning the eagerly-created futures into
-thunks and running them through a pool — a real restructuring of a 90-line
-method, which is not something to do without a compiler. Passing `limit: 40` to
-`Twitter.searchTweets` (the parameter exists, defaulting to 20) would also cut
-the number of gap-fill pages needed.
+**Fewer gap-fill pages.** Passing `limit: 40` to `Twitter.searchTweets` (the
+parameter exists, defaulting to 20) would cut how many gap-fill pages a first
+load needs. Not done: it changes response size and parse cost per request, so
+it wants measuring rather than assuming.
 
 **One Reddit store instead of three fetches.** `reddit_interleaved.dart`, the
 For You feed and `RedditFeedStore` each fetch overlapping subreddit sets with no
@@ -60,22 +68,10 @@ curated `const IconData` set would let it come off; stored icons already fall
 back through `deserializeIconData`. Needs a product decision about which icons
 a reader may pick.
 
-**`timeline_cache` has no cap and no `created_at` index** (frozen; needs
-migration 43, and `test/database_indexes_test.dart` asserts exact index-set
-equality so it must change in the same commit). Same for
-`feed_group_chunk` — the 7-day purge that bounds it is itself a full scan.
-
-**`FeedSessionCache` retains a whole feed per visited group** with no bound and
-no disposal (`feed_session_cache.dart`). `VideoControllerPool(maxSize: 5)` is
-the pattern to copy.
-
 **Feed tiles are `SelectableText`**, i.e. an `EditableText` per post: a focus
 node, a text controller, a scroll controller and a `RenderEditable` each. Making
 selection opt-in on the status screen only is a behaviour change, so it needs a
 decision rather than a patch.
-
-**Timeline thumbnails run the gesture/zoom image stack** (`_photo.dart:56-64`)
-even in a feed tile, where the tap that opens fullscreen is handled a level up.
 
 ## Not done — UX
 
