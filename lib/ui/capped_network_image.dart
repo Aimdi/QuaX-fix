@@ -15,10 +15,12 @@ class CappedNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final maxW = constraints.maxWidth;
-      final cacheWidth = maxW.isFinite && maxW > 0 ? (maxW * MediaQuery.devicePixelRatioOf(context)).ceil() : null;
-      return ExtendedImage.network(url, cache: true, fit: fit, cacheWidth: cacheWidth);
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxW = constraints.maxWidth;
+        final cacheWidth = maxW.isFinite && maxW > 0 ? (maxW * MediaQuery.devicePixelRatioOf(context)).ceil() : null;
+        return ExtendedImage.network(url, cache: true, fit: fit, cacheWidth: cacheWidth);
+      },
+    );
   }
 }

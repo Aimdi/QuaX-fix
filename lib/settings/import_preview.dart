@@ -83,7 +83,12 @@ class _CountRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(children: [Expanded(child: Text(label)), Text('$count')]),
+      child: Row(
+        children: [
+          Expanded(child: Text(label)),
+          Text('$count'),
+        ],
+      ),
     );
   }
 }

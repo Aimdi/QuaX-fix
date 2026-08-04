@@ -64,14 +64,16 @@ class SavedContentIndex {
   void rebuild<T>(List<T> items, {required String Function(T) idOf, required String? Function(T) blobOf}) {
     var previous = _entries;
 
-    _entries = Map.fromEntries(items.map((item) {
-      var id = idOf(item);
-      var blob = blobOf(item);
-      var cached = previous[id];
-      var entry = cached != null && cached.blob == blob ? cached : _Entry(blob);
+    _entries = Map.fromEntries(
+      items.map((item) {
+        var id = idOf(item);
+        var blob = blobOf(item);
+        var cached = previous[id];
+        var entry = cached != null && cached.blob == blob ? cached : _Entry(blob);
 
-      return MapEntry(id, entry);
-    }));
+        return MapEntry(id, entry);
+      }),
+    );
   }
 }
 

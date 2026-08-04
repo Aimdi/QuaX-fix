@@ -40,18 +40,9 @@ SettingsData _full() {
         inFeed: true,
       ),
     ],
-    redditSubscriptions: [
-      RedditSubscription(id: 'dartlang', name: 'dartlang', createdAt: _createdAt, inFeed: true),
-    ],
+    redditSubscriptions: [RedditSubscription(id: 'dartlang', name: 'dartlang', createdAt: _createdAt, inFeed: true)],
     subscriptionGroups: [
-      SubscriptionGroup(
-        id: 'g1',
-        name: 'Feeds',
-        icon: _icon,
-        color: null,
-        numberOfMembers: 1,
-        createdAt: _createdAt,
-      ),
+      SubscriptionGroup(id: 'g1', name: 'Feeds', icon: _icon, color: null, numberOfMembers: 1, createdAt: _createdAt),
     ],
     subscriptionGroupMembers: [SubscriptionGroupMember(group: 'g1', profile: '1')],
     searchGroupMembers: [SearchGroupMember(group: 'g1', search: 'dart')],

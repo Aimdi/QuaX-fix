@@ -30,11 +30,7 @@ void main() {
 
   group('newestChunkTimestamp', () {
     test('picks the most recent row', () {
-      final rows = [
-        row('2026-08-04 09:00:00'),
-        row('2026-08-04 14:05:00'),
-        row('2026-08-03 23:00:00'),
-      ];
+      final rows = [row('2026-08-04 09:00:00'), row('2026-08-04 14:05:00'), row('2026-08-03 23:00:00')];
 
       expect(newestChunkTimestamp(rows)!.toUtc(), DateTime.utc(2026, 8, 4, 14, 5));
     });

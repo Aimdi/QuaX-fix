@@ -74,8 +74,7 @@ class _CaughtUpEndCardState extends State<CaughtUpEndCard> {
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(color: hintColor),
           ),
-          if (showOlder != null)
-            TextButton(onPressed: showOlder, child: Text(L10n.of(context).catch_up_show_older)),
+          if (showOlder != null) TextButton(onPressed: showOlder, child: Text(L10n.of(context).catch_up_show_older)),
         ],
       ),
     );

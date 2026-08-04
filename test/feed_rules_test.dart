@@ -4,19 +4,19 @@ import 'package:quax/database/entities.dart';
 import 'package:quax/group/feed_rules.dart';
 
 SubscriptionGroupGet _group({required bool custom}) => SubscriptionGroupGet(
-      id: '1',
-      name: 'Group',
-      icon: 'rss_feed',
-      subscriptions: const [],
-      includeReplies: true,
-      includeRetweets: true,
-      popular: false,
-      custom: custom,
-      contentFilter: contentFilterSfw,
-      minLikes: 10,
-      minRetweets: 5,
-      mutedKeywords: const ['spoilers'],
-    );
+  id: '1',
+  name: 'Group',
+  icon: 'rss_feed',
+  subscriptions: const [],
+  includeReplies: true,
+  includeRetweets: true,
+  popular: false,
+  custom: custom,
+  contentFilter: contentFilterSfw,
+  minLikes: 10,
+  minRetweets: 5,
+  mutedKeywords: const ['spoilers'],
+);
 
 void main() {
   group('feedRulesOf', () {

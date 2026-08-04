@@ -13,10 +13,7 @@ class UserFeedFilter with ToMappable {
   UserFeedFilter({required this.userId, required this.screenName});
 
   factory UserFeedFilter.fromMap(Map<String, Object?> map) {
-    return UserFeedFilter(
-      userId: (map['user_id'] as String?) ?? '',
-      screenName: (map['screen_name'] as String?) ?? '',
-    );
+    return UserFeedFilter(userId: (map['user_id'] as String?) ?? '', screenName: (map['screen_name'] as String?) ?? '');
   }
 
   @override
@@ -35,10 +32,7 @@ class SearchGroupMember with ToMappable {
   SearchGroupMember({required this.group, required this.search});
 
   factory SearchGroupMember.fromMap(Map<String, Object?> map) {
-    return SearchGroupMember(
-      group: (map['group_id'] as String?) ?? '',
-      search: (map['search_id'] as String?) ?? '',
-    );
+    return SearchGroupMember(group: (map['group_id'] as String?) ?? '', search: (map['search_id'] as String?) ?? '');
   }
 
   @override
