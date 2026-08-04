@@ -230,7 +230,10 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
     });
   }
 
-  Future reloadGroups() async {
+  /// [notifyReload] is false when only the groups' own order or pin state
+  /// changed. The listeners rebuild feeds whose membership moved; reordering
+  /// the groups board used to drop every cached feed in the session.
+  Future reloadGroups({bool notifyReload = true}) async {
     log.info('Listing subscriptions groups');
 
     await execute(() async {
@@ -252,8 +255,11 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
 
       return groups.map((g) => g.withMemberPreviews(previews[g.id] ?? const [])).toList(growable: false);
     });
-    for (final callback in _onGroupsReloaded.values) {
-      callback();
+
+    if (notifyReload) {
+      for (final callback in _onGroupsReloaded.values) {
+        callback();
+      }
     }
   }
 
@@ -484,7 +490,7 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
   Future<void> toggleGroupPinned(String id, bool pinned) async {
     var database = await Repository.writable();
     await database.update(tableSubscriptionGroup, {'pinned': pinned ? 1 : 0}, where: 'id = ?', whereArgs: [id]);
-    await reloadGroups();
+    await reloadGroups(notifyReload: false);
   }
 
   /// Nests [id] inside [parentId], or lifts it back to the top with null.
@@ -515,7 +521,7 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
       batch.update(tableSubscriptionGroup, {'position': i}, where: 'id = ?', whereArgs: [id]);
     }
     await batch.commit(noResult: true);
-    await reloadGroups();
+    await reloadGroups(notifyReload: false);
   }
 
   /// Moves every member of [sourceId] into [targetId] (skipping duplicates),
@@ -533,11 +539,11 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
 
   void changeOrderSubscriptionGroupsBy(String? value) async {
     await prefs.set(optionSubscriptionGroupsOrderByField, value ?? 'name');
-    await reloadGroups();
+    await reloadGroups(notifyReload: false);
   }
 
   void toggleOrderSubscriptionGroupsAscending() async {
     await prefs.set(optionSubscriptionGroupsOrderByAscending, !orderGroupsAscending);
-    await reloadGroups();
+    await reloadGroups(notifyReload: false);
   }
 }

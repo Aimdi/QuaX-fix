@@ -27,7 +27,11 @@ class SubscriptionsModel extends Store<List<Subscription>> {
     _onSubscriptionsReloaded.remove(key);
   }
 
-  Future<void> reloadSubscriptions() async {
+  /// [notifyReload] is false when only the display order changed. The
+  /// listeners exist to rebuild feeds whose membership moved; reordering the
+  /// subscriptions screen used to drop every cached feed in the session, so
+  /// the next visit to any group refetched its first page from the network.
+  Future<void> reloadSubscriptions({bool notifyReload = true}) async {
     log.info('Listing subscriptions');
 
     await execute(() async {
@@ -83,8 +87,11 @@ class SubscriptionsModel extends Store<List<Subscription>> {
         return newLst;
       }
     });
-    for(final callback in _onSubscriptionsReloaded.values) {
-      callback();
+
+    if (notifyReload) {
+      for (final callback in _onSubscriptionsReloaded.values) {
+        callback();
+      }
     }
   }
 
@@ -197,7 +204,7 @@ class SubscriptionsModel extends Store<List<Subscription>> {
     await execute(() async {
       await prefs.set(optionSubscriptionOrderCustom, '');
       await prefs.set(optionSubscriptionOrderByField, value ?? 'name');
-      await reloadSubscriptions();
+      await reloadSubscriptions(notifyReload: false);
 
       return state;
     });
@@ -207,7 +214,7 @@ class SubscriptionsModel extends Store<List<Subscription>> {
     await execute(() async {
       await prefs.set(optionSubscriptionOrderCustom, '');
       await prefs.set(optionSubscriptionOrderByAscending, !prefs.get(optionSubscriptionOrderByAscending));
-      await reloadSubscriptions();
+      await reloadSubscriptions(notifyReload: false);
 
       return state;
     });

@@ -92,7 +92,7 @@ class _FeedScreenState extends State<FeedScreen> {
         // With a cache key this feed survives a trip to another tab, the way a
         // pushed group route already does. Without one, every Following → For
         // you → Following swipe rebuilt the whole per-chunk fan-out.
-        FeedTab.following => SubscriptionGroupScreenContent(id: widget.id, cacheKey: widget.id),
+        FeedTab.following => SubscriptionGroupScreenContent(id: widget.id, cacheKey: 'home-${widget.id}'),
         FeedTab.reddit => RedditFeedList(scrollController: widget.scrollController),
         FeedTab.foryou => ForYouTweets(_feedController, type: 'profile', includeReplies: false, pref: prefs),
       },
