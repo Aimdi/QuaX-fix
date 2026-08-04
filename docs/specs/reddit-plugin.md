@@ -57,13 +57,14 @@ Code lives under `lib/plugins/reddit/`. Off by default (`plugins.json`).
 user token (home/group interleave, subreddit listing) now go through it, so
 signing in helps every subreddit listing — not only the Reddit tab.
 
-Comments, search, user posts, and icons still scrape publicly; wiring OAuth
-there is a follow-up.
+Comment threads use `RedditReadSession` (OAuth JSON when signed in,
+old.reddit scrape when anonymous). Search, user posts, and icons still scrape
+publicly.
 
 ## Known gaps (not P0)
 
 - Comment `more` expansion / collapse / markdown
-- Comments / search / user posts still scrape publicly (OAuth wiring follow-up)
+- Search / user posts / icons still scrape publicly (OAuth wiring follow-up)
 - Top/controversial time window (`t=`)
 - Scrape/OAuth media parity; gallery pager; NSFW show/hide/blur choice
   (same-file preview/i.redd.it width variants are collapsed — no more
