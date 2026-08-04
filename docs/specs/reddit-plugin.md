@@ -66,6 +66,8 @@ there is a follow-up.
 - Listing pagination UI (`after` already parsed)
 - Top/controversial time window (`t=`)
 - Scrape/OAuth media parity; gallery pager; NSFW show/hide/blur choice
+  (same-file preview/i.redd.it width variants are collapsed — no more
+  low+high double display)
 - User profile beyond submitted posts; local saved Reddit posts
 - For You pull-to-refresh still does not reload the Reddit mix
 
