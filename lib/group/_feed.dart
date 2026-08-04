@@ -717,7 +717,11 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       _seenMediaKeys.clear();
     }
 
-    return mediaPageWithLookahead(cursor, _listTweets, _unseenMediaItems);
+    // A profile's lookahead costs one request per page; here every page is the
+    // whole per-chunk fan-out, so the default of four turns one screenful of
+    // thumbnails into five fan-outs. A media-sparse group shows an emptier
+    // first grid in exchange, and fills as the reader scrolls.
+    return mediaPageWithLookahead(cursor, _listTweets, _unseenMediaItems, maxLookahead: 1);
   }
 
   // Successive search windows overlap at their boundaries, so keep only media
