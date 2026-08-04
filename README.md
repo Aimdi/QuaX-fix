@@ -166,6 +166,24 @@ fvm dart run flutter_iconpicker:generate_packs --packs material
 fvm flutter build apk --debug
 ```
 
+### ARB merge driver
+
+Every branch appends strings to all 29 files in `lib/l10n/`, so parallel
+branches conflict in all of them even when no key overlaps.
+[`.gitattributes`](./.gitattributes) routes those files through a `merge=arb`
+driver that merges them by key instead of by line. Git keeps merge drivers in
+`.git/config`, so **a fresh clone must register it once** — it does nothing
+otherwise:
+
+```bash
+bash scripts/setup_git_merge_drivers.sh   # also run by scripts/cloud_install.sh
+```
+
+Without it merges fall back to the normal text merge; `python3
+merge_arb_conflicts.py` then resolves the conflicted files still sitting in the
+index. Either way, keys both sides changed to different values are left as a
+real conflict.
+
 ## More information
 
 - [FAQ (upstream)](./docs/QuaX.md)

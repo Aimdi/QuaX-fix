@@ -6,6 +6,9 @@ export ANDROID_HOME="${ANDROID_HOME:-$HOME/android-sdk}"
 export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
 export PATH="$HOME/fvm/bin:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
 
+echo "==> Git merge drivers"
+"$(dirname "$0")/setup_git_merge_drivers.sh"
+
 echo "==> Flutter (FVM)"
 command -v fvm >/dev/null
 fvm install
