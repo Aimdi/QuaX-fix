@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:quax/generated/l10n.dart';
 
@@ -25,26 +26,43 @@ class ExpandableTweetText extends StatefulWidget {
   ExpandableTweetTextState createState() => ExpandableTweetTextState();
 }
 
-class ExpandableTweetTextState extends State<ExpandableTweetText> {
-  bool _isExpanded = false;
+/// Everything a line count depends on.
+///
+/// Two of these being equal means the text would shape and wrap identically,
+/// so the answer from last time still holds. The spans are compared by value
+/// because the parent rebuilds the list on every build — but a recycled tile
+/// carrying a different post, or the same post translated, produces different
+/// spans and so a different measurement.
+class _TextMeasure {
+  final List<InlineSpan> spans;
+  final double maxWidth;
+  final TextStyle style;
+  final TextScaler scaler;
+  final TextDirection direction;
+  final int maxLines;
 
-  /// Whether the text needs more than [ExpandableTweetText.maxLines] at the
-  /// width it is actually painted at, in the style it is actually painted in.
-  ///
-  /// Measuring against the screen width mis-counts lines: tweet text sits
-  /// inside horizontal padding, and a thread body is indented further still.
-  /// Measuring without the rendered style compounds it, because the spans
-  /// inherit their size from [DefaultTextStyle] rather than carrying it.
-  bool _isTruncated(BuildContext context, double maxWidth, TextStyle style) {
-    final maxLines = widget.maxLines;
-    if (maxLines == null || !maxWidth.isFinite || maxWidth <= 0) {
-      return false;
-    }
+  const _TextMeasure({
+    required this.spans,
+    required this.maxWidth,
+    required this.style,
+    required this.scaler,
+    required this.direction,
+    required this.maxLines,
+  });
 
+  bool sameAs(_TextMeasure other) =>
+      maxWidth == other.maxWidth &&
+      maxLines == other.maxLines &&
+      direction == other.direction &&
+      scaler == other.scaler &&
+      style == other.style &&
+      listEquals(spans, other.spans);
+
+  bool run() {
     final painter = TextPainter(
-      text: TextSpan(style: style, children: widget.textSpans),
-      textDirection: Directionality.of(context),
-      textScaler: MediaQuery.textScalerOf(context),
+      text: TextSpan(style: style, children: spans),
+      textDirection: direction,
+      textScaler: scaler,
       // One line past the cap is all it takes to know the text overflows.
       maxLines: maxLines + 1,
     );
@@ -53,6 +71,50 @@ class ExpandableTweetTextState extends State<ExpandableTweetText> {
     painter.dispose();
 
     return truncated;
+  }
+}
+
+class ExpandableTweetTextState extends State<ExpandableTweetText> {
+  bool _isExpanded = false;
+
+  _TextMeasure? _measure;
+  bool _measured = false;
+
+  /// Whether the text needs more than [ExpandableTweetText.maxLines] at the
+  /// width it is actually painted at, in the style it is actually painted in.
+  ///
+  /// Measuring against the screen width mis-counts lines: tweet text sits
+  /// inside horizontal padding, and a thread body is indented further still.
+  /// Measuring without the rendered style compounds it, because the spans
+  /// inherit their size from [DefaultTextStyle] rather than carrying it.
+  ///
+  /// The count is kept until something it depends on changes: laying the text
+  /// out is the most expensive thing a post does, and this runs at layout time
+  /// alongside the [SelectableText.rich] that shapes the very same text again.
+  bool _isTruncated(BuildContext context, double maxWidth, TextStyle style) {
+    final maxLines = widget.maxLines;
+    if (maxLines == null || !maxWidth.isFinite || maxWidth <= 0) {
+      return false;
+    }
+
+    final measure = _TextMeasure(
+      spans: widget.textSpans,
+      maxWidth: maxWidth,
+      style: style,
+      scaler: MediaQuery.textScalerOf(context),
+      direction: Directionality.of(context),
+      maxLines: maxLines,
+    );
+
+    final previous = _measure;
+    if (previous != null && previous.sameAs(measure)) {
+      return _measured;
+    }
+
+    _measure = measure;
+    _measured = measure.run();
+
+    return _measured;
   }
 
   @override

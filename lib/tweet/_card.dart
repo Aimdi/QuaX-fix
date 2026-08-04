@@ -19,13 +19,57 @@ import 'package:pref/pref.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:quax/plugins/plugin_links.dart';
 
-class TweetCard extends StatelessWidget {
+/// Poll totals are grouped in the reader's locale. Building the pattern parses
+/// it, so one is kept per locale rather than one per build of every poll.
+final Map<String, NumberFormat> _decimalFormats = {};
+
+NumberFormat _decimalFormat(String locale) =>
+    _decimalFormats.putIfAbsent(locale, () => NumberFormat.decimalPattern(locale));
+
+class TweetCard extends StatefulWidget {
   static final log = Logger('TweetCard');
 
   final TweetWithCard tweet;
   final Map<String, dynamic>? card;
 
   const TweetCard({super.key, required this.tweet, required this.card});
+
+  @override
+  State<TweetCard> createState() => _TweetCardState();
+}
+
+class _TweetCardState extends State<TweetCard> {
+  /// A unified card arrives as a JSON string several kilobytes long, so it is
+  /// decoded when the card is handed over rather than on every build.
+  Map<String, dynamic>? _unifiedCard;
+
+  @override
+  void initState() {
+    super.initState();
+    _unifiedCard = _decodeUnifiedCard(widget.card);
+  }
+
+  @override
+  void didUpdateWidget(TweetCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(widget.card, oldWidget.card)) {
+      _unifiedCard = _decodeUnifiedCard(widget.card);
+    }
+  }
+
+  static Map<String, dynamic>? _decodeUnifiedCard(Map<String, dynamic>? card) {
+    final raw = card?['binding_values']?['unified_card']?['string_value'];
+    if (raw is! String) {
+      return null;
+    }
+
+    try {
+      return jsonDecode(raw) as Map<String, dynamic>;
+    } catch (e) {
+      TweetCard.log.severe('Unable to decode the unified card');
+      return null;
+    }
+  }
 
   Container _createBaseCard(Widget child, BuildContext context) {
     return Container(
@@ -206,8 +250,11 @@ class TweetCard extends StatelessWidget {
         context);
   }
 
-  dynamic _createUnifiedCard(BuildContext context, Map<String, dynamic> card, String imageKey, String imageSize) {
-    var unifiedCard = jsonDecode(card['binding_values']['unified_card']['string_value']) as Map<String, dynamic>;
+  dynamic _createUnifiedCard(BuildContext context, String imageSize) {
+    var unifiedCard = _unifiedCard;
+    if (unifiedCard == null) {
+      return Container();
+    }
 
     switch (unifiedCard['type']) {
       case 'image_website':
@@ -228,7 +275,8 @@ class TweetCard extends StatelessWidget {
         var media = unifiedCard['media_entities'][unifiedCard['component_objects']['media_1']['data']['id']];
         var uri = unifiedCard['destination_objects']['browser_with_docked_media_1']['data']['url_data']['url'];
 
-        var child = TweetMedia(media: [Media.fromJson(media)], username: tweet.user!.screenName!, sensitive: false);
+        var child =
+            TweetMedia(media: [Media.fromJson(media)], username: widget.tweet.user!.screenName!, sensitive: false);
         return _createWebsiteCard(context, unifiedCard, uri, imageSize, child);
       default:
         return Container();
@@ -241,11 +289,13 @@ class TweetCard extends StatelessWidget {
       return Container();
     }
 
-    final numberFormat = NumberFormat.decimalPattern();
+    final locale = Intl.getCurrentLocale();
+    final numberFormat = _decimalFormat(locale);
     final endsAt = poll.endsAt;
     final closed = endsAt != null && endsAt.isBefore(DateTime.now());
-    final relative =
-        endsAt == null ? null : timeago.format(endsAt, allowFromNow: true, locale: Intl.shortLocale(Intl.getCurrentLocale()));
+    final relative = endsAt == null
+        ? null
+        : timeago.format(endsAt, allowFromNow: true, locale: Intl.shortLocale(locale));
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -273,7 +323,7 @@ class TweetCard extends StatelessWidget {
 
   String? _findCardUrl(Map<String, dynamic> card) {
     var link = card['url'];
-    var urls = tweet.entities?.urls ?? [];
+    var urls = widget.tweet.entities?.urls ?? [];
 
     // Match up the card's URL with the link in the tweet entities, otherwise just use the card's URL
     var url = urls.firstWhere((element) => element.url == link, orElse: () => Url.fromJson({'expanded_url': link}));
@@ -283,7 +333,7 @@ class TweetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var card = this.card;
+    var card = widget.card;
     if (card == null) {
       return Container();
     }
@@ -391,9 +441,9 @@ class TweetCard extends StatelessWidget {
             context);
       case 'unified_card':
         try {
-          return _createUnifiedCard(context, card, imageKey, imageSize);
+          return _createUnifiedCard(context, imageSize);
         } catch (e) {
-          log.severe('Unable to render the unified card');
+          TweetCard.log.severe('Unable to render the unified card');
           return Container();
         }
       case '745291183405076480:live_event':

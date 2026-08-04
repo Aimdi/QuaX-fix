@@ -78,6 +78,10 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   // "1,2 Mio." eat the footer's width and push the trailing buttons away.
   static final NumberFormat _numberFormat = NumberFormat.compact(locale: 'en_US');
 
+  // Locale tags arrive as either "en_GB" or "en-GB"; compiling the pattern per
+  // call was pure waste, as the pattern never varies.
+  static final RegExp _localeSeparator = RegExp(r'[-_]');
+
   late final bool clickable;
   late final String? currentUsername;
   late final TweetWithCard tweet;
@@ -91,8 +95,28 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   TranslationBroadcast? _translationBroadcast;
 
   List<RichTextPart> _originalParts = [];
-  List<RichTextPart> _displayParts = [];
   List<RichTextPart> _translatedParts = [];
+  // The spans currently on display, rebuilt when the parts behind them change
+  // (translate / show original) rather than on every build of the tile.
+  List<InlineSpan> _displaySpans = const [];
+
+  // Everything below derives from [tweet] alone, which never changes for a
+  // given State (a changed post gets a new key, hence a new State), so each is
+  // computed once on first use instead of on every build.
+
+  /// The post actually shown: a retweet displays the post it carries.
+  late final TweetWithCard _displayedTweet = tweet.retweetedStatusWithCard ?? tweet;
+
+  /// A link to a long-form X article, which carries nothing a preview could be
+  /// built from and so rendered as a bare truncated URL.
+  late final String? _articleLink = _displayedTweet.article != null
+      ? null
+      : firstArticleLink(_displayedTweet.entities?.urls?.map((e) => e.expandedUrl) ?? const []);
+
+  /// When the retweet happened, for the "X retweeted" banner. Relative dates
+  /// are pinned at first display here, exactly as [Timestamp] pins its own.
+  late final String? _retweetRelativeDate =
+      tweet.retweetedStatusWithCard == null || tweet.createdAt == null ? null : createRelativeDate(tweet.createdAt!);
 
   bool _isInitialized = false;
 
@@ -144,17 +168,20 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
   void _initializeTweetParts() {
     // Get the text to display from the actual tweet, i.e. the retweet if there is one, otherwise we end up with "RT @" crap in our text
-    var actualTweet = tweet.retweetedStatusWithCard ?? tweet;
+    var actualTweet = _displayedTweet;
     // get the longest tweet between legacy (still used most of the time) and noteText (mostly ny premium users?)
     var tweetTextFinal = actualTweet.noteText ?? actualTweet.fullText ?? actualTweet.text!;
     var entitiesFinal = actualTweet.noteEntities ?? actualTweet.entities;
 
     List<RichTextPart> tweetParts = buildRichText(context, tweetTextFinal, entitiesFinal);
     setState(() {
-      _displayParts = tweetParts;
+      _showParts(tweetParts);
       _originalParts = tweetParts;
     });
   }
+
+  /// Displays [parts]. Call from inside a `setState`.
+  void _showParts(List<RichTextPart> parts) => _displaySpans = displayRichText(parts);
 
   Locale _effectiveLocale() {
     var localeStr = PrefService.of(context, listen: false).get<String>(optionLocale);
@@ -163,7 +190,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       localeStr = Platform.localeName;
     }
 
-    final splitLocale = localeStr!.split(RegExp(r'[-_]'));
+    final splitLocale = localeStr!.split(_localeSeparator);
     return splitLocale.length == 1 ? Locale(splitLocale[0]) : Locale(splitLocale[0], splitLocale[1]);
   }
 
@@ -180,7 +207,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     // If we've already translated this text before, use those results instead of translating again
     if (_translatedParts.isNotEmpty) {
       return setState(() {
-        _displayParts = _translatedParts;
+        _showParts(_translatedParts);
         _translationStatus = TranslationStatus.translated;
       });
     }
@@ -198,7 +225,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
       // We cache the translated parts in a property in case the user swaps back and forth
       return setState(() {
-        _displayParts = translatedParts;
+        _showParts(translatedParts);
         _translatedParts = translatedParts;
         _translationStatus = TranslationStatus.translated;
       });
@@ -217,7 +244,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
   Future<void> onClickShowOriginal() async {
     setState(() {
-      _displayParts = _originalParts;
+      _showParts(_originalParts);
       _translationStatus = TranslationStatus.original;
     });
   }
@@ -312,7 +339,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     var shareBaseUrl =
         shareBaseUrlOption != null && shareBaseUrlOption.isNotEmpty ? shareBaseUrlOption : 'https://x.com';
 
-    TweetWithCard tweet = this.tweet.retweetedStatusWithCard == null ? this.tweet : this.tweet.retweetedStatusWithCard!;
+    TweetWithCard tweet = _displayedTweet;
 
     // If the user is on a profile, all the shown tweets are from that profile, so it makes no sense to hide it
     final isTweetOnSameProfile =
@@ -346,7 +373,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         children: [
           TextSpan(
               text: L10n.of(context)
-                  .this_tweet_user_name_retweeted(this.tweet.user!.name!, createRelativeDate(this.tweet.createdAt!)),
+                  .this_tweet_user_name_retweeted(this.tweet.user!.name!, _retweetRelativeDate ?? ''),
               style: theme.textTheme.bodySmall)
         ],
       );
@@ -419,18 +446,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                     SizedBox(height: 8),
                     AutoDirection(
                         text: tweetText,
-                        child: SelectableText.rich(
-                          TextSpan(children: [
-                            ..._displayParts.map((e) {
-                              if (e.plainText != null) {
-                                return TextSpan(text: e.plainText);
-                              }
-                              else {
-                                return e.entity!;
-                              }
-                            })
-                          ]),
-                        )
+                        child: SelectableText.rich(TextSpan(children: _displaySpans))
                     ),
                   ]
               )
@@ -496,9 +512,9 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
           child: AutoDirection(
             text: tweetText,
             child: ExpandableTweetText(
-              textSpans: displayRichText(_displayParts),
+              textSpans: _displaySpans,
               onTap: () => !widget.tweetOpened ? onClickOpenTweet(tweet) : null,
-              maxLines: PrefService.of(context).get(alwaysShowFullTweetContents) ? null : kTweetTextMaxLines,
+              maxLines: prefs.get(alwaysShowFullTweetContents) ? null : kTweetTextMaxLines,
             ),
           ));
     }
@@ -532,9 +548,6 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       isArticle: tweet.article != null,
       onOpenTweet: () => onClickOpenTweet(tweet),
       onCaptureImage: captureWidget,
-      onChanged: () {
-        if (mounted) setState(() {});
-      },
     );
 
     var article = Container();
@@ -670,9 +683,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
           ])
         : null;
 
-    // A link to a long-form X article, which carries nothing a preview could be
-    // built from and so rendered as a bare truncated URL.
-    final articleLink = tweet.article != null ? null : firstArticleLink(tweet.entities?.urls?.map((e) => e.expandedUrl) ?? const []);
+    final articleLink = _articleLink;
 
     final bodyChildren = <Widget>[
       replyToTile,

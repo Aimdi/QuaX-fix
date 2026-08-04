@@ -212,12 +212,69 @@ class TweetMedia extends StatefulWidget {
 }
 
 class _TweetMediaState extends State<TweetMedia> {
-  late final PageController _controller;
+  PageController? _controller;
+
+  /// Built on demand: a post with a single item is not laid out in a page
+  /// view at all, and most posts in a feed carry a single item.
+  PageController get _pageController => _controller ??= PageController(initialPage: widget.initialMediaIndex);
 
   @override
-  void initState() {
-    super.initState();
-    _controller = PageController(initialPage: widget.initialMediaIndex);
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  /// A lone item is returned as it is. A one-page carousel would still build a
+  /// scrollable, a viewport and a scroll position for every post in the feed.
+  ///
+  /// The edge-swipe wrapper goes with it, and only with it: it exists so a
+  /// *carousel* hands a horizontal drag back to the home page view once it has
+  /// nothing left to scroll. A single page never accepts a drag in the first
+  /// place — it reports no scroll extent, so Flutter gives it no drag
+  /// recogniser and the home page view sees the gesture either way.
+  Widget _frame(BuildContext context) {
+    if (widget.media.length == 1) {
+      return _page(context, 0);
+    }
+
+    return edgeSwipeToChangeHomePage(
+      context,
+      PageView.builder(
+        controller: _pageController,
+        scrollDirection: Axis.horizontal,
+        itemCount: widget.media.length,
+        itemBuilder: _page,
+      ),
+    );
+  }
+
+  Widget _page(BuildContext context, int index) {
+    var item = widget.media[index];
+
+    // A video has its own tap controls and must never open the fullscreen
+    // media viewer. Photos and GIFs still open it.
+    final isVideo = item.type == 'video';
+
+    return GestureDetector(
+      onTap: isVideo
+          ? null
+          : () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TweetMediaView(
+                      initialIndex: index,
+                      media: widget.media,
+                      username: widget.username,
+                      tweetId: widget.tweetId))),
+      onLongPress: item.type == 'photo' ? () => downloadMediaItem(context, item, widget.username) : null,
+      child: _TweetMediaItem(
+          media: item,
+          index: index + 1,
+          mediaIndex: index,
+          total: widget.media.length,
+          username: widget.username,
+          tweetId: widget.tweetId),
+    );
   }
 
   @override
@@ -248,47 +305,7 @@ class _TweetMediaState extends State<TweetMedia> {
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
           child: AspectRatio(
             aspectRatio: aspectRatio,
-            // A carousel of several images owns horizontal drags that start on
-            // it, so without this a swipe over a post's media could not reach
-            // the home page view. (One image scrolls nowhere, so Flutter never
-            // gives it a drag recogniser and it already passes them through.)
-            child: edgeSwipeToChangeHomePage(
-              context,
-              PageView.builder(
-              controller: _controller,
-              scrollDirection: Axis.horizontal,
-              itemCount: widget.media.length,
-              itemBuilder: (context, index) {
-                var item = widget.media[index];
-
-                // A video has its own tap controls and must never open the
-                // fullscreen media viewer. Photos and GIFs still open it.
-                final isVideo = item.type == 'video';
-
-                return GestureDetector(
-                  onTap: isVideo
-                      ? null
-                      : () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TweetMediaView(
-                                  initialIndex: index,
-                                  media: widget.media,
-                                  username: widget.username,
-                                  tweetId: widget.tweetId))),
-                  onLongPress:
-                      item.type == 'photo' ? () => downloadMediaItem(context, item, widget.username) : null,
-                  child: _TweetMediaItem(
-                      media: item,
-                      index: index + 1,
-                      mediaIndex: index,
-                      total: widget.media.length,
-                      username: widget.username,
-                      tweetId: widget.tweetId),
-                );
-              },
-              ),
-            ),
+            child: _frame(context),
           ),
         ),
       );
@@ -337,10 +354,13 @@ class TweetMediaView extends StatefulWidget {
   State<TweetMediaView> createState() => _TweetMediaViewState();
 }
 
+/// Wraps a bare image URL in the [Media] shape the media viewer expects.
+///
+/// [height] is unused: it only ever fed an [ExtendedImage] that was built and
+/// then dropped. The parameter stays for the callers that still pass one.
 Media createMediaFromUrl(String? url, double? height) {
   Media media = Media();
   if (url != null) {
-    ExtendedImage.network(url, fit: BoxFit.fitWidth, height: height);
     media.url = url;
     media.mediaUrlHttps = url;
     media.displayUrl = url;

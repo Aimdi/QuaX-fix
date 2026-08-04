@@ -154,8 +154,15 @@ class _ProfileTweetsState extends State<ProfileTweets> with AutomaticKeepAliveCl
             addAutomaticKeepAlives: false,
             builderDelegate: PagedChildBuilderDelegate(
               itemBuilder: (context, chain, index) {
+                // Keyed by chain id so a refreshed page gives each changed
+                // conversation a fresh state instead of recycling the one that
+                // happened to sit at the same index.
                 return TweetConversation(
-                    id: chain.id, tweets: chain.tweets, username: widget.user.screenName!, isPinned: chain.isPinned);
+                    key: ValueKey(chain.id),
+                    id: chain.id,
+                    tweets: chain.tweets,
+                    username: widget.user.screenName!,
+                    isPinned: chain.isPinned);
               },
               firstPageProgressIndicatorBuilder: (context) => const TweetFeedSkeleton(),
               newPageProgressIndicatorBuilder: (context) => const TweetSkeletonTile(),

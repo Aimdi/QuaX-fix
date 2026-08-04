@@ -29,9 +29,13 @@ class _TweetConversationState extends State<TweetConversation> {
   @override
   Widget build(BuildContext context) {
     if (widget.tweets.length == 1) {
+      final tweet = widget.tweets.first;
       return TweetTile(
+          // Feeds replace a page in place on refresh, so without an identity of
+          // its own a recycled tile would keep the previous post's frozen state.
+          key: ValueKey(tweet.idStr ?? widget.id),
           clickable: true,
-          tweet: widget.tweets.first,
+          tweet: tweet,
           currentUsername: widget.username,
           isPinned: widget.isPinned,
           tweetOpened: widget.tweetOpened,
@@ -43,6 +47,7 @@ class _TweetConversationState extends State<TweetConversation> {
 
     for (var i = 0; i < tweets.length; i++) {
       tiles.add(TweetTile(
+          key: ValueKey(tweets[i].idStr ?? '${widget.id}#$i'),
           clickable: true,
           tweet: tweets[i],
           currentUsername: widget.username,

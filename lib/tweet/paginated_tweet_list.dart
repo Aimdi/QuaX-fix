@@ -227,8 +227,15 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
     await _refreshKey.currentState?.show();
   }
 
-  Widget _buildChain(BuildContext context, TweetChain chain) =>
-      TweetConversation(id: chain.id, tweets: chain.tweets, username: widget.username, isPinned: chain.isPinned);
+  // Keyed by chain id: a soft refresh replaces the first page in place, and
+  // without a key Flutter would reuse each element positionally and leave the
+  // tile below it rendering the post that used to sit there.
+  Widget _buildChain(BuildContext context, TweetChain chain) => TweetConversation(
+      key: ValueKey(chain.id),
+      id: chain.id,
+      tweets: chain.tweets,
+      username: widget.username,
+      isPinned: chain.isPinned);
 
   /// Soft refresh used by the pull-to-refresh gesture. Runs the caller's
   /// [onRefresh] side effects, then reloads the first page while keeping the

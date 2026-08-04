@@ -5,11 +5,13 @@ import 'dart:ui' as ui;
 import 'package:dart_twitter_api/twitter_api.dart' show Media, Url;
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
 import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:quax/client/client.dart';
 import 'package:quax/constants.dart';
+import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/saved/folder_picker.dart';
 import 'package:quax/saved/liked_tweet_model.dart';
@@ -52,6 +54,9 @@ const double kFooterIconItem = kFooterButtonPadding + 20 + kFooterButtonPadding 
 
 /// Gap between the counts group and the icon group.
 const double kFooterGroupGap = 8;
+
+/// Size the count labels are drawn at, and therefore measured at.
+const double kFooterLabelFontSize = 14;
 
 /// What the footer can afford to show at the width it was given.
 @immutable
@@ -242,7 +247,7 @@ TextButton tweetFooterTextButton(IconData icon, String label, [Color? color, Voi
   return TextButton.icon(
     icon: Icon(icon, size: 20, color: color),
     onPressed: onPressed,
-    label: Text(label, style: TextStyle(color: color, fontSize: 14)),
+    label: Text(label, style: TextStyle(color: color, fontSize: kFooterLabelFontSize)),
     style: footerButtonStyle,
   );
 }
@@ -261,7 +266,6 @@ class TweetFooterBar extends StatelessWidget {
   final bool isArticle;
   final VoidCallback onOpenTweet;
   final Future<Uint8List?> Function() onCaptureImage;
-  final VoidCallback onChanged;
 
   const TweetFooterBar({
     super.key,
@@ -272,7 +276,6 @@ class TweetFooterBar extends StatelessWidget {
     required this.numberFormat,
     required this.onOpenTweet,
     required this.onCaptureImage,
-    required this.onChanged,
     this.isArticle = false,
   });
 
@@ -360,6 +363,12 @@ class TweetFooterBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final zen = PrefService.of(context, listen: false).get(optionZenMode) == true;
     final tint = tweetFooterButtonsColorOf(context);
+    // Both stores are registered with a plain Provider, so a Consumer over them
+    // would depend on a value whose identity never changes and never rebuild.
+    // ScopedBuilder listens to the Store itself, which is what actually
+    // changes — and it rebuilds only this button, not the whole tile.
+    final likedModel = context.read<LikedTweetModel>();
+    final savedModel = context.read<SavedTweetModel>();
 
     return Container(
       alignment: Alignment.center,
@@ -410,52 +419,58 @@ class TweetFooterBar extends StatelessWidget {
                     ? null
                     : () => Navigator.pushNamed(context, routeQuotes,
                         arguments: QuotesScreenArguments(id: tweet.idStr!))),
-          Consumer<LikedTweetModel>(builder: (context, likedModel, child) {
-            final isLiked = likedModel.isLiked(tweet.idStr!);
+          ScopedBuilder<LikedTweetModel, List<LikedTweet>>(
+            store: likedModel,
+            // Every footer on screen hears every like; only the one whose own
+            // post changed has anything to redraw.
+            distinct: (liked) => liked.any((e) => e.id == tweet.idStr),
+            onState: (context, liked) {
+              final isLiked = liked.any((e) => e.id == tweet.idStr);
 
-            return LikeButton(
-              isLiked: isLiked,
-              label: label(likeLabel),
-              color: isLiked ? Theme.of(context).colorScheme.primary : tint,
-              onPressed: () async {
-                if (isLiked) {
-                  await likedModel.unlikeTweet(tweet.idStr!);
-                } else {
-                  await likedModel.likeTweet(tweet.idStr!, tweet.user?.idStr, tweet.toJson());
-                }
-                onChanged();
-                if (!isLiked && context.mounted) {
-                  maybeShowLikeToast(context);
-                }
-              },
-            );
-          }),
+              return LikeButton(
+                isLiked: isLiked,
+                label: label(likeLabel),
+                color: isLiked ? Theme.of(context).colorScheme.primary : tint,
+                onPressed: () async {
+                  if (isLiked) {
+                    await likedModel.unlikeTweet(tweet.idStr!);
+                  } else {
+                    await likedModel.likeTweet(tweet.idStr!, tweet.user?.idStr, tweet.toJson());
+                  }
+                  if (!isLiked && context.mounted) {
+                    maybeShowLikeToast(context);
+                  }
+                },
+              );
+            },
+          ),
           if (viewsLabel != null && fit.showViews)
             tweetFooterTextButton(Icons.bar_chart, viewsLabel, tint),
-          Consumer<SavedTweetModel>(builder: (context, model, child) {
-            final isSaved = model.isSaved(tweet.idStr!);
-            final button = isSaved
-                ? tweetFooterIconButton(context, Icons.bookmark, Theme.of(context).colorScheme.primary, 1, () async {
-                    await model.deleteSavedTweet(tweet.idStr!);
-                    onChanged();
-                  }, L10n.of(context).action_unsave_post)
-                : tweetFooterIconButton(context, Icons.bookmark_border, tint, 0, () async {
-                    await model.saveTweet(tweet.idStr!, tweet.user?.idStr, tweet.toJson());
-                    onChanged();
-                    if (context.mounted) {
-                      maybeShowFolderHint(context);
-                    }
-                  }, L10n.of(context).action_save_post);
+          ScopedBuilder<SavedTweetModel, List<SavedTweet>>(
+            store: savedModel,
+            distinct: (saved) => saved.any((e) => e.id == tweet.idStr),
+            onState: (context, saved) {
+              final isSaved = saved.any((e) => e.id == tweet.idStr);
+              final button = isSaved
+                  ? tweetFooterIconButton(context, Icons.bookmark, Theme.of(context).colorScheme.primary, 1, () async {
+                      await savedModel.deleteSavedTweet(tweet.idStr!);
+                    }, L10n.of(context).action_unsave_post)
+                  : tweetFooterIconButton(context, Icons.bookmark_border, tint, 0, () async {
+                      await savedModel.saveTweet(tweet.idStr!, tweet.user?.idStr, tweet.toJson());
+                      if (context.mounted) {
+                        maybeShowFolderHint(context);
+                      }
+                    }, L10n.of(context).action_save_post);
 
-            return GestureDetector(
-              onLongPress: () async {
-                await showSaveToFolderSheet(context,
-                    tweetId: tweet.idStr!, userId: tweet.user?.idStr, content: tweet.toJson());
-                onChanged();
-              },
-              child: button,
-            );
-          }),
+              return GestureDetector(
+                onLongPress: () async {
+                  await showSaveToFolderSheet(context,
+                      tweetId: tweet.idStr!, userId: tweet.user?.idStr, content: tweet.toJson());
+                },
+                child: button,
+              );
+            },
+          ),
           tweetFooterIconButton(
               context, Icons.share, tint, null, () => _showShareSheet(context), L10n.of(context).action_share_post),
         ];
@@ -477,7 +492,21 @@ class TweetFooterBar extends StatelessWidget {
 
 /// Measures footer labels at the ambient text scale, so the fit decision uses
 /// the width the label will actually occupy.
+///
+/// A whole feed only ever shows a few hundred distinct labels (compact counts
+/// like "1.2K"), and every one of them used to be shaped again on every layout
+/// of every footer, so the widths are memoized. The memo holds only what the
+/// measurement depends on — the label, the scaled font size and the reading
+/// direction — and is dropped whole when either of the latter two changes.
 class _LabelMeasure {
+  static final Map<String, double> _widths = {};
+  static double? _memoFontSize;
+  static ui.TextDirection? _memoDirection;
+
+  /// Guards against a pathological feed growing the memo without bound; the
+  /// realistic working set is far below this.
+  static const int _maxEntries = 512;
+
   final TextScaler _scaler;
   final ui.TextDirection _direction;
 
@@ -489,8 +518,18 @@ class _LabelMeasure {
     if (label.isEmpty) {
       return 0;
     }
+    final fontSize = _scaler.scale(kFooterLabelFontSize);
+    if (fontSize != _memoFontSize || _direction != _memoDirection || _widths.length > _maxEntries) {
+      _widths.clear();
+      _memoFontSize = fontSize;
+      _memoDirection = _direction;
+    }
+    return _widths[label] ??= _measure(label);
+  }
+
+  double _measure(String label) {
     final painter = TextPainter(
-      text: TextSpan(text: label, style: const TextStyle(fontSize: 14)),
+      text: TextSpan(text: label, style: const TextStyle(fontSize: kFooterLabelFontSize)),
       textScaler: _scaler,
       textDirection: _direction,
       maxLines: 1,
