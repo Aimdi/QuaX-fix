@@ -60,6 +60,14 @@ class _ResultsScreenState extends State<_ResultsScreen> with SingleTickerProvide
   Timer? _debounce;
   String? _lastDispatchedQuery;
 
+  /// The query the tabs should be showing, and which of them already are.
+  ///
+  /// A query used to be pushed into all four tabs at once, so every search
+  /// cost four requests -- including the user search, whose tab may never be
+  /// opened. A tab now picks the pending query up when it becomes visible.
+  String? _pendingQuery;
+  final _appliedTo = <int>{};
+
   @override
   void initState() {
     super.initState();
@@ -79,11 +87,18 @@ class _ResultsScreenState extends State<_ResultsScreen> with SingleTickerProvide
     // TODO: Focussing makes the selection go to the start?!
 
     // The tweet tabs' first-page requests are fired automatically by their
-    // PagedListViews using the initial query above; the user-search Store
-    // needs an explicit kick.
-    if (initialQuery.isNotEmpty) {
-      _searchUsersModel.searchUsers(initialQuery, context);
+    // PagedListViews using the initial query above, so those three already
+    // hold it. The user-search Store needs an explicit kick, and only once its
+    // tab is actually looked at.
+    _pendingQuery = initialQuery;
+    _appliedTo.addAll(const [0, 1, 2]);
+    if (initialQuery.isEmpty) {
+      _appliedTo.add(3);
+    } else if (widget.initialTab == 3) {
+      _applyPendingQuery();
     }
+
+    _tabController.addListener(_applyPendingQuery);
   }
 
   @override
@@ -108,10 +123,28 @@ class _ResultsScreenState extends State<_ResultsScreen> with SingleTickerProvide
     if (!mounted) return;
     final query = _queryController.text;
     _lastDispatchedQuery = query;
-    _topTweets.updateQuery(query);
-    _latestTweets.updateQuery(query);
-    _mediaResults.updateQuery(query);
-    _searchUsersModel.searchUsers(query, context);
+    _pendingQuery = query;
+    _appliedTo.clear();
+    _applyPendingQuery();
+  }
+
+  /// Hands the pending query to the visible tab, once.
+  void _applyPendingQuery() {
+    final query = _pendingQuery;
+    if (!mounted || query == null || !_appliedTo.add(_tabController.index)) {
+      return;
+    }
+
+    switch (_tabController.index) {
+      case 0:
+        _topTweets.updateQuery(query);
+      case 1:
+        _latestTweets.updateQuery(query);
+      case 2:
+        _mediaResults.updateQuery(query);
+      case 3:
+        _searchUsersModel.searchUsers(query, context);
+    }
   }
 
   @override
@@ -144,7 +177,18 @@ class _ResultsScreenState extends State<_ResultsScreen> with SingleTickerProvide
                   }
                 },
               ),
-              FollowButton(user: SearchSubscription(id: _queryController.text, createdAt: DateTime.now())),
+              // Hidden while the field is empty: following a blank query
+              // saved a search that could never match anything.
+              ValueListenableBuilder<TextEditingValue>(
+                valueListenable: _queryController,
+                builder: (context, value, _) {
+                  final query = value.text.trim();
+
+                  return query.isEmpty
+                      ? const SizedBox.shrink()
+                      : FollowButton(user: SearchSubscription(id: query, createdAt: DateTime.now()));
+                },
+              ),
             ],
           ),
         ),
