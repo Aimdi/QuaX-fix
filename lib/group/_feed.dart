@@ -510,12 +510,17 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
         BigInt? storedNewestId;
 
         if (cursorKey == null) {
-          // We're loading the initial content for the feed screen, so load all the chunks we already have
+          // We're loading the initial content for the feed screen, so load the
+          // newest chunks we already have. Reading every stored row put a
+          // week of accumulated JSON in front of the first paint, and the
+          // first page kept growing until a pull-to-refresh cleared it.
           var storedChunks = await repository.query(tableFeedGroupChunk,
-              where: 'hash = ?', whereArgs: [hash], orderBy: 'created_at DESC');
+              where: 'hash = ?', whereArgs: [hash], orderBy: 'created_at DESC', limit: maxCachedChunkRows);
 
           // Make sure we load any existing stored tweets from the chunk
           tweets.addAll(chainsFromStoredChunks(storedChunks));
+          // Newest row first, so this is still the newest stored post and the
+          // gap-fill below stops at the same place.
           storedNewestId = _newestTweetIdOf(tweets);
 
           // Use the latest chunk's top cursor to load any new tweets since the last time we checked
@@ -529,7 +534,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
         } else {
           // We're currently at the end of our current feed, so load the oldest chunk and use its cursor to load more
           var storedChunks = await repository.query(tableFeedGroupChunk,
-              where: 'cursor_id = ? AND hash = ?', whereArgs: [int.parse(cursorKey), hash]);
+              where: 'cursor_id = ? AND hash = ?', whereArgs: [int.parse(cursorKey), hash], limit: 1);
           if (storedChunks.isNotEmpty) {
             searchCursor = storedChunks.first['cursor_bottom'] as String;
           } else {

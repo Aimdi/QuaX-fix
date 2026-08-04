@@ -236,6 +236,12 @@ const zenModePageCapChoices = [3, 5, 10, 20];
 // gap between freshly fetched posts and the previously stored ones
 const maxFeedGapFillPages = 4;
 
+// How many stored chunk rows a cache read decodes, newest first. Each row is a
+// whole page of chains and rows accumulate until the 7-day purge, so reading
+// them all decoded tens of MB of JSON on the UI isolate before the feed had
+// painted anything -- for posts far below where anyone scrolls.
+const maxCachedChunkRows = 8;
+
 // Reading position ("You're caught up"): how close to the top counts as
 // having read everything, and how many frames the divider restore may take.
 const feedReadPositionTopThresholdPx = 8.0;

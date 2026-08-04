@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:quax/client/client.dart';
+import 'package:quax/constants.dart';
 import 'package:quax/database/repository.dart';
 import 'package:quax/utils/iterables.dart';
 import 'package:sqflite/sqflite.dart';
@@ -38,21 +39,25 @@ List<TweetChain> sortChainsNewestFirst(List<TweetChain> chains) {
   }).toList();
 }
 
-/// Cached tweets for the given chunk [hashes], newest first.
+/// Cached tweets for the given chunk [hashes], newest first, capped at
+/// [maxCachedChunkRows] rows per hash.
 Future<List<TweetChain>> readCachedChainsForHashes(Database repository, Iterable<String> hashes) async {
   var chains = <TweetChain>[];
   for (var hash in hashes) {
     var storedChunks = await repository.query(tableFeedGroupChunk,
-        where: 'hash = ?', whereArgs: [hash], orderBy: 'created_at DESC');
+        where: 'hash = ?', whereArgs: [hash], orderBy: 'created_at DESC', limit: maxCachedChunkRows);
     chains.addAll(chainsFromStoredChunks(storedChunks));
   }
   return sortChainsNewestFirst(dedupeChainsById(chains));
 }
 
-/// Every cached tweet across all chunks, newest first and de-duplicated. Used to
-/// preview the combined "All"/Following feed while its subscription list loads,
-/// before the per-chunk hashes are known.
+/// The newest cached tweets across all chunks, de-duplicated. Used to preview
+/// the combined "All"/Following feed while its subscription list loads, before
+/// the per-chunk hashes are known. This runs from the home tab's `initState`,
+/// so it is capped hard: it only has to fill the screen the reader is waiting
+/// for, and every extra row is JSON decoded ahead of the first paint.
 Future<List<TweetChain>> readAllCachedChains(Database repository) async {
-  var storedChunks = await repository.query(tableFeedGroupChunk, orderBy: 'created_at DESC');
+  var storedChunks =
+      await repository.query(tableFeedGroupChunk, orderBy: 'created_at DESC', limit: maxCachedChunkRows);
   return sortChainsNewestFirst(dedupeChainsById(chainsFromStoredChunks(storedChunks)));
 }
