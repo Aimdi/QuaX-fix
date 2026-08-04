@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:html/parser.dart' as html;
 import 'package:http/http.dart' as http;
-import 'package:xta/constants.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 import 'package:xta/utils/json.dart';
 
