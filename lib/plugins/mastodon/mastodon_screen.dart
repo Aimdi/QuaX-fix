@@ -1,0 +1,209 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
+import 'package:pref/pref.dart';
+import 'package:provider/provider.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/mastodon/mastodon_client.dart';
+import 'package:xta/plugins/mastodon/mastodon_models.dart';
+import 'package:xta/plugins/mastodon/mastodon_post_card.dart';
+import 'package:xta/plugins/mastodon/mastodon_profile_screen.dart';
+import 'package:xta/plugins/mastodon/mastodon_store.dart';
+import 'package:xta/ui/errors.dart';
+
+/// The Mastodon tab: every locally followed acct, merged newest first.
+class MastodonScreen extends StatefulWidget {
+  final ScrollController scrollController;
+
+  const MastodonScreen({super.key, required this.scrollController});
+
+  @override
+  State<MastodonScreen> createState() => _MastodonScreenState();
+}
+
+class _MastodonScreenState extends State<MastodonScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<MastodonFeedStore>().refresh();
+      }
+    });
+  }
+
+  bool get _hasInstance {
+    final prefs = PrefService.of(context, listen: false);
+    return normaliseMastodonInstance(prefs.get<String>(optionPluginMastodonInstance) ?? '') != null;
+  }
+
+  Future<void> _lookUpProfile() async {
+    if (!_hasInstance) {
+      _toastNotConfigured();
+      return;
+    }
+
+    final acct = await showMastodonAddAccountDialog(context, lookup: true);
+    if (acct == null || !mounted) {
+      return;
+    }
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => MastodonProfileScreen(acct: acct)),
+    );
+    if (mounted) {
+      await context.read<MastodonFeedStore>().refresh();
+    }
+  }
+
+  Future<void> _addAccount() async {
+    if (!_hasInstance) {
+      _toastNotConfigured();
+      return;
+    }
+
+    final acct = await showMastodonAddAccountDialog(context);
+    if (acct == null || !mounted) {
+      return;
+    }
+
+    final messenger = ScaffoldMessenger.of(context);
+    final prefs = PrefService.of(context, listen: false);
+    final instance = normaliseMastodonInstance(prefs.get<String>(optionPluginMastodonInstance) ?? '')!;
+    final client = context.read<MastodonClient>();
+    final accounts = context.read<MastodonAccountsStore>();
+    final l10n = L10n.of(context);
+
+    try {
+      final profile = await client.lookup(instance, acct);
+      await accounts.add(profile.toAccount());
+    } catch (e) {
+      if (mounted) {
+        messenger.showSnackBar(SnackBar(content: Text(mastodonErrorMessage(l10n, e))));
+      }
+      return;
+    }
+
+    if (mounted) {
+      await context.read<MastodonFeedStore>().refresh();
+    }
+  }
+
+  void _toastNotConfigured() {
+    final l10n = L10n.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.plugin_mastodon_not_configured)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(l10n.plugin_mastodon_title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            tooltip: l10n.plugin_mastodon_lookup,
+            onPressed: _lookUpProfile,
+          ),
+          IconButton(
+            icon: const Icon(Icons.person_add_alt),
+            tooltip: l10n.plugin_mastodon_add,
+            onPressed: _addAccount,
+          ),
+        ],
+      ),
+      body: ScopedBuilder<MastodonFeedStore, List<MastodonPost>>.transition(
+        store: context.read<MastodonFeedStore>(),
+        onLoading: (_) => const Center(child: CircularProgressIndicator()),
+        onError: (context, error) => Padding(
+          padding: const EdgeInsets.all(24),
+          child: FullPageErrorWidget(
+            error: error,
+            stackTrace: null,
+            prefix: mastodonErrorMessage(l10n, error ?? Exception()),
+            onRetry: () => context.read<MastodonFeedStore>().refresh(),
+          ),
+        ),
+        onState: (context, posts) => _feed(context, l10n, posts),
+      ),
+    );
+  }
+
+  Widget _feed(BuildContext context, L10n l10n, List<MastodonPost> posts) {
+    if (posts.isEmpty) {
+      return ScopedBuilder<MastodonAccountsStore, List<MastodonAccount>>(
+        store: context.read<MastodonAccountsStore>(),
+        onState: (context, accounts) => Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Text(
+              accounts.isEmpty ? l10n.plugin_mastodon_empty : l10n.plugin_mastodon_no_posts,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => context.read<MastodonFeedStore>().refresh(),
+      child: ListView.builder(
+        controller: widget.scrollController,
+        itemCount: posts.length,
+        itemBuilder: (context, index) =>
+            MastodonPostCard(key: ValueKey(posts[index].id), post: posts[index], showSourceBadge: false),
+      ),
+    );
+  }
+}
+
+Future<String?> showMastodonAddAccountDialog(BuildContext context, {bool lookup = false}) {
+  final controller = TextEditingController();
+
+  return showDialog<String>(
+    context: context,
+    builder: (dialogContext) {
+      final l10n = L10n.of(dialogContext);
+      String? error;
+
+      return StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text(lookup ? l10n.plugin_mastodon_lookup : l10n.plugin_mastodon_add),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: InputDecoration(
+              hintText: l10n.plugin_mastodon_handle_hint,
+              errorText: error,
+            ),
+            onSubmitted: (_) {
+              final acct = normaliseMastodonAcct(controller.text);
+              if (acct == null) {
+                setState(() => error = l10n.plugin_mastodon_invalid_handle);
+              } else {
+                Navigator.pop(context, acct);
+              }
+            },
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
+            TextButton(
+              onPressed: () {
+                final acct = normaliseMastodonAcct(controller.text);
+                if (acct == null) {
+                  setState(() => error = l10n.plugin_mastodon_invalid_handle);
+                } else {
+                  Navigator.pop(context, acct);
+                }
+              },
+              child: Text(l10n.ok),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}

@@ -314,6 +314,50 @@ class BlueskySubscription extends Subscription {
   }
 }
 
+/// A Mastodon / Fediverse account the reader follows locally.
+///
+/// Its id is the canonical `user@domain` — portable across home instances,
+/// unlike the numeric account id each Mastodon server assigns.
+class MastodonSubscription extends Subscription {
+  MastodonSubscription({
+    required super.id,
+    required super.name,
+    required String? avatarUrl,
+    required super.createdAt,
+    required super.inFeed,
+  }) : super(screenName: id, verified: false, profileImageUrlHttps: avatarUrl);
+
+  String? get avatarUrl => profileImageUrlHttps;
+
+  factory MastodonSubscription.fromMap(Map<String, Object?> map) {
+    return MastodonSubscription(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      avatarUrl: map['avatar_url'] as String?,
+      createdAt: map['created_at'] == null ? DateTime.now() : DateTime.parse(map['created_at'] as String),
+      inFeed: map['in_feed'] == null || map['in_feed'] == 1,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is MastodonSubscription && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'avatar_url': avatarUrl,
+      'in_feed': inFeed ? 1 : 0,
+      'created_at': sqliteDateFormat.format(createdAt),
+    };
+  }
+}
+
 /// A followed Substack publication.
 ///
 /// A third kind of subscription beside users and saved searches, so that a

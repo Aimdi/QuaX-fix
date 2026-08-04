@@ -22,6 +22,7 @@ const String tableSearchSubscription = 'search_subscription';
 const String tableSubstackSubscription = 'substack_subscription';
 const String tableThreadsSubscription = 'threads_subscription';
 const String tableBlueskySubscription = 'bluesky_subscription';
+const String tableMastodonSubscription = 'mastodon_subscription';
 const String tableRedditSubscription = 'reddit_subscription';
 const String tableImmichUpload = 'immich_upload';
 const String tableRedditLocalVote = 'reddit_local_vote';
@@ -37,7 +38,7 @@ const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 47;
+const int databaseVersion = 48;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -583,6 +584,17 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
       'in_feed INTEGER NOT NULL DEFAULT 1, '
       'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
       reverseSql: 'DROP TABLE $tableBlueskySubscription',
+    ),
+  ],
+  48: [
+    // Mastodon / Fediverse accounts followed locally. Id is the canonical
+    // user@domain so a home-instance change cannot collide bare usernames.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableMastodonSubscription ('
+      'id VARCHAR PRIMARY KEY, name VARCHAR NOT NULL, avatar_url VARCHAR, '
+      'in_feed INTEGER NOT NULL DEFAULT 1, '
+      'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableMastodonSubscription',
     ),
   ],
 });

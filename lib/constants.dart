@@ -181,6 +181,18 @@ const optionPluginBlueskyShowTab = 'plugin.bluesky.show_tab';
 /// How many posts one account contributes to the merged Bluesky feed.
 const blueskyPostsPerAccount = 20;
 
+/// Mastodon / Fediverse, read through a home instance's public REST API.
+///
+/// No login: public account lookup and statuses only. The home instance is
+/// required because Mastodon account ids are local to each server.
+const pluginIdMastodon = 'mastodon';
+const optionPluginMastodonEnabled = 'plugin.mastodon.enabled';
+const optionPluginMastodonShowTab = 'plugin.mastodon.show_tab';
+const optionPluginMastodonInstance = 'plugin.mastodon.instance';
+
+/// How many statuses one account contributes to the merged Mastodon feed.
+const mastodonPostsPerAccount = 20;
+
 const optionShouldCheckForUpdates = 'should_check_for_updates';
 
 /// Marks that the update check has been turned off once for this fork. Without

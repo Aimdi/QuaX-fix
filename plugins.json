@@ -5,6 +5,7 @@
     { "id": "reddit" },
     { "id": "threads" },
     { "id": "bluesky" },
+    { "id": "mastodon" },
     { "id": "stocks" },
     { "id": "karakeep" },
     { "id": "deepmarks" },
