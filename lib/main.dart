@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart' show LicenseEntryWithLineBreaks, LicenseRegistry, kReleaseMode;
+import 'package:flutter/cupertino.dart' show CupertinoLocalizations;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -278,6 +279,52 @@ Future<void> _migrateMediaQualityPrefs(BasePrefService prefs) async {
 Future<bool>? _databaseMigration;
 
 Future<bool> migrateDatabase() => _databaseMigration ??= Repository().migrate();
+
+/// The delegates the app runs with, named so a test can pump the same set.
+///
+/// The two fallbacks come last: [Localizations] uses the first delegate that
+/// supports each type, so they answer only where the global ones do not.
+const List<LocalizationsDelegate<dynamic>> xtaLocalizationsDelegates = [
+  L10n.delegate,
+  GlobalMaterialLocalizations.delegate,
+  GlobalWidgetsLocalizations.delegate,
+  GlobalCupertinoLocalizations.delegate,
+  _EnglishMaterialFallback(),
+  _EnglishCupertinoFallback(),
+];
+
+/// Supplies Material/Cupertino strings for a locale Flutter has none for.
+///
+/// XTA translates its own UI into more locales than `flutter_localizations`
+/// ships: there is no `material_eo.arb`, so selecting Esperanto left
+/// `MaterialLocalizations.of` with nothing to return and every Scaffold threw
+/// "No MaterialLocalizations found". The app's own strings stay translated;
+/// only the framework's own widget strings fall back to English.
+class _EnglishMaterialFallback extends LocalizationsDelegate<MaterialLocalizations> {
+  const _EnglishMaterialFallback();
+
+  @override
+  bool isSupported(Locale locale) => true;
+
+  @override
+  Future<MaterialLocalizations> load(Locale locale) => GlobalMaterialLocalizations.delegate.load(const Locale('en'));
+
+  @override
+  bool shouldReload(_EnglishMaterialFallback old) => false;
+}
+
+class _EnglishCupertinoFallback extends LocalizationsDelegate<CupertinoLocalizations> {
+  const _EnglishCupertinoFallback();
+
+  @override
+  bool isSupported(Locale locale) => true;
+
+  @override
+  Future<CupertinoLocalizations> load(Locale locale) => GlobalCupertinoLocalizations.delegate.load(const Locale('en'));
+
+  @override
+  bool shouldReload(_EnglishCupertinoFallback old) => false;
+}
 
 Future<void> main() async {
   // The listener below hands every record to dart:developer, and the client logs
@@ -768,12 +815,7 @@ class _FritterAppState extends State<FritterApp> {
               isSecure: _isSecure,
               builder: (BuildContext context, a, b) => MaterialApp(
                 navigatorKey: _navigatorKey,
-                localizationsDelegates: const [
-                  L10n.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
+                localizationsDelegates: xtaLocalizationsDelegates,
                 supportedLocales: L10n.delegate.supportedLocales,
                 locale: _locale,
                 title: 'XTA',

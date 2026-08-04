@@ -13,7 +13,7 @@ the app talks to reverse-engineered X API endpoints.
 
 ## Build & Development Commands
 
-Use `fvm flutter` instead of raw `flutter` to enforce the pinned SDK version (3.44.1).
+Use `fvm flutter` instead of raw `flutter` to enforce the pinned SDK version (3.44.4).
 
 ```bash
 # Install the pinned Flutter SDK and activate it for this project
