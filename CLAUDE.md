@@ -140,3 +140,11 @@ incremental rewrite plan.
 - `/parse-api` — guidance for safely parsing reverse-engineered X API responses
 - `/port-from-squawker` — port a bug fix or feature from the Squawker codebase
 - `/translate` — user asked anything about translation, or you tried to add/remove/edit a text that appears in the UI
+
+## Enforced Guardrails
+
+`.claude/settings.json` enforces part of the AGENTS.md hard rules: generated code
+(`lib/generated/**`, `lib/oss_licenses.dart`) is deny-listed, `lib/client/**` and
+`lib/database/**` always prompt, and hooks in `.claude/hooks/` block pinned-dep
+bumps, run codegen at session start, and `dart format` edited Dart files. See
+"Enforced guardrails" in `AGENTS.md`.
