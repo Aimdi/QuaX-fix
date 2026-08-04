@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:flutter/foundation.dart' show LicenseEntryWithLineBreaks, LicenseRegistry;
+import 'package:flutter/foundation.dart' show LicenseEntryWithLineBreaks, LicenseRegistry, kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -226,7 +226,24 @@ Future<void> _migrateCrashRepoPref(BasePrefService prefs) async {
   }
 }
 
+/// The database migration, run once however many callers ask for it.
+///
+/// It ends by purging week-old rows from the three largest tables, and no index
+/// leads with `created_at`, so each of those is a full scan. Both callers — the
+/// one below that has to finish before the models read anything, and the one in
+/// [DefaultPage] that exists to put a failure on screen — share this future, so
+/// the scan happens once and the error still reaches the reader.
+Future<bool>? _databaseMigration;
+
+Future<bool> migrateDatabase() => _databaseMigration ??= Repository().migrate();
+
 Future<void> main() async {
+  // The listener below hands every record to dart:developer, and the client logs
+  // one line per request, so a release build paid for the whole session's
+  // traffic in log records. Warnings and errors still come through, and the
+  // crash reporter hooks FlutterError rather than this, so it is unaffected.
+  Logger.root.level = kReleaseMode ? Level.WARNING : Level.INFO;
+
   Logger.root.onRecord.listen((event) async {
     log(event.message, error: event.error, stackTrace: event.stackTrace);
   });
@@ -248,8 +265,6 @@ Future<void> main() async {
     final license = await rootBundle.loadString('assets/fonts/Inter-OFL.txt');
     yield LicenseEntryWithLineBreaks(const ['Inter'], license);
   });
-
-  MediaKit.ensureInitialized();
 
   setTimeagoLocales();
 
@@ -383,7 +398,7 @@ Future<void> main() async {
   try {
     // Run the migrations early, so models work. We also do this later on so we can display errors to the user
     try {
-      await Repository().migrate();
+      await migrateDatabase();
     } catch (_) {
       // Ignore, as we'll catch it later instead
     }
@@ -407,17 +422,13 @@ Future<void> main() async {
 
     var trendLocationModel = UserTrendLocationModel(prefService);
 
-    final deepmarksClient = DeepmarksClient();
-    final karakeepClient = KarakeepClient();
-    final redditClient = RedditClient();
-    final redditIcons = RedditIcons(redditClient);
-    final redditAuth = RedditAuth();
+    // Only the three stores this function has to load itself are built here.
+    // The rest — every plugin client, and the stores that hang off one — are
+    // built by their `Provider`'s `create`, which runs on the first read. A
+    // reader with the plugin switched off never reads them, so the HTTP client
+    // and disk cache those constructors allocate are never allocated at all.
     final redditSubreddits = RedditSubredditsStore(prefService);
-    final redditFeed = RedditFeedStore(redditClient, redditSubreddits, prefService, auth: redditAuth);
-    final substackClient = SubstackClient();
     final substackPublications = SubstackPublicationsStore(prefService);
-    final substackFeed = SubstackFeedStore(substackClient, substackPublications);
-    final substackAdd = SubstackAddPublicationStore(substackClient);
     final substackRead = SubstackReadStore(prefService);
 
     // Everything above only constructs; the reads all happen here. They were a
@@ -451,7 +462,6 @@ Future<void> main() async {
         child: MultiProvider(
           providers: [
             Provider(create: (context) => groupsModel),
-            Provider(create: (context) => redditIcons),
             Provider(create: (context) => feedSessionCache),
             Provider(create: (context) => VideoControllerPool(maxSize: 5)),
             Provider(create: (context) => homeModel),
@@ -464,16 +474,26 @@ Future<void> main() async {
             Provider(create: (context) => trendLocationModel),
             Provider(create: (context) => TrendLocationsModel()),
             Provider(create: (context) => TrendsModel(trendLocationModel)),
-            Provider(create: (_) => deepmarksClient),
-            Provider(create: (_) => karakeepClient),
-            Provider(create: (_) => redditClient),
-            Provider(create: (_) => redditAuth),
+            // Order matters below: a `create` that reads another provider only
+            // finds one registered above it.
+            Provider(create: (_) => DeepmarksClient()),
+            Provider(create: (_) => KarakeepClient()),
+            Provider(create: (_) => RedditClient()),
+            Provider(create: (_) => RedditAuth()),
+            Provider(create: (context) => RedditIcons(context.read<RedditClient>())),
             Provider(create: (_) => redditSubreddits),
-            Provider(create: (_) => redditFeed),
-            Provider(create: (_) => substackClient),
+            Provider(
+              create: (context) => RedditFeedStore(
+                context.read<RedditClient>(),
+                redditSubreddits,
+                prefService,
+                auth: context.read<RedditAuth>(),
+              ),
+            ),
+            Provider(create: (_) => SubstackClient()),
             Provider(create: (_) => substackPublications),
-            Provider(create: (_) => substackFeed),
-            Provider(create: (_) => substackAdd),
+            Provider(create: (context) => SubstackFeedStore(context.read<SubstackClient>(), substackPublications)),
+            Provider(create: (context) => SubstackAddPublicationStore(context.read<SubstackClient>())),
             Provider(create: (_) => substackRead),
             ChangeNotifierProvider(create: (_) => VideoContextState(prefService.get(optionMediaDefaultMute))),
           ],
@@ -481,6 +501,13 @@ Future<void> main() async {
         ),
       ),
     );
+
+    // libmpv is a large library to dlopen and a reader who never opens a video
+    // never needs it, so it no longer sits in front of the first frame. The
+    // earliest a player can be built is a feed tile that has already fetched its
+    // stream urls and been scrolled into view, which is several async hops after
+    // this callback has run.
+    WidgetsBinding.instance.addPostFrameCallback((_) => MediaKit.ensureInitialized());
   } catch (e, stackTrace) {
     log('Unable to start Fritter', error: e, stackTrace: stackTrace);
   }
@@ -771,13 +798,16 @@ class _DefaultPageState extends State<DefaultPage> {
   void initState() {
     super.initState();
 
-    // Run the database migrations
-    Repository().migrate().catchError((e, s) {
-      setState(() {
-        _migrationError = e;
-        _migrationStackTrace = s;
-      });
-      return e;
+    // `main` has already run this; the same future is awaited here so a failure
+    // still reaches the screen instead of only the log.
+    migrateDatabase().catchError((Object e, StackTrace s) {
+      if (mounted) {
+        setState(() {
+          _migrationError = e;
+          _migrationStackTrace = s;
+        });
+      }
+      return false;
     });
 
     final appLinks = AppLinks();
