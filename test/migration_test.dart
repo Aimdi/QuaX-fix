@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
@@ -12,7 +12,7 @@ void main() {
   });
 
   test('fresh onCreate reaches databaseVersion with core tables', () async {
-    final path = '${Directory.systemTemp.path}/quax_migrate_fresh_${DateTime.now().microsecondsSinceEpoch}.db';
+    final path = '${Directory.systemTemp.path}/xta_migrate_fresh_${DateTime.now().microsecondsSinceEpoch}.db';
     final plan = buildMigrationPlan();
     final db = await openDatabase(
       path,
@@ -42,7 +42,7 @@ void main() {
   });
 
   test('upgrade from v22 preserves account auth_header and subscription rows', () async {
-    final path = '${Directory.systemTemp.path}/quax_migrate_v22_${DateTime.now().microsecondsSinceEpoch}.db';
+    final path = '${Directory.systemTemp.path}/xta_migrate_v22_${DateTime.now().microsecondsSinceEpoch}.db';
     final plan = buildMigrationPlan();
 
     final authHeader = '{"authorization":"Bearer test-token","cookie":"auth_token=redacted"}';
@@ -56,7 +56,7 @@ void main() {
     await db.insert(tableAccounts, {
       'id': '42',
       'auth_header': authHeader,
-      'screen_name': 'quax_test',
+      'screen_name': 'xta_test',
     });
     await db.insert(tableSubscription, {
       'id': '783214',
@@ -83,7 +83,7 @@ void main() {
 
     final account = Account.fromMap((await db.query(tableAccounts, where: 'id = ?', whereArgs: ['42'])).single);
     expect(account.authHeader, authHeader);
-    expect(account.screenName, 'quax_test');
+    expect(account.screenName, 'xta_test');
     expect(account.consecutiveNotFound, 0);
     expect(account.lastNotFoundAt, isNull);
 

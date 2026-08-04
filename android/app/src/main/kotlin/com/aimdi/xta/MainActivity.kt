@@ -1,16 +1,19 @@
-package com.teskann.quax
+package com.aimdi.xta
 
+import android.app.PictureInPictureParams
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
+import android.util.Rational
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.provider.DocumentsContract
-import io.flutter.embedding.android.FlutterActivity
+import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-class MainActivity : FlutterActivity() {
+class MainActivity : AudioServiceActivity() {
     private val CHANNEL = "browser_resolver"
     private val REQUEST_PICK_DIRECTORY = 0xD17
 
@@ -26,12 +29,45 @@ class MainActivity : FlutterActivity() {
                 when (call.method) {
                     "scanMediaFile" -> scanMediaFile(call, result)
                     "getDefaultBrowser" -> getDefaultBrowser(result)
+                    "listBrowsers" -> listBrowsers(result)
                     "pickDownloadDirectory" -> pickDownloadDirectory(result)
                     "hasDownloadDirectoryAccess" -> hasDownloadDirectoryAccess(call, result)
                     "saveToDownloadDirectory" -> saveToDownloadDirectory(call, result)
+                    "enterPictureInPicture" -> enterPictureInPicture(call, result)
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    /**
+     * Shrinks the activity into a floating window, shaped like the video.
+     *
+     * Android clamps the aspect ratio to roughly between 1:2.39 and 2.39:1 and
+     * throws outside that, so an extreme clip is nudged inside the range rather
+     * than taking the whole call down with it.
+     */
+    private fun enterPictureInPicture(call: MethodCall, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            result.success(false)
+            return
+        }
+
+        val ratio = (call.argument<Double>("aspectRatio") ?: (16.0 / 9.0))
+            .coerceIn(0.42, 2.39)
+        val numerator = (ratio * 1000).toInt()
+
+        return try {
+            val params = PictureInPictureParams.Builder()
+                .setAspectRatio(Rational(numerator, 1000))
+                .build()
+            result.success(enterPictureInPictureMode(params))
+        } catch (e: IllegalStateException) {
+            // Picture-in-picture can be switched off per app in system settings,
+            // and some devices refuse it outright.
+            result.success(false)
+        } catch (e: IllegalArgumentException) {
+            result.success(false)
+        }
     }
 
     private fun scanMediaFile(call: MethodCall, result: MethodChannel.Result) {
@@ -51,6 +87,34 @@ class MainActivity : FlutterActivity() {
         }
         val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
         result.success(resolveInfo?.activityInfo?.packageName)
+    }
+
+    /**
+     * Every app that can open an https link, so the reader can name one.
+     *
+     * The system default is whatever Android was last told; someone who keeps
+     * a hardened browser for links off a feed had no way to say so short of
+     * changing that default for everything.
+     *
+     * Visible because the manifest already declares the matching <queries>
+     * entries; without those, package visibility would hide all of them.
+     */
+    private fun listBrowsers(result: MethodChannel.Result) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://example.com"))
+        val browsers = packageManager
+            .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+            .map {
+                mapOf(
+                    "package" to it.activityInfo.packageName,
+                    "label" to it.loadLabel(packageManager).toString(),
+                )
+            }
+            // One app can offer several matching activities; the reader is
+            // choosing an app, not an activity.
+            .distinctBy { it["package"] }
+            .sortedBy { it["label"]?.lowercase() }
+
+        result.success(browsers)
     }
 
     /**

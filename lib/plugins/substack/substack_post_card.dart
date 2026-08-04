@@ -2,12 +2,12 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/substack/substack_models.dart';
-import 'package:quax/plugins/substack/substack_reader_screen.dart';
-import 'package:quax/plugins/substack/substack_store.dart';
-import 'package:quax/tweet/tweet_chrome.dart';
-import 'package:quax/ui/dates.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/substack/substack_models.dart';
+import 'package:xta/plugins/substack/substack_reader_screen.dart';
+import 'package:xta/plugins/substack/substack_store.dart';
+import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/ui/dates.dart';
 
 /// A Substack post as a timeline card.
 ///
@@ -76,6 +76,10 @@ class SubstackPostCard extends StatelessWidget {
                     const SizedBox(height: 12),
                     _cover(context),
                   ],
+                  if ((post.reactionCount ?? 0) > 0 || (post.commentCount ?? 0) > 0) ...[
+                    const SizedBox(height: 8),
+                    _counts(context),
+                  ],
                 ],
               ),
             ),
@@ -101,7 +105,13 @@ class SubstackPostCard extends StatelessWidget {
                   color: theme.colorScheme.surfaceContainerHighest,
                   child: Icon(Icons.article_outlined, size: 14, color: theme.colorScheme.onSurfaceVariant),
                 )
-              : ExtendedImage.network(logo, width: 24, height: 24, fit: BoxFit.cover),
+              : ExtendedImage.network(logo,
+                  width: 24,
+                  height: 24,
+                  fit: BoxFit.cover,
+                  // width: constrains layout only; without cacheWidth the full
+                  // logo still rasterises into the image cache.
+                  cacheWidth: (24 * MediaQuery.devicePixelRatioOf(context)).ceil()),
         ),
         const SizedBox(width: 8),
         Flexible(
@@ -119,6 +129,30 @@ class SubstackPostCard extends StatelessWidget {
         const Spacer(),
         if (date != null)
           Text(createRelativeDate(date), style: theme.textTheme.bodySmall),
+      ],
+    );
+  }
+
+  /// What the post has gathered, shown only when there is something to show —
+  /// a row of zeroes says nothing.
+  Widget _counts(BuildContext context) {
+    final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
+    final style = theme.textTheme.bodySmall!.copyWith(color: muted);
+
+    return Row(
+      children: [
+        if ((post.reactionCount ?? 0) > 0) ...[
+          Icon(Icons.favorite_outline, size: 15, color: muted),
+          const SizedBox(width: 4),
+          Text('${post.reactionCount}', style: style),
+        ],
+        if ((post.reactionCount ?? 0) > 0 && (post.commentCount ?? 0) > 0) const SizedBox(width: 14),
+        if ((post.commentCount ?? 0) > 0) ...[
+          Icon(Icons.mode_comment_outlined, size: 15, color: muted),
+          const SizedBox(width: 4),
+          Text('${post.commentCount}', style: style),
+        ],
       ],
     );
   }
@@ -147,7 +181,9 @@ class SubstackPostCard extends StatelessWidget {
         children: [
           AspectRatio(
             aspectRatio: 16 / 9,
-            child: ExtendedImage.network(post.coverImage!, fit: BoxFit.cover),
+            child: ExtendedImage.network(post.coverImage!,
+                fit: BoxFit.cover,
+                cacheWidth: (MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context)).ceil()),
           ),
           if (post.isVideo)
             Container(

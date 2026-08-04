@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_triple/flutter_triple.dart';
+import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/substack/substack_client.dart';
-import 'package:quax/plugins/substack/substack_html.dart';
-import 'package:quax/plugins/substack/substack_models.dart';
-import 'package:quax/plugins/substack/substack_store.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/substack/substack_client.dart';
+import 'package:xta/plugins/substack/substack_html.dart';
+import 'package:xta/plugins/substack/substack_models.dart';
+import 'package:xta/plugins/substack/substack_archive_screen.dart';
+import 'package:xta/plugins/substack/substack_audio_player.dart';
+import 'package:xta/plugins/substack/substack_comments_screen.dart';
+import 'package:xta/plugins/substack/substack_store.dart';
+import 'package:xta/speech/speech_store.dart';
+import 'package:xta/speech/tts_settings.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/utils/urls.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -23,14 +28,15 @@ class SubstackReaderScreen extends StatefulWidget {
 
 class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
   late final WebViewController _controller;
-  late final FlutterTts _tts;
   late SubstackPost _post;
   Object? _error;
   var _loading = true;
   var _empty = false;
   var _paywalled = false;
-  var _speaking = false;
-  var _ttsReady = false;
+
+  /// True when what is on screen is the free opening of a paid post rather than
+  /// the whole thing.
+  var _partial = false;
   String? _speakText;
 
   @override
@@ -38,43 +44,10 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
     super.initState();
     _post = widget.post;
     _controller = WebViewController()..setJavaScriptMode(JavaScriptMode.unrestricted);
-    _tts = FlutterTts();
-    _initTts();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SubstackReadStore>().markRead(_post.id);
       _load();
     });
-  }
-
-  Future<void> _initTts() async {
-    await _tts.awaitSpeakCompletion(true);
-    _tts.setCancelHandler(() {
-      if (mounted) setState(() => _speaking = false);
-    });
-    _tts.setErrorHandler((_) {
-      if (mounted) setState(() => _speaking = false);
-    });
-
-    final locale = Intl.shortLocale(Intl.getCurrentLocale());
-    final language = switch (locale) {
-      'zh' => 'zh-CN',
-      'nb' => 'nb-NO',
-      'pt' => 'pt-BR',
-      _ => locale.contains('_') ? locale.replaceAll('_', '-') : '$locale-${locale.toUpperCase()}',
-    };
-    try {
-      await _tts.setLanguage(language);
-    } catch (_) {
-      await _tts.setLanguage('en-US');
-    }
-    await _tts.setSpeechRate(0.45);
-    if (mounted) setState(() => _ttsReady = true);
-  }
-
-  @override
-  void dispose() {
-    _tts.stop();
-    super.dispose();
   }
 
   Future<void> _load() async {
@@ -90,6 +63,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
       if (_post.canonicalUrl != null) {
         _error = null;
         _paywalled = false;
+        _partial = false;
         _empty = false;
         _speakText = null;
         _controller.setNavigationDelegate(NavigationDelegate(
@@ -108,9 +82,17 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
   }
 
   Future<void> _showContent(SubstackPost post) async {
-    if (post.isPaywalled) {
+    final html = post.bodyHtml;
+    final hasBody = html != null && html.trim().isNotEmpty;
+
+    // A paid post usually arrives with its opening paragraphs — the part the
+    // publication chose to give away. Refusing to render any of it because the
+    // post is marked paid threw away what had already been sent, and left a
+    // lock icon where there was something to read.
+    if (post.isPaywalled && !hasBody) {
       setState(() {
         _paywalled = true;
+        _partial = false;
         _empty = false;
         _loading = false;
         _speakText = null;
@@ -118,8 +100,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
       return;
     }
 
-    final html = post.bodyHtml;
-    if (html != null && html.trim().isNotEmpty) {
+    if (hasBody) {
       _paywalled = false;
       _empty = false;
       _speakText = buildSubstackSpeakText(
@@ -129,6 +110,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
         publicationName: post.publicationName,
         bodyHtml: html,
       );
+      _partial = post.isPaywalled;
       _controller.setNavigationDelegate(NavigationDelegate(
         onPageFinished: (_) {
           if (mounted) setState(() => _loading = false);
@@ -148,6 +130,11 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
           muted: _cssColor(scheme.onSurfaceVariant),
           link: _cssColor(scheme.primary),
           isDark: isDark,
+          // Says where the free part stops, so the end of the preview does not
+          // read as the end of the article.
+          footer: post.isPaywalled ? L10n.of(context).plugin_substack_preview_ends : null,
+          footerLink: post.isPaywalled ? post.canonicalUrl : null,
+          footerLinkLabel: post.isPaywalled ? L10n.of(context).plugin_substack_continue_on_site : null,
         ),
       );
       return;
@@ -155,6 +142,7 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
 
     if (post.canonicalUrl != null) {
       _paywalled = false;
+      _partial = false;
       _empty = false;
       _speakText = null;
       _controller.setNavigationDelegate(NavigationDelegate(
@@ -171,15 +159,19 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
         _loading = false;
         _empty = true;
         _paywalled = false;
+        _partial = false;
         _speakText = null;
       });
     }
   }
 
-  Future<void> _toggleTts() async {
-    if (_speaking) {
-      await _tts.stop();
-      if (mounted) setState(() => _speaking = false);
+  /// True when what is being read aloud is this article, rather than one the
+  /// reader started earlier and left playing.
+  bool _isReadingThis(SpeechPlayback playback) => playback.speaking && playback.title == _post.title;
+
+  Future<void> _toggleTts(SpeechStore speech) async {
+    if (_isReadingThis(speech.state)) {
+      await speech.stop();
       return;
     }
 
@@ -192,14 +184,11 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
       return;
     }
 
-    // Android engines can choke on very long utterances; speak in chunks.
-    final chunks = _chunkForTts(text);
-    setState(() => _speaking = true);
-    for (final chunk in chunks) {
-      if (!mounted || !_speaking) break;
-      await _tts.speak(chunk);
-    }
-    if (mounted) setState(() => _speaking = false);
+    await speech.speak(
+      title: _post.title,
+      text: text,
+      choice: readTtsChoice(PrefService.of(context, listen: false)),
+    );
   }
 
   void _share() {
@@ -210,19 +199,67 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final canSpeak = _ttsReady && !_paywalled && !_empty && (_speakText?.trim().isNotEmpty ?? false);
+    final speech = context.read<SpeechStore>();
+    final canSpeak = !_paywalled && !_empty && (_speakText?.trim().isNotEmpty ?? false);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(_post.title, maxLines: 1, overflow: TextOverflow.ellipsis),
         actions: [
-          if (canSpeak || _speaking)
+          // Says up front that this is the opening of a paid post, so the
+          // reader is not surprised when it stops.
+          if (_partial)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+              child: Chip(
+                label: Text(L10n.of(context).plugin_substack_preview_badge),
+                labelStyle: Theme.of(context).textTheme.labelSmall,
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+              ),
+            ),
+          IconButton(
+            tooltip: L10n.of(context).plugin_substack_comments,
+            icon: const Icon(Icons.mode_comment_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => SubstackCommentsScreen(post: _post)),
+            ),
+          ),
+          IconButton(
+            tooltip: L10n.of(context).plugin_substack_publication,
+            icon: const Icon(Icons.newspaper_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => SubstackArchiveScreen(publication: _post.publication)),
+            ),
+          ),
+          if (canSpeak)
+            ScopedBuilder<SpeechStore, SpeechPlayback>(
+              store: speech,
+              onState: (context, playback) {
+                final reading = _isReadingThis(playback);
+                return IconButton(
+                  tooltip: reading
+                      ? L10n.of(context).plugin_substack_tts_stop
+                      : L10n.of(context).plugin_substack_tts_listen,
+                  icon: Icon(reading ? Icons.stop_circle_outlined : Icons.record_voice_over_outlined),
+                  onPressed: () => _toggleTts(speech),
+                );
+              },
+            ),
+          if (canSpeak)
             IconButton(
-              tooltip: _speaking
-                  ? L10n.of(context).plugin_substack_tts_stop
-                  : L10n.of(context).plugin_substack_tts_listen,
-              icon: Icon(_speaking ? Icons.stop_circle_outlined : Icons.record_voice_over_outlined),
-              onPressed: _toggleTts,
+              tooltip: L10n.of(context).plugin_substack_tts_settings,
+              icon: const Icon(Icons.tune),
+              onPressed: () async {
+                // A new voice cannot be applied to an utterance already in
+                // flight, so what is being read stops rather than finishing in
+                // the voice that was just replaced.
+                if (await openTtsSettings(context, speech.tts)) {
+                  await speech.stop();
+                }
+              },
             ),
           if (_post.canonicalUrl != null) ...[
             IconButton(
@@ -260,10 +297,19 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
                 )
               : _empty
                   ? Center(child: Text(L10n.of(context).plugin_substack_no_content))
-                  : Stack(
+                  : Column(
                       children: [
-                        WebViewWidget(controller: _controller),
-                        if (_loading) const Center(child: CircularProgressIndicator()),
+                        // A podcast post's episode, above its show notes.
+                        if (_post.isPodcast)
+                          SubstackAudioPlayer(url: _post.audioUrl!, title: _post.title),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              WebViewWidget(controller: _controller),
+                              if (_loading) const Center(child: CircularProgressIndicator()),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
     );
@@ -314,22 +360,4 @@ class _PaywallPane extends StatelessWidget {
 String _cssColor(Color color) {
   final hex = color.toARGB32().toRadixString(16).padLeft(8, '0');
   return '#${hex.substring(2)}';
-}
-
-List<String> _chunkForTts(String text, {int maxChars = 3500}) {
-  if (text.length <= maxChars) return [text];
-
-  final chunks = <String>[];
-  var remaining = text;
-  while (remaining.length > maxChars) {
-    var splitAt = remaining.lastIndexOf('\n\n', maxChars);
-    if (splitAt < maxChars ~/ 2) {
-      splitAt = remaining.lastIndexOf('. ', maxChars);
-      if (splitAt < maxChars ~/ 2) splitAt = maxChars;
-    }
-    chunks.add(remaining.substring(0, splitAt).trim());
-    remaining = remaining.substring(splitAt).trimLeft();
-  }
-  if (remaining.isNotEmpty) chunks.add(remaining);
-  return chunks;
 }

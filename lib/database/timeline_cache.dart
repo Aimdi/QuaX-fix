@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/database/repository.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/database/repository.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// Last-known first page of a thread or a profile timeline.

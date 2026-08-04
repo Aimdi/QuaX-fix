@@ -26,6 +26,47 @@ const optionMediaBackgroundPlayback = 'media.allow_background_play';
 const optionMediaAllowBackgroundPlayOtherApps = 'media.allow_background_play.other_apps';
 const optionMediaVideoPrefetchSeconds = 'media.video_prefetch_seconds';
 
+/// Whether decoded frames go straight from the hardware decoder to the screen.
+///
+/// Off, libmpv uses `mediacodec-copy`: every frame is copied out of the decoder
+/// into system memory and then uploaded to a texture, which is memory bandwidth
+/// spent competing with the thread that composites a scrolling feed. On, it uses
+/// `mediacodec` and copies nothing — but the direct path renders black on some
+/// devices, so this is the reader's to turn on rather than a default.
+const optionMediaDirectHardwareDecoding = 'media.direct_hardware_decoding';
+
+/// How far ahead a feed video reads when the reader has not asked for more.
+///
+/// libmpv's own defaults are built for watching one film, not for scrolling
+/// past twenty clips — most of which are watched for seconds, and many of which
+/// are never watched at all.
+const int kVideoReadaheadSeconds = 10;
+
+/// The bytes behind that readahead, and how much of what already played is kept
+/// for scrubbing back. A feed is not somewhere anyone rewinds far.
+const int kVideoDemuxerMaxBytes = 16 * 1024 * 1024;
+const int kVideoDemuxerMaxBackBytes = 4 * 1024 * 1024;
+
+/// How long a video that has scrolled off screen keeps its player before handing
+/// it back to the pool. Long enough that overshooting a video and scrolling back
+/// re-attaches to it at the same position; short enough that a fling does not
+/// leave a trail of live players behind it.
+const Duration kVideoHiddenReleaseDelay = Duration(seconds: 3);
+
+/// How long a video tile must stay at least half on screen before it is allowed
+/// to build a player. A fling sweeps past tiles that are never watched; without
+/// this, each of them allocated libmpv and a native texture on the way by.
+const Duration kVideoCreationSettleDelay = Duration(milliseconds: 250);
+
+/// How many video players may be alive at once.
+///
+/// Each one is a libmpv instance holding a MediaCodec session, a demuxer thread
+/// and its cache — and Android caps how many hardware video decoders exist at
+/// all, across every app. Exhausting that cap does not fail loudly; it silently
+/// drops new videos to software decoding, which is exactly when a timeline stops
+/// keeping up.
+const int kVideoPoolSize = 3;
+
 const optionDownloadType = 'download.type';
 const optionDownloadPath = 'download.path';
 // Android document tree for the download folder. The legacy path above is kept
@@ -44,6 +85,18 @@ const optionPluginDeepmarksApiBase = 'plugin.deepmarks.api_base';
 const optionPluginDeepmarksApiKey = 'plugin.deepmarks.api_key';
 const optionPluginDeepmarksSecretKey = 'plugin.deepmarks.secret_key';
 
+const pluginIdImmich = 'immich';
+const optionPluginImmichEnabled = 'plugin.immich.enabled';
+const optionPluginImmichServerUrl = 'plugin.immich.server_url';
+const optionPluginImmichApiKey = 'plugin.immich.api_key';
+
+/// Whether each bookmark folder gets an Immich album of its own, named after it.
+const optionPluginImmichAlbumPerFolder = 'plugin.immich.album_per_folder';
+
+/// Videos and GIFs are sent alongside photos unless this is off. They are much
+/// larger than a photo, which is worth a choice on a metered connection.
+const optionPluginImmichIncludeVideos = 'plugin.immich.include_videos';
+
 const pluginIdKarakeep = 'karakeep';
 const optionPluginKarakeepEnabled = 'plugin.karakeep.enabled';
 const optionPluginKarakeepServerUrl = 'plugin.karakeep.server_url';
@@ -59,6 +112,13 @@ const optionPluginRedditSubreddits = 'plugin.reddit.subreddits';
 const optionPluginRedditSource = 'plugin.reddit.source';
 const redditSourceAuto = 'auto';
 const redditSourcePublic = 'public';
+
+/// The listing a Reddit feed uses until the reader picks another.
+const redditSortHot = 'hot';
+
+/// Where the subreddit artwork is kept, named here so the plugin can delete
+/// the same directory it fills.
+const redditIconsCacheName = 'reddit_icons';
 /// Set once the reader signs in; the only long-lived Reddit credential kept.
 const optionPluginRedditRefreshToken = 'plugin.reddit.refresh_token';
 
@@ -74,13 +134,44 @@ const optionPluginRedditShowTab = 'plugin.reddit.show_tab';
 /// shows them so the choice is made once.
 const optionPluginRedditSort = 'plugin.reddit.sort';
 
+const pluginIdStocks = 'stocks';
+const optionPluginStocksEnabled = 'plugin.stocks.enabled';
+const optionPluginStocksShowTab = 'plugin.stocks.show_tab';
+
 const pluginIdSubstack = 'substack';
+/// Reading aloud: which engine, which voice, how fast. Shared rather than
+/// per-plugin — a reader picks a voice once, not once per source.
+const optionTtsEngine = 'tts.engine';
+const optionTtsVoiceName = 'tts.voice_name';
+const optionTtsVoiceLocale = 'tts.voice_locale';
+const optionTtsRate = 'tts.rate';
+
 const optionPluginSubstackEnabled = 'plugin.substack.enabled';
 const optionPluginSubstackShowTab = 'plugin.substack.show_tab';
 const optionPluginSubstackPublications = 'plugin.substack.publications';
 const optionPluginSubstackReadIds = 'plugin.substack.read_ids';
 const substackFeedPageSize = 8;
 const substackReadIdsCap = 400;
+
+/// Threads, read through the reader's own RSSHub instance.
+///
+/// There is no public instance default on purpose: the shared one is rate
+/// limited to the point of uselessness for this route, and pointing everyone's
+/// app at somebody else's server is neither reliable nor private.
+const pluginIdThreads = 'threads';
+const optionPluginThreadsEnabled = 'plugin.threads.enabled';
+const optionPluginThreadsShowTab = 'plugin.threads.show_tab';
+const optionPluginThreadsInstance = 'plugin.threads.instance';
+
+/// How many posts one account contributes to the merged feed.
+const threadsPostsPerAccount = 20;
+
+/// The reader's own Xy server, which answers the profile lookups Threads will
+/// not serve anonymously. Separate from the RSSHub instance above: that one
+/// brings the posts, this one brings who wrote them.
+const optionPluginThreadsApiBase = 'plugin.threads.api_base';
+const optionPluginThreadsApiToken = 'plugin.threads.api_token';
+const kThreadsApiDefaultBase = 'https://xy-threads.fly.dev';
 
 const optionShouldCheckForUpdates = 'should_check_for_updates';
 
@@ -89,10 +180,19 @@ const optionShouldCheckForUpdates = 'should_check_for_updates';
 /// default — which is not the installs that were being interrupted.
 const optionUpdateCheckReset = 'should_check_for_updates.reset';
 // This fork's own repository. Releases and crash reports belong here, not on
-// upstream teskann/quax, whose versions this fork never matches.
-const githubRepo = 'Aimdi/QuaX-fix';
+// upstream teskann/XTA, whose versions this fork never matches.
+const githubRepo = 'Aimdi/XTA';
 const optionConfirmClose = 'confirm_close';
 const optionOpenLinksInEmbeddedBrowser = 'open_links_in_embedded_browser';
+
+/// Package name of the browser external links are handed to. Empty means
+/// whatever Android would have picked.
+const optionExternalBrowser = 'external_browser';
+
+/// Marks that links have been switched to the in-app browser once. The default
+/// alone does not reach an install that already stored the old one, which is
+/// every install this has ever run on.
+const optionEmbeddedBrowserReset = 'open_links_in_embedded_browser.reset';
 const optionShareBaseUrl = 'share_base_url';
 
 const optionCrashReportsEnabled = 'crash.reports_enabled';
@@ -105,7 +205,7 @@ const optionDisableWarningsForUnrelatedPostsInFeed = 'disable_warnings_for_unrel
 const alwaysShowFullTweetContents = 'always_show_full_tweet_contents';
 
 // An OpenAI-compatible or Anthropic endpoint the reader supplies themselves.
-// Stored on the device like every other credential here; QuaX calls it only
+// Stored on the device like every other credential here; XTA calls it only
 // when a feature asks it to.
 const optionAiBaseUrl = 'ai.base_url';
 const optionAiApiKey = 'ai.api_key';
@@ -191,6 +291,11 @@ const optionSavedTabOrder = 'saved.tab_order';
 const optionSavedFolderHintShown = 'saved.folder_hint_shown';
 const optionLikedFirstToastShown = 'saved.liked_first_toast_shown';
 
+/// Whether a plain tap on the bookmark files a post where the reader last chose
+/// to, and which folder that is. Empty means unfiled.
+const optionSavedStickyFolderEnabled = 'saved.sticky_folder_enabled';
+const optionSavedStickyFolderId = 'saved.sticky_folder_id';
+
 const optionUserTrendsLocations = 'trends.locations';
 
 const optionNonConfirmationBiasMode = 'other.improve_non_confirmation_bias';
@@ -201,7 +306,7 @@ const optionTweetsShowSubscribeBadge = 'tweets.show_subscribe_badge';
 // delay for it.
 const optionGestureDoubleTapLike = 'gestures.double_tap_like';
 
-// The TradingView chart on a ticker screen. It is the one thing QuaX loads
+// The TradingView chart on a ticker screen. It is the one thing XTA loads
 // from outside X, so it is named plainly and can be switched off; the posts
 // about the ticker do not depend on it.
 const optionTickerChart = 'other.ticker_chart';
@@ -292,9 +397,24 @@ const optionEndpointRegistryEnabled = 'api.endpoint_registry.enabled';
 const optionEndpointRegistryUrl = 'api.endpoint_registry.url';
 const optionEndpointRegistryCache = 'api.endpoint_registry.cache';
 const optionEndpointRegistryFetchedAt = 'api.endpoint_registry.fetched_at';
+/// The branch the published documents are read from.
+///
+/// Named once: both registries pointed at `master`, which this fork does not
+/// have, so every fetch 404'd and neither had ever been read.
+const githubPublishBranch = 'main';
+
 const defaultEndpointRegistryUrl =
-    'https://raw.githubusercontent.com/$githubRepo/master/endpoints.json';
+    'https://raw.githubusercontent.com/$githubRepo/$githubPublishBranch/endpoints.json';
 const Duration endpointRegistryTimeout = Duration(seconds: 10);
+
+// Plugin catalogue: decides which plugins the store offers, published the same
+// way the endpoint registry is. It can only narrow the built-in list — a
+// plugin's code is compiled in — and never withdraws one already installed.
+const optionPluginCatalogueUrl = 'plugin.catalogue.url';
+const optionPluginCatalogueCache = 'plugin.catalogue.cache';
+const optionPluginCatalogueFetchedAt = 'plugin.catalogue.fetched_at';
+const defaultPluginCatalogueUrl =
+    'https://raw.githubusercontent.com/$githubRepo/$githubPublishBranch/plugins.json';
 
 // Offline read cache for threads and profile timelines (feed_group_chunk covers
 // group feeds). Short windows: these are re-read within a session far more

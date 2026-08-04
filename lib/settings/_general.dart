@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/home/_feed.dart';
-import 'package:quax/home/home_screen.dart';
-import 'package:quax/profile/profile.dart';
-import 'package:quax/settings/_crash_reports.dart';
-import 'package:quax/utils/iterables.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/settings/_browser_picker.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/home/_feed.dart';
+import 'package:xta/home/home_screen.dart';
+import 'package:xta/profile/profile.dart';
+import 'package:xta/settings/_crash_reports.dart';
+import 'package:xta/utils/iterables.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 
@@ -99,6 +100,7 @@ class SettingsGeneralFragment extends StatelessWidget {
             subtitle: Text(L10n.of(context).option_open_links_in_embedded_browser_description),
             pref: optionOpenLinksInEmbeddedBrowser,
           ),
+          const BrowserPickerTile(),
           PrefSwitch(
             title: Text(L10n.of(context).disable_screenshots),
             subtitle: Text(L10n.of(context).disable_screenshots_hint),

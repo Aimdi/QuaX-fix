@@ -1,7 +1,7 @@
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
 
 /// Built from API-shaped JSON rather than by hand: these are the payloads the
 /// grid is handed in the app, so the mapping is exercised as it really runs.
@@ -122,5 +122,29 @@ void main() {
     test('videos keeps GIFs too, since X serves them as video', () {
       expect(items.where(MediaFilter.videos.accepts), hasLength(2));
     });
+  });
+
+  test('a first page that is only a cursor is followed, not shown as empty', () async {
+    // Every leading entry tombstoned away: no chains, but the feed goes on.
+    final pages = <String?, ChainPage>{
+      null: (chains: <TweetChain>[], nextCursor: 'c1'),
+      'c1': (chains: [_chain(_tweetWith('1', ['photo']))], nextCursor: 'c2'),
+    };
+
+    final page = await mediaPageWithLookahead(null, (cursor) async => pages[cursor]!, mediaItemsFromChains);
+
+    expect(page.items, hasLength(1));
+    expect(page.nextCursor, 'c2');
+  });
+
+  test('a feed that is cursors all the way down still ends at the bound', () async {
+    var calls = 0;
+    final page = await mediaPageWithLookahead(null, (cursor) async {
+      calls++;
+      return (chains: <TweetChain>[], nextCursor: 'c$calls');
+    }, mediaItemsFromChains);
+
+    expect(page.items, isEmpty);
+    expect(calls, 5, reason: 'the first page plus maxLookahead more');
   });
 }

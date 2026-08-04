@@ -3,23 +3,23 @@ import 'dart:convert';
 
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:ffcache/ffcache.dart';
-import 'package:quax/client/endpoints.dart';
-import 'package:quax/client/errors.dart';
-import 'package:quax/client/transport.dart';
-import 'package:quax/client/timeline_parser.dart';
-import 'package:quax/client/tweet_models.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/profile/profile_model.dart';
-import 'package:quax/user.dart';
-import 'package:quax/utils/cache.dart';
-import 'package:quax/utils/iterables.dart';
+import 'package:xta/client/endpoints.dart';
+import 'package:xta/client/errors.dart';
+import 'package:xta/client/transport.dart';
+import 'package:xta/client/timeline_parser.dart';
+import 'package:xta/client/tweet_models.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/profile/profile_model.dart';
+import 'package:xta/user.dart';
+import 'package:xta/utils/cache.dart';
+import 'package:xta/utils/iterables.dart';
 
 // Re-exported so the 37 files importing client.dart keep compiling unchanged
 // after the transport, the error types and the tweet model moved out.
-export 'package:quax/client/errors.dart';
-export 'package:quax/client/transport.dart';
-export 'package:quax/client/timeline_parser.dart';
-export 'package:quax/client/tweet_models.dart';
+export 'package:xta/client/errors.dart';
+export 'package:xta/client/transport.dart';
+export 'package:xta/client/timeline_parser.dart';
+export 'package:xta/client/tweet_models.dart';
 
 class Twitter {
   static const Map<String, dynamic> _listByRestIdFeatures = {

@@ -6,12 +6,12 @@ import 'package:dynamic_color/dynamic_color.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:quax/catcher/exceptions.dart';
+import 'package:xta/catcher/exceptions.dart';
 
-import 'package:quax/client/client.dart';
-import 'package:quax/client/login_webview.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/client/login_webview.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
 
 /// Snackbar for work already under way, with a small spinner in place of an
 /// icon so a slow download does not look like a frozen one.

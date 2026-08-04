@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/home/home_screen.dart';
+import 'package:xta/home/home_screen.dart';
+import 'package:xta/plugins/plugin_storage.dart';
 
-/// Built-in QuaX plugin descriptor. Plugins are read-oriented feature packs;
+/// Built-in XTA plugin descriptor. Plugins are read-oriented feature packs;
 /// they must not add X posting / compose capabilities.
-abstract class QuaxPlugin {
+abstract class XtaPlugin {
   String get id;
   String get enabledPrefKey;
   IconData get icon;
@@ -37,4 +38,50 @@ abstract class QuaxPlugin {
 
   /// Optional configuration screen, reached from the plugin store row.
   Widget? settingsScreen(BuildContext context) => null;
+
+  /// Tables whose rows are this plugin's, and named caches it fills.
+  ///
+  /// Declared rather than deleted by hand so that [footprint] and [uninstall]
+  /// cannot disagree about what the plugin owns.
+  List<String> get tables => const [];
+  List<String> get caches => const [];
+
+  /// Returns this plugin's own settings to their defaults.
+  ///
+  /// Written by each plugin rather than derived from a list of keys: `pref`
+  /// stores a value for every key it has seen, so a reset is a typed write and
+  /// not a deletion.
+  Future<void> resetPreferences(BasePrefService prefs) async {}
+
+  /// What the plugin is currently keeping on the device.
+  Future<PluginFootprint> footprint() => pluginFootprint(tables: tables, caches: caches);
+
+  /// Switches the plugin off and deletes everything it saved.
+  ///
+  /// Turning a plugin off used to leave its subscriptions, its cache and its
+  /// credentials sitting there — which is not what anyone means by removing
+  /// something.
+  Future<void> uninstall(BuildContext context) async {
+    final prefs = PrefService.of(context, listen: false);
+
+    await erasePluginStorage(tables: tables, caches: caches);
+    await resetPreferences(prefs);
+    await setEnabled(prefs, false);
+
+    final tab = homeTabPrefKey;
+    if (tab != null) {
+      // Installing it again should offer the tab, as a first install does.
+      await prefs.set(tab, true);
+    }
+
+    if (context.mounted) {
+      await forgetLoadedData(context);
+    }
+  }
+
+  /// Empties what the plugin is holding in memory.
+  ///
+  /// The stores outlive the screens, so without this, installing again in the
+  /// same session brings back a list that has just been deleted.
+  Future<void> forgetLoadedData(BuildContext context) async {}
 }

@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' show ClientException;
-import 'package:quax/catcher/exceptions.dart';
-import 'package:quax/tweet/stale_feed_preview.dart';
+import 'package:xta/catcher/exceptions.dart';
+import 'package:xta/tweet/stale_feed_preview.dart';
 
 void main() {
   final boom = Exception('boom');

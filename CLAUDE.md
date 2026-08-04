@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**QuaX** (formerly Quacker) is a privacy-focused Flutter/Dart **read-oriented
+**XTA** (formerly Quacker) is a privacy-focused Flutter/Dart **read-oriented
 frontend** for X (formerly Twitter), forked from Quacker/Fritter. It is **not**
 X itself and does not implement posting: no compose, reply, quote, repost, or
 server-side like. Accounts are used to *fetch* content; subscriptions, saved
@@ -75,6 +75,14 @@ final count = result["legacy"]?["favorite_count"] as int? ?? 0;
 // Bad — will throw if field is absent
 final text = result["data"]["text"] as String;
 ```
+
+For new parsing code, prefer the `Json` extension type in `lib/utils/json.dart`
+— `Json(result)['data']['legacy']['favorite_count'].integer ?? 0` cannot throw
+at any step, so the deep path is the safe path (see `/parse-api`).
+
+`use_build_context_synchronously` is a build **error** here, not a hint: after
+an `await`, guard with `mounted`/`context.mounted` or capture what you need
+(messenger, navigator, strings) before the await.
 
 The layer is split by responsibility:
 

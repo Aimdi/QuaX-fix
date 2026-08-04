@@ -1,4 +1,4 @@
-import 'package:quax/constants.dart';
+import 'package:xta/constants.dart';
 
 /// Catch-up mode is per feed, so its preference key carries the group id.
 String feedCatchUpModeKey(String groupId) => '$optionFeedCatchUpModePrefix$groupId';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/user.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/user.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// Per-user feed filters ("turn off reposts"): users listed in

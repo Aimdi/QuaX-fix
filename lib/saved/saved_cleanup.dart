@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/catcher/exceptions.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/saved/saved_tweet_model.dart';
-import 'package:quax/ui/cleanup_dialog.dart';
+import 'package:xta/catcher/exceptions.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/saved/saved_tweet_model.dart';
+import 'package:xta/ui/cleanup_dialog.dart';
 
 class BrokenBookmarksDialog extends StatelessWidget {
   const BrokenBookmarksDialog({super.key});

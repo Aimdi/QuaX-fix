@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/tweet/tweet_footer.dart';
+import 'package:xta/tweet/tweet_footer.dart';
 
 /// An icon-only button with no accessible name is announced as an unnamed
 /// "button". The footer has several on every post, so the omission repeated all

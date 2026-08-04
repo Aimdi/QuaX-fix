@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:quax/plugins/substack/substack_client.dart';
-import 'package:quax/plugins/substack/substack_html.dart';
-import 'package:quax/plugins/substack/substack_models.dart';
+import 'package:xta/plugins/substack/substack_client.dart';
+import 'package:xta/plugins/substack/substack_html.dart';
+import 'package:xta/plugins/substack/substack_models.dart';
 
 void main() {
   test('resolveSubstackBase accepts handle and URL', () {

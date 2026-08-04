@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_listing_screen.dart';
-import 'package:quax/plugins/reddit/reddit_store.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_listing_screen.dart';
+import 'package:xta/plugins/reddit/reddit_store.dart';
+import 'package:xta/utils/urls.dart';
 
 /// Everywhere a post can take you, without leaving the feed to find out.
 ///

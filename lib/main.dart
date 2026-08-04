@@ -10,63 +10,76 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:quax/client/accounts.dart';
-import 'package:quax/client/endpoint_overrides.dart';
-import 'package:quax/client/headers.dart';
-import 'package:quax/client/login_webview.dart';
+import 'package:xta/client/accounts.dart';
+import 'package:xta/client/endpoint_overrides.dart';
+import 'package:xta/client/login_webview.dart';
+import 'package:xta/client/headers.dart';
 
-import 'package:quax/constants.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/feed_session_cache.dart';
-import 'package:quax/tweet/video_controller_pool.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/group/group_screen.dart';
-import 'package:quax/home/_feed.dart';
-import 'package:quax/home/home_model.dart';
-import 'package:quax/home/home_screen.dart';
-import 'package:quax/import_data_model.dart';
-import 'package:quax/profile/profile.dart';
-import 'package:quax/plugins/substack/substack_client.dart';
-import 'package:quax/plugins/substack/substack_store.dart';
-import 'package:quax/saved/liked_tweet_model.dart';
-import 'package:quax/saved/saved_folders_screen.dart';
-import 'package:quax/saved/saved_tweet_folder_model.dart';
-import 'package:quax/saved/saved_tweet_model.dart';
-import 'package:quax/search/search.dart';
-import 'package:quax/search/search_model.dart';
-import 'package:quax/settings/_data.dart';
-import 'package:quax/settings/_home.dart';
-import 'package:quax/settings/settings.dart';
-import 'package:quax/settings/settings_export_screen.dart';
-import 'package:quax/status.dart';
-import 'package:quax/tweet/quotes_screen.dart';
-import 'package:quax/tweet/ticker_screen.dart';
-import 'package:quax/subscriptions/_import_list.dart';
-import 'package:quax/subscriptions/users_model.dart';
-import 'package:quax/trends/trends_model.dart';
-import 'package:quax/tweet/_video.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/ui/x_look_theme.dart';
-import 'package:quax/utils/crash_reporter.dart';
-import 'package:quax/utils/updates.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/feed_session_cache.dart';
+import 'package:xta/tweet/video_controller_pool.dart';
+import 'package:xta/group/combined_groups.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/group/group_screen.dart';
+import 'package:xta/home/_feed.dart';
+import 'package:xta/home/home_model.dart';
+import 'package:xta/home/home_screen.dart';
+import 'package:xta/import_data_model.dart';
+import 'package:xta/profile/profile.dart';
+import 'package:xta/plugins/substack/substack_client.dart';
+import 'package:xta/plugins/substack/substack_store.dart';
+import 'package:xta/plugins/threads/threads_api.dart';
+import 'package:xta/plugins/threads/threads_client.dart';
+import 'package:xta/plugins/threads/threads_store.dart';
+import 'package:xta/saved/liked_tweet_model.dart';
+import 'package:xta/saved/saved_folders_screen.dart';
+import 'package:xta/saved/saved_tweet_folder_model.dart';
+import 'package:xta/saved/saved_tweet_model.dart';
+import 'package:xta/search/search.dart';
+import 'package:xta/search/search_model.dart';
+import 'package:xta/settings/_data.dart';
+import 'package:xta/settings/_home.dart';
+import 'package:xta/settings/settings.dart';
+import 'package:xta/settings/settings_export_screen.dart';
+import 'package:xta/status.dart';
+import 'package:xta/tweet/quotes_screen.dart';
+import 'package:xta/tweet/ticker_screen.dart';
+import 'package:xta/subscriptions/_import_list.dart';
+import 'package:xta/subscriptions/users_model.dart';
+import 'package:xta/trends/trends_model.dart';
+import 'package:xta/tweet/_video.dart';
+import 'package:xta/ui/dates.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/ui/x_look_theme.dart';
+import 'package:xta/utils/crash_reporter.dart';
+import 'package:xta/utils/updates.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/utils/urls.dart';
+import 'package:xta/utils/urls.dart';
 import 'package:secure_content/secure_content.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:app_links/app_links.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:quax/plugins/karakeep/karakeep_client.dart';
-import 'package:quax/plugins/deepmarks/deepmarks_client.dart';
-import 'package:quax/plugins/reddit/reddit_auth.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_store.dart';
-import 'package:quax/plugins/reddit/reddit_subreddit_avatar.dart';
+import 'package:xta/plugins/karakeep/karakeep_client.dart';
+import 'package:xta/plugins/deepmarks/deepmarks_client.dart';
+import 'package:xta/plugins/immich/immich_client.dart';
+import 'package:xta/plugins/reddit/reddit_auth.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_store.dart';
+import 'package:xta/plugins/reddit/reddit_subreddit_avatar.dart';
+import 'package:xta/plugins/reddit/reddit_votes_store.dart';
+import 'package:xta/plugins/stocks/stocks_store.dart';
+import 'package:xta/media/xta_audio_handler.dart';
+import 'package:xta/plugins/substack/podcast_store.dart';
+import 'package:xta/speech/speech_bar.dart';
+import 'package:xta/speech/speech_store.dart';
+import 'package:xta/utils/media_quality.dart';
 
-Future checkForUpdates(context) async {
+Future checkForUpdates(BuildContext context) async {
   Logger.root.info('Checking for updates');
 
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -87,6 +100,9 @@ Future checkForUpdates(context) async {
         installedTag: buildReleaseTag,
         installedVersion: packageInfo.version,
       )) {
+        if (!context.mounted) {
+          return;
+        }
         await showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -99,7 +115,9 @@ Future checkForUpdates(context) async {
                   child: Text(L10n.of(context).view_on_github),
                   onPressed: () async {
                     await openUri(context, map['html_url']);
-                    Navigator.of(context).pop();
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
                   },
                 ),
               ],
@@ -111,17 +129,17 @@ Future checkForUpdates(context) async {
   }
 }
 
-Future checkForAccounts(context) async {
+Future checkForAccounts(BuildContext context) async {
   Logger.root.info('Checking for accounts');
 
   final accounts = await getAccounts();
-  if (accounts.isEmpty) {
+  if (accounts.isEmpty && context.mounted) {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("⚠️ ${L10n.of(context).not_logged_in}"),
-          content: Text(L10n.of(context).quax_doesnt_work_without_account_please_login),
+          content: Text(L10n.of(context).xta_doesnt_work_without_account_please_login),
           actions: [
             TextButton(
               child: Text(L10n.of(context).import_backup),
@@ -196,6 +214,41 @@ void setTimeagoLocales() {
   timeago.setLocaleMessages('vi', timeago.ViMessages());
   timeago.setLocaleMessages('zh_CN', timeago.ZhCnMessages());
   timeago.setLocaleMessages('zh', timeago.ZhMessages());
+
+  // The X-style compact stamps ("5m") the timeline uses. Only the languages
+  // timeago ships short forms for; the rest keep their long form, which
+  // createCompactDate resolves through this same registry.
+  _setCompactLocale('ar', timeago.ArShortMessages());
+  _setCompactLocale('az', timeago.AzShortMessages());
+  _setCompactLocale('ca', timeago.CaShortMessages());
+  _setCompactLocale('cs', timeago.CsShortMessages());
+  _setCompactLocale('da', timeago.DaShortMessages());
+  _setCompactLocale('de', timeago.DeShortMessages());
+  _setCompactLocale('dv', timeago.DvShortMessages());
+  _setCompactLocale('en', timeago.EnShortMessages());
+  _setCompactLocale('es', timeago.EsShortMessages());
+  _setCompactLocale('fr', timeago.FrShortMessages());
+  _setCompactLocale('gr', timeago.GrShortMessages());
+  _setCompactLocale('he', timeago.HeShortMessages());
+  _setCompactLocale('hi', timeago.HiShortMessages());
+  _setCompactLocale('id', timeago.IdShortMessages());
+  _setCompactLocale('it', timeago.ItShortMessages());
+  _setCompactLocale('km', timeago.KmShortMessages());
+  _setCompactLocale('ku', timeago.KuShortMessages());
+  _setCompactLocale('mn', timeago.MnShortMessages());
+  _setCompactLocale('nl', timeago.NlShortMessages());
+  _setCompactLocale('ro', timeago.RoShortMessages());
+  _setCompactLocale('ru', timeago.RuShortMessages());
+  _setCompactLocale('sv', timeago.SvShortMessages());
+  _setCompactLocale('th', timeago.ThShortMessages());
+  _setCompactLocale('tr', timeago.TrShortMessages());
+  _setCompactLocale('uk', timeago.UkShortMessages());
+  _setCompactLocale('vi', timeago.ViShortMessages());
+}
+
+void _setCompactLocale(String locale, timeago.LookupMessages messages) {
+  timeago.setLocaleMessages('${locale}_short', messages);
+  compactDateLocales.add(locale);
 }
 
 // One-time split of the former single "media size" pref into separate image and
@@ -208,7 +261,7 @@ Future<void> _migrateMediaQualityPrefs(BasePrefService prefs) async {
   final previous = prefs.get<String>(optionImageQuality);
   final disabled = previous == 'disabled';
   // The old "disabled" value carried no real quality, so fall back to Maximum.
-  final quality = disabled ? 'large' : (previous ?? 'medium');
+  final quality = disabled ? MediaQuality.large.stored : (previous ?? MediaQuality.medium.stored);
 
   await prefs.set(optionMediaDisableAutoload, disabled);
   await prefs.set(optionImageQuality, quality);
@@ -216,24 +269,12 @@ Future<void> _migrateMediaQualityPrefs(BasePrefService prefs) async {
   await prefs.set(optionMediaQualitySplitMigrated, true);
 }
 
-/// Earlier builds seeded the crash-report repository with a name that does not
-/// exist on GitHub. The stored preference wins over the default, so installs
-/// that already ran keep the dead value until it is rewritten here. Only the
-/// broken value is touched — a repository the user chose is left alone.
-Future<void> _migrateCrashRepoPref(BasePrefService prefs) async {
-  const brokenRepo = 'Aimdi/QuaX-gamma';
-  if (prefs.get<String>(optionCrashGithubRepo)?.trim() == brokenRepo) {
-    await prefs.set(optionCrashGithubRepo, defaultCrashGithubRepo);
-  }
-}
-
 /// The database migration, run once however many callers ask for it.
 ///
-/// It ends by purging week-old rows from the three largest tables, and no index
-/// leads with `created_at`, so each of those is a full scan. Both callers — the
-/// one below that has to finish before the models read anything, and the one in
-/// [DefaultPage] that exists to put a failure on screen — share this future, so
-/// the scan happens once and the error still reaches the reader.
+/// It ends by purging week-old rows from the largest tables, so letting both
+/// `main` and [DefaultPage] run it meant paying for that twice per launch.
+/// Sharing the future keeps both properties: the models see a migrated
+/// database, and a failure still reaches the screen.
 Future<bool>? _databaseMigration;
 
 Future<bool> migrateDatabase() => _databaseMigration ??= Repository().migrate();
@@ -267,6 +308,9 @@ Future<void> main() async {
     yield LicenseEntryWithLineBreaks(const ['Inter'], license);
   });
 
+  MediaKit.ensureInitialized();
+  await initXtaAudio();
+
   setTimeagoLocales();
 
   final prefService = await PrefServiceShared.init(
@@ -285,14 +329,15 @@ Future<void> main() async {
       optionLocale: optionLocaleDefault,
       optionHomeInitialTab: 'feed',
       optionHomeDefaultFeedTab: feedTabs[0].id.name,
-      optionImageQuality: 'medium',
-      optionMediaVideoQuality: 'medium',
+      optionImageQuality: MediaQuality.medium.stored,
+      optionMediaVideoQuality: MediaQuality.medium.stored,
       optionMediaDisableAutoload: false,
       optionMediaQualitySplitMigrated: false,
       optionMediaGridColumns: 3,
       optionMediaDefaultMute: true,
       optionMediaDefaultLoop: false,
       optionMediaDefaultAutoPlay: false,
+      optionMediaDirectHardwareDecoding: false,
       optionMediaBackgroundPlayback: true,
       optionMediaAllowBackgroundPlayOtherApps: false,
       optionMediaVideoPrefetchSeconds: 0,
@@ -315,20 +360,30 @@ Future<void> main() async {
       optionEndpointRegistryUrl: defaultEndpointRegistryUrl,
       optionEndpointRegistryCache: '',
       optionEndpointRegistryFetchedAt: '',
+      optionPluginCatalogueUrl: defaultPluginCatalogueUrl,
+      optionPluginCatalogueCache: '',
+      optionPluginCatalogueFetchedAt: '',
       optionWebDavUrl: '',
       optionWebDavUsername: '',
       optionWebDavPassword: '',
       optionWebDavIncludeAccounts: false,
       optionWebDavLastSyncAt: '',
-      optionOpenLinksInEmbeddedBrowser: false,
+      optionOpenLinksInEmbeddedBrowser: true,
+      optionExternalBrowser: '',
+      optionEmbeddedBrowserReset: false,
       optionCrashReportsEnabled: false,
       optionCrashGithubRepo: defaultCrashGithubRepo,
       optionCrashGithubToken: '',
-    optionPluginDeepmarksEnabled: false,
-    optionPluginDeepmarksApiBase: '',
-    optionPluginDeepmarksApiKey: '',
-    optionPluginDeepmarksSecretKey: '',
-    optionPluginKarakeepEnabled: false,
+      optionPluginDeepmarksEnabled: false,
+      optionPluginDeepmarksApiBase: '',
+      optionPluginDeepmarksApiKey: '',
+      optionPluginDeepmarksSecretKey: '',
+      optionPluginImmichEnabled: false,
+      optionPluginImmichServerUrl: '',
+      optionPluginImmichApiKey: '',
+      optionPluginImmichAlbumPerFolder: true,
+      optionPluginImmichIncludeVideos: true,
+      optionPluginKarakeepEnabled: false,
       optionPluginKarakeepServerUrl: '',
       optionPluginKarakeepApiKey: '',
       optionSeededPluginTabs: <String>[],
@@ -336,10 +391,16 @@ Future<void> main() async {
       optionPluginRedditClientId: '',
       optionPluginRedditInHomeFeed: false,
       optionPluginRedditShowTab: false,
-      optionPluginRedditSort: 'hot',
+      optionPluginRedditSort: redditSortHot,
       optionPluginRedditSource: redditSourceAuto,
       optionPluginRedditSubreddits: '[]',
       optionPluginRedditRefreshToken: '',
+      optionPluginStocksEnabled: false,
+      optionPluginStocksShowTab: true,
+      optionTtsEngine: '',
+      optionTtsVoiceName: '',
+      optionTtsVoiceLocale: '',
+      optionTtsRate: 0.45,
       optionPluginSubstackEnabled: false,
       optionPluginSubstackShowTab: true,
       optionPluginSubstackPublications: '[]',
@@ -373,6 +434,8 @@ Future<void> main() async {
       optionSavedTabOrder: '',
       optionSavedFolderHintShown: false,
       optionLikedFirstToastShown: false,
+      optionSavedStickyFolderEnabled: false,
+      optionSavedStickyFolderId: '',
       optionUseAbsoluteTimestamp: false,
       optionDefaultProfileTab: profileTabs[0].id.name,
       optionUserTrendsLocations: jsonEncode({
@@ -385,7 +448,6 @@ Future<void> main() async {
   );
 
   await _migrateMediaQualityPrefs(prefService);
-  await _migrateCrashRepoPref(prefService);
 
   CrashReporter.install(prefService);
 
@@ -432,14 +494,25 @@ Future<void> main() async {
 
     var trendLocationModel = UserTrendLocationModel(prefService);
 
-    // Only the three stores this function has to load itself are built here.
-    // The rest — every plugin client, and the stores that hang off one — are
-    // built by their `Provider`'s `create`, which runs on the first read. A
-    // reader with the plugin switched off never reads them, so the HTTP client
-    // and disk cache those constructors allocate are never allocated at all.
+    final deepmarksClient = DeepmarksClient();
+    final immichClient = ImmichClient();
+    final karakeepClient = KarakeepClient();
+    final redditClient = RedditClient();
+    final redditIcons = RedditIcons(redditClient);
+    final redditAuth = RedditAuth();
     final redditSubreddits = RedditSubredditsStore(prefService);
+    final redditVotes = RedditVotesStore();
+    final redditFeed = RedditFeedStore(redditClient, redditSubreddits, prefService, auth: redditAuth);
+    final stocksWatchlist = StocksWatchlistStore();
+    final speech = SpeechStore();
+    final podcast = PodcastStore();
+    final substackClient = SubstackClient();
     final substackPublications = SubstackPublicationsStore(prefService);
     final substackRead = SubstackReadStore(prefService);
+    final threadsClient = ThreadsClient();
+    final threadsApi = ThreadsApi();
+    final threadsAccounts = ThreadsAccountsStore();
+    final threadsFeed = ThreadsFeedStore(threadsClient, prefService, threadsAccounts);
 
     // Everything above only constructs; the reads all happen here. They were a
     // chain of awaits, each waiting on the last for no reason — none of them
@@ -455,6 +528,7 @@ Future<void> main() async {
     // a group came down to which of the two finished first.
     if (prefService.get<bool>(optionPluginRedditEnabled) == true) {
       await redditSubreddits.load();
+      unawaited(redditVotes.load());
     }
 
     await Future.wait([
@@ -464,6 +538,8 @@ Future<void> main() async {
         substackPublications.load(),
         substackRead.load(),
       ],
+      if (prefService.get<bool>(optionPluginStocksEnabled) == true) stocksWatchlist.load(),
+      if (prefService.get<bool>(optionPluginThreadsEnabled) == true) threadsAccounts.load(),
     ]);
 
     runApp(
@@ -473,7 +549,7 @@ Future<void> main() async {
           providers: [
             Provider(create: (context) => groupsModel),
             Provider(create: (context) => feedSessionCache),
-            Provider(create: (context) => VideoControllerPool(maxSize: 5)),
+            Provider(create: (context) => VideoControllerPool(maxSize: kVideoPoolSize)),
             Provider(create: (context) => homeModel),
             ChangeNotifierProvider(create: (context) => importDataModel),
             Provider(create: (context) => subscriptionsModel),
@@ -484,27 +560,30 @@ Future<void> main() async {
             Provider(create: (context) => trendLocationModel),
             Provider(create: (context) => TrendLocationsModel()),
             Provider(create: (context) => TrendsModel(trendLocationModel)),
-            // Order matters below: a `create` that reads another provider only
-            // finds one registered above it.
-            Provider(create: (_) => DeepmarksClient()),
-            Provider(create: (_) => KarakeepClient()),
-            Provider(create: (_) => RedditClient()),
-            Provider(create: (_) => RedditAuth()),
-            Provider(create: (context) => RedditIcons(context.read<RedditClient>())),
+            Provider(create: (_) => deepmarksClient),
+            Provider(create: (_) => podcast),
+            Provider(create: (_) => immichClient),
+            Provider(create: (_) => karakeepClient),
+            Provider(create: (_) => redditClient),
+            Provider(create: (_) => redditIcons),
+            Provider(create: (_) => redditVotes),
+            Provider(create: (_) => redditAuth),
             Provider(create: (_) => redditSubreddits),
+            Provider(create: (_) => redditFeed),
+            Provider(create: (_) => stocksWatchlist),
+            Provider(create: (_) => speech),
+            Provider(create: (_) => CombinedGroupsStore()),
             Provider(
-              create: (context) => RedditFeedStore(
-                context.read<RedditClient>(),
-                redditSubreddits,
-                prefService,
-                auth: context.read<RedditAuth>(),
-              ),
-            ),
-            Provider(create: (_) => SubstackClient()),
+                create: (_) => FeedTabStore(feedTabFromId(prefService.get<String>(optionHomeDefaultFeedTab)))),
+            Provider(create: (_) => substackClient),
             Provider(create: (_) => substackPublications),
             Provider(create: (context) => SubstackFeedStore(context.read<SubstackClient>(), substackPublications)),
             Provider(create: (context) => SubstackAddPublicationStore(context.read<SubstackClient>())),
             Provider(create: (_) => substackRead),
+            Provider(create: (_) => threadsClient),
+            Provider(create: (_) => threadsApi),
+            Provider(create: (_) => threadsAccounts),
+            Provider(create: (_) => threadsFeed),
             ChangeNotifierProvider(create: (_) => VideoContextState(prefService.get(optionMediaDefaultMute))),
           ],
           child: FritterApp(),
@@ -576,6 +655,15 @@ class _FritterAppState extends State<FritterApp> {
     if (storedPreset != null && storedPreset != themePresetNone) {
       prefService.set(optionXLookBackground, xLookBackgroundForPreset(storedPreset));
       prefService.set(optionThemePreset, themePresetNone);
+    }
+
+    // Leaving the app to read a link is a worse default than staying in it, and
+    // the switch was off, so every link went out to the browser. Turned on
+    // once, the same way and for the same reason as the check below: a stored
+    // value wins over a default, and every install has one.
+    if (prefService.get<bool>(optionEmbeddedBrowserReset) != true) {
+      prefService.set(optionOpenLinksInEmbeddedBrowser, true);
+      prefService.set(optionEmbeddedBrowserReset, true);
     }
 
     // Upstream wrote the update check for occasional releases; this fork
@@ -688,7 +776,7 @@ class _FritterAppState extends State<FritterApp> {
                 ],
                 supportedLocales: L10n.delegate.supportedLocales,
                 locale: _locale,
-                title: 'QuaX',
+                title: 'XTA',
                 theme: xLookThemeData(xLookTokensFor(xLookBackgroundLight, _xLookAccent), pageTransitions),
                 darkTheme: xLookThemeData(xLookDarkTokensFor(_xLookBackground, _xLookAccent), pageTransitions),
                 themeMode: xLookThemeModeFor(_xLookBackground),
@@ -729,7 +817,10 @@ class _FritterAppState extends State<FritterApp> {
                     prefix: L10n.of(context).something_broke_in_fritter,
                   );
 
-                  return child ?? Container();
+                  // Reading aloud outlives the article it started in, so the
+                  // way to stop it has to be reachable from wherever the reader
+                  // has gone. Nothing is added while nothing is being read.
+                  return SpeechBarScaffold(child: child ?? Container());
                 },
               ),
             ),
@@ -784,12 +875,14 @@ class _DefaultPageState extends State<DefaultPage> {
               actions: [
                 TextButton(
                   child: Text(L10n.of(context).report),
-                  onPressed: () => openUri(context, 'https://github.com/teskann/quax/issues'),
+                  onPressed: () => openUri(context, 'https://github.com/$githubRepo/issues'),
                 ),
                 TextButton(
                   child: Text(L10n.of(context).open_in_browser),
                   onPressed: () {
-                    openInDefaultBrowser(link.toString());
+                    // Respects the same setting as every other link: this
+                    // dialog is not a reason to be thrown out of the app.
+                    openUri(context, link.toString());
                     if (context.mounted) {
                       Navigator.of(context).pop();
                     }

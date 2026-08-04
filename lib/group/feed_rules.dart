@@ -1,5 +1,5 @@
-import 'package:quax/database/entities.dart';
-import 'package:quax/group/custom_feed_rules.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/group/custom_feed_rules.dart';
 
 /// The rules a group's feed filters with.
 ///

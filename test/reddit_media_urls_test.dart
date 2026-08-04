@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/plugins/reddit/reddit_media_urls.dart';
+import 'package:xta/plugins/reddit/reddit_media_urls.dart';
 
 void main() {
   group('what a URL points at', () {

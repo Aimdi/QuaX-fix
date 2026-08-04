@@ -6,28 +6,28 @@ import 'package:dart_twitter_api/twitter_api.dart' show User;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/subscriptions/users_model.dart';
-import 'package:quax/profile/profile.dart';
-import 'package:quax/status.dart';
-import 'package:quax/tweet/_ExpandableTweetText.dart';
-import 'package:quax/tweet/_card.dart';
-import 'package:quax/tweet/_media.dart';
-import 'package:quax/tweet/tweet_chrome.dart';
-import 'package:quax/saved/liked_tweet_model.dart';
-import 'package:quax/tweet/article_link_card.dart';
-import 'package:quax/utils/urls.dart';
-import 'package:quax/tweet/tweet_footer.dart';
-import 'package:quax/article/article.dart';
-import 'package:quax/ui/dates.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/ui/x_look_theme.dart';
-import 'package:quax/user.dart';
-import 'package:quax/utils/rich_text.dart';
-import 'package:quax/utils/translation.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/subscriptions/users_model.dart';
+import 'package:xta/profile/profile.dart';
+import 'package:xta/status.dart';
+import 'package:xta/tweet/_ExpandableTweetText.dart';
+import 'package:xta/tweet/_card.dart';
+import 'package:xta/tweet/_media.dart';
+import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/saved/liked_tweet_model.dart';
+import 'package:xta/tweet/article_link_card.dart';
+import 'package:xta/tweet/article_screen.dart';
+import 'package:xta/tweet/tweet_footer.dart';
+import 'package:xta/article/article.dart';
+import 'package:xta/ui/dates.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/ui/x_look_theme.dart';
+import 'package:xta/user.dart';
+import 'package:xta/utils/rich_text.dart';
+import 'package:xta/utils/translation.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
@@ -77,19 +77,16 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   // Short K/M suffixes: locale-specific compact forms like "12 Tsd." or
   // "1,2 Mio." eat the footer's width and push the trailing buttons away.
   static final NumberFormat _numberFormat = NumberFormat.compact(locale: 'en_US');
-
-  // Locale tags arrive as either "en_GB" or "en-GB"; compiling the pattern per
-  // call was pure waste, as the pattern never varies.
   static final RegExp _localeSeparator = RegExp(r'[-_]');
 
-  late final bool clickable;
-  late final String? currentUsername;
-  late final TweetWithCard tweet;
-  late final bool isPinned;
-  late final bool isThread;
-  late final bool isQuotedTweet;
-  late final bool addSeparator;
-  late final bool isBirdwatchQuote;
+  late bool clickable;
+  late String? currentUsername;
+  late TweetWithCard tweet;
+  late bool isPinned;
+  late bool isThread;
+  late bool isQuotedTweet;
+  late bool addSeparator;
+  late bool isBirdwatchQuote;
 
   TranslationStatus _translationStatus = TranslationStatus.original;
   TranslationBroadcast? _translationBroadcast;
@@ -120,8 +117,6 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
   bool _isInitialized = false;
 
-  final GlobalKey _globalKey = GlobalKey(); // needed for "share tweet as image"
-
   @override
   void initState() {
     super.initState();
@@ -134,6 +129,28 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     isQuotedTweet = widget.isQuotedTweet;
     addSeparator = widget.addSeparator;
     isBirdwatchQuote = widget.isBirdwatchQuote;
+  }
+
+  /// The element can be reused for a different tweet — a soft refresh prepends
+  /// chains and the list re-associates by index — and a State that froze its
+  /// widget's fields in initState would keep showing the old post's text.
+  @override
+  void didUpdateWidget(TweetTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.tweet.idStr != oldWidget.tweet.idStr) {
+      clickable = widget.clickable;
+      currentUsername = widget.currentUsername;
+      tweet = widget.tweet;
+      isPinned = widget.isPinned;
+      isThread = widget.isThread;
+      isQuotedTweet = widget.isQuotedTweet;
+      addSeparator = widget.addSeparator;
+      isBirdwatchQuote = widget.isBirdwatchQuote;
+      _translationStatus = TranslationStatus.original;
+      disposeRichTextParts(_translatedParts);
+      _translatedParts = [];
+      _initializeTweetParts();
+    }
   }
 
   @override
@@ -162,6 +179,8 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
   @override
   void dispose() {
+    disposeRichTextParts(_originalParts);
+    disposeRichTextParts(_translatedParts);
     _translationBroadcast?.removeListener(_onTranslationBroadcast);
     super.dispose();
   }
@@ -174,6 +193,12 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     var entitiesFinal = actualTweet.noteEntities ?? actualTweet.entities;
 
     List<RichTextPart> tweetParts = buildRichText(context, tweetTextFinal, entitiesFinal);
+    // A re-initialisation (element reused for another tweet) replaces the
+    // lists; the old ones' recognizers go with them.
+    if (!identical(_originalParts, tweetParts)) {
+      disposeRichTextParts(_originalParts);
+      disposeRichTextParts(_translatedParts);
+    }
     setState(() {
       _showParts(tweetParts);
       _originalParts = tweetParts;
@@ -182,6 +207,24 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
   /// Displays [parts]. Call from inside a `setState`.
   void _showParts(List<RichTextPart> parts) => _displaySpans = displayRichText(parts);
+
+  /// X's no-linguistic-content codes: media-only, mentions-only, cashtags-only,
+  /// short/undetermined text. Nothing there to translate.
+  static const _untranslatableLangs = {'zxx', 'qme', 'qam', 'qct', 'qht', 'qst', 'und'};
+
+  /// Whether the post is (or might be) in a language other than [locale]. An
+  /// absent code keeps the offer — better an idle button than a stranded
+  /// reader.
+  bool _offerTranslation(Locale locale) {
+    final lang = tweet.lang;
+    if (lang == null || lang.isEmpty) {
+      return true;
+    }
+    if (_untranslatableLangs.contains(lang)) {
+      return false;
+    }
+    return lang.split('-').first != locale.languageCode;
+  }
 
   Locale _effectiveLocale() {
     var localeStr = PrefService.of(context, listen: false).get<String>(optionLocale);
@@ -289,13 +332,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                   title: Text(L10n.of(context).add_to_group),
                   onTap: () {
                     Navigator.pop(sheetContext);
-                    showDialog(
-                        context: context,
-                        builder: (_) => FollowButtonSelectGroupDialog(
-                              user: user,
-                              followed: false,
-                              groupsForUser: const [],
-                            ));
+                    pickUserGroups(context, user: user, followed: false, groupsForUser: const []);
                   },
                 ),
               ],
@@ -317,10 +354,16 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   }
 
   Future<Uint8List?> captureWidget() async {
-    if (_globalKey.currentContext == null) {
+    // The RepaintBoundary is the root of this State's build, so the State's own
+    // render object is it — no per-tile GlobalKey needed (each one costs a trip
+    // through the global registry on every mount and unmount while scrolling).
+    if (!mounted) {
       return null;
     }
-    final RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    final boundary = context.findRenderObject();
+    if (boundary is! RenderRepaintBoundary) {
+      return null;
+    }
     final ui.Image image = await boundary.toImage(pixelRatio: 3.0);
     final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     if (byteData == null) {
@@ -514,7 +557,9 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
             child: ExpandableTweetText(
               textSpans: _displaySpans,
               onTap: () => !widget.tweetOpened ? onClickOpenTweet(tweet) : null,
-              maxLines: prefs.get(alwaysShowFullTweetContents) ? null : kTweetTextMaxLines,
+              selectable: widget.tweetOpened,
+              maxLines:
+                  PrefService.of(context, listen: false).get(alwaysShowFullTweetContents) ? null : kTweetTextMaxLines,
             ),
           ));
     }
@@ -522,8 +567,10 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     final locale = _effectiveLocale();
 
     // The post's top-right, next to the timestamp — not in the footer strip,
-    // which is for engagement and was one control too wide on a phone.
-    final translateButton = tweet.article != null
+    // which is for engagement and was one control too wide on a phone. Only on
+    // posts there is something to translate: X offers nothing on a post
+    // already in your language, and a button on every card was chrome.
+    final translateButton = tweet.article != null || !_offerTranslation(locale)
         ? null
         : TweetTranslateButton(
             status: _translationStatus,
@@ -572,10 +619,9 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     final avatarSize = isQuotedTweet ? 32.0 : 48.0;
     final plainAvatar = hideAuthorInformation
         ? Icon(Icons.account_circle, size: avatarSize)
-        : ClipRRect(
-            borderRadius: BorderRadius.circular(64),
-            child: UserAvatar(uri: tweet.user!.profileImageUrlHttps, size: avatarSize),
-          );
+        // UserAvatar clips itself; a second ClipRRect here was one more
+        // antialiased clip layer per visible tile for nothing.
+        : UserAvatar(uri: tweet.user!.profileImageUrlHttps, size: avatarSize);
 
     final showSubscribeBadge = prefs.get(optionTweetsShowSubscribeBadge) != false;
     final avatar = hideAuthorInformation || !showSubscribeBadge || !_canSubscribeTo(tweet.user)
@@ -656,8 +702,12 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         if (createdAt != null)
           DefaultTextStyle(
               style: theme.textTheme.bodySmall!,
-              child:
-                  Timestamp(timestamp: createdAt, absoluteTimestamp: prefs.get(optionUseAbsoluteTimestamp)))
+              child: Timestamp(
+                  timestamp: createdAt,
+                  absoluteTimestamp: prefs.get(optionUseAbsoluteTimestamp),
+                  // X-style "5m" in the timeline; the opened post keeps the
+                  // full wording.
+                  compact: !widget.tweetOpened))
       ],
     );
 
@@ -689,7 +739,15 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       replyToTile,
       if (tweet.article == null) content,
       if (articleLink != null)
-        ArticleLinkCard(url: articleLink, onTap: () async => await openUri(context, articleLink)),
+        ArticleLinkCard(
+            url: articleLink,
+            // Read in XTA rather than handed to a browser: the article is the
+            // post's own content.
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => ArticleScreen(url: articleLink)),
+            ),
+          ),
       media,
       quotedTweet,
       TweetCard(tweet: tweet, card: tweet.card),
@@ -706,7 +764,6 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
     if (isThreadTile) {
       return RepaintBoundary(
-              key: _globalKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -744,7 +801,6 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     }
 
     return RepaintBoundary(
-            key: _globalKey,
             child: Column(children: [
               _withDoubleTapToLike(
                 context,

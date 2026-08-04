@@ -1,6 +1,6 @@
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/tweet/_media.dart';
+import 'package:xta/tweet/_media.dart';
 
 /// Built from API-shaped JSON, so the entities are the ones the tile is really
 /// handed. A null size stands for the media entity X sometimes sends with no

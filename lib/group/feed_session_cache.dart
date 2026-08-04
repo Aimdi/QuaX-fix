@@ -1,4 +1,4 @@
-import 'package:quax/tweet/paginated_tweet_list.dart';
+import 'package:xta/tweet/paginated_tweet_list.dart';
 
 /// Persists per-group feed state across navigator pop/push so that re-opening
 /// the same pushed group route restores the loaded tweets and scroll offset.

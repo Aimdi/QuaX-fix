@@ -1,5 +1,5 @@
-name: quax
-description: A private and clean way to browse Twitter/X
+name: xta
+description: A private, read-oriented way to browse X
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -81,7 +81,6 @@ dependencies:
   pref: ^2.8.0
   provider: ^6.1.5
   flutter_triple: ^3.0.0
-  multi_select_flutter: ^4.1.3
 
   # Utilities & Helpers
   crypto: ^3.0.7
@@ -111,6 +110,7 @@ dependencies:
 
   # Miscellaneous
   async_button_builder: ^3.0.0+1
+  audio_service: ^0.18.15
   media_kit: ^1.2.6
   media_kit_video: ^2.0.1
   media_kit_libs_video: ^1.0.7

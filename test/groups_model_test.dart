@@ -2,18 +2,18 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/import_data_model.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/import_data_model.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
   setUpAll(() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
-    final dir = await Directory.systemTemp.createTemp('quax_repro_test');
+    final dir = await Directory.systemTemp.createTemp('xta_repro_test');
     await databaseFactory.setDatabasesPath(dir.path);
     await Repository().migrate();
   });

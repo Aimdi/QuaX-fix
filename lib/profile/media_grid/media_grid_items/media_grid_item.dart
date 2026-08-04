@@ -1,10 +1,10 @@
 import 'package:dart_twitter_api/api/media/data/media.dart';
 import 'package:flutter/material.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/tweet/_video.dart';
-import 'package:quax/tweet/_video_controls.dart';
-import 'package:quax/ui/capped_network_image.dart';
-import 'package:quax/utils/paging.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/tweet/_video.dart';
+import 'package:xta/tweet/_video_controls.dart';
+import 'package:xta/ui/capped_network_image.dart';
+import 'package:xta/utils/paging.dart';
 
 part 'gif_grid_item.dart';
 part 'video_grid_item.dart';
@@ -134,7 +134,13 @@ Future<CursorPage<String, MediaGridItem>> mediaPageWithLookahead(
   var items = itemsOf(result.chains);
 
   var lookahead = 0;
-  while (items.isEmpty && result.chains.isNotEmpty && result.nextCursor != null && lookahead < maxLookahead) {
+  // Notably NOT gated on the page carrying chains: UserMedia's first page for
+  // some profiles is a cursor and nothing else — every leading entry tombstoned
+  // away — and refusing to follow it showed "no tweets" for an account with a
+  // grid full of media one page on. The end of the feed is a null cursor
+  // (mediaPageFromStatus already turns X's repeated cursor into one), not an
+  // empty page.
+  while (items.isEmpty && result.nextCursor != null && lookahead < maxLookahead) {
     result = await fetch(result.nextCursor);
     items = itemsOf(result.chains);
     lookahead++;

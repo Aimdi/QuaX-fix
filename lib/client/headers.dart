@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:quax/client/x_client_transaction_id/client_transaction.dart';
-import 'package:quax/constants.dart';
+import 'package:xta/client/x_client_transaction_id/client_transaction.dart';
+import 'package:xta/constants.dart';
 
 /// Whether a derived transaction key may still be used.
 ///

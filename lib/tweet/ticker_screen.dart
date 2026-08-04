@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/tweet/paginated_tweet_list.dart';
-import 'package:quax/tweet/ticker/ticker_chart.dart';
-import 'package:quax/tweet/ticker/ticker_client.dart';
-import 'package:quax/tweet/ticker/ticker_quote.dart';
-import 'package:quax/tweet/tweet_context_scope.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/paginated_tweet_list.dart';
+import 'package:xta/tweet/ticker/ticker_chart.dart';
+import 'package:xta/tweet/ticker/ticker_client.dart';
+import 'package:xta/tweet/ticker/ticker_quote.dart';
+import 'package:xta/tweet/ticker/ticker_range.dart';
+import 'package:xta/tweet/ticker/ticker_stats.dart';
+import 'package:xta/tweet/tweet_context_scope.dart';
 
 class TickerScreenArguments {
   /// The ticker without its `$`, e.g. `AAPL`.
@@ -22,7 +24,7 @@ class TickerScreenArguments {
 
 /// A ticker: what the symbol has done lately, and the posts talking about it.
 ///
-/// The chart is drawn from price data QuaX fetches itself rather than embedded
+/// The chart is drawn from price data XTA fetches itself rather than embedded
 /// from anyone — no third-party page, no scripts, nothing that could carry a
 /// tracker into the app. The price service is still an outside request though,
 /// so it has a switch, and with it off the posts work exactly as before.
@@ -53,6 +55,13 @@ class _TickerScreenState extends State<_TickerScreen> {
   bool _quoteFailed = false;
   bool _loadingQuote = false;
 
+  TickerRange _range = TickerRange.month;
+
+  /// The point under the reader's finger, if any. While it is set the header
+  /// reports that moment rather than the latest price — which is the whole
+  /// point of being able to touch the chart.
+  TickerPoint? _scrubbed;
+
   @override
   void dispose() {
     _feed.dispose();
@@ -67,12 +76,21 @@ class _TickerScreenState extends State<_TickerScreen> {
     }
   }
 
-  bool get _chartEnabled => PrefService.of(context).get<bool>(optionTickerChart) == true;
+  bool get _chartEnabled => PrefService.of(context, listen: false).get<bool>(optionTickerChart) == true;
 
   Future<void> _loadQuote() async {
-    setState(() => _loadingQuote = true);
+    final range = _range;
+    setState(() {
+      _loadingQuote = true;
+      _quoteFailed = false;
+    });
     try {
-      final quote = await _client.fetchQuote(widget.symbol);
+      final quote = await _client.fetchQuote(widget.symbol, range: range.range, interval: range.interval);
+      if (range != _range) {
+        // The reader moved on while this was in flight; the newer request owns
+        // the screen.
+        return;
+      }
       if (mounted) {
         setState(() {
           _quote = quote;
@@ -98,7 +116,8 @@ class _TickerScreenState extends State<_TickerScreen> {
 
   Widget _quoteHeader(BuildContext context, TickerQuote quote) {
     final theme = Theme.of(context);
-    final price = quote.price ?? quote.points.last.close;
+    final scrubbed = _scrubbed;
+    final price = scrubbed?.close ?? quote.price ?? quote.points.last.close;
     final percent = quote.changePercent;
     final up = quote.isUp ?? true;
     final money = NumberFormat.decimalPatternDigits(decimalDigits: 2);
@@ -115,12 +134,47 @@ class _TickerScreenState extends State<_TickerScreen> {
             Text(quote.currency!, style: theme.textTheme.bodySmall),
           ],
           const Spacer(),
-          if (percent != null)
+          // While scrubbing, when that point was — a price with no moment
+          // attached to it is not worth reading.
+          if (scrubbed != null)
+            Text(DateFormat.yMMMd().add_Hm().format(scrubbed.at), style: theme.textTheme.bodySmall)
+          else if (percent != null)
             Text(
               '${up ? '+' : ''}${percent.toStringAsFixed(2)}%',
               style: theme.textTheme.titleMedium!.copyWith(
                 fontWeight: FontWeight.w700,
                 color: up ? const Color(0xFF00BA7C) : const Color(0xFFF4212E),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// The ranges, as a row of chips. Changing one reloads the chart and leaves
+  /// the posts below untouched.
+  Widget _rangePicker(BuildContext context) {
+    return SizedBox(
+      height: 40,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        children: [
+          for (final range in TickerRange.values)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: ChoiceChip(
+                label: Text(tickerRangeLabel(context, range)),
+                selected: range == _range,
+                onSelected: (_) {
+                  if (range == _range) return;
+                  setState(() {
+                    _range = range;
+                    _quote = null;
+                    _scrubbed = null;
+                  });
+                  _loadQuote();
+                },
               ),
             ),
         ],
@@ -135,7 +189,15 @@ class _TickerScreenState extends State<_TickerScreen> {
 
     final quote = _quote;
     if (quote == null) {
-      return const SizedBox(height: 200, child: Center(child: CircularProgressIndicator()));
+      // Keeping the picker visible while a range loads means the row does not
+      // vanish under the finger that just tapped it.
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 200, child: Center(child: CircularProgressIndicator())),
+          _rangePicker(context),
+        ],
+      );
     }
 
     return Column(
@@ -143,8 +205,13 @@ class _TickerScreenState extends State<_TickerScreen> {
       children: [
         _quoteHeader(context, quote),
         const SizedBox(height: 8),
-        TickerChart(quote: quote),
-        const SizedBox(height: 8),
+        TickerChart(quote: quote, onScrub: (point) => setState(() => _scrubbed = point)),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: TickerStats(quote: quote, showCurrency: false),
+        ),
+        _rangePicker(context),
+        const SizedBox(height: 4),
       ],
     );
   }
@@ -155,22 +222,24 @@ class _TickerScreenState extends State<_TickerScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text('\$${widget.symbol.toUpperCase()}')),
-      body: Column(
-        children: [
-          if (chart != null) chart,
-          Expanded(
-            child: TweetContextScope(
-              child: PaginatedTweetList(
-                feed: _feed,
-                loadPage: _loadPage,
-                username: null,
-                firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets,
-                newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
-                emptyMessage: L10n.of(context).no_posts_match_your_search,
-              ),
-            ),
-          ),
+      // The chart scrolls away with the posts rather than holding the top of the
+      // screen. It was a fixed child of a Column with the list in an Expanded
+      // below, so posts scrolled under a chart that never moved — and on a
+      // phone that chart is most of the screen.
+      body: NestedScrollView(
+        headerSliverBuilder: (context, _) => [
+          if (chart != null) SliverToBoxAdapter(child: chart),
         ],
+        body: TweetContextScope(
+          child: PaginatedTweetList(
+            feed: _feed,
+            loadPage: _loadPage,
+            username: null,
+            firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets,
+            newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
+            emptyMessage: L10n.of(context).no_posts_match_your_search,
+          ),
+        ),
       ),
     );
   }

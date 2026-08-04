@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:quax/client/client_regular_account.dart';
-import 'package:quax/client/login_webview.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/client/accounts.dart';
+import 'package:xta/client/client_regular_account.dart';
+import 'package:xta/client/login_webview.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/client/accounts.dart';
 
 class SettingsAccountFragment extends StatefulWidget {
   const SettingsAccountFragment({super.key});

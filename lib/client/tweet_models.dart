@@ -7,9 +7,9 @@ library;
 
 import 'package:dart_twitter_api/src/utils/date_utils.dart';
 import 'package:dart_twitter_api/twitter_api.dart';
-import 'package:quax/article/article.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/user.dart';
+import 'package:xta/article/article.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/user.dart';
 
 class TweetWithCard extends Tweet {
   String? noteText;

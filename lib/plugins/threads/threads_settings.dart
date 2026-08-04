@@ -1,0 +1,243 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
+import 'package:pref/pref.dart';
+import 'package:provider/provider.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/threads/threads_api.dart';
+import 'package:xta/plugins/threads/threads_client.dart';
+import 'package:xta/plugins/threads/threads_models.dart';
+import 'package:xta/plugins/threads/threads_store.dart';
+import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
+
+/// Where the reader points the plugin, and who they follow with it.
+class ThreadsSettingsScreen extends StatefulWidget {
+  const ThreadsSettingsScreen({super.key});
+
+  @override
+  State<ThreadsSettingsScreen> createState() => _ThreadsSettingsScreenState();
+}
+
+class _ThreadsSettingsScreenState extends State<ThreadsSettingsScreen> {
+  late final TextEditingController _instance;
+  late final TextEditingController _apiBase;
+  late final TextEditingController _apiToken;
+  bool _testing = false;
+  bool _testingApi = false;
+  bool _tokenHidden = true;
+
+  @override
+  void initState() {
+    super.initState();
+    final prefs = PrefService.of(context, listen: false);
+    _instance = TextEditingController(text: prefs.get<String>(optionPluginThreadsInstance) ?? '');
+    _apiBase = TextEditingController(
+        text: prefs.get<String>(optionPluginThreadsApiBase) ?? kThreadsApiDefaultBase);
+    _apiToken = TextEditingController(text: prefs.get<String>(optionPluginThreadsApiToken) ?? '');
+  }
+
+  @override
+  void dispose() {
+    _instance.dispose();
+    _apiBase.dispose();
+    _apiToken.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    await PrefService.of(context, listen: false).set(optionPluginThreadsInstance, _instance.text.trim());
+  }
+
+  Future<void> _test() async {
+    final l10n = L10n.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final client = context.read<ThreadsClient>();
+
+    await _save();
+    setState(() => _testing = true);
+    String message;
+    try {
+      await client.verify(_instance.text.trim());
+      message = l10n.plugin_threads_test_ok;
+    } catch (e) {
+      message = threadsSettingsError(l10n, e);
+    }
+
+    if (mounted) {
+      setState(() => _testing = false);
+      messenger.showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
+  Future<void> _saveApi() async {
+    final prefs = PrefService.of(context, listen: false);
+    await prefs.set(optionPluginThreadsApiBase, _apiBase.text.trim());
+    await prefs.set(optionPluginThreadsApiToken, _apiToken.text.trim());
+  }
+
+  /// Asks the server whether it is up.
+  ///
+  /// `/health` takes no token on purpose, so a failure here means the address
+  /// is wrong rather than the token — which is the distinction worth having
+  /// before anyone starts rotating credentials.
+  Future<void> _testApi() async {
+    final l10n = L10n.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final api = context.read<ThreadsApi>();
+
+    await _saveApi();
+    setState(() => _testingApi = true);
+    String message;
+    try {
+      final ok = await api.health(_apiBase.text.trim());
+      message = ok ? l10n.plugin_threads_api_test_ok : l10n.plugin_threads_error_unreachable;
+    } catch (e) {
+      message = threadsApiSettingsError(l10n, e);
+    }
+
+    if (mounted) {
+      setState(() => _testingApi = false);
+      messenger.showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
+  Future<void> _remove(String handle) async {
+    await context.read<ThreadsAccountsStore>().remove(handle);
+    if (mounted) {
+      await context.read<ThreadsFeedStore>().refresh();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.plugin_threads_title)),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Text(l10n.plugin_threads_settings_intro, style: theme.textTheme.bodyMedium),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _instance,
+            keyboardType: TextInputType.url,
+            autocorrect: false,
+            decoration: InputDecoration(
+              labelText: l10n.plugin_threads_instance,
+              hintText: l10n.plugin_threads_instance_hint,
+            ),
+            onChanged: (_) => _save(),
+          ),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FilledButton.tonal(
+              onPressed: _testing ? null : _test,
+              child: Text(l10n.plugin_threads_test),
+            ),
+          ),
+          const Divider(height: 32),
+          Text(l10n.plugin_threads_api_intro, style: theme.textTheme.bodyMedium),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _apiBase,
+            keyboardType: TextInputType.url,
+            autocorrect: false,
+            decoration: InputDecoration(labelText: l10n.plugin_threads_api_base),
+            onChanged: (_) => _saveApi(),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _apiToken,
+            obscureText: _tokenHidden,
+            autocorrect: false,
+            enableSuggestions: false,
+            decoration: InputDecoration(
+              labelText: l10n.plugin_threads_api_token,
+              suffixIcon: IconButton(
+                icon: Icon(_tokenHidden ? Icons.visibility : Icons.visibility_off),
+                onPressed: () => setState(() => _tokenHidden = !_tokenHidden),
+              ),
+            ),
+            onChanged: (_) => _saveApi(),
+          ),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FilledButton.tonal(
+              onPressed: _testingApi ? null : _testApi,
+              child: Text(l10n.plugin_threads_test),
+            ),
+          ),
+          const Divider(height: 32),
+          Text(l10n.plugin_threads_accounts, style: theme.textTheme.titleSmall),
+          ScopedBuilder<ThreadsAccountsStore, List<ThreadsAccount>>(
+            store: context.read<ThreadsAccountsStore>(),
+            onState: (context, accounts) {
+              if (accounts.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(l10n.plugin_threads_no_accounts, style: theme.textTheme.bodySmall),
+                );
+              }
+              return Column(
+                children: [
+                  for (final account in accounts)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: FallbackAvatar(
+                        seed: account.handle,
+                        displayName: account.name,
+                        size: 36,
+                        accent: theme.colorScheme.primary,
+                      ),
+                      title: Text('@${account.handle}'),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        tooltip: l10n.delete,
+                        onPressed: () => _remove(account.handle),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// An Xy failure as the settings screen puts it, preferring whatever the
+/// server itself said.
+String threadsApiSettingsError(L10n l10n, Object error) {
+  if (error is! ThreadsApiException) {
+    return l10n.plugin_threads_error_unreachable;
+  }
+  final said = error.message?.trim();
+  if (said != null && said.isNotEmpty) {
+    return said;
+  }
+  return switch (error.kind) {
+    ThreadsApiErrorKind.notConfigured => l10n.plugin_threads_api_not_configured,
+    ThreadsApiErrorKind.unauthorized => l10n.plugin_threads_api_unauthorized,
+    ThreadsApiErrorKind.notFound => l10n.plugin_threads_error_no_feed,
+    _ => l10n.plugin_threads_error_unreachable,
+  };
+}
+
+/// The settings screen says the same things the feed does, plus the one only a
+/// test can produce: an address that is not an RSSHub at all.
+String threadsSettingsError(L10n l10n, Object error) {
+  if (error is! ThreadsException) {
+    return l10n.plugin_threads_error_unreachable;
+  }
+  return switch (error.kind) {
+    ThreadsErrorKind.notConfigured => l10n.plugin_threads_not_configured,
+    ThreadsErrorKind.noSuchFeed => l10n.plugin_threads_error_no_route,
+    ThreadsErrorKind.throttled => l10n.plugin_threads_error_throttled,
+    ThreadsErrorKind.unreachable => l10n.plugin_threads_error_unreachable,
+  };
+}

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
 import 'package:pref/pref.dart';
 
 class SettingsAccessibilityFragment extends StatelessWidget {

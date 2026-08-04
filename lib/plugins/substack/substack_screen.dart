@@ -2,13 +2,13 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/substack/substack_add_screen.dart';
-import 'package:quax/plugins/substack/substack_archive_screen.dart';
-import 'package:quax/plugins/substack/substack_models.dart';
-import 'package:quax/plugins/substack/substack_post_card.dart';
-import 'package:quax/plugins/substack/substack_store.dart';
-import 'package:quax/ui/errors.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/substack/substack_add_screen.dart';
+import 'package:xta/plugins/substack/substack_archive_screen.dart';
+import 'package:xta/plugins/substack/substack_models.dart';
+import 'package:xta/plugins/substack/substack_post_card.dart';
+import 'package:xta/plugins/substack/substack_store.dart';
+import 'package:xta/ui/errors.dart';
 
 class SubstackScreen extends StatefulWidget {
   final ScrollController scrollController;

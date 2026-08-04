@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:dart_twitter_api/twitter_api.dart';
 
-import 'package:quax/article/article_entities.dart';
-import 'package:quax/tweet/_video.dart';
-import 'package:quax/utils/iterables.dart';
+import 'package:xta/article/article_entities.dart';
+import 'package:xta/tweet/_video.dart';
+import 'package:xta/utils/iterables.dart';
 
 class EntityMapParser {
   static Map<int, EntityValue> parse(dynamic json, List<dynamic> mediaEntitiesJson, String tweetIdStr, String user) {

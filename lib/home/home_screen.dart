@@ -4,21 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/home/edge_swipe.dart';
-import 'package:quax/group/group_screen.dart';
-import 'package:quax/home/_feed.dart';
-import 'package:quax/home/_missing.dart';
-import 'package:quax/home/_saved.dart';
-import 'package:quax/home/home_model.dart';
-import 'package:quax/plugins/plugin_registry.dart';
-import 'package:quax/search/search.dart';
-import 'package:quax/subscriptions/subscriptions.dart';
-import 'package:quax/trends/trends_screen.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/ui/scroll_to_top.dart';
-import 'package:quax/ui/x_look_theme.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/group/group_screen.dart';
+import 'package:xta/home/_account_avatar.dart';
+import 'package:xta/subscriptions/group_identity.dart';
+import 'package:xta/home/_feed.dart';
+import 'package:xta/home/_missing.dart';
+import 'package:xta/home/_saved.dart';
+import 'package:xta/home/home_model.dart';
+import 'package:xta/plugins/plugin_registry.dart';
+import 'package:xta/search/search.dart';
+import 'package:xta/subscriptions/subscriptions.dart';
+import 'package:xta/trends/trends_screen.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/ui/scroll_to_top.dart';
+import 'package:xta/ui/x_look_theme.dart';
 
 typedef NavigationTitleBuilder = String Function(BuildContext context);
 
@@ -256,49 +259,110 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
 
-    return HomePageSwiper(
-      movePage: _movePage,
-      child: _buildScaffold(context, l10n),
+    return _buildScaffold(context, l10n);
+  }
+
+  /// Closes the drawer before going: navigating from an open drawer left it
+  /// sitting open under the pushed route, waiting behind the Back button.
+  void _goFromDrawer(BuildContext context, String route, {Object? arguments}) {
+    Navigator.pop(context);
+    Navigator.pushNamed(context, route, arguments: arguments);
+  }
+
+  /// What X keeps in its drawer, translated to this app: the account at the
+  /// top, then search and settings, then the groups — which are this app's
+  /// Lists, and the part the reader actually reaches for.
+  Widget _buildDrawer(BuildContext context, L10n l10n) {
+    return Drawer(
+      child: SafeArea(
+        child: ScopedBuilder<GroupsModel, List<SubscriptionGroup>>(
+          store: context.read<GroupsModel>(),
+          onState: (context, groups) => ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              _drawerAccountHeader(context, l10n),
+              ListTile(
+                leading: const Icon(Icons.search),
+                title: Text(l10n.search),
+                onTap: () => _goFromDrawer(context, routeSearch,
+                    arguments: SearchArguments(0, focusInputOnOpen: true)),
+              ),
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: Text(l10n.settings),
+                onTap: () => _goFromDrawer(context, routeSettings),
+              ),
+              if (groups.isNotEmpty) ...[
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                  child: Text(l10n.groups, style: Theme.of(context).textTheme.bodySmall),
+                ),
+                for (final group in groups) _drawerGroupTile(context, l10n, group),
+              ],
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  /// Moves [direction] pages along, for a tab whose own content swallowed the
-  /// swipe. Clamped, so the ends stay put rather than wrapping.
-  void _movePage(int direction) {
-    final target = _currentPage + direction;
-    if (target < 0 || target >= widget.pages.length) {
-      return;
-    }
+  /// The account block at the top of the drawer. Fetch accounts carry a screen
+  /// name but no picture, so the mark is a monogram and the counts X would show
+  /// (followers) are replaced with the honest thing the app knows: how many
+  /// accounts it is fetching through. Tapping opens account settings.
+  Widget _drawerAccountHeader(BuildContext context, L10n l10n) {
+    final theme = Theme.of(context);
+    return FutureBuilder<Account?>(
+      future: primaryAccount(),
+      builder: (context, snapshot) {
+        final account = snapshot.data;
+        return InkWell(
+          onTap: () => _goFromDrawer(context, routeSettings),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AccountAvatar(account: account, size: 44),
+                const SizedBox(height: 10),
+                Text(l10n.fritter, style: theme.textTheme.titleLarge),
+                if (account?.screenName != null)
+                  Text('@${account!.screenName}',
+                      style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
-    unfocusPages();
-    if (widget.prefs.get<bool>(optionDisableAnimations) == true) {
-      _pageController.jumpToPage(target);
-    } else {
-      _pageController.animateToPage(target, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
-    }
+  /// One group shortcut: its colour disc, its name, a muted member count, and a
+  /// pin when it is pinned (the pinned ones already float to the top).
+  Widget _drawerGroupTile(BuildContext context, L10n l10n, SubscriptionGroup group) {
+    final theme = Theme.of(context);
+    return ListTile(
+      leading: GroupMark.forGroup(group, size: 36),
+      title: Text(group.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+      subtitle: Text(l10n.subscription_group_member_count(group.numberOfMembers),
+          maxLines: 1, overflow: TextOverflow.ellipsis),
+      trailing: group.pinned ? Icon(Icons.push_pin, size: 16, color: theme.colorScheme.primary) : null,
+      onTap: () =>
+          _goFromDrawer(context, routeGroup, arguments: GroupScreenArguments(id: group.id, name: group.name)),
+    );
   }
 
   Widget _buildScaffold(BuildContext context, L10n l10n) {
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.search),
-              title: Text(l10n.search),
-              onTap: () =>
-                  Navigator.pushNamed(context, routeSearch, arguments: SearchArguments(0, focusInputOnOpen: true)),
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: Text(l10n.settings),
-              onTap: () => Navigator.pushNamed(context, routeSettings),
-            )
-          ],
-        ),
-      ),
+      drawer: _buildDrawer(context, l10n),
       body: PageView(
         controller: _pageController,
+        // Tabs change from the bar and nowhere else. A drag anywhere in a page
+        // used to change them too, which meant every horizontal gesture in the
+        // app — a media carousel, a nested tab view, a slider — was competing
+        // with the pager for the same finger.
+        physics: const NeverScrollableScrollPhysics(),
         onPageChanged: (page) {
           setState(() {
             _currentPage = page;

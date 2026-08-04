@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/reddit/reddit_auth.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/reddit/reddit_auth.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 /// Reddit's login page, watched for the redirect that carries the code back.

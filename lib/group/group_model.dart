@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/group/custom_feed_rules.dart';
-import 'package:quax/group/group_tree.dart';
-import 'package:quax/subscriptions/group_mark_style.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/group/custom_feed_rules.dart';
+import 'package:xta/group/group_tree.dart';
+import 'package:xta/subscriptions/group_mark_style.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:sqflite/sqflite.dart';
@@ -48,7 +48,12 @@ Future<Map<String, String?>> readGroupParents(DatabaseExecutor database) async {
 class GroupModel extends Store<SubscriptionGroupGet> {
   final String id;
 
-  GroupModel(this.id)
+  /// Other groups being read alongside this one, for as long as the reader
+  /// wants them together. Their members join this group's feed; nothing about
+  /// either group is changed.
+  final Set<String> alsoRead;
+
+  GroupModel(this.id, {this.alsoRead = const {}})
       : super(SubscriptionGroupGet(
             id: '',
             name: '',
@@ -86,34 +91,33 @@ class GroupModel extends Store<SubscriptionGroupGet> {
       }
 
       // A group's feed is its own members plus everything nested inside it, so
-      // the membership queries ask for a set of group ids rather than one.
+      // the membership queries ask for a set of group ids rather than one — and
+      // reading several groups together is the same question asked of more
+      // roots, which is why it costs nothing here.
       final parents = await readGroupParents(database);
-      final ids = groupAndDescendants(id, parents).toList(growable: false);
+      final ids = {
+        ...groupAndDescendants(id, parents),
+        for (final other in alsoRead) ...groupAndDescendants(other, parents),
+      }.toList(growable: false);
       final placeholders = List.filled(ids.length, '?').join(', ');
 
-      var searchSubscriptions = (await database.rawQuery(
-              'SELECT DISTINCT s.* FROM $tableSearchSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders)',
-              ids))
-          .map((e) => SearchSubscription.fromMap(e))
-          .toList(growable: false);
+      // The four membership queries are independent of each other; issued
+      // together instead of one after another, since this runs on every shell
+      // mount and every debounced reload.
+      String membership(String table) =>
+          'SELECT DISTINCT s.* FROM $table s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders) ORDER BY s.id';
 
-      var userSubscriptions = (await database.rawQuery(
-              'SELECT DISTINCT s.* FROM $tableSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders)',
-              ids))
-          .map((e) => UserSubscription.fromMap(e))
-          .toList(growable: false);
+      final rows = await Future.wait([
+        database.rawQuery(membership(tableSearchSubscription), ids),
+        database.rawQuery(membership(tableSubscription), ids),
+        database.rawQuery(membership(tableSubstackSubscription), ids),
+        database.rawQuery(membership(tableRedditSubscription), ids),
+      ]);
 
-      var substackSubscriptions = (await database.rawQuery(
-              'SELECT DISTINCT s.* FROM $tableSubstackSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders)',
-              ids))
-          .map((e) => SubstackSubscription.fromMap(e))
-          .toList(growable: false);
-
-      var redditSubscriptions = (await database.rawQuery(
-              'SELECT DISTINCT s.* FROM $tableRedditSubscription s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders)',
-              ids))
-          .map((e) => RedditSubscription.fromMap(e))
-          .toList(growable: false);
+      var searchSubscriptions = rows[0].map((e) => SearchSubscription.fromMap(e)).toList(growable: false);
+      var userSubscriptions = rows[1].map((e) => UserSubscription.fromMap(e)).toList(growable: false);
+      var substackSubscriptions = rows[2].map((e) => SubstackSubscription.fromMap(e)).toList(growable: false);
+      var redditSubscriptions = rows[3].map((e) => RedditSubscription.fromMap(e)).toList(growable: false);
 
       // TODO: Factory
       return SubscriptionGroupGet(

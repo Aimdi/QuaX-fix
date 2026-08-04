@@ -1,42 +1,23 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart' as mk;
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/tweet/_video_controls.dart';
-import 'package:quax/tweet/video_audio_focus.dart';
-import 'package:quax/tweet/video_controller_pool.dart';
-import 'package:quax/tweet/video_playback_policy.dart';
-import 'package:quax/tweet/video_quality.dart';
-import 'package:quax/ui/capped_network_image.dart';
-import 'package:quax/utils/iterables.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/_video_controls.dart';
+import 'package:xta/tweet/video_audio_focus.dart';
+import 'package:xta/tweet/video_controller_pool.dart';
+import 'package:xta/tweet/video_fullscreen.dart';
+import 'package:xta/tweet/video_playback_policy.dart';
+import 'package:xta/tweet/video_quality.dart';
+import 'package:xta/utils/iterables.dart';
+import 'package:xta/utils/media_quality.dart';
+import 'package:xta/ui/capped_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-
-// Picks orientation from the video's shape so a portrait video isn't forced
-// into landscape like media_kit's `defaultEnterNativeFullscreen` does.
-Future<void> _enterFullscreen(double aspectRatio) async {
-  if (!Platform.isAndroid && !Platform.isIOS) {
-    return defaultEnterNativeFullscreen();
-  }
-  try {
-    final portrait = aspectRatio < 1.0;
-    await Future.wait([
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: []),
-      SystemChrome.setPreferredOrientations(
-        portrait
-            ? [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
-            : [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight],
-      ),
-    ]);
-  } catch (_) {}
-}
 
 class TweetVideoUrls {
   final String streamUrl;
@@ -142,6 +123,8 @@ class _TweetVideoState extends State<TweetVideo> {
   bool _hasBeenVisible = false;
   double _lastVisibleFraction = 0.0;
   Timer? _pauseTimer;
+  Timer? _releaseTimer;
+  Timer? _creationGateTimer;
   StreamSubscription<double>? _muteSub;
   StreamSubscription<String>? _errorSub;
   StreamSubscription<bool>? _playingSub;
@@ -162,16 +145,22 @@ class _TweetVideoState extends State<TweetVideo> {
   static String _defaultQualityUrl(TweetVideoUrls urls, String quality) {
     final q = urls.qualities;
     if (q.isEmpty) return urls.streamUrl;
-    final i = switch (quality) {
-      'thumb' => q.length - 1,
-      'small' => (q.length * 3) ~/ 4,
-      'medium' => q.length ~/ 2,
-      _ => 0,
+    final i = switch (MediaQuality.fromStored(quality, fallback: MediaQuality.large)) {
+      MediaQuality.thumb => q.length - 1,
+      MediaQuality.small => (q.length * 3) ~/ 4,
+      MediaQuality.medium => q.length ~/ 2,
+      MediaQuality.large => 0,
     };
     return q[i.clamp(0, q.length - 1)].url;
   }
 
-  Future<PooledVideo> _createPooled(bool prefLoop, bool startMuted, String quality, int prefetchSeconds) async {
+  Future<PooledVideo> _createPooled(
+    bool prefLoop,
+    bool startMuted,
+    String quality,
+    int prefetchSeconds,
+    bool directHwdec,
+  ) async {
     var urls = await widget.metadata.streamUrlsBuilder();
     var streamUrl = _defaultQualityUrl(urls, quality);
 
@@ -184,11 +173,32 @@ class _TweetVideoState extends State<TweetVideo> {
       // audiotrack JNI crash; falls back to opensles below Android 8.
       await platform.setProperty('ao', 'aaudio,opensles');
       // System MediaCodec decoders, with libmpv's software decoders as fallback.
-      await platform.setProperty('hwdec', 'mediacodec-copy');
+      //
+      // `mediacodec-copy` copies every decoded frame back into system memory
+      // before it is uploaded to a texture; `mediacodec` hands the decoder's own
+      // surface over and copies nothing. The direct path is much cheaper and is
+      // what makes a feed scroll while a video plays, but it renders black on
+      // some devices — hence a setting rather than a default.
+      await platform.setProperty('hwdec', directHwdec ? 'mediacodec' : 'mediacodec-copy');
 
-      if (prefetchSeconds > 0) {
-        await platform.setProperty('cache-secs', '$prefetchSeconds');
-      }
+      // How far ahead a feed video reads.
+      //
+      // libmpv is built for a player you sit down in front of, so it reads far
+      // ahead and keeps a long way back — sensible for one film, wasteful for a
+      // timeline where most videos are watched for seconds and many are never
+      // watched at all. cache-secs only bounded that when the reader had set a
+      // prefetch, and it is zero by default, so out of the box nothing capped
+      // it at all.
+      //
+      // The demuxer bounds are what actually govern this: cache-secs limits
+      // time, these limit the bytes behind it. Both are set, and the reader's
+      // own prefetch still overrides the time.
+      await platform.setProperty('cache-secs', '${prefetchSeconds > 0 ? prefetchSeconds : kVideoReadaheadSeconds}');
+      await platform.setProperty('demuxer-readahead-secs', '$kVideoReadaheadSeconds');
+      await platform.setProperty('demuxer-max-bytes', '$kVideoDemuxerMaxBytes');
+      // What is kept of what has already played, for scrubbing back. Small: a
+      // feed is not somewhere anyone rewinds far.
+      await platform.setProperty('demuxer-max-back-bytes', '$kVideoDemuxerMaxBackBytes');
     }
 
     await player.setPlaylistMode((widget.loop || prefLoop) ? mk.PlaylistMode.single : mk.PlaylistMode.none);
@@ -210,7 +220,8 @@ class _TweetVideoState extends State<TweetVideo> {
     var prefs = PrefService.of(context, listen: false);
     var quality = prefs.get(optionMediaVideoQuality);
     var prefetchSeconds = prefs.get<int>(optionMediaVideoPrefetchSeconds) ?? 0;
-    create() => _createPooled(prefLoop, startMuted, quality, prefetchSeconds);
+    var directHwdec = prefs.get<bool>(optionMediaDirectHardwareDecoding) ?? false;
+    create() => _createPooled(prefLoop, startMuted, quality, prefetchSeconds, directHwdec);
 
     final key = _cacheKey;
     final pool = _pool;
@@ -284,6 +295,13 @@ class _TweetVideoState extends State<TweetVideo> {
     _playingSub = null;
   }
 
+  void _cancelVisibilityTimers() {
+    _pauseTimer?.cancel();
+    _pauseTimer = null;
+    _releaseTimer?.cancel();
+    _releaseTimer = null;
+  }
+
   void _onVisibilityChanged(VisibilityInfo info, PooledVideo pooled) {
     if (!mounted) return;
     final key = _cacheKey;
@@ -291,14 +309,25 @@ class _TweetVideoState extends State<TweetVideo> {
     final isVisible = info.visibleFraction >= 0.5;
     _lastVisibleFraction = info.visibleFraction;
 
+    // Native fullscreen covers this tile (opaque route → not painted). Treat that
+    // as still "in use": reclaim must not release the pool ref under the route.
+    if (_isFullscreen) {
+      _cancelVisibilityTimers();
+      return;
+    }
+
     if (isVisible) {
       if (key != null) _pool?.markVisible(key, this);
-      _pauseTimer?.cancel();
-      _pauseTimer = null;
-      if (_autoPlay && !wasVisible && !pooled.player.state.playing) {
+      _cancelVisibilityTimers();
+      if ((_autoPlay || widget.alwaysPlay) && !wasVisible && !pooled.player.state.playing) {
         pooled.player.play();
       }
-    } else if (!widget.alwaysPlay && wasVisible) {
+    } else if (wasVisible) {
+      // `alwaysPlay` says a looping GIF needs no tap to start, not that it may
+      // keep decoding once nobody can see it. Exempting it here left every GIF
+      // scrolled past still decoding, and each one pinned its pooled player so
+      // the pool could not evict it either — the feed accumulated live libmpv
+      // instances for as long as it was scrolled.
       if (key != null) _pool?.markHidden(key, this);
       _pauseTimer ??= Timer(const Duration(milliseconds: 100), () {
         _pauseTimer = null;
@@ -307,6 +336,72 @@ class _TweetVideoState extends State<TweetVideo> {
           pooled.player.pause();
         }
       });
+      // Pausing stops the decoding; it does not give back the MediaCodec
+      // session, the demuxer thread or the cache behind them. Only letting go
+      // of the pool reference does, and only then can the pool evict. Held off
+      // long enough that a scroll that overshoots and comes back re-attaches to
+      // the same player at the same position instead of restarting it.
+      _releaseTimer ??= Timer(kVideoHiddenReleaseDelay, _releaseWhileHidden);
+    }
+  }
+
+  /// Hand the pooled player back while this tile is off screen, and fall back to
+  /// the poster. The pool keeps the entry cached, so scrolling back re-attaches
+  /// to it — but with no reference held it is now evictable, which is what keeps
+  /// the number of live players bounded by the pool's size.
+  void _releaseWhileHidden() {
+    _releaseTimer = null;
+    final key = _cacheKey;
+    if (!shouldReleaseHiddenPlayer(
+      isFullscreen: _isFullscreen,
+      mounted: mounted,
+      hasPoolKey: key != null && _pool != null,
+      anyVisible: key != null && (_pool?.anyVisible(key) ?? false),
+      visibleFraction: _lastVisibleFraction,
+    )) {
+      return;
+    }
+
+    _detachListeners();
+    if (_holdsPoolRef) {
+      _pool!.release(key!);
+      _holdsPoolRef = false;
+    }
+
+    setState(() {
+      _pooled = null;
+      _acquireFuture = null;
+      _firstFrameRendered = false;
+      _posterGone = false;
+      // Re-arms the creation gate, so nothing is allocated again until this tile
+      // is actually back on screen.
+      _hasBeenVisible = false;
+    });
+  }
+
+  Future<void> _openFullscreen(PooledVideo pooled, bool prefBackgroundPlayback) async {
+    if (_isFullscreen) return;
+    _isFullscreen = true;
+    _cancelVisibilityTimers();
+    // Capture navigator before awaits — orientation change / list recycle may
+    // unmount this tile while fullscreen is still showing.
+    final navigator = Navigator.of(context, rootNavigator: true);
+    final accent = Theme.of(context).colorScheme.secondary;
+    try {
+      await enterTweetVideoFullscreenUi(widget.metadata.aspectRatio);
+      await pushTweetVideoFullscreen(
+        navigator: navigator,
+        pooled: pooled,
+        username: widget.username,
+        accentColor: accent,
+        subtitlesEnabled: _subtitlesEnabled,
+        onToggleSubtitles: () => _toggleSubtitles(pooled),
+        pauseUponEnteringBackgroundMode: !prefBackgroundPlayback,
+        aspectRatio: widget.metadata.aspectRatio,
+      );
+    } finally {
+      _isFullscreen = false;
+      await defaultExitNativeFullscreen();
     }
   }
 
@@ -335,7 +430,8 @@ class _TweetVideoState extends State<TweetVideo> {
 
   void _toggleSubtitles(PooledVideo pooled) {
     final enable = !_subtitlesEnabled;
-    setState(() => _subtitlesEnabled = enable);
+    _subtitlesEnabled = enable;
+    if (mounted) setState(() {});
     if (enable) {
       final subs = pooled.player.state.tracks.subtitle;
       final track = subs.firstWhere((t) => t.id != 'no' && t.id != 'auto', orElse: () => mk.SubtitleTrack.auto());
@@ -352,25 +448,18 @@ class _TweetVideoState extends State<TweetVideo> {
       aspectRatio: widget.metadata.aspectRatio,
       controls: widget.disableControls
           ? null
-          : (state) => QuaxControls(
+          : (state) => XtaControls(
               pooled: pooled,
               username: widget.username,
               allowMuting: true,
               accentColor: accent,
               subtitlesEnabled: _subtitlesEnabled,
               onToggleSubtitles: () => _toggleSubtitles(pooled),
+              onToggleFullscreen: () => _openFullscreen(pooled, prefBackgroundPlayback),
             ),
       wakelock: !widget.disableControls,
       pauseUponEnteringBackgroundMode: !prefBackgroundPlayback,
       subtitleViewConfiguration: SubtitleViewConfiguration(visible: _subtitlesEnabled),
-      onEnterFullscreen: () async {
-        _isFullscreen = true;
-        await _enterFullscreen(widget.metadata.aspectRatio);
-      },
-      onExitFullscreen: () async {
-        _isFullscreen = false;
-        await defaultExitNativeFullscreen();
-      },
     );
 
     if (_posterGone) {
@@ -423,16 +512,33 @@ class _TweetVideoState extends State<TweetVideo> {
     );
   }
 
+  /// Opens the gate only for a tile that has come to rest on screen.
+  ///
+  /// One visible pixel used to be enough, so a fling allocated a libmpv player
+  /// and a native texture for every video it swept past — the tiles most
+  /// certainly not being watched. Requiring half the tile, and requiring it to
+  /// still be there a moment later, means a fling costs nothing and only the
+  /// video the reader stopped at is built.
   void _onCreationGateVisibilityChanged(VisibilityInfo info) {
-    if (_hasBeenVisible || info.visibleFraction <= 0 || !mounted) {
+    if (!mounted || _hasBeenVisible) return;
+    _lastVisibleFraction = info.visibleFraction;
+
+    if (info.visibleFraction < 0.5) {
+      _creationGateTimer?.cancel();
+      _creationGateTimer = null;
       return;
     }
-    setState(() => _hasBeenVisible = true);
+
+    _creationGateTimer ??= Timer(kVideoCreationSettleDelay, () {
+      _creationGateTimer = null;
+      if (!mounted || _hasBeenVisible || _lastVisibleFraction < 0.5) return;
+      setState(() => _hasBeenVisible = true);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final prefs = PrefService.of(context);
+    final prefs = PrefService.of(context, listen: false);
     final prefLoop = prefs.get(optionMediaDefaultLoop);
     final prefAutoPlay = prefs.get(optionMediaDefaultAutoPlay);
     final prefBackgroundPlayback = prefs.get(optionMediaBackgroundPlayback);
@@ -472,6 +578,7 @@ class _TweetVideoState extends State<TweetVideo> {
       userRequestedPlay: _userRequestedPlay,
       alreadyCached: alreadyCached,
       hasBeenVisible: _hasBeenVisible,
+      isVisible: _lastVisibleFraction >= 0.5,
     )) {
       return VisibilityDetector(
         key: _creationGateKey,
@@ -533,13 +640,14 @@ class _TweetVideoState extends State<TweetVideo> {
   @override
   void dispose() {
     _pauseTimer?.cancel();
+    _releaseTimer?.cancel();
+    _creationGateTimer?.cancel();
     _detachListeners();
     final key = _cacheKey;
     if (key != null) _pool?.markHidden(key, this);
-    // Keep the controller alive across the native fullscreen handoff; just don't
-    // dispose/release it here. Detaching listeners and releasing the pool ref,
-    // though, is always safe (the pool owns the player) and must happen even in
-    // fullscreen, or this widget leaks its subscriptions and pins the entry.
+    // Keep the pool ref across the native fullscreen handoff. The fullscreen
+    // route uses the same player; releasing here would let eviction dispose it
+    // while it is still on screen. Detaching listeners is always safe.
     if (!_isFullscreen) {
       if (_ownsControllers) {
         _pooled?.dispose();
@@ -547,7 +655,7 @@ class _TweetVideoState extends State<TweetVideo> {
         // A fast fling can dispose this widget before the debounced pause timer
         // fires; releasing the pool ref alone leaves the player running off-screen.
         // Pause it now, unless the same video is still on screen in another widget.
-        if (!widget.alwaysPlay && !(_pool?.anyVisible(key) ?? false)) {
+        if (!(_pool?.anyVisible(key) ?? false)) {
           _pooled?.player.pause();
         }
         _pool?.release(key);

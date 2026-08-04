@@ -9,7 +9,7 @@ library;
 
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html;
-import 'package:quax/plugins/reddit/reddit_media_urls.dart';
+import 'package:xta/plugins/reddit/reddit_media_urls.dart';
 
 /// One comment, with whatever replies hang off it.
 class RedditComment {
@@ -37,6 +37,16 @@ class RedditComment {
 
   final List<RedditComment> replies;
 
+  /// This comment's own page, for opening its subtree when replies were held
+  /// back.
+  final String? permalink;
+
+  /// Set on a "load more comments" / "continue this thread" row: how many
+  /// replies Reddit held back (null when the page did not say), with
+  /// [permalink] pointing at the page that carries them. Everything else on a
+  /// stub is empty.
+  final int? moreCount;
+
   const RedditComment({
     required this.id,
     required this.body,
@@ -46,7 +56,11 @@ class RedditComment {
     this.isSubmitter = false,
     this.mediaUrls = const [],
     this.replies = const [],
+    this.permalink,
+    this.moreCount,
   });
+
+  bool get isStub => moreCount != null || (body.isEmpty && permalink != null && replies.isEmpty);
 
   /// This comment and everything under it, which is what a flat list needs.
   int get totalCount => 1 + replies.fold<int>(0, (sum, reply) => sum + reply.totalCount);
@@ -83,9 +97,11 @@ DateTime? _createdAt(Element entry) {
 
 RedditComment? _commentFrom(Element thing) {
   final fullname = thing.attributes['data-fullname'];
-  // `more` rows ("load 40 more comments") are controls, not comments.
+  // `more` rows ("load 40 more comments") and deep-thread continuations are
+  // rendered as stubs so a long argument no longer ends mid-air with no sign
+  // anything is missing.
   if (fullname == null || !fullname.startsWith('t1_')) {
-    return null;
+    return _stubFrom(thing);
   }
 
   // Only this comment's own entry, never a reply's: `querySelector` searches
@@ -114,7 +130,38 @@ RedditComment? _commentFrom(Element thing) {
     isSubmitter: entry.querySelector('.author.submitter') != null,
     mediaUrls: media.urls,
     replies: _repliesOf(thing),
+    permalink: thing.attributes['data-permalink'],
   );
+}
+
+/// A "load more comments (N replies)" or "continue this thread" control, kept
+/// as a row rather than silently dropped.
+///
+/// old.reddit's morechildren anchor goes nowhere without its JavaScript, so
+/// the stub points at [parentPermalink] — the held-back replies are on their
+/// parent's own page. A continuation carries its target in its href.
+RedditComment? _stubFrom(Element thing, {String? parentPermalink}) {
+  if (thing.classes.contains('morechildren')) {
+    final text = thing.text;
+    final counted = RegExp(r'\((\d[\d,]*)').firstMatch(text.replaceAll(',', ''));
+    if (parentPermalink == null) {
+      return null;
+    }
+    return RedditComment(
+      id: 'more-$parentPermalink',
+      body: '',
+      permalink: parentPermalink,
+      moreCount: counted == null ? -1 : int.tryParse(counted.group(1)!) ?? -1,
+    );
+  }
+  if (thing.classes.contains('morerecursion')) {
+    final href = thing.querySelector('a')?.attributes['href'];
+    if (href == null || href.isEmpty) {
+      return null;
+    }
+    return RedditComment(id: 'continue-$href', body: '', permalink: href, moreCount: -1);
+  }
+  return null;
 }
 
 /// The pictures a comment body carries, and the text that only announced them.
@@ -192,14 +239,16 @@ List<RedditComment> _repliesOf(Element thing) {
   }
 
   final listing = child.children.where((e) => e.classes.contains('sitetable')).firstOrNull;
-  return listing == null ? const [] : _commentsIn(listing);
+  return listing == null
+      ? const []
+      : _commentsIn(listing, parentPermalink: thing.attributes['data-permalink']);
 }
 
 /// Direct comment children of a listing block, in order.
-List<RedditComment> _commentsIn(Element listing) {
+List<RedditComment> _commentsIn(Element listing, {String? parentPermalink}) {
   final comments = <RedditComment>[];
   for (final thing in listing.children.where((e) => e.classes.contains('thing'))) {
-    final comment = _commentFrom(thing);
+    final comment = _commentFrom(thing) ?? _stubFrom(thing, parentPermalink: parentPermalink);
     if (comment != null) {
       comments.add(comment);
     }
@@ -218,6 +267,32 @@ List<RedditComment> parseComments(String body) {
   return area == null ? const [] : _commentsIn(area);
 }
 
+/// What the post itself points at, read off its own page.
+///
+/// A post that arrived through search carries only its title — old.reddit's
+/// search results name no link and no media — so the thread page is where its
+/// picture has to come from. The `.thing` row carries the outbound link in
+/// `data-url`, and an expanded gallery or preview leaves its files as `img`
+/// tags under the post's expando.
+({String? url, List<String> images}) parsePostMedia(String body) {
+  final document = html.parse(body);
+  final thing = document.querySelector('#siteTable .thing');
+
+  final url = thing?.attributes['data-url'];
+  final absolute = url != null && url.startsWith('http') ? url : null;
+
+  final images = <String>[];
+  for (final img in document.querySelectorAll('#siteTable .expando img, #siteTable .media-gallery img')) {
+    final src = (img.attributes['src'] ?? img.attributes['data-lazy-src'])?.replaceAll('&amp;', '&');
+    final host = src == null ? null : Uri.tryParse(src)?.host;
+    if (src != null && (host == 'preview.redd.it' || host == 'i.redd.it') && !images.contains(src)) {
+      images.add(src);
+    }
+  }
+
+  return (url: absolute, images: images);
+}
+
 /// The post's own text on a comment page, for a self post whose body the
 /// listing did not carry.
 String? parseSelfText(String body) {
@@ -226,4 +301,31 @@ String? parseSelfText(String body) {
       document.querySelector('#siteTable .usertext-body .md')?.text.trim();
 
   return text == null || text.isEmpty ? null : text;
+}
+
+/// The rows a thread screen should show, honouring [collapsed] subtrees.
+///
+/// A collapsed comment stays as its own row, carrying how many replies it is
+/// hiding; everything under it is skipped. Pure, so the fold behaviour can be
+/// tested without a widget tree.
+List<({FlatComment entry, int hidden})> visibleComments(List<FlatComment> all, Set<String> collapsed) {
+  final out = <({FlatComment entry, int hidden})>[];
+  var i = 0;
+  while (i < all.length) {
+    final entry = all[i];
+    if (collapsed.contains(entry.comment.id)) {
+      var j = i + 1;
+      var hidden = 0;
+      while (j < all.length && all[j].depth > entry.depth) {
+        j++;
+        hidden++;
+      }
+      out.add((entry: entry, hidden: hidden));
+      i = j;
+    } else {
+      out.add((entry: entry, hidden: 0));
+      i++;
+    }
+  }
+  return out;
 }

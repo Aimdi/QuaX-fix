@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:quax/client/client.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/utils/iterables.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/utils/iterables.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// Helpers for reading the tweets cached in [tableFeedGroupChunk]. Shared so the
@@ -18,12 +18,23 @@ List<TweetChain> chainsFromStoredChunks(List<Map<String, Object?>> storedChunks)
       .toList();
 }
 
-/// Keeps only the first occurrence of each chain id. Stored chunk rows and
-/// successive search windows overlap at their boundaries, so the same chain
-/// routinely appears in several sources.
+/// Keeps only the first occurrence of each chain id, and of each leading tweet
+/// id when present. Stored chunk rows and successive search windows overlap at
+/// their boundaries, so the same chain (or the same post under two chain ids)
+/// routinely appears in several sources (#169).
 List<TweetChain> dedupeChainsById(List<TweetChain> chains) {
-  var seen = <String>{};
-  return chains.where((c) => seen.add(c.id)).toList();
+  var seenChainIds = <String>{};
+  var seenTweetIds = <String>{};
+  return chains.where((c) {
+    if (!seenChainIds.add(c.id)) {
+      return false;
+    }
+    final tweetId = c.tweets.firstOrNull?.idStr;
+    if (tweetId != null && !seenTweetIds.add(tweetId)) {
+      return false;
+    }
+    return true;
+  }).toList();
 }
 
 List<TweetChain> sortChainsNewestFirst(List<TweetChain> chains) {

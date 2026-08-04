@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:quax/database/entities.dart';
+import 'package:xta/database/entities.dart';
 
 /// Tokens for the two built-in tabs. Folder tabs use their folder id as the token.
 /// A token is also the filter value used by the Saved screen.

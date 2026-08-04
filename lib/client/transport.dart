@@ -11,13 +11,13 @@ import 'dart:convert';
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
-import 'package:quax/catcher/exceptions.dart';
-import 'package:quax/client/account_selector.dart';
-import 'package:quax/client/accounts.dart';
-import 'package:quax/client/client_regular_account.dart';
-import 'package:quax/client/client_unauthenticated.dart';
-import 'package:quax/client/rate_limit_tracker.dart';
-import 'package:quax/constants.dart';
+import 'package:xta/catcher/exceptions.dart';
+import 'package:xta/client/account_selector.dart';
+import 'package:xta/client/accounts.dart';
+import 'package:xta/client/client_regular_account.dart';
+import 'package:xta/client/client_unauthenticated.dart';
+import 'package:xta/client/rate_limit_tracker.dart';
+import 'package:xta/constants.dart';
 
 const Duration _defaultTimeout = Duration(seconds: 30);
 

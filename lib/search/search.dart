@@ -2,17 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/profile/profile.dart';
-import 'package:quax/search/advanced_search.dart';
-import 'package:quax/search/search_media_grid.dart';
-import 'package:quax/search/search_model.dart';
-import 'package:quax/tweet/_video.dart';
-import 'package:quax/tweet/paginated_tweet_list.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/user.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/profile/profile.dart';
+import 'package:xta/search/advanced_search.dart';
+import 'package:xta/search/search_media_grid.dart';
+import 'package:xta/search/search_model.dart';
+import 'package:xta/tweet/_video.dart';
+import 'package:xta/tweet/paginated_tweet_list.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/user.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 

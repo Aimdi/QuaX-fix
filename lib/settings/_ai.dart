@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
 
 /// Where an AI feature should send its requests, if the reader wants one.
 ///
 /// Nothing calls this yet — it is the connection details, kept on the device,
-/// so that features built on top of it never have to ship a key of QuaX's own
+/// so that features built on top of it never have to ship a key of XTA's own
 /// or route a reader's posts through a service they did not choose.
 class SettingsAiFragment extends StatefulWidget {
   const SettingsAiFragment({super.key});

@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/settings/backup_data.dart';
-import 'package:quax/settings/backup_rows.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/settings/backup_data.dart';
+import 'package:xta/settings/backup_rows.dart';
 
 const _icon = '{"pack":"custom","key":"rss_feed"}';
 const _seenAt = '2026-08-01T00:00:00.000Z';

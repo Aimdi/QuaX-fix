@@ -76,6 +76,14 @@ class SubstackPost {
   /// Set when the post is built around a video Substack hosts itself.
   final bool hasVideoUpload;
 
+  /// The episode file of a podcast post, playable directly.
+  final String? audioUrl;
+
+  /// What the post has gathered. Null when the payload did not carry them,
+  /// which is not the same as zero.
+  final int? reactionCount;
+  final int? commentCount;
+
   const SubstackPost({
     required this.id,
     required this.title,
@@ -92,6 +100,9 @@ class SubstackPost {
     this.bodyHtml,
     this.audience,
     this.authorName,
+    this.audioUrl,
+    this.reactionCount,
+    this.commentCount,
   });
 
   /// Substack uses `only_paid` (and occasionally founding tiers) for gated posts.
@@ -150,10 +161,29 @@ class SubstackPost {
       // Substack has moved this field around, so presence is what is checked
       // rather than any particular shape of it.
       hasVideoUpload: json['videoUpload'] != null || json['video_upload'] != null,
+      audioUrl: json['podcast_url'] as String?,
+      reactionCount: _countOf(json['reaction_count']) ?? _sumOfReactions(json['reactions']),
+      commentCount: _countOf(json['comment_count']),
       publicationBaseUrl: publicationBaseUrl,
       publicationName: publicationName,
     );
   }
+
+  static int? _countOf(Object? value) => value is num ? value.toInt() : null;
+
+  /// Older payloads carry no total, only the per-emoji map.
+  static int? _sumOfReactions(Object? reactions) {
+    if (reactions is! Map || reactions.isEmpty) {
+      return null;
+    }
+    var total = 0;
+    for (final value in reactions.values) {
+      if (value is num) total += value.toInt();
+    }
+    return total;
+  }
+
+  bool get isPodcast => audioUrl != null && audioUrl!.isNotEmpty;
 
   /// Whether the post leads with a video, which the tile marks and the reader
   /// plays. A video post used to be indistinguishable from any other, so the
@@ -247,3 +277,59 @@ List<String> readIdsFromPrefs(String? raw) {
 }
 
 String readIdsToPrefs(List<String> ids) => jsonEncode(ids);
+
+/// One comment under a post, flattened for a list with its nesting [depth].
+class SubstackComment {
+  final String id;
+  final String? author;
+  final String body;
+  final DateTime? at;
+  final int depth;
+
+  const SubstackComment({
+    required this.id,
+    required this.body,
+    this.author,
+    this.at,
+    this.depth = 0,
+  });
+}
+
+/// Reads the comments endpoint's tree into reading order.
+///
+/// The shape is a list of comments each carrying `children`; anything that no
+/// longer fits is skipped rather than thrown, in the same spirit as every
+/// other reverse-engineered payload here.
+List<SubstackComment> flattenSubstackComments(Object? json, {int maxDepth = 8}) {
+  final out = <SubstackComment>[];
+
+  void walk(Object? nodes, int depth) {
+    if (nodes is! List) {
+      return;
+    }
+    for (final node in nodes) {
+      if (node is! Map) {
+        continue;
+      }
+      final body = (node['body'] as String?)?.trim();
+      final id = '${node['id'] ?? ''}';
+      // A deleted comment arrives with no body; its children survive and are
+      // still worth showing where they sat.
+      if (id.isNotEmpty && body != null && body.isNotEmpty) {
+        out.add(SubstackComment(
+          id: id,
+          body: body,
+          author: node['name'] as String?,
+          at: DateTime.tryParse(node['date'] as String? ?? '')?.toLocal(),
+          depth: depth,
+        ));
+      }
+      if (depth < maxDepth) {
+        walk(node['children'], id.isEmpty || body == null || body.isEmpty ? depth : depth + 1);
+      }
+    }
+  }
+
+  walk(json is Map ? json['comments'] : json, 0);
+  return out;
+}

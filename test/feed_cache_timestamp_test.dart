@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/group/feed_cache.dart';
+import 'package:xta/group/feed_cache.dart';
 
 Map<String, Object?> row(Object? createdAt) => {'created_at': createdAt};
 

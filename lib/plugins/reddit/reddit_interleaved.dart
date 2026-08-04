@@ -2,12 +2,12 @@ import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_post_card.dart';
-import 'package:quax/plugins/reddit/reddit_sort_sheet.dart';
-import 'package:quax/plugins/reddit/reddit_store.dart';
-import 'package:quax/tweet/interleaved_items.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_post_card.dart';
+import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
+import 'package:xta/plugins/reddit/reddit_store.dart';
+import 'package:xta/tweet/interleaved_items.dart';
 
 final _log = Logger('RedditInterleaved');
 
@@ -55,29 +55,28 @@ Future<List<InterleavedItem>> loadRedditInterleaved(
   final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
   final sort = storedRedditSort(prefs);
 
-  // Fetched together rather than one after another. The anonymous route costs
-  // several requests per subreddit, so serially this was the sum of ten slow
-  // scrapes before the timeline could show a single card.
-  final perSubreddit = await Future.wait(subreddits.map((name) async {
-    final items = <InterleavedItem>[];
-
+  // Fetched together rather than one after another: a group with six
+  // subreddits paid six round trips end to end, and the feed waited on the sum.
+  final listings = await Future.wait(subreddits.map((name) async {
     try {
-      final listing = await client.fetchSubreddit(name,
+      return await client.fetchSubreddit(name,
           clientId: clientId, sort: sort, limit: limit, preferPublic: preferPublic);
-
-      for (final post in listing.posts.where((p) => !p.stickied)) {
-        final date = post.createdAt;
-        if (date == null) {
-          continue;
-        }
-        items.add((date: date, build: (context) => RedditPostCard(post: post)));
-      }
     } catch (e) {
       _log.warning('Unable to load r/$name: $e');
+      return null;
     }
-
-    return items;
   }));
 
-  return perSubreddit.expand((e) => e).toList();
+  final items = <InterleavedItem>[];
+  for (final listing in listings.nonNulls) {
+    for (final post in listing.posts.where((p) => !p.stickied)) {
+      final date = post.createdAt;
+      if (date == null) {
+        continue;
+      }
+      items.add((date: date, build: (context) => RedditPostCard(post: post)));
+    }
+  }
+
+  return items;
 }

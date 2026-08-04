@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/home/home_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/home/home_screen.dart';
 
 NavigationPage _page(String id, IconData icon) =>
     NavigationPage(id, (_) => id, Icon(icon), Icon(icon));
@@ -18,7 +20,9 @@ Widget _scaffold({int pages = 4, bool disableAnimations = false}) {
   return PrefService(
     service: prefs,
     child: MaterialApp(
-      // The scaffold's drawer reads L10n, so the delegates have to be present.
+      // The scaffold's drawer reads L10n and lists the groups, so the
+      // delegates and a GroupsModel have to be present. The model is never
+      // loaded here — its initial empty state is enough for the drawer.
       localizationsDelegates: const [
         L10n.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -26,15 +30,18 @@ Widget _scaffold({int pages = 4, bool disableAnimations = false}) {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: L10n.delegate.supportedLocales,
-      home: ScaffoldWithBottomNavigation(
-        pages: [
-          for (var i = 0; i < pages; i++) _page('page$i', Icons.circle),
-        ],
-        prefs: prefs,
-        initialPage: 0,
-        builder: (_, _) => [
-          for (var i = 0; i < pages; i++) Center(child: Text('body$i')),
-        ],
+      home: Provider<GroupsModel>(
+        create: (_) => GroupsModel(prefs),
+        child: ScaffoldWithBottomNavigation(
+          pages: [
+            for (var i = 0; i < pages; i++) _page('page$i', Icons.circle),
+          ],
+          prefs: prefs,
+          initialPage: 0,
+          builder: (_, _) => [
+            for (var i = 0; i < pages; i++) Center(child: Text('body$i')),
+          ],
+        ),
       ),
     ),
   );
@@ -46,6 +53,7 @@ Future<void> _swipeBar(WidgetTester tester, Offset offset) async {
   await tester.fling(bar, offset, 600);
   await tester.pumpAndSettle();
 }
+
 
 void main() {
   group('pageAfterNavigationSwipe', () {

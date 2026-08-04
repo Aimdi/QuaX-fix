@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/group/feed_catch_up.dart';
-import 'package:quax/tweet/catch_up_split.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/group/feed_catch_up.dart';
+import 'package:xta/tweet/catch_up_split.dart';
 
 TweetChain chain(String id) => TweetChain(id: id, tweets: [TweetWithCard()], isPinned: false);
 

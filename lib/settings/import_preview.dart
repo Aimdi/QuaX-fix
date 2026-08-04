@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/settings/backup_data.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/settings/backup_data.dart';
 
 /// What the reader agreed to once they had seen what the file holds.
 class ImportChoice {

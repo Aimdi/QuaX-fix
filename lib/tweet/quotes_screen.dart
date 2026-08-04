@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/tweet/paginated_tweet_list.dart';
-import 'package:quax/tweet/tweet_context_scope.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/paginated_tweet_list.dart';
+import 'package:xta/tweet/tweet_context_scope.dart';
 
 class QuotesScreenArguments {
   final String id;

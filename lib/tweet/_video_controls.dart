@@ -5,26 +5,38 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path/path.dart' as path;
 import 'package:pref/pref.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/tweet/video_controller_pool.dart';
-import 'package:quax/tweet/video_quality.dart';
-import 'package:quax/utils/downloads.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/video_controller_pool.dart';
+import 'package:xta/tweet/video_fullscreen.dart';
+import 'package:xta/tweet/video_quality.dart';
+import 'package:xta/utils/downloads.dart';
 
 Player _playerOf(BuildContext context) =>
     VideoStateInheritedWidget.of(context).state.widget.controller.player;
 
 const _kSeekSeconds = 10;
 
-class QuaxControls extends StatefulWidget {
+class XtaControls extends StatefulWidget {
   final PooledVideo pooled;
   final String username;
   final bool allowMuting;
   final Color accentColor;
   final bool subtitlesEnabled;
   final VoidCallback onToggleSubtitles;
+  /// When set, replaces media_kit's [MaterialFullscreenButton] so fullscreen can
+  /// use a self-contained route that does not share the inline tile's notifiers.
+  final VoidCallback? onToggleFullscreen;
 
-  const QuaxControls({
+  /// Fullscreen only: whether the video is filling the screen rather than
+  /// fitting inside it, and how to swap between the two.
+  final bool? zoomedToFill;
+  final VoidCallback? onToggleZoom;
+
+  /// Fullscreen only: shrink the app into a floating window.
+  final VoidCallback? onPictureInPicture;
+
+  const XtaControls({
     super.key,
     required this.pooled,
     required this.username,
@@ -32,13 +44,17 @@ class QuaxControls extends StatefulWidget {
     required this.accentColor,
     required this.subtitlesEnabled,
     required this.onToggleSubtitles,
+    this.onToggleFullscreen,
+    this.zoomedToFill,
+    this.onToggleZoom,
+    this.onPictureInPicture,
   });
 
   @override
-  State<QuaxControls> createState() => _QuaxControlsState();
+  State<XtaControls> createState() => _XtaControlsState();
 }
 
-class _QuaxControlsState extends State<QuaxControls> {
+class _XtaControlsState extends State<XtaControls> {
   bool _visible = true;
   Timer? _hideTimer;
 
@@ -164,6 +180,10 @@ class _QuaxControlsState extends State<QuaxControls> {
             accentColor: widget.accentColor,
             subtitlesEnabled: widget.subtitlesEnabled,
             onToggleSubtitles: widget.onToggleSubtitles,
+            onToggleFullscreen: widget.onToggleFullscreen,
+            zoomedToFill: widget.zoomedToFill,
+            onToggleZoom: widget.onToggleZoom,
+            onPictureInPicture: widget.onPictureInPicture,
           ),
         ),
       ],
@@ -195,6 +215,10 @@ class _BottomBar extends StatelessWidget {
   final Color accentColor;
   final bool subtitlesEnabled;
   final VoidCallback onToggleSubtitles;
+  final VoidCallback? onToggleFullscreen;
+  final bool? zoomedToFill;
+  final VoidCallback? onToggleZoom;
+  final VoidCallback? onPictureInPicture;
 
   const _BottomBar({
     required this.pooled,
@@ -203,6 +227,10 @@ class _BottomBar extends StatelessWidget {
     required this.accentColor,
     required this.subtitlesEnabled,
     required this.onToggleSubtitles,
+    this.onToggleFullscreen,
+    this.zoomedToFill,
+    this.onToggleZoom,
+    this.onPictureInPicture,
   });
 
   @override
@@ -217,13 +245,26 @@ class _BottomBar extends StatelessWidget {
               const _PositionIndicator(),
               const Spacer(),
               if (allowMuting) const _MuteButton(),
+              if (onPictureInPicture != null)
+                IconButton(
+                  iconSize: 24.0,
+                  color: Colors.white,
+                  tooltip: L10n.of(context).picture_in_picture,
+                  icon: const Icon(Icons.picture_in_picture_alt),
+                  onPressed: onPictureInPicture,
+                ),
               _MoreButton(
                 pooled: pooled,
                 username: username,
                 subtitlesEnabled: subtitlesEnabled,
                 onToggleSubtitles: onToggleSubtitles,
+                zoomedToFill: zoomedToFill,
+                onToggleZoom: onToggleZoom,
               ),
-              const MaterialFullscreenButton(),
+              if (onToggleFullscreen != null)
+                _FullscreenButton(onPressed: onToggleFullscreen!, exit: TweetVideoFullscreenScope.activeOf(context))
+              else
+                const MaterialFullscreenButton(),
             ],
           ),
         ),
@@ -591,17 +632,38 @@ class _MuteButtonState extends State<_MuteButton> {
   }
 }
 
+class _FullscreenButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final bool exit;
+
+  const _FullscreenButton({required this.onPressed, required this.exit});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      iconSize: 24.0,
+      color: Colors.white,
+      icon: Icon(exit ? Icons.fullscreen_exit : Icons.fullscreen),
+      onPressed: onPressed,
+    );
+  }
+}
+
 class _MoreButton extends StatelessWidget {
   final PooledVideo pooled;
   final String username;
   final bool subtitlesEnabled;
   final VoidCallback onToggleSubtitles;
+  final bool? zoomedToFill;
+  final VoidCallback? onToggleZoom;
 
   const _MoreButton({
     required this.pooled,
     required this.username,
     required this.subtitlesEnabled,
     required this.onToggleSubtitles,
+    this.zoomedToFill,
+    this.onToggleZoom,
   });
 
   @override
@@ -651,6 +713,17 @@ class _MoreButton extends StatelessWidget {
                 onTap: () {
                   Navigator.of(sheetContext).pop();
                   onToggleSubtitles();
+                },
+              ),
+            if (onToggleZoom != null)
+              ListTile(
+                leading: Icon(zoomedToFill == true ? Icons.fullscreen_exit : Icons.aspect_ratio),
+                title: Text(zoomedToFill == true
+                    ? L10n.of(sheetContext).video_fit_contain
+                    : L10n.of(sheetContext).video_fit_cover),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  onToggleZoom!();
                 },
               ),
             ListTile(
@@ -724,7 +797,7 @@ Future<void> downloadTweetVideo(BuildContext context, String username, String? d
     context,
     videoUri,
     fileName,
-    prefs: PrefService.of(context),
+    prefs: PrefService.of(context, listen: false),
     onStart: () {
       showWorkingSnackBar(context, L10n.of(context).downloading_media);
     },

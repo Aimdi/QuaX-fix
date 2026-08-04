@@ -1,6 +1,6 @@
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/user.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/user.dart';
 
 class Profile {
   final UserWithExtra user;

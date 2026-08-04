@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:quax/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
 
 /// Signing in to Reddit, for readers who want their own account's rate limits
 /// rather than the public endpoints'.
@@ -17,10 +17,10 @@ class RedditAuth {
   /// Where Reddit sends the browser back to. It never resolves: the login
   /// webview intercepts the navigation, which is why any scheme works as long
   /// as the registered app uses this exact string.
-  static const redirectUri = 'quax://reddit-auth';
+  static const redirectUri = 'xta://reddit-auth';
 
   /// Read listings, and identity so the account name can be shown. Deliberately
-  /// no write scopes: QuaX does not post, vote or subscribe on anyone's behalf.
+  /// no write scopes: XTA does not post, vote or subscribe on anyone's behalf.
   static const scopes = 'read,identity';
 
   static const _authorizeEndpoint = 'https://www.reddit.com/api/v1/authorize.compact';

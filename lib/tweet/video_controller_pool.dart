@@ -1,6 +1,7 @@
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:quax/tweet/video_quality.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/tweet/video_quality.dart';
 
 /// One cached video player: the libmpv [Player] together with the
 /// [VideoController] that renders it, plus the resolved download URL, the
@@ -87,7 +88,7 @@ class VideoControllerPool {
   final int maxSize;
   final Map<String, _Entry> _entries = {};
   final Map<String, Set<Object>> _visibleTokens = {};
-  VideoControllerPool({this.maxSize = 5});
+  VideoControllerPool({this.maxSize = kVideoPoolSize});
   bool contains(String key) => _entries.containsKey(key);
   PooledVideo? peek(String key) => _entries[key]?.value;
 

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/feed_catch_up.dart';
-import 'package:quax/group/group_custom_settings.dart';
-import 'package:quax/group/group_model.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/feed_catch_up.dart';
+import 'package:xta/group/group_custom_settings.dart';
+import 'package:xta/group/group_model.dart';
 
 int _sortModeOf(SubscriptionGroupGet group) => group.custom ? 2 : (group.popular ? 1 : 0);
 

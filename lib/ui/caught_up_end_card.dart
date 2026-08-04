@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/tweet/catch_up_split.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/catch_up_split.dart';
 
 /// Card closing a feed read in catch-up mode: the reader has reached the posts
 /// they had already read, and the feed stops there.

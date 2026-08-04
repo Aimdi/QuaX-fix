@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/group/feed_rules.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/group/feed_rules.dart';
 
 SubscriptionGroupGet _group({required bool custom}) => SubscriptionGroupGet(
   id: '1',

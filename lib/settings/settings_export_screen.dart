@@ -3,21 +3,21 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
-import 'package:quax/client/accounts.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/saved/liked_tweet_model.dart';
-import 'package:quax/saved/saved_tweet_folder_model.dart';
-import 'package:quax/saved/saved_tweet_model.dart';
-import 'package:quax/settings/_data.dart';
-import 'package:quax/settings/backup_data.dart';
-import 'package:quax/settings/backup_rows.dart';
-import 'package:quax/subscriptions/users_model.dart';
-import 'package:quax/utils/crash_reporter.dart';
+import 'package:xta/client/accounts.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/saved/liked_tweet_model.dart';
+import 'package:xta/saved/saved_tweet_folder_model.dart';
+import 'package:xta/saved/saved_tweet_model.dart';
+import 'package:xta/settings/_data.dart';
+import 'package:xta/subscriptions/users_model.dart';
+import 'package:xta/utils/crash_reporter.dart';
+import 'package:xta/settings/backup_data.dart';
+import 'package:xta/settings/backup_rows.dart';
 import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/generated/l10n.dart';
+import 'package:xta/generated/l10n.dart';
 
 class SettingsExportScreen extends StatefulWidget {
   const SettingsExportScreen({super.key});

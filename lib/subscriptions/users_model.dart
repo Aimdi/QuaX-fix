@@ -1,12 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/user.dart';
-import 'package:quax/utils/iterables.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/user.dart';
+import 'package:xta/utils/iterables.dart';
 import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 
@@ -41,17 +41,19 @@ class SubscriptionsModel extends Store<List<Subscription>> {
       bool orderByAscending = prefs.get(optionSubscriptionOrderByAscending);
       String orderByField = prefs.get(optionSubscriptionOrderByField);
 
-      List<Subscription> users = (await database.query(tableSubscription)).map((e) => UserSubscription.fromMap(e)).toList();
-
-      List<Subscription> searches = (await database.query(tableSearchSubscription)).map((e) => SearchSubscription.fromMap(e)).toList();
-
-      // Followed Substack publications are subscriptions too, so they appear in
-      // this list and can be picked as group members like anyone else.
-      List<Subscription> publications =
-          (await database.query(tableSubstackSubscription)).map((e) => SubstackSubscription.fromMap(e)).toList();
-
-      List<Subscription> subreddits =
-          (await database.query(tableRedditSubscription)).map((e) => RedditSubscription.fromMap(e)).toList();
+      // Four independent tables, read together. Followed Substack publications
+      // and subreddits are subscriptions too, so they appear in this list and
+      // can be picked as group members like anyone else.
+      final rows = await Future.wait([
+        database.query(tableSubscription),
+        database.query(tableSearchSubscription),
+        database.query(tableSubstackSubscription),
+        database.query(tableRedditSubscription),
+      ]);
+      List<Subscription> users = rows[0].map((e) => UserSubscription.fromMap(e)).toList();
+      List<Subscription> searches = rows[1].map((e) => SearchSubscription.fromMap(e)).toList();
+      List<Subscription> publications = rows[2].map((e) => SubstackSubscription.fromMap(e)).toList();
+      List<Subscription> subreddits = rows[3].map((e) => RedditSubscription.fromMap(e)).toList();
 
       List<Subscription> lst = [...users, ...searches, ...publications, ...subreddits];
       if (orderCustom.isEmpty) {
@@ -83,7 +85,12 @@ class SubscriptionsModel extends Store<List<Subscription>> {
         if (lst.isNotEmpty) {
           newLst.addAll(lst);
         }
-        await prefs.set(optionSubscriptionOrderCustom, newLst.map((s) => s.screenName).join(','));
+        final order = newLst.map((s) => s.screenName).join(',');
+        // Only when it actually changed: every pref write notifies every
+        // listening widget, and this ran on every reload.
+        if (prefs.get<String>(optionSubscriptionOrderCustom) != order) {
+          await prefs.set(optionSubscriptionOrderCustom, order);
+        }
         return newLst;
       }
     });

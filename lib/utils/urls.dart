@@ -1,14 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/profile/profile.dart' show profileTabs;
+import 'package:xta/constants.dart';
+import 'package:xta/profile/profile.dart' show profileTabs;
 import 'package:url_launcher/url_launcher_string.dart';
 
-import 'package:flutter/services.dart';
 import 'package:android_intent_plus/android_intent.dart';
-
-const _channel = MethodChannel('browser_resolver');
+import 'package:xta/utils/browsers.dart';
 
 const _trackingParams = {'fbclid', 'gclid', 'igshid', 'mc_eid', 'mkt_tok', 'twclid', 'yclid'};
 // Share identifiers X appends to copied links; only meaningful on X hosts,
@@ -67,8 +65,12 @@ String cleanUrl(String url) {
   return kept.isEmpty ? cleaned.replaceFirst('?', '') : cleaned;
 }
 
+/// Hands a link to the system browser, bypassing the reader's choice.
+///
+/// Kept for a caller that genuinely needs to leave the app; nothing does today,
+/// and [openUri] is what a link in the feed should go through.
 Future<void> openInDefaultBrowser(String url) async {
-  final packageName = await _channel.invokeMethod<String>('getDefaultBrowser');
+  final packageName = await browserChannel.invokeMethod<String>('getDefaultBrowser');
   final intent = AndroidIntent(
     action: 'android.intent.action.VIEW',
     data: cleanUrl(url),
@@ -83,11 +85,15 @@ Future<void> openInDefaultBrowser(String url) async {
 /// Ported from upstream cb5927c2, keeping this fork's tracking-parameter
 /// stripping.
 Future<void> openUri(BuildContext context, String uri) async {
-  final embedded = PrefService.of(context, listen: false).get(optionOpenLinksInEmbeddedBrowser) == true;
-  await launchUrlString(
-    cleanUrl(uri),
-    mode: embedded ? LaunchMode.inAppBrowserView : LaunchMode.externalApplication,
-  );
+  final prefs = PrefService.of(context, listen: false);
+  final url = cleanUrl(uri);
+
+  if (prefs.get(optionOpenLinksInEmbeddedBrowser) == true) {
+    await launchUrlString(url, mode: LaunchMode.inAppBrowserView);
+    return;
+  }
+
+  await openExternally(url, package: prefs.get<String>(optionExternalBrowser) ?? systemDefaultBrowser);
 }
 
 sealed class UriParseResult {}
@@ -120,7 +126,7 @@ ProfileUriInfo? _parseAsProfileLink(List<String> parts) {
   const Map<String, ProfileTabs?> supportedProfileSubpaths = {
     "with_replies": ProfileTabs.postsAndReplies, // https://x.com/DogsTrust/with_replies
     "media": ProfileTabs.media, // https://x.com/DogsTrust/media
-    // All following sublinks are not supported by QuaX, but remain valid for an account link
+    // All following sublinks are not supported by XTA, but remain valid for an account link
     "highlights": null, // https://x.com/DogsTrust/highlights
     "affiliates": null, // https://x.com/DogsTrust/affiliates
     "about": null, // https://x.com/DogsTrust/about

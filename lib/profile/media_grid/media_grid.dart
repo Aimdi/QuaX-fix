@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/profile/media_grid/gif_playback_gate.dart';
-import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
-import 'package:quax/profile/media_grid/media_grid_lightbox.dart';
-import 'package:quax/ui/capped_network_image.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/utils/paging.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/profile/media_grid/gif_playback_gate.dart';
+import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
+import 'package:xta/profile/media_grid/media_grid_lightbox.dart';
+import 'package:xta/ui/capped_network_image.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/utils/paging.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 typedef MediaGridConfig = ({int columns, double spacing, double radius});
@@ -19,7 +19,7 @@ typedef MediaGridConfig = ({int columns, double spacing, double radius});
 /// setting; the feed layout is one full-width item per row (a timeline
 /// without text); the two-per-row layout is a roomier two-column masonry.
 MediaGridConfig mediaGridConfigOf(BuildContext context) {
-  var prefs = PrefService.of(context);
+  var prefs = PrefService.of(context, listen: false);
   var layout = prefs.get<String>(optionMediaGridLayout) ?? mediaGridLayoutMasonry;
   return switch (layout) {
     mediaGridLayoutFeed => (columns: 1, spacing: 8.0, radius: 12.0),

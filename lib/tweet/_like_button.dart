@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
-import 'package:quax/tweet/tweet_footer.dart';
+import 'package:xta/tweet/tweet_footer.dart';
 
 /// The footer "like" heart, with the full X-style burst: a ring expands out of
 /// the heart, then a spray of coloured confetti bursts and fades, while the

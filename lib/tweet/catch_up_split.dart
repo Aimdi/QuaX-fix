@@ -1,4 +1,4 @@
-import 'package:quax/client/client.dart';
+import 'package:xta/client/client.dart';
 
 /// Tells whether a chain sits at or below the reader's last read position.
 typedef SeenChainPredicate = bool Function(TweetChain chain);

@@ -2,22 +2,27 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/_feed.dart';
-import 'package:quax/group/_feed_shell.dart';
-import 'package:quax/group/feed_cache.dart';
-import 'package:quax/group/feed_session_cache.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/group/group_switcher.dart';
-import 'package:quax/tweet/cached_tweet_list.dart';
-import 'package:quax/tweet/tweet_context_scope.dart';
-import 'package:quax/ui/errors.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/_feed.dart';
+import 'package:xta/group/_feed_shell.dart';
+import 'package:xta/group/feed_cache.dart';
+import 'package:xta/group/feed_session_cache.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/group/group_switcher.dart';
+import 'package:xta/tweet/cached_tweet_list.dart';
+import 'package:xta/tweet/tweet_context_scope.dart';
+import 'package:xta/tweet/tweet_skeleton.dart';
+import 'package:xta/ui/errors.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/utils/iterables.dart';
+import 'package:xta/utils/iterables.dart';
 import 'package:quiver/iterables.dart';
+
+/// Users per X search query. Search queries are capped at ~512 characters;
+/// 16 screen names stay under that, while 32 does not (upstream #165).
+const int feedChunkSize = 16;
 
 class GroupScreenArguments {
   final String id;
@@ -130,7 +135,10 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
     if (preview != null && preview.chains.isNotEmpty) {
       return TweetContextScope(child: CachedTweetList(preview.chains));
     }
-    return const Center(child: CircularProgressIndicator());
+    // Post-shaped placeholders, like the paginated list's own first page — a
+    // centred spinner was the one loading state left that didn't look like the
+    // feed it was standing in for.
+    return const TweetFeedSkeleton();
   }
 
   @override
@@ -162,7 +170,7 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
         final users =
             members.where((e) => e is! SubstackSubscription && e is! RedditSubscription).toList(growable: false);
 
-        var chunks = partition(users, 16)
+        var chunks = partition(users, feedChunkSize)
             .map((e) => SubscriptionGroupFeedChunk(e, includeReplies, includeRetweets))
             .toList();
 

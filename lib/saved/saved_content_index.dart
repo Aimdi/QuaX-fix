@@ -8,7 +8,7 @@ library;
 
 import 'dart:convert';
 
-import 'package:quax/client/client.dart';
+import 'package:xta/client/client.dart';
 
 /// One stored post, parsed: the model its tile renders and the lowercased text
 /// the saved-screen search matches against.

@@ -1,7 +1,7 @@
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
-import 'package:quax/constants.dart';
+import 'package:xta/constants.dart';
 
 /// X design-language tokens. Chirp is proprietary — we use Inter instead.
 @immutable

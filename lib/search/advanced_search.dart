@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:quax/generated/l10n.dart';
+import 'package:xta/generated/l10n.dart';
 
 List<String> _tokens(String input) => input.split(RegExp(r'[,\s]+')).where((e) => e.isNotEmpty).toList();
 

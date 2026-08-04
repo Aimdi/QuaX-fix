@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/plugins/substack/substack_links.dart';
-import 'package:quax/plugins/substack/substack_models.dart';
-import 'package:quax/plugins/substack/substack_reader_screen.dart';
-import 'package:quax/plugins/substack/substack_store.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/plugins/substack/substack_links.dart';
+import 'package:xta/plugins/substack/substack_models.dart';
+import 'package:xta/plugins/substack/substack_reader_screen.dart';
+import 'package:xta/plugins/substack/substack_store.dart';
 
-/// Opens [url] inside QuaX when an enabled plugin can read it, returning true
+/// Opens [url] inside XTA when an enabled plugin can read it, returning true
 /// when it handled the link. Callers fall back to the browser on false.
 ///
 /// Substack is tried first (specific post URLs).

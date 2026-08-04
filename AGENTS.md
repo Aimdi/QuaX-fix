@@ -13,7 +13,7 @@ appear.
 
 ### Hard rules (do not violate)
 
-- **QuaX is a read-oriented X frontend, not X itself.** It views timelines,
+- **XTA is a read-oriented X frontend, not X itself.** It views timelines,
   profiles, search, and media via reverse-engineered APIs. It does **not**
   create posts on X. Never add compose / reply / quote / repost / like-on-X /
   DM / Spaces hosting / account settings write-back. Local-only actions
@@ -46,8 +46,8 @@ appear.
 - One module per worktree (Grok has no built-in worktree flag):
 
   ```bash
-  git worktree add ../quax-tweet rewrite/tweet
-  cd ../quax-tweet && grok
+  git worktree add ../xta-tweet rewrite/tweet
+  cd ../xta-tweet && grok
   ```
 
 - Module order for incremental UI rewrite:

@@ -2,7 +2,7 @@ import 'dart:async' show TimeoutException;
 import 'dart:io' show SocketException;
 
 import 'package:http/http.dart' show ClientException;
-import 'package:quax/catcher/exceptions.dart';
+import 'package:xta/catcher/exceptions.dart';
 
 /// Why a feed's first page failed, in the same terms `ui/errors.dart` already
 /// uses. A reader looking at cached posts still has to be told which of these

@@ -1,11 +1,11 @@
 # Reddit plugin (in the spirit of Stealth)
 
-Answer to *"Stealth looks awesome — can't you make it a plugin of QuaX-fix?"*
+Answer to *"Stealth looks awesome — can't you make it a plugin of XTA?"*
 Two findings decided the approach, both worth knowing before more is built.
 
 ## 1. It cannot be a port. It has to be a reimplementation
 
-| | Stealth | QuaX |
+| | Stealth | XTA |
 |---|---|---|
 | Language | Kotlin | Dart |
 | UI | Android views | Flutter |
@@ -17,7 +17,7 @@ is no shared UI, storage or networking layer, so the feature has to be written
 again in Dart either way.
 
 The licence makes that the *only* option rather than merely the practical one.
-Copying or translating Stealth's source into QuaX would make the combined work
+Copying or translating Stealth's source into XTA would make the combined work
 GPLv3, relicensing this entire app. This plugin is therefore written against
 Reddit's own documented API. Stealth's source was consulted only to learn *which*
 API a modern account-free client has to use (its `OAuthInterceptor` answers

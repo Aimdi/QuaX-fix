@@ -3,9 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pref/pref.dart';
-import 'package:quax/catcher/exceptions.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/utils/crash_reporter.dart';
+import 'package:xta/catcher/exceptions.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/utils/crash_reporter.dart';
 
 void main() {
   test('shouldReport skips synthetic and http account errors', () {
@@ -16,7 +16,7 @@ void main() {
   });
 
   test('issueApiUri validates owner/name', () {
-    expect(issueApiUri('Aimdi/QuaX-gamma')?.path, '/repos/Aimdi/QuaX-gamma/issues');
+    expect(issueApiUri('Aimdi/XTA-gamma')?.path, '/repos/Aimdi/XTA-gamma/issues');
     expect(issueApiUri('bad'), isNull);
     expect(issueApiUri('/'), isNull);
   });
@@ -39,7 +39,7 @@ void main() {
   test('report posts to GitHub when enabled with token', () async {
     final prefs = PrefServiceCache(cache: {
       optionCrashReportsEnabled: true,
-      optionCrashGithubRepo: 'Aimdi/QuaX-gamma',
+      optionCrashGithubRepo: 'Aimdi/XTA-gamma',
       optionCrashGithubToken: 'test-token',
     });
 
@@ -53,8 +53,8 @@ void main() {
       prefs,
       httpClient: client,
       packageInfoLoader: () async => PackageInfo(
-        appName: 'QuaX',
-        packageName: 'com.teskann.quax',
+        appName: 'XTA',
+        packageName: 'com.aimdi.xta',
         version: '4.12.0',
         buildNumber: '1',
       ),
@@ -64,14 +64,14 @@ void main() {
     expect(result, CrashReportResult.sent);
     expect(seen, isNotNull);
     expect(seen!.method, 'POST');
-    expect(seen!.url.path, '/repos/Aimdi/QuaX-gamma/issues');
+    expect(seen!.url.path, '/repos/Aimdi/XTA-gamma/issues');
     expect(seen!.headers['Authorization'], 'Bearer test-token');
   });
 
   test('report refuses to send without token', () async {
     final prefs = PrefServiceCache(cache: {
       optionCrashReportsEnabled: true,
-      optionCrashGithubRepo: 'Aimdi/QuaX-gamma',
+      optionCrashGithubRepo: 'Aimdi/XTA-gamma',
       optionCrashGithubToken: '',
     });
     final reporter = CrashReporter(prefs, httpClient: MockClient((_) async => http.Response('', 500)));

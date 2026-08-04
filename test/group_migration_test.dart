@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/group/group_model.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/group/group_model.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 /// Creates a database matching the schema at version 33 (only the tables the
@@ -74,7 +74,7 @@ void main() {
   setUpAll(() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
-    final dir = await Directory.systemTemp.createTemp('quax_migration_test');
+    final dir = await Directory.systemTemp.createTemp('xta_migration_test');
     await databaseFactory.setDatabasesPath(dir.path);
   });
 

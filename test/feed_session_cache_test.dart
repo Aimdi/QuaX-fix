@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/group/feed_session_cache.dart';
+import 'package:xta/group/feed_session_cache.dart';
 
 void main() {
   group('FeedSessionCache', () {

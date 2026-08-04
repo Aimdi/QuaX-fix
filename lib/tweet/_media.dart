@@ -6,16 +6,18 @@ import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:quax/home/edge_swipe.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/profile/profile.dart';
-import 'package:quax/tweet/_photo.dart';
-import 'package:quax/tweet/_video.dart';
-import 'package:quax/tweet/tweet_chrome.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/ui/x_look_theme.dart';
-import 'package:quax/utils/downloads.dart';
+import 'package:xta/home/edge_swipe.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/profile/profile.dart';
+import 'package:xta/tweet/_photo.dart';
+import 'package:xta/tweet/media_strip.dart';
+import 'package:xta/tweet/_video.dart';
+import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/ui/x_look_theme.dart';
+import 'package:xta/utils/downloads.dart';
+import 'package:xta/utils/media_quality.dart';
 import 'package:path/path.dart' as path;
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
@@ -30,13 +32,23 @@ class _TweetMediaItem extends StatefulWidget {
   final String username;
   final String? tweetId;
 
+  /// How a photo fills its box. Cards in the strip are sized for it; the older
+  /// full-width pager shows the whole picture instead.
+  final BoxFit fit;
+
+  /// Whether to write "2 / 4" in the corner. Pointless in a strip, where the
+  /// rest of them are right there.
+  final bool showCounter;
+
   const _TweetMediaItem(
       {required this.index,
       required this.mediaIndex,
       required this.total,
       required this.media,
       required this.username,
-      this.tweetId});
+      this.tweetId,
+      this.fit = BoxFit.contain,
+      this.showCounter = true});
 
   @override
   State<_TweetMediaItem> createState() => _TweetMediaItemState();
@@ -96,7 +108,8 @@ class _TweetMediaItemState extends State<_TweetMediaItem> {
           pullToClose: false,
           inPageView: false,
           tweetId: widget.tweetId,
-          mediaIndex: widget.mediaIndex);
+          mediaIndex: widget.mediaIndex,
+          fit: widget.fit);
     } else {
       media = GestureDetector(
         child: Container(
@@ -114,7 +127,7 @@ class _TweetMediaItemState extends State<_TweetMediaItem> {
     }
 
     // If there's only one item in this media collection, don't show the page counter
-    if (widget.total == 1) {
+    if (widget.total == 1 || !widget.showCounter) {
       return media;
     }
 
@@ -212,44 +225,115 @@ class TweetMedia extends StatefulWidget {
 }
 
 class _TweetMediaState extends State<TweetMedia> {
-  PageController? _controller;
+  final ScrollController _controller = ScrollController();
 
-  /// Built on demand: a post with a single item is not laid out in a page
-  /// view at all, and most posts in a feed carry a single item.
-  PageController get _pageController => _controller ??= PageController(initialPage: widget.initialMediaIndex);
+  /// The row is only moved to [TweetMedia.initialMediaIndex] once. Doing it on
+  /// every layout would drag the row back under the reader's finger.
+  bool _placed = false;
 
   @override
   void dispose() {
-    _controller?.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
-  /// A lone item is returned as it is. A one-page carousel would still build a
-  /// scrollable, a viewport and a scroll position for every post in the feed.
-  ///
-  /// The edge-swipe wrapper goes with it, and only with it: it exists so a
-  /// *carousel* hands a horizontal drag back to the home page view once it has
-  /// nothing left to scroll. A single page never accepts a drag in the first
-  /// place — it reports no scroll extent, so Flutter gives it no drag
-  /// recogniser and the home page view sees the gesture either way.
-  Widget _frame(BuildContext context) {
-    if (widget.media.length == 1) {
-      return _page(context, 0);
+  /// Puts the picture the post was opened at into view.
+  void _placeAt(MediaStripLayout layout) {
+    if (_placed || widget.initialMediaIndex <= 0) {
+      return;
     }
+    _placed = true;
 
-    return edgeSwipeToChangeHomePage(
-      context,
-      PageView.builder(
-        controller: _pageController,
-        scrollDirection: Axis.horizontal,
-        itemCount: widget.media.length,
-        itemBuilder: _page,
-      ),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_controller.hasClients) {
+        return;
+      }
+      final offset = mediaStripOffsetOf(widget.initialMediaIndex, layout.widths);
+      _controller.jumpTo(math.min(offset, _controller.position.maxScrollExtent));
+    });
   }
 
-  Widget _page(BuildContext context, int index) {
-    var item = widget.media[index];
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<TweetContextState>(builder: (context, model, child) {
+      if (model.hideSensitive && (widget.sensitive ?? false)) {
+        return Card(
+          child: Center(
+              child: EmojiErrorWidget(
+            emoji: '🍆🙈🍆',
+            message: L10n.current.possibly_sensitive,
+            errorMessage: L10n.current.possibly_sensitive_tweet,
+            retryText: L10n.current.yes_please,
+            onRetry: () async => model.setHideSensitive(false),
+          )),
+        );
+      }
+
+      final tokens = XLookTokens.maybeOf(context);
+      final radius = tokens?.mediaRadius ?? kTweetMediaRadius;
+
+      if (widget.media.length == 1) {
+        return RepaintBoundary(
+          child: Container(
+            margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
+            child: AspectRatio(
+              aspectRatio: singleMediaAspect(_aspects().single),
+              child: _card(context, 0, fit: BoxFit.contain, showCounter: false),
+            ),
+          ),
+        );
+      }
+
+      return RepaintBoundary(
+        // No right margin: the row runs off the edge of the screen, which is
+        // what says there is more of it than fits.
+        child: Container(
+          margin: const EdgeInsets.only(top: 8, left: 16),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final layout = mediaStripLayout(width: constraints.maxWidth, aspects: _aspects());
+              _placeAt(layout);
+
+              return SizedBox(
+                height: layout.height,
+                // The row owns horizontal drags that start on it, so without
+                // this a swipe over a post's media could not reach the home
+                // page view.
+                child: edgeSwipeToChangeHomePage(
+                  context,
+                  ListView.separated(
+                    controller: _controller,
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(right: 16),
+                    itemCount: widget.media.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: kMediaCardGap),
+                    itemBuilder: (context, index) => SizedBox(
+                      width: layout.widths[index],
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(radius),
+                        child: _card(context, index, fit: BoxFit.cover, showCounter: false),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    });
+  }
+
+  /// The aspect ratio of every item, for the row to size itself from.
+  List<double> _aspects() => widget.media
+      .map((e) => ((e.sizes?.large?.w ?? 1) / (e.sizes?.large?.h ?? 1)).toDouble())
+      .toList(growable: false);
+
+  /// One piece of media, with the taps that belong to it.
+  Widget _card(BuildContext context, int index, {required BoxFit fit, required bool showCounter}) {
+    final item = widget.media[index];
 
     // A video has its own tap controls and must never open the fullscreen
     // media viewer. Photos and GIFs still open it.
@@ -268,48 +352,16 @@ class _TweetMediaState extends State<TweetMedia> {
                       tweetId: widget.tweetId))),
       onLongPress: item.type == 'photo' ? () => downloadMediaItem(context, item, widget.username) : null,
       child: _TweetMediaItem(
-          media: item,
-          index: index + 1,
-          mediaIndex: index,
-          total: widget.media.length,
-          username: widget.username,
-          tweetId: widget.tweetId),
+        media: item,
+        index: index + 1,
+        mediaIndex: index,
+        total: widget.media.length,
+        username: widget.username,
+        tweetId: widget.tweetId,
+        fit: fit,
+        showCounter: showCounter,
+      ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final aspectRatio = mediaFrameAspectRatio(widget.media);
-
-    return Consumer<TweetContextState>(builder: (context, model, child) {
-      if (model.hideSensitive && (widget.sensitive ?? false)) {
-        return Card(
-          child: Center(
-              child: EmojiErrorWidget(
-            emoji: '🍆🙈🍆',
-            message: L10n.current.possibly_sensitive,
-            errorMessage: L10n.current.possibly_sensitive_tweet,
-            retryText: L10n.current.yes_please,
-            onRetry: () async => model.setHideSensitive(false),
-          )),
-        );
-      }
-
-      final tokens = XLookTokens.maybeOf(context);
-      final radius = tokens?.mediaRadius ?? kTweetMediaRadius;
-
-      return RepaintBoundary(
-        child: Container(
-          margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
-          child: AspectRatio(
-            aspectRatio: aspectRatio,
-            child: _frame(context),
-          ),
-        ),
-      );
-    });
   }
 }
 
@@ -410,10 +462,9 @@ class _TweetMediaViewState extends State<TweetMediaView> {
     String? size;
     var prefs = PrefService.of(context, listen: false);
     if (widget.tweetMedia) {
-      var size = prefs.get(optionImageQuality);
-      if (size == 'disabled') {
-        size = 'medium';
-      }
+      // `var size` here used to declare a shadow, so the outer one stayed null
+      // and the image-quality setting never reached the photo URL.
+      size = MediaQuality.fromStored(prefs.get<String>(optionImageQuality), fallback: MediaQuality.medium).stored;
     }
 
     return Scaffold(
@@ -521,6 +572,11 @@ class _TweetMediaThing extends StatelessWidget {
   final String? tweetId;
   final int mediaIndex;
 
+  /// How a photo sits in the space it is given. A card in the strip has a size
+  /// of its own to fill, so it covers; anywhere else the whole picture matters
+  /// more than the shape of its box.
+  final BoxFit fit;
+
   const _TweetMediaThing(
       {required this.item,
       required this.username,
@@ -528,7 +584,8 @@ class _TweetMediaThing extends StatelessWidget {
       required this.pullToClose,
       required this.inPageView,
       this.tweetId,
-      this.mediaIndex = 0});
+      this.mediaIndex = 0,
+      this.fit = BoxFit.contain});
 
   @override
   Widget build(BuildContext context) {
@@ -550,8 +607,7 @@ class _TweetMediaThing extends StatelessWidget {
           tweetId: tweetId,
           mediaIndex: mediaIndex);
     } else if (item.type == 'photo') {
-      media = TweetPhoto(
-          size: size, uri: item.mediaUrlHttps!, fit: BoxFit.contain, pullToClose: pullToClose, inPageView: inPageView);
+      media = TweetPhoto(size: size, uri: item.mediaUrlHttps!, fit: fit, pullToClose: pullToClose, inPageView: inPageView);
     } else {
       media = Text(L10n.of(context).unknown);
     }

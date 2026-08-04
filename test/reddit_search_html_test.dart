@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/plugins/reddit/reddit_search_html.dart';
+import 'package:xta/plugins/reddit/reddit_search_html.dart';
 
 /// old.reddit's search page: `.search-result-*` blocks, not the `div.thing` a
 /// subreddit listing uses.

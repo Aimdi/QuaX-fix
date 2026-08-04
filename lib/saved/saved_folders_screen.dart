@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/saved/folder_picker.dart';
-import 'package:quax/saved/saved_tab_order.dart';
-import 'package:quax/saved/saved_tweet_folder_model.dart';
-import 'package:quax/saved/saved_tweet_model.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/saved/folder_picker.dart';
+import 'package:xta/saved/saved_tab_order.dart';
+import 'package:xta/saved/saved_tweet_folder_model.dart';
+import 'package:xta/saved/saved_tweet_model.dart';
 
 class SavedFoldersScreen extends StatefulWidget {
   const SavedFoldersScreen({super.key});

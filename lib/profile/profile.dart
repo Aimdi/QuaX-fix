@@ -2,22 +2,22 @@ import 'package:extended_image/extended_image.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/profile/_follows.dart';
-import 'package:quax/profile/_media_grid.dart';
-import 'package:quax/profile/media_grid/media_grid_items/media_grid_item.dart';
-import 'package:quax/profile/_saved.dart';
-import 'package:quax/profile/_tweets.dart';
-import 'package:quax/profile/profile_feed_settings.dart';
-import 'package:quax/profile/profile_model.dart';
-import 'package:quax/search/search.dart';
-import 'package:quax/tweet/_media.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/user.dart';
-import 'package:quax/utils/urls.dart';
-import 'package:quax/utils/rich_text.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/profile/_follows.dart';
+import 'package:xta/profile/_media_grid.dart';
+import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
+import 'package:xta/profile/_saved.dart';
+import 'package:xta/profile/_tweets.dart';
+import 'package:xta/profile/profile_feed_settings.dart';
+import 'package:xta/profile/profile_model.dart';
+import 'package:xta/search/search.dart';
+import 'package:xta/tweet/_media.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/user.dart';
+import 'package:xta/utils/urls.dart';
+import 'package:xta/utils/rich_text.dart';
 import 'package:intl/intl.dart';
 import 'package:measure_size/measure_size.dart';
 import 'package:pref/pref.dart';
@@ -549,6 +549,8 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
                             ],
                           ),
                         ),
+                        // The follow / feed-settings controls sit by the
+                        // avatar, where X keeps its profile actions.
                         Container(
                           alignment: Alignment.topRight,
                           margin: EdgeInsets.fromLTRB(128, profileImageTop + 64, 16, 16),
@@ -561,21 +563,41 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
                               user: UserSubscription.fromUser(user),
                               color: theme.colorScheme.primary,
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.search),
-                              color: theme.colorScheme.primary,
-                              onPressed: () => Navigator.pushNamed(context, routeSearch,
-                                  arguments: SearchArguments(1,
-                                      focusInputOnOpen: true, query: 'from:@${(user.screenName!)} ')),
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.share,
-                                color: theme.colorScheme.primary,
-                              ),
-                              onPressed: () => Share.share("$shareBaseUrl/${user.screenName}"),
-                            ),
                           ]),
+                        ),
+                        // Circular translucent buttons floating over the banner,
+                        // as on X: a back affordance a pushed profile otherwise
+                        // lacked on screen, then search and share.
+                        Positioned(
+                          top: 0,
+                          left: 4,
+                          right: 4,
+                          child: SafeArea(
+                            bottom: false,
+                            child: Row(
+                              children: [
+                                _BannerButton(
+                                  icon: Icons.arrow_back,
+                                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                                  onPressed: () => Navigator.maybePop(context),
+                                ),
+                                const Spacer(),
+                                _BannerButton(
+                                  icon: Icons.search,
+                                  tooltip: L10n.of(context).search,
+                                  onPressed: () => Navigator.pushNamed(context, routeSearch,
+                                      arguments: SearchArguments(1,
+                                          focusInputOnOpen: true, query: 'from:@${(user.screenName!)} ')),
+                                ),
+                                const SizedBox(width: 8),
+                                _BannerButton(
+                                  icon: Icons.share,
+                                  tooltip: L10n.of(context).share_link,
+                                  onPressed: () => Share.share("$shareBaseUrl/${user.screenName}"),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                         Container(
                           alignment: Alignment.topLeft,
@@ -656,6 +678,31 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
   }
 }
 
+/// A circular translucent button floating over the profile banner, the way X
+/// draws the back / search / more controls there — legible over any banner
+/// because it carries its own scrim rather than relying on the image behind it.
+class _BannerButton extends StatelessWidget {
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onPressed;
+
+  const _BannerButton({required this.icon, required this.tooltip, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black38,
+      shape: const CircleBorder(),
+      clipBehavior: Clip.antiAlias,
+      child: IconButton(
+        icon: Icon(icon, size: 20, color: Colors.white),
+        tooltip: tooltip,
+        onPressed: onPressed,
+      ),
+    );
+  }
+}
+
 /// X-style profile tab: always shows its symbol, and expands with the
 /// localized label while selected.
 class _ProfileTabLabel extends StatelessWidget {
@@ -701,6 +748,12 @@ class _MediaFilterButton extends StatelessWidget {
         MediaFilter.videos => L10n.of(context).videos,
       };
 
+  IconData _iconFor(MediaFilter filter) => switch (filter) {
+        MediaFilter.all => Icons.perm_media_outlined,
+        MediaFilter.photos => Icons.photo_library_outlined,
+        MediaFilter.videos => Icons.video_library_outlined,
+      };
+
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<MediaFilter>(
@@ -710,7 +763,16 @@ class _MediaFilterButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       itemBuilder: (context) => [
         for (final filter in MediaFilter.values)
-          PopupMenuItem(value: filter, child: Text(_labelFor(context, filter))),
+          PopupMenuItem(
+            value: filter,
+            child: Row(
+              children: [
+                Icon(_iconFor(filter), size: 20),
+                const SizedBox(width: 12),
+                Text(_labelFor(context, filter)),
+              ],
+            ),
+          ),
       ],
       child: Padding(
         padding: const EdgeInsets.only(left: 2),

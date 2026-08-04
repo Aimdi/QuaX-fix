@@ -1,5 +1,5 @@
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
 
 /// Rows of backed-up tables that have no entity in `database/entities.dart`,
 /// which is why the export used to walk straight past them.

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/utils/updates.dart';
+import 'package:xta/utils/updates.dart';
 
 void main() {
   group('parseReleaseTag', () {
@@ -23,7 +23,7 @@ void main() {
     test('rejects non-versions', () {
       expect(parseReleaseTag(''), isNull);
       expect(parseReleaseTag('v'), isNull);
-      expect(parseReleaseTag('claude/quax-repo-setup-shh2mn'), isNull);
+      expect(parseReleaseTag('claude/xta-repo-setup-shh2mn'), isNull);
       expect(parseReleaseTag('nightly'), isNull);
     });
   });
@@ -111,7 +111,7 @@ void main() {
       expect(
         isUpdateAvailable(
           latestTag: 'v4.12.0-aimdi44',
-          installedTag: 'claude/quax-repo-setup-shh2mn',
+          installedTag: 'claude/xta-repo-setup-shh2mn',
           installedVersion: '4.12.0',
         ),
         isFalse,

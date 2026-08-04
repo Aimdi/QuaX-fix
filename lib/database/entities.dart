@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/group/custom_feed_rules.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/subscriptions/group_mark_style.dart';
-import 'package:quax/user.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/group/custom_feed_rules.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/subscriptions/group_mark_style.dart';
+import 'package:xta/user.dart';
 import 'package:intl/intl.dart';
 
 final DateFormat sqliteDateFormat = DateFormat('yyyy-MM-dd hh:mm:ss');
@@ -71,13 +71,15 @@ class SavedTweetFolder with ToMappable {
   final DateTime createdAt;
   // When true, saving a post into this folder also downloads its images.
   final bool autoDownload;
+  final bool autoUpload;
 
   SavedTweetFolder(
       {required this.id,
       required this.name,
       this.position = 0,
       required this.createdAt,
-      this.autoDownload = false});
+      this.autoDownload = false,
+      this.autoUpload = false});
 
   factory SavedTweetFolder.fromMap(Map<String, Object?> map) {
     return SavedTweetFolder(
@@ -85,16 +87,18 @@ class SavedTweetFolder with ToMappable {
         name: map['name'] as String,
         position: (map['position'] as int?) ?? 0,
         createdAt: DateTime.parse(map['created_at'] as String),
-        autoDownload: (map['auto_download'] as int?) == 1);
+        autoDownload: (map['auto_download'] as int?) == 1,
+        autoUpload: (map['auto_upload'] as int?) == 1);
   }
 
-  SavedTweetFolder copyWith({String? name, int? position, bool? autoDownload}) {
+  SavedTweetFolder copyWith({String? name, int? position, bool? autoDownload, bool? autoUpload}) {
     return SavedTweetFolder(
         id: id,
         name: name ?? this.name,
         position: position ?? this.position,
         createdAt: createdAt,
-        autoDownload: autoDownload ?? this.autoDownload);
+        autoDownload: autoDownload ?? this.autoDownload,
+        autoUpload: autoUpload ?? this.autoUpload);
   }
 
   @override
@@ -105,6 +109,7 @@ class SavedTweetFolder with ToMappable {
       'position': position,
       'created_at': createdAt.toIso8601String(),
       'auto_download': autoDownload ? 1 : 0,
+      'auto_upload': autoUpload ? 1 : 0,
     };
   }
 }
@@ -227,6 +232,50 @@ class UserSubscription extends Subscription {
 /// group can hold one: group membership joins profile ids against subscription
 /// tables, and while publications lived in a preferences blob there was nothing
 /// for a group to join to.
+/// A Threads account the reader follows.
+///
+/// Its id is the handle, without the `@` — that is what the RSSHub route is
+/// keyed by, and what the account is called everywhere it is shown.
+class ThreadsSubscription extends Subscription {
+  ThreadsSubscription({
+    required super.id,
+    required super.name,
+    required String? avatarUrl,
+    required super.createdAt,
+    required super.inFeed,
+  }) : super(screenName: id, verified: false, profileImageUrlHttps: avatarUrl);
+
+  String? get avatarUrl => profileImageUrlHttps;
+
+  factory ThreadsSubscription.fromMap(Map<String, Object?> map) {
+    return ThreadsSubscription(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      avatarUrl: map['avatar_url'] as String?,
+      createdAt: map['created_at'] == null ? DateTime.now() : DateTime.parse(map['created_at'] as String),
+      inFeed: map['in_feed'] == null || map['in_feed'] == 1,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is ThreadsSubscription && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'avatar_url': avatarUrl,
+      'in_feed': inFeed ? 1 : 0,
+      'created_at': sqliteDateFormat.format(createdAt),
+    };
+  }
+}
+
 class SubstackSubscription extends Subscription {
   /// Where the publication lives, e.g. `https://example.substack.com`.
   final String baseUrl;
@@ -307,6 +356,47 @@ class RedditSubscription extends Subscription {
     return {
       'id': id,
       'name': name,
+      'in_feed': inFeed ? 1 : 0,
+      'created_at': sqliteDateFormat.format(createdAt),
+    };
+  }
+}
+
+/// A watched ticker.
+///
+/// The symbol carries the display name, so a watchlist entry can be a group
+/// member on the same terms as every other subscription kind.
+class StockSubscription extends Subscription {
+  StockSubscription({
+    required super.id,
+    required String symbol,
+    required super.createdAt,
+    required super.inFeed,
+  }) : super(name: symbol, screenName: id, verified: false, profileImageUrlHttps: null);
+
+  String get symbol => name;
+
+  factory StockSubscription.fromMap(Map<String, Object?> map) {
+    return StockSubscription(
+      id: map['id'] as String,
+      symbol: map['symbol'] as String,
+      createdAt: map['created_at'] == null ? DateTime.now() : DateTime.parse(map['created_at'] as String),
+      inFeed: map['in_feed'] == null || map['in_feed'] == 1,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is StockSubscription && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'symbol': symbol,
       'in_feed': inFeed ? 1 : 0,
       'created_at': sqliteDateFormat.format(createdAt),
     };

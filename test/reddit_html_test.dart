@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/plugins/reddit/reddit_html.dart';
+import 'package:xta/plugins/reddit/reddit_html.dart';
 
 /// A listing page shaped like old.reddit's: the `data-*` attributes carry
 /// everything, which is why the parser reads those rather than the layout.

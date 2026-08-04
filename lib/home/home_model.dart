@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/group_model.dart';
-import 'package:quax/home/home_screen.dart';
-import 'package:quax/plugins/plugin_registry.dart';
-import 'package:quax/utils/iterables.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/home/home_screen.dart';
+import 'package:xta/plugins/plugin_registry.dart';
+import 'package:xta/utils/iterables.dart';
 import 'package:pref/pref.dart';
 
 class HomePage {

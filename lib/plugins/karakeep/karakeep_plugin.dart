@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/karakeep/karakeep_settings_screen.dart';
-import 'package:quax/plugins/plugin.dart';
+import 'package:pref/pref.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/karakeep/karakeep_settings_screen.dart';
+import 'package:xta/plugins/plugin.dart';
 
 /// Sends links to a self-hosted Karakeep instance. No home tab: the plugin adds
 /// a save action where links already are, plus its own settings screen.
-class KarakeepPlugin extends QuaxPlugin {
+class KarakeepPlugin extends XtaPlugin {
   KarakeepPlugin();
 
   @override
@@ -26,4 +27,10 @@ class KarakeepPlugin extends QuaxPlugin {
 
   @override
   Widget? settingsScreen(BuildContext context) => const KarakeepSettingsScreen();
+
+  @override
+  Future<void> resetPreferences(BasePrefService prefs) async {
+    await prefs.set(optionPluginKarakeepServerUrl, '');
+    await prefs.set(optionPluginKarakeepApiKey, '');
+  }
 }

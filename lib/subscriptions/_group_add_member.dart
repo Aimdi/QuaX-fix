@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/constants.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
-import 'package:quax/plugins/reddit/reddit_store.dart';
-import 'package:quax/subscriptions/users_model.dart';
-import 'package:quax/user.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_store.dart';
+import 'package:xta/subscriptions/users_model.dart';
+import 'package:xta/user.dart';
 
 /// Adds something new to a group without leaving the group.
 ///

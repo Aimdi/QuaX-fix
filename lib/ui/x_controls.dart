@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quax/ui/x_look_theme.dart';
+import 'package:xta/ui/x_look_theme.dart';
 
 /// X-style controls: flat surfaces, full-round pills, no tonal containers and
 /// no ink splashes. Used where Material's own widgets would otherwise stamp a

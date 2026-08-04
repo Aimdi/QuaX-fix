@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:quax/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
 
 http.Response _json(Object body, int status) =>
     http.Response(jsonEncode(body), status, headers: {'content-type': 'application/json'});
@@ -546,6 +546,116 @@ void main() {
       expect(post(url: 'https://www.youtube.com/watch?v=1', domain: 'youtube.com').isVideo, isTrue);
       expect(post(url: 'https://example.com/story', domain: 'example.com').isVideo, isFalse);
       expect(post().isVideo, isFalse);
+    });
+  });
+
+  group('a gallery post', () {
+    Map<String, dynamic> child({Map<String, dynamic> extra = const {}}) => {
+          'kind': 't3',
+          'data': {
+            'id': 'g1',
+            'title': 'A gallery',
+            'subreddit': 'pics',
+            'permalink': '/r/pics/comments/g1/a_gallery/',
+            'url': 'https://www.reddit.com/gallery/g1',
+            ...extra,
+          },
+        };
+
+    test('carries its pictures in the author\'s order, unescaped', () {
+      final post = RedditPost.fromChild(child(extra: {
+        'gallery_data': {
+          'items': [
+            {'media_id': 'two'},
+            {'media_id': 'one'},
+          ],
+        },
+        'media_metadata': {
+          'one': {'s': {'u': 'https://preview.redd.it/one.jpg?width=640&amp;s=abc'}},
+          'two': {'s': {'u': 'https://preview.redd.it/two.jpg?width=640&amp;s=def'}},
+        },
+      }))!;
+
+      expect(post.galleryImages, [
+        'https://preview.redd.it/two.jpg?width=640&s=def',
+        'https://preview.redd.it/one.jpg?width=640&s=abc',
+      ]);
+      expect(post.imageUrl, 'https://preview.redd.it/two.jpg?width=640&s=def',
+          reason: 'a gallery whose url is a page still has a picture to show');
+    });
+
+    test('a GIF in a gallery serves its gif, not a missing u', () {
+      final post = RedditPost.fromChild(child(extra: {
+        'gallery_data': {
+          'items': [
+            {'media_id': 'anim'},
+          ],
+        },
+        'media_metadata': {
+          'anim': {'s': {'gif': 'https://i.redd.it/anim.gif'}},
+        },
+      }))!;
+
+      expect(post.galleryImages, ['https://i.redd.it/anim.gif']);
+    });
+
+    test('files with no order are still worth showing', () {
+      // A crosspost sometimes arrives with media_metadata and no gallery_data.
+      final post = RedditPost.fromChild(child(extra: {
+        'media_metadata': {
+          'only': {'s': {'u': 'https://preview.redd.it/only.jpg'}},
+        },
+      }))!;
+
+      expect(post.galleryImages, ['https://preview.redd.it/only.jpg']);
+    });
+
+    test('a post that is not a gallery has no gallery', () {
+      expect(RedditPost.fromChild(child())!.galleryImages, isEmpty);
+    });
+
+    test('metadata that no longer fits reads as nothing rather than throwing', () {
+      final post = RedditPost.fromChild(child(extra: {
+        'gallery_data': 'nonsense',
+        'media_metadata': {
+          'one': {'s': 'also nonsense'},
+          'two': 42,
+        },
+      }))!;
+
+      expect(post.galleryImages, isEmpty);
+    });
+  });
+
+  group('a post\'s preview', () {
+    test('is read and unescaped, for the card of a video or an article', () {
+      final post = RedditPost.fromChild({
+        'kind': 't3',
+        'data': {
+          'id': 'v1',
+          'title': 'A clip',
+          'subreddit': 'videos',
+          'permalink': '/r/videos/comments/v1/a_clip/',
+          'url': 'https://v.redd.it/v1',
+          'preview': {
+            'images': [
+              {'source': {'url': 'https://preview.redd.it/poster.jpg?width=1080&amp;s=xyz'}},
+            ],
+          },
+        },
+      })!;
+
+      expect(post.previewImage, 'https://preview.redd.it/poster.jpg?width=1080&s=xyz');
+      expect(post.imageUrl, isNull, reason: 'a poster frame is the card\'s banner, not the post\'s picture');
+    });
+
+    test('a post without one has none', () {
+      final post = RedditPost.fromChild({
+        'kind': 't3',
+        'data': {'id': 'p', 'title': 't', 'subreddit': 'x', 'permalink': '/r/x/comments/p/'},
+      })!;
+
+      expect(post.previewImage, isNull);
     });
   });
 }

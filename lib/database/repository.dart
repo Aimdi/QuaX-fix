@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:quax/group/group_model.dart';
+import 'package:xta/group/group_model.dart';
 import 'package:logging/logging.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
@@ -9,7 +9,7 @@ import 'package:sqflite_migration_plan/migration/sql.dart';
 import 'package:sqflite_migration_plan/sqflite_migration_plan.dart';
 import 'package:uuid/uuid.dart';
 
-const String databaseName = 'quax.db';
+const String databaseName = 'xta.db';
 
 const String tableFeedGroupChunk = 'feed_group_chunk';
 const String tableTimelineCache = 'timeline_cache';
@@ -20,7 +20,11 @@ const String tableSavedTweetFolder = 'saved_tweet_folder';
 const String tableLikedTweet = 'liked_tweet';
 const String tableSearchSubscription = 'search_subscription';
 const String tableSubstackSubscription = 'substack_subscription';
+const String tableThreadsSubscription = 'threads_subscription';
 const String tableRedditSubscription = 'reddit_subscription';
+const String tableImmichUpload = 'immich_upload';
+const String tableRedditLocalVote = 'reddit_local_vote';
+const String tableStockSubscription = 'stock_subscription';
 const String tableSearchSubscriptionGroupMember = 'search_subscription_group_member';
 const String tableSubscription = 'subscription';
 const String tableSubscriptionGroup = 'subscription_group';
@@ -32,7 +36,7 @@ const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
 
-const int databaseVersion = 42;
+const int databaseVersion = 46;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -519,6 +523,56 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
     // a no-op on a database that already has them.
     Migration(Operation(_createIndexes), reverse: Operation(_dropIndexes)),
   ],
+  43: [
+    // Watched tickers, for the same reason subreddits got a table in 42: a
+    // group joins profile ids against subscription tables, so a watchlist that
+    // wants members needs rows of its own.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableStockSubscription ('
+      'id VARCHAR PRIMARY KEY, symbol VARCHAR NOT NULL, '
+      'in_feed INTEGER NOT NULL DEFAULT 1, '
+      'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableStockSubscription',
+    ),
+  ],
+  44: [
+    // Per-folder toggle: send a post's media to Immich when it is filed here.
+    // Sits beside auto_download from 33 for the same reason — it is a property
+    // of the folder, not a global setting. Tolerant like parent_id in 41: an
+    // upgrade must not be stopped by a database whose folder table is gone.
+    Migration(Operation(_addFolderAutoUploadColumn)),
+    // What has already been sent. Immich rejects a second copy of the same bytes
+    // by checksum, so this exists to avoid spending the upload to be told so —
+    // re-filing a post between folders should not re-send its video.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableImmichUpload ('
+      'media_id VARCHAR PRIMARY KEY, asset_id VARCHAR, '
+      'uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableImmichUpload',
+    ),
+  ],
+  45: [
+    // Upvotes that stay on the device, like the X likes: Reddit is never told,
+    // the arrow just remembers. Only the id is needed — the post itself is
+    // refetched wherever it is shown.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableRedditLocalVote ('
+      'id VARCHAR PRIMARY KEY, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableRedditLocalVote',
+    ),
+  ],
+  46: [
+    // Threads accounts, for the same reason publications got a table in 40:
+    // group membership joins profile ids against subscription tables, so an
+    // account the reader follows needs a row to be joinable at all.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableThreadsSubscription ('
+      'id VARCHAR PRIMARY KEY, name VARCHAR NOT NULL, avatar_url VARCHAR, '
+      'in_feed INTEGER NOT NULL DEFAULT 1, '
+      'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableThreadsSubscription',
+    ),
+  ],
 });
 
 /// Indexes added in migration 39, applied so that a failure cannot block the
@@ -534,13 +588,28 @@ const Map<String, String> _indexes = {
   'idx_feed_group_chunk_hash': '$tableFeedGroupChunk (hash, created_at)',
   'idx_feed_group_chunk_cursor': '$tableFeedGroupChunk (cursor_id, hash)',
   'idx_subscription_group_member_profile': '$tableSubscriptionGroupMember (profile_id)',
-  // The 7-day purge below deletes by created_at from the three fattest-rowed
-  // tables, and it runs before the first frame. No index led with created_at,
-  // so each of those deletes was a full table scan over a week of feed JSON.
-  'idx_feed_group_chunk_created_at': '$tableFeedGroupChunk (created_at)',
+  // The cache preview reads newest-first with no WHERE, and the weekly cleanup
+  // deletes by age; without this both walk the largest table in the schema.
+  'idx_feed_group_chunk_created': '$tableFeedGroupChunk (created_at)',
+  'idx_saved_tweet_saved_at': '$tableSavedTweet (saved_at)',
+  'idx_saved_tweet_folder_id': '$tableSavedTweet (folder_id)',
+  'idx_liked_tweet_liked_at': '$tableLikedTweet (liked_at)',
+  // The same purge also deletes by age from these two. feed_group_chunk is
+  // covered above; these were the remaining full scans on the launch path.
   'idx_feed_group_cursor_created_at': '$tableFeedGroupCursor (created_at)',
   'idx_timeline_cache_created_at': '$tableTimelineCache (created_at)',
 };
+
+/// Adds the Immich column, tolerating a database whose folder table is gone —
+/// which includes every migration-test fixture that only builds the tables its
+/// own path touches. Without the column, folders simply cannot auto-upload.
+Future<void> _addFolderAutoUploadColumn(Database db) async {
+  try {
+    await db.execute('ALTER TABLE $tableSavedTweetFolder ADD COLUMN auto_upload BOOLEAN DEFAULT 0');
+  } catch (e) {
+    Repository.log.warning('Could not add auto_upload to $tableSavedTweetFolder: $e');
+  }
+}
 
 /// Adds the nesting column, tolerating a database whose group table is gone.
 Future<void> _addGroupParentColumn(Database db) async {
@@ -628,6 +697,19 @@ class Repository {
     return openDatabase(databaseName);
   }
 
+  static bool _cleanedUp = false;
+
+  Future<void> _cleanUpOldCaches() async {
+    try {
+      final repository = await writable();
+      await repository.delete(tableFeedGroupChunk, where: "created_at <= date('now', '-7 day')");
+      await repository.delete(tableFeedGroupCursor, where: "created_at <= date('now', '-7 day')");
+      await repository.delete(tableTimelineCache, where: "created_at <= date('now', '-7 day')");
+    } catch (e) {
+      log.warning('Could not clean up old cached feeds: $e');
+    }
+  }
+
   Future<bool> migrate() async {
     final myMigrationPlan = buildMigrationPlan();
 
@@ -639,11 +721,15 @@ class Repository {
       onDowngrade: myMigrationPlan.call,
     );
 
-    // Clean up any old feed chunks and cursors
-    var repository = await writable();
-    await repository.delete(tableFeedGroupChunk, where: "created_at <= date('now', '-7 day')");
-    await repository.delete(tableFeedGroupCursor, where: "created_at <= date('now', '-7 day')");
-    await repository.delete(tableTimelineCache, where: "created_at <= date('now', '-7 day')");
+    // The weekly cache cleanup walks the largest tables in the schema, and it
+    // used to be awaited here — twice, since migrate() runs twice per launch —
+    // so a week of feed JSON was scanned before the first frame. It gains
+    // nothing from blocking startup: run it once per process, in the
+    // background, after the schema work is done.
+    if (!_cleanedUp) {
+      _cleanedUp = true;
+      unawaited(_cleanUpOldCaches());
+    }
 
     log.info('Finished migrating database');
 

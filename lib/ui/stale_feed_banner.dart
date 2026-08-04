@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/tweet/stale_feed_preview.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/stale_feed_preview.dart';
 
 /// Banner shown above cached posts when a feed's first page failed.
 ///

@@ -8,7 +8,7 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:quax/client/client.dart';
+import 'package:xta/client/client.dart';
 
 typedef InterleavedItem = ({DateTime date, WidgetBuilder build});
 

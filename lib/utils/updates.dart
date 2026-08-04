@@ -3,11 +3,11 @@
 /// This fork publishes tags like `v4.12.0-aimdi44` while `pubspec.yaml` keeps
 /// the upstream version (`4.12.0`), so `package_info` alone cannot identify
 /// which release is installed. The release workflow bakes the tag in with
-/// `--dart-define=QUAX_RELEASE_TAG`; [buildReleaseTag] is empty for local builds.
+/// `--dart-define=XTA_RELEASE_TAG`; [buildReleaseTag] is empty for local builds.
 library;
 
 /// Release tag this binary was built from, or empty when built locally.
-const String buildReleaseTag = String.fromEnvironment('QUAX_RELEASE_TAG');
+const String buildReleaseTag = String.fromEnvironment('XTA_RELEASE_TAG');
 
 final RegExp _forkBuild = RegExp(r'[A-Za-z]+(\d+)$');
 

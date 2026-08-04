@@ -1,20 +1,21 @@
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
-import 'package:quax/client/client.dart';
-import 'package:quax/generated/l10n.dart';
-import 'package:quax/group/feed_refresh_controller.dart';
-import 'package:quax/tweet/cached_tweet_list.dart';
-import 'package:quax/tweet/catch_up_split.dart';
-import 'package:quax/tweet/conversation.dart';
-import 'package:quax/tweet/interleaved_items.dart';
-import 'package:quax/tweet/stale_feed_preview.dart';
-import 'package:quax/tweet/tweet_skeleton.dart';
-import 'package:quax/ui/caught_up_divider.dart';
-import 'package:quax/ui/caught_up_end_card.dart';
-import 'package:quax/ui/errors.dart';
-import 'package:quax/ui/stale_feed_banner.dart';
-import 'package:quax/utils/paging.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/feed_refresh_controller.dart';
+import 'package:xta/tweet/cached_tweet_list.dart';
+import 'package:xta/tweet/conversation.dart';
+import 'package:xta/tweet/interleaved_items.dart';
+import 'package:xta/tweet/tweet_skeleton.dart';
+import 'package:xta/ui/caught_up_divider.dart';
+import 'package:xta/ui/errors.dart';
+import 'package:xta/utils/paging.dart';
+import 'package:xta/tweet/catch_up_split.dart';
+import 'package:xta/tweet/stale_feed_preview.dart';
+import 'package:xta/ui/caught_up_end_card.dart';
+import 'package:xta/ui/stale_feed_banner.dart';
 
 typedef TweetPageResult = ({List<TweetChain> chains, String? nextCursor});
 typedef TweetPageLoader = Future<TweetPageResult> Function(String? cursor);
@@ -300,9 +301,12 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
 
   void _onControllerChanged() {
     // PagingListener already rebuilds the list on controller changes; this
-    // extra rebuild only matters for swapping the cached preview out once the
-    // first page arrives, so skip it entirely when there is no preview.
-    if (mounted && widget.firstPagePreview != null) setState(() {});
+    // extra rebuild only exists to swap the cached preview out once the first
+    // page arrives. Gating it on the preview *currently showing* — not merely
+    // existing — matters: the group feed keeps its preview around forever, and
+    // gating on existence left this firing on every paging event for the life
+    // of the screen, rebuilding the whole list a second time per page.
+    if (mounted && _showingPreview) setState(() {});
   }
 
   // Drives the same RefreshIndicator the user pulls down, so the app-bar refresh
@@ -311,15 +315,31 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
     await _refreshKey.currentState?.show();
   }
 
-  // Keyed by chain id: a soft refresh replaces the first page in place, and
-  // without a key Flutter would reuse each element positionally and leave the
-  // tile below it rendering the post that used to sit there.
+  // Keyed by chain id so a prepending refresh shifts elements instead of
+  // re-associating every visible tile with a different chain by index.
   Widget _buildChain(BuildContext context, TweetChain chain) => TweetConversation(
-      key: ValueKey(chain.id),
-      id: chain.id,
-      tweets: chain.tweets,
-      username: widget.username,
-      isPinned: chain.isPinned);
+      key: ValueKey(chain.id), id: chain.id, tweets: chain.tweets, username: widget.username, isPinned: chain.isPinned);
+
+  // The caught-up boundary and the interleaved buckets are both O(loaded
+  // history), and the list builder runs on every paging notification — so they
+  // are remembered per items-list identity rather than recomputed each build.
+  List<TweetChain>? _placementItems;
+  List<InterleavedItem>? _placementInterleaved;
+  (int?, List<List<InterleavedItem>>) _placement = (null, const []);
+
+  (int?, List<List<InterleavedItem>>) _placementFor(List<TweetChain> loaded) {
+    if (identical(_placementItems, loaded) && listEquals(_placementInterleaved, widget.interleaved)) {
+      return _placement;
+    }
+    final seen = widget.isSeen;
+    _placementItems = loaded;
+    _placementInterleaved = widget.interleaved;
+    _placement = (
+      seen == null ? null : _caughtUpBoundaryOf(loaded, seen),
+      placeInterleaved(loaded, widget.interleaved),
+    );
+    return _placement;
+  }
 
   /// Soft refresh used by the pull-to-refresh gesture. Runs the caller's
   /// [onRefresh] side effects, then reloads the first page while keeping the
@@ -465,16 +485,20 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
       builder: (context, state, fetchNextPage) {
         // Recomputed per build from the loaded items, so the boundary shows
         // up even when the first seen chain only arrives on a later page.
-        final seen = widget.isSeen;
         final loaded = state.items ?? const <TweetChain>[];
-        final boundary = seen == null ? null : _caughtUpBoundaryOf(loaded, seen);
-        final buckets = placeInterleaved(loaded, widget.interleaved);
+        final (boundary, buckets) = _placementFor(loaded);
         final endCard = _buildEndCard(loaded);
         return PagedListView<int, TweetChain>(
-          padding: EdgeInsets.only(top: 4, bottom: MediaQuery.of(context).padding.bottom),
+          // paddingOf, not of(): the whole-list builder must not take a
+          // dependency on every MediaQuery change (keyboard, text scale).
+          padding: EdgeInsets.only(top: 4, bottom: MediaQuery.paddingOf(context).bottom),
           state: state,
           fetchNextPage: fetchNextPage,
           addAutomaticKeepAlives: false,
+          // The creation gate in video_playback_policy makes off-screen tiles
+          // cheap (no player until visible), so a wider cache window only buys
+          // smoothness now.
+          cacheExtent: 600,
           builderDelegate: PagedChildBuilderDelegate(
             itemBuilder: (context, chain, index) {
               final conversation = _buildChain(context, chain);

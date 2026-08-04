@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
 import 'package:logging/logging.dart';
-import 'package:quax/saved/saved_content_index.dart';
+import 'package:xta/saved/saved_content_index.dart';
 import 'package:sqflite/sqflite.dart';
 
 class LikedTweetModel extends Store<List<LikedTweet>> {
@@ -19,6 +19,9 @@ class LikedTweetModel extends Store<List<LikedTweet>> {
   /// setters. State arrives here from `update` *and* from `execute`, and the
   /// list identity is the one thing both have in common -- so every mutator
   /// must emit a new list, which they do.
+  ///
+  /// Answers membership without decoding anything: every visible footer asks
+  /// it on every build, and it used to be a linear scan of the whole table.
   SavedContentIndex get _indexed {
     if (!identical(_indexedState, state)) {
       _index.rebuild<LikedTweet>(state, idOf: (e) => e.id, blobOf: (e) => e.content);

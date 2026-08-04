@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/group/group_tree.dart';
+import 'package:xta/group/group_tree.dart';
 
 /// news
 ///  ├─ tech

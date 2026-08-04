@@ -1,6 +1,6 @@
-import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
-import 'package:quax/settings/backup_rows.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/settings/backup_rows.dart';
 
 /// The backup document: what QuaX carries between devices, and the header that
 /// says what it is.

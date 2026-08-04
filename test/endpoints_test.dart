@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quax/client/endpoint_overrides.dart';
-import 'package:quax/client/endpoints.dart';
+import 'package:xta/client/endpoint_overrides.dart';
+import 'package:xta/client/endpoints.dart';
 
 void main() {
   tearDown(XEndpoints.clearOverrides);
