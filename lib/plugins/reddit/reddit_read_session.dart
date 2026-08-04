@@ -2,12 +2,13 @@ import 'package:pref/pref.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/plugins/reddit/reddit_auth.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_comments.dart';
 
-/// Credentials every Reddit *listing* read should share.
+/// Credentials every Reddit listing and thread read should share.
 ///
 /// Resolving a refresh token once and threading [userToken] / [preferPublic]
-/// through feed, home interleave, and subreddit screens stops the Reddit tab
-/// from being the only place a signed-in session helps.
+/// through feed, home interleave, subreddit screens, and comment threads stops
+/// the Reddit tab from being the only place a signed-in session helps.
 class RedditReadSession {
   final String clientId;
   final bool preferPublic;
@@ -63,6 +64,20 @@ class RedditReadSession {
         sort: sort,
         limit: limit,
         after: after,
+        userToken: userToken,
+        preferPublic: preferPublic,
+      );
+
+  Future<({List<RedditComment> comments, String? selfText, String? postUrl, List<String> postImages})>
+      fetchComments(
+    RedditClient client,
+    String permalink, {
+    String? sort,
+  }) =>
+      client.fetchComments(
+        permalink,
+        sort: sort,
+        clientId: clientId,
         userToken: userToken,
         preferPublic: preferPublic,
       );

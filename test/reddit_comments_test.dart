@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:xta/plugins/reddit/reddit_comments.dart';
+import 'package:xta/plugins/reddit/reddit_comments_json.dart';
+import 'package:xta/utils/json.dart';
 
 /// Shaped like old.reddit's comment area: `div.thing.comment` carrying its own
 /// `entry`, with replies inside a `.child > .sitetable`.
@@ -24,7 +26,124 @@ String _page(String comments, {String post = ''}) => '''
 </body></html>
 ''';
 
+Map<String, dynamic> _t1({
+  required String id,
+  String author = 'someone',
+  String body = 'Well said',
+  int score = 42,
+  double created = 1769000000,
+  bool isSubmitter = false,
+  String? permalink,
+  Object? replies = '',
+}) =>
+    {
+      'kind': 't1',
+      'data': {
+        'id': id,
+        'author': author,
+        'body': body,
+        'score': score,
+        'created_utc': created,
+        'is_submitter': isSubmitter,
+        'permalink': permalink ?? '/r/dartlang/comments/abc/$id/',
+        'replies': replies,
+      },
+    };
+
+Map<String, dynamic> _listing(List<Map<String, dynamic>> children) => {
+      'kind': 'Listing',
+      'data': {'children': children},
+    };
+
 void main() {
+  group('JSON comment tree', () {
+    test('parses a nested t1 tree', () {
+      final listing = _listing([
+        _t1(
+          id: 'a',
+          author: 'first',
+          body: 'Question',
+          replies: _listing([
+            _t1(id: 'b', author: 'second', body: 'Answer', score: 7),
+          ]),
+        ),
+      ]);
+
+      final root = commentsFromListing(Json(listing)).single;
+
+      expect(root.id, 'a');
+      expect(root.author, 'first');
+      expect(root.body, 'Question');
+      expect(root.score, 42);
+      expect(root.createdAt, DateTime.fromMillisecondsSinceEpoch(1769000000 * 1000, isUtc: true).toLocal());
+      expect(root.permalink, '/r/dartlang/comments/abc/a/');
+      expect(root.replies.single.id, 'b');
+      expect(root.replies.single.body, 'Answer');
+      expect(root.replies.single.score, 7);
+    });
+
+    test('a more child becomes a stub with the held-back count', () {
+      final listing = _listing([
+        {
+          'kind': 'more',
+          'data': {
+            'count': 34,
+            'id': 'xyz',
+            'children': ['c1', 'c2'],
+          },
+        },
+      ]);
+
+      final stub = commentsFromListing(Json(listing)).single;
+
+      expect(stub.isStub, isTrue);
+      expect(stub.moreCount, 34);
+      expect(stub.id, 'xyz');
+      expect(stub.body, isEmpty);
+      expect(stub.permalink, isNull);
+    });
+
+    test('more without id uses the first child id', () {
+      final listing = _listing([
+        {
+          'kind': 'more',
+          'data': {'count': 2, 'children': ['first_child', 'second']},
+        },
+      ]);
+
+      expect(commentsFromListing(Json(listing)).single.id, 'first_child');
+    });
+
+    test('empty replies string is no replies', () {
+      final listing = _listing([_t1(id: 'a', replies: '')]);
+
+      expect(commentsFromListing(Json(listing)).single.replies, isEmpty);
+    });
+
+    test('the submitter flag and media tokens are read', () {
+      final listing = _listing([
+        _t1(
+          id: 'op',
+          isSubmitter: true,
+          body: '![gif](giphy|l0HlvtIPzPdt2usKs|downsized)',
+        ),
+      ]);
+      final comment = commentsFromListing(Json(listing)).single;
+
+      expect(comment.isSubmitter, isTrue);
+      expect(comment.mediaUrls, ['https://media.giphy.com/media/l0HlvtIPzPdt2usKs/giphy.gif']);
+      expect(comment.body, isEmpty);
+    });
+
+    test('a bare image URL becomes media and leaves no body', () {
+      final listing = _listing([_t1(id: 'pic', body: 'https://i.redd.it/abc.gif')]);
+      final comment = commentsFromListing(Json(listing)).single;
+
+      expect(comment.mediaUrls, ['https://i.redd.it/abc.gif']);
+      expect(comment.body, isEmpty);
+    });
+  });
+
   group('reading a thread', () {
     test('takes the author, body, score and time', () {
       final comment = parseComments(_page(_comment('a', 'someone', 'Well said'))).single;

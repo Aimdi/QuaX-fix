@@ -7,6 +7,7 @@ import 'package:pref/pref.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/plugins/reddit/reddit_auth.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_comments.dart';
 import 'package:xta/plugins/reddit/reddit_read_session.dart';
 
 void main() {
@@ -115,6 +116,87 @@ void main() {
 
       expect(seen?.host, 'oauth.reddit.com');
       expect(seen?.path, contains('/r/dartlang/'));
+    });
+  });
+
+  group('RedditReadSession.fetchComments', () {
+    test('threads credentials so oauth.reddit.com serves the thread JSON', () async {
+      http.BaseRequest? seen;
+      final client = RedditClient(
+        httpClient: MockClient((request) async {
+          seen = request;
+          return http.Response(
+            jsonEncode([
+              {
+                'kind': 'Listing',
+                'data': {
+                  'children': [
+                    {
+                      'kind': 't3',
+                      'data': {
+                        'id': 'abc123',
+                        'title': 'Hello',
+                        'subreddit': 'dartlang',
+                        'permalink': '/r/dartlang/comments/abc123/hello/',
+                        'url': 'https://example.com/story',
+                        'is_self': true,
+                        'selftext': 'Post body',
+                        'score': 1,
+                        'num_comments': 1,
+                        'created_utc': 1769000000,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                'kind': 'Listing',
+                'data': {
+                  'children': [
+                    {
+                      'kind': 't1',
+                      'data': {
+                        'id': 'c1',
+                        'author': 'reader',
+                        'body': 'Nice',
+                        'score': 3,
+                        'created_utc': 1769000100,
+                        'is_submitter': false,
+                        'permalink': '/r/dartlang/comments/abc123/hello/c1/',
+                        'replies': '',
+                      },
+                    },
+                  ],
+                },
+              },
+            ]),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }),
+      );
+      const session = RedditReadSession(
+        clientId: 'cid',
+        preferPublic: false,
+        userToken: 'user_tok',
+      );
+
+      final result = await session.fetchComments(
+        client,
+        '/r/dartlang/comments/abc123/hello/',
+        sort: 'new',
+      );
+
+      expect(seen?.url.host, 'oauth.reddit.com');
+      expect(seen?.url.path, '/r/dartlang/comments/abc123/hello.json');
+      expect(seen?.url.queryParameters['raw_json'], '1');
+      expect(seen?.url.queryParameters['sort'], 'new');
+      expect(seen?.headers['authorization'], 'Bearer user_tok');
+      expect(result.selfText, 'Post body');
+      expect(result.postUrl, 'https://example.com/story');
+      expect(result.comments, hasLength(1));
+      expect(result.comments.single, isA<RedditComment>());
+      expect(result.comments.single.body, 'Nice');
     });
   });
 }

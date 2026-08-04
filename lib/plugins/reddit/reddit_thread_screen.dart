@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/reddit/reddit_avatar.dart';
@@ -8,6 +9,7 @@ import 'package:xta/plugins/reddit/reddit_comments.dart';
 import 'package:xta/plugins/reddit/reddit_media_urls.dart';
 import 'package:xta/plugins/reddit/reddit_listing_screen.dart';
 import 'package:xta/plugins/reddit/reddit_post_media.dart';
+import 'package:xta/plugins/reddit/reddit_read_session.dart';
 import 'package:xta/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
 import 'package:xta/ui/dates.dart';
 import 'package:xta/ui/errors.dart';
@@ -50,7 +52,10 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
   Future<void> _load() async {
     setState(() => _error = null);
     try {
-      final result = await context.read<RedditClient>().fetchComments(_post.permalink, sort: _sort);
+      final client = context.read<RedditClient>();
+      final prefs = PrefService.of(context, listen: false);
+      final session = await RedditReadSession.resolve(prefs: prefs);
+      final result = await session.fetchComments(client, _post.permalink, sort: _sort);
       if (!mounted) return;
       setState(() {
         _comments = flattenComments(result.comments);
