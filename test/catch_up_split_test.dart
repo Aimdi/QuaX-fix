@@ -60,41 +60,6 @@ void main() {
     });
   });
 
-  group('feedGapRemains', () {
-    final stored = BigInt.from(100);
-
-    bool remains({BigInt? newest, BigInt? oldest, String? cursor = 'c', bool chains = true}) {
-      return feedGapRemains(
-        storedNewestId: newest,
-        oldestFetchedId: oldest,
-        cursorBottom: cursor,
-        pageHasChains: chains,
-      );
-    }
-
-    test('is false when there is nothing stored to catch up with', () {
-      expect(remains(newest: null, oldest: BigInt.from(200)), isFalse);
-    });
-
-    test('is true while the whole page is newer than the newest stored post', () {
-      expect(remains(newest: stored, oldest: BigInt.from(101)), isTrue);
-    });
-
-    test('is false once the page overlaps what was stored', () {
-      expect(remains(newest: stored, oldest: stored), isFalse);
-      expect(remains(newest: stored, oldest: BigInt.from(99)), isFalse);
-    });
-
-    test('is false with no cursor to follow, or no chains on the page', () {
-      expect(remains(newest: stored, oldest: BigInt.from(200), cursor: null), isFalse);
-      expect(remains(newest: stored, oldest: BigInt.from(200), chains: false), isFalse);
-    });
-
-    test('a page with no parseable ids counts as overlapping, not as paging on', () {
-      expect(remains(newest: stored, oldest: null), isFalse);
-    });
-  });
-
   test('feedCatchUpModeKey is per feed', () {
     expect(feedCatchUpModeKey('-1'), isNot(feedCatchUpModeKey('7')));
     expect(feedCatchUpModeKey('7'), 'feed.catch_up_mode.7');

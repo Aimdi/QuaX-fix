@@ -22,12 +22,41 @@ void main() {
   });
 
   test('prefsMapWithoutSecrets strips the GitHub token', () {
-    final cleaned = prefsMapWithoutSecrets({
-      optionCrashGithubToken: 'secret',
-      optionCrashReportsEnabled: true,
-    });
+    final cleaned = prefsMapWithoutSecrets({optionCrashGithubToken: 'secret', optionCrashReportsEnabled: true});
     expect(cleaned.containsKey(optionCrashGithubToken), isFalse);
     expect(cleaned[optionCrashReportsEnabled], isTrue);
+  });
+
+  test('every plugin credential is stripped from an export', () {
+    // These all reach the file a reader shares and the document uploaded to
+    // their WebDAV server. The redaction used to name two keys, so each
+    // credential added after it was written left the device in the clear.
+    final stripped = prefsMapWithoutSecrets({
+      optionAiApiKey: 'ai',
+      optionPluginDeepmarksApiKey: 'deepmarks',
+      optionPluginDeepmarksSecretKey: 'deepmarks-secret',
+      optionPluginImmichApiKey: 'immich',
+      optionPluginKarakeepApiKey: 'karakeep',
+      optionPluginRedditClientId: 'reddit-client',
+      optionPluginRedditRefreshToken: 'reddit-refresh',
+      optionPluginThreadsApiToken: 'threads',
+      optionCrashGithubToken: 'github',
+      optionWebDavPassword: 'hunter2',
+      optionThemeMode: 'dark',
+    });
+
+    expect(stripped.keys, [optionThemeMode], reason: 'only the non-secret setting survives');
+  });
+
+  test('a credential-shaped key is stripped even when nobody declared it', () {
+    final stripped = prefsMapWithoutSecrets({
+      'plugin.notyetwritten.api_key': 'secret',
+      'plugin.notyetwritten.refresh_token': 'secret',
+      'plugin.notyetwritten.password': 'secret',
+      'plugin.notyetwritten.server_url': 'https://example.org',
+    });
+
+    expect(stripped.keys, ['plugin.notyetwritten.server_url']);
   });
 
   test('buildIssueTitle stays compact', () {
@@ -37,11 +66,13 @@ void main() {
   });
 
   test('report posts to GitHub when enabled with token', () async {
-    final prefs = PrefServiceCache(cache: {
-      optionCrashReportsEnabled: true,
-      optionCrashGithubRepo: 'Aimdi/XTA-gamma',
-      optionCrashGithubToken: 'test-token',
-    });
+    final prefs = PrefServiceCache(
+      cache: {
+        optionCrashReportsEnabled: true,
+        optionCrashGithubRepo: 'Aimdi/XTA-gamma',
+        optionCrashGithubToken: 'test-token',
+      },
+    );
 
     http.Request? seen;
     final client = MockClient((request) async {
@@ -52,12 +83,8 @@ void main() {
     final reporter = CrashReporter(
       prefs,
       httpClient: client,
-      packageInfoLoader: () async => PackageInfo(
-        appName: 'XTA',
-        packageName: 'com.aimdi.xta',
-        version: '4.12.0',
-        buildNumber: '1',
-      ),
+      packageInfoLoader: () async =>
+          PackageInfo(appName: 'XTA', packageName: 'com.aimdi.xta', version: '4.12.0', buildNumber: '1'),
     );
     final result = await reporter.report(Exception('unit-test-crash'), StackTrace.current, force: true);
 
@@ -69,11 +96,9 @@ void main() {
   });
 
   test('report refuses to send without token', () async {
-    final prefs = PrefServiceCache(cache: {
-      optionCrashReportsEnabled: true,
-      optionCrashGithubRepo: 'Aimdi/XTA-gamma',
-      optionCrashGithubToken: '',
-    });
+    final prefs = PrefServiceCache(
+      cache: {optionCrashReportsEnabled: true, optionCrashGithubRepo: 'Aimdi/XTA-gamma', optionCrashGithubToken: ''},
+    );
     final reporter = CrashReporter(prefs, httpClient: MockClient((_) async => http.Response('', 500)));
     final result = await reporter.report(Exception('x'), StackTrace.current, force: true);
     expect(result, CrashReportResult.missingToken);

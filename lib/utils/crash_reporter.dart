@@ -224,7 +224,6 @@ Uri? issueApiUri(String repo) {
 /// the password in would store the server's own credentials on it in plaintext.
 Map<String, dynamic> prefsMapWithoutSecrets(Map<String, dynamic> prefs) {
   final copy = Map<String, dynamic>.from(prefs);
-  copy.remove(optionCrashGithubToken);
-  copy.remove(optionWebDavPassword);
+  copy.removeWhere((key, _) => isSecretPrefKey(key));
   return copy;
 }

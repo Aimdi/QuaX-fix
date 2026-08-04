@@ -344,11 +344,6 @@ const zenModePageCapChoices = [3, 5, 10, 20];
 // gap between freshly fetched posts and the previously stored ones
 const maxFeedGapFillPages = 4;
 
-// How many of a feed's chunk searches run at once. Each chunk is a separate
-// search request; all of them together saturate a phone's connection and trip
-// the same rate limit at the same moment.
-const maxConcurrentChunkLoads = 4;
-
 // How many stored chunk rows a cache read decodes, newest first. Each row is a
 // whole page of chains and rows accumulate until the 7-day purge, so reading
 // them all decoded tens of MB of JSON on the UI isolate before the feed had
@@ -427,6 +422,36 @@ const Duration profileCacheMaxAge = Duration(minutes: 15);
 const optionWebDavUrl = 'sync.webdav.url';
 const optionWebDavUsername = 'sync.webdav.username';
 const optionWebDavPassword = 'sync.webdav.password';
+
+/// Preference keys that must never leave the device in an export, a backup or
+/// a crash report.
+///
+/// Declared as a set rather than removed one-by-one at the call site: the
+/// redaction used to name two keys, and every credential added after it was
+/// written -- six of them, across five plugins -- was exported verbatim in a
+/// file readers share and upload. [isSecretPrefKey] also matches by suffix, so
+/// the next plugin is covered before anyone remembers to come back here.
+const secretPrefKeys = {
+  optionCrashGithubToken,
+  optionWebDavPassword,
+  optionAiApiKey,
+  optionPluginDeepmarksApiKey,
+  optionPluginDeepmarksSecretKey,
+  optionPluginImmichApiKey,
+  optionPluginKarakeepApiKey,
+  optionPluginRedditClientId,
+  optionPluginRedditRefreshToken,
+  optionPluginThreadsApiToken,
+};
+
+/// The declared keys, plus anything shaped like a credential.
+bool isSecretPrefKey(String key) =>
+    secretPrefKeys.contains(key) ||
+    key.endsWith('api_key') ||
+    key.endsWith('secret_key') ||
+    key.endsWith('_token') ||
+    key.endsWith('password');
+
 // Off by default: the backup payload carries X session tokens, and uploading
 // those anywhere has to be a deliberate choice rather than a default.
 const optionWebDavIncludeAccounts = 'sync.webdav.include_accounts';

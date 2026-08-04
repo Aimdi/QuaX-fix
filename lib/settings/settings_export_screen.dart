@@ -171,7 +171,7 @@ class _SettingsExportScreenState extends State<SettingsExportScreen> {
     var exportData = jsonEncode(data.toJson());
 
     var dateFormat = DateFormat('yyyy-MM-dd');
-    var fileName = 'quax-${dateFormat.format(DateTime.now())}.json';
+    var fileName = 'xta-${dateFormat.format(DateTime.now())}.json';
 
     var path = await FlutterFileDialog.saveFile(
         params: SaveFileDialogParams(fileName: fileName, data: Uint8List.fromList(utf8.encode(exportData))));
