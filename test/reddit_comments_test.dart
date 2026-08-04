@@ -255,6 +255,26 @@ void main() {
       expect(media.images, ['https://i.redd.it/a.png']);
     });
 
+    test('the same picture at two widths is one picture, preferring the larger', () {
+      final media = parsePostMedia(_page('',
+          post: postThing(
+            expando: '<img src="https://preview.redd.it/abc.jpg?width=320&amp;s=a">'
+                '<img src="https://preview.redd.it/abc.jpg?width=1080&amp;s=b">',
+          )));
+
+      expect(media.images, ['https://preview.redd.it/abc.jpg?width=1080&s=b']);
+    });
+
+    test('a preview and an i.redd.it of the same file collapse to i.redd.it', () {
+      final media = parsePostMedia(_page('',
+          post: postThing(
+            expando: '<img src="https://preview.redd.it/abc.jpg?width=640&amp;s=a">'
+                '<img src="https://i.redd.it/abc.jpg">',
+          )));
+
+      expect(media.images, ['https://i.redd.it/abc.jpg']);
+    });
+
     test('a page with no post is nothing, not a throw', () {
       final media = parsePostMedia('<html><body></body></html>');
 

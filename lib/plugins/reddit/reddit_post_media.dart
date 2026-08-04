@@ -4,6 +4,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_media_urls.dart';
 import 'package:xta/tweet/_video.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/utils/urls.dart';
@@ -60,7 +61,7 @@ class RedditPostMedia extends StatelessWidget {
       );
     }
 
-    final gallery = post.galleryImages;
+    final gallery = collapseRedditImageUrls(post.galleryImages);
     if (gallery.length > 1) {
       return Padding(
         padding: padding,

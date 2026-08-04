@@ -5,6 +5,7 @@ import 'package:xta/plugins/reddit/reddit_avatar.dart';
 import 'package:xta/plugins/reddit/reddit_subreddit_avatar.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_comments.dart';
+import 'package:xta/plugins/reddit/reddit_media_urls.dart';
 import 'package:xta/plugins/reddit/reddit_listing_screen.dart';
 import 'package:xta/plugins/reddit/reddit_post_media.dart';
 import 'package:xta/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
@@ -76,14 +77,15 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
     }
 
     final external = url != null && !_isOwnPermalink(url);
-    if (!external && images.isEmpty) {
+    final gallery = collapseRedditImageUrls(images);
+    if (!external && gallery.isEmpty) {
       return;
     }
 
     _post = _post.copyWith(
       url: external ? url : _post.url,
       isSelf: external ? false : _post.isSelf,
-      galleryImages: images.isEmpty ? null : images,
+      galleryImages: gallery.isEmpty ? null : gallery,
     );
   }
 
