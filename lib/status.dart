@@ -339,6 +339,7 @@ class _StatusScreenState extends State<_StatusScreen> {
       children: [
         for (final chain in visible)
           TweetConversation(
+              key: ValueKey(chain.id),
               id: chain.id,
               tweets: chain.tweets,
               username: null,

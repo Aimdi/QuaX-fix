@@ -207,7 +207,10 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     // Cached (pop/push-restored) controllers already hold their tweets; only a
     // fresh controller needs the preview while it loads the first page.
     _cachedPreview = widget.initialPreview;
-    if (!_feedController.hasItems) {
+    // The screen above may already have read and decoded the cached chunks for
+    // us; doing it again here decoded the same rows a second time, on the UI
+    // isolate, in the frames the reader is waiting on.
+    if (!_feedController.hasItems && (widget.initialPreview?.isEmpty ?? true)) {
       _loadPreview();
     }
     _loadSubstackPosts();
