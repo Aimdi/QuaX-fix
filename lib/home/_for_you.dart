@@ -69,7 +69,9 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
 
   Future<void> _loadRedditPosts() async {
     final items = await loadRedditInterleaved(context, redditHomeSubreddits(context));
-    if (mounted && items.isNotEmpty) {
+    // Assigned even when empty: turning the mix off or losing every subreddit
+    // must clear prior cards, not leave them stuck on For You.
+    if (mounted) {
       setState(() => _redditItems = items);
     }
   }

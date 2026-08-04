@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_post_card.dart';
+import 'package:xta/plugins/reddit/reddit_read_session.dart';
 import 'package:xta/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
 import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
 import 'package:xta/plugins/reddit/reddit_store.dart';
@@ -69,11 +69,11 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
     }
 
     final prefs = PrefService.of(context, listen: false);
-    final listing = await client.fetchSubreddit(
+    final session = await RedditReadSession.resolve(prefs: prefs);
+    final listing = await session.fetchSubreddit(
+      client,
       subreddit,
-      clientId: prefs.get<String>(optionPluginRedditClientId) ?? '',
       sort: storedRedditSort(prefs),
-      preferPublic: prefs.get<String>(optionPluginRedditSource) == redditSourcePublic,
     );
 
     return listing.posts;

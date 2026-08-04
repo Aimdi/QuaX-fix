@@ -1,0 +1,69 @@
+import 'package:pref/pref.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/plugins/reddit/reddit_auth.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
+
+/// Credentials every Reddit *listing* read should share.
+///
+/// Resolving a refresh token once and threading [userToken] / [preferPublic]
+/// through feed, home interleave, and subreddit screens stops the Reddit tab
+/// from being the only place a signed-in session helps.
+class RedditReadSession {
+  final String clientId;
+  final bool preferPublic;
+  final String? userToken;
+
+  const RedditReadSession({
+    required this.clientId,
+    required this.preferPublic,
+    this.userToken,
+  });
+
+  /// Builds a session from prefs: public when asked, else a user access token
+  /// when a refresh token exists, else app-only / scrape via [clientId].
+  static Future<RedditReadSession> resolve({
+    required BasePrefService prefs,
+    RedditAuth? auth,
+  }) async {
+    final clientId = prefs.get<String>(optionPluginRedditClientId) ?? '';
+    final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
+    if (preferPublic) {
+      return RedditReadSession(clientId: clientId, preferPublic: true);
+    }
+
+    final refreshToken = prefs.get<String>(optionPluginRedditRefreshToken) ?? '';
+    if (refreshToken.isEmpty) {
+      return RedditReadSession(clientId: clientId, preferPublic: false);
+    }
+
+    try {
+      final token = await (auth ?? RedditAuth()).accessToken(
+        clientId: clientId,
+        refreshToken: refreshToken,
+      );
+      return RedditReadSession(clientId: clientId, preferPublic: false, userToken: token);
+    } on RedditException {
+      // Reddit no longer accepts this refresh token — drop it so every path
+      // falls back the same way instead of retrying a dead session.
+      await prefs.set(optionPluginRedditRefreshToken, '');
+      return RedditReadSession(clientId: clientId, preferPublic: false);
+    }
+  }
+
+  Future<RedditListing> fetchSubreddit(
+    RedditClient client,
+    String name, {
+    RedditSort sort = RedditSort.hot,
+    int limit = 25,
+    String? after,
+  }) =>
+      client.fetchSubreddit(
+        name,
+        clientId: clientId,
+        sort: sort,
+        limit: limit,
+        after: after,
+        userToken: userToken,
+        preferPublic: preferPublic,
+      );
+}

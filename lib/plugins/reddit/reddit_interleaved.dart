@@ -3,8 +3,10 @@ import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
+import 'package:xta/plugins/reddit/reddit_auth.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_post_card.dart';
+import 'package:xta/plugins/reddit/reddit_read_session.dart';
 import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
 import 'package:xta/plugins/reddit/reddit_store.dart';
 import 'package:xta/tweet/interleaved_items.dart';
@@ -44,6 +46,7 @@ Future<List<InterleavedItem>> loadRedditInterleaved(
   BuildContext context,
   List<String> subreddits, {
   int limit = kRedditInterleavedPageSize,
+  RedditAuth? auth,
 }) async {
   if (subreddits.isEmpty) {
     return const [];
@@ -51,16 +54,14 @@ Future<List<InterleavedItem>> loadRedditInterleaved(
 
   final client = context.read<RedditClient>();
   final prefs = PrefService.of(context, listen: false);
-  final clientId = prefs.get<String>(optionPluginRedditClientId) ?? '';
-  final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
   final sort = storedRedditSort(prefs);
+  final session = await RedditReadSession.resolve(prefs: prefs, auth: auth);
 
   // Fetched together rather than one after another: a group with six
   // subreddits paid six round trips end to end, and the feed waited on the sum.
   final listings = await Future.wait(subreddits.map((name) async {
     try {
-      return await client.fetchSubreddit(name,
-          clientId: clientId, sort: sort, limit: limit, preferPublic: preferPublic);
+      return await session.fetchSubreddit(client, name, sort: sort, limit: limit);
     } catch (e) {
       _log.warning('Unable to load r/$name: $e');
       return null;
