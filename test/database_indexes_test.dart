@@ -102,6 +102,9 @@ void main() {
       'idx_feed_group_chunk_hash',
       'idx_feed_group_chunk_cursor',
       'idx_subscription_group_member_profile',
+      'idx_feed_group_chunk_created_at',
+      'idx_feed_group_cursor_created_at',
+      'idx_timeline_cache_created_at',
     });
   });
 }

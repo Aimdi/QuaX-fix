@@ -513,6 +513,11 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
       'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
       reverseSql: 'DROP TABLE $tableRedditSubscription',
     ),
+    // Re-runs _createIndexes so the three created_at indexes added to the map
+    // above reach databases that are already past migration 39. Every
+    // statement is IF NOT EXISTS and each failure is stepped over, so this is
+    // a no-op on a database that already has them.
+    Migration(Operation(_createIndexes), reverse: Operation(_dropIndexes)),
   ],
 });
 
@@ -529,6 +534,12 @@ const Map<String, String> _indexes = {
   'idx_feed_group_chunk_hash': '$tableFeedGroupChunk (hash, created_at)',
   'idx_feed_group_chunk_cursor': '$tableFeedGroupChunk (cursor_id, hash)',
   'idx_subscription_group_member_profile': '$tableSubscriptionGroupMember (profile_id)',
+  // The 7-day purge below deletes by created_at from the three fattest-rowed
+  // tables, and it runs before the first frame. No index led with created_at,
+  // so each of those deletes was a full table scan over a week of feed JSON.
+  'idx_feed_group_chunk_created_at': '$tableFeedGroupChunk (created_at)',
+  'idx_feed_group_cursor_created_at': '$tableFeedGroupCursor (created_at)',
+  'idx_timeline_cache_created_at': '$tableTimelineCache (created_at)',
 };
 
 /// Adds the nesting column, tolerating a database whose group table is gone.
