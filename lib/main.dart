@@ -820,6 +820,21 @@ class _DefaultPageState extends State<DefaultPage> {
       return false;
     });
 
+    // The saved and liked lists were only ever loaded by the Saved tab's
+    // initState, and the home tabs are a lazily-built PageView -- so until the
+    // reader opened that tab, every footer in every feed reported the post as
+    // neither saved nor liked. Loaded here instead, once, unawaited: the
+    // membership answer is a map lookup and the stored posts are only decoded
+    // when something actually reads one.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      unawaited(context.read<SavedTweetModel>().listSavedTweets());
+      unawaited(context.read<LikedTweetModel>().listLikedTweets());
+    });
+
     final appLinks = AppLinks();
 
     // Attach a listener to the stream

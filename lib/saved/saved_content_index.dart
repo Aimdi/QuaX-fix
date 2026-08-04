@@ -68,16 +68,20 @@ class SavedContentIndex {
       var id = idOf(item);
       var blob = blobOf(item);
       var cached = previous[id];
-      var entry = cached != null && cached.blob == blob ? cached : _Entry(blob, parseSavedContent(blob));
+      var entry = cached != null && cached.blob == blob ? cached : _Entry(blob);
 
       return MapEntry(id, entry);
     }));
   }
 }
 
+/// Parsed on first read, not on rebuild. Membership is answered for every post
+/// in the feed, and answering it must not decode the whole saved table.
 class _Entry {
   final String? blob;
-  final SavedContent content;
+  SavedContent? _content;
 
-  const _Entry(this.blob, this.content);
+  _Entry(this.blob);
+
+  SavedContent get content => _content ??= parseSavedContent(blob);
 }
