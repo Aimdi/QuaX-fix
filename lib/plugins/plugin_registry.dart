@@ -3,6 +3,7 @@ import 'package:xta/plugins/deepmarks/deepmarks_plugin.dart';
 import 'package:xta/plugins/immich/immich_plugin.dart';
 import 'package:xta/plugins/karakeep/karakeep_plugin.dart';
 import 'package:xta/plugins/mastodon/mastodon_plugin.dart';
+import 'package:xta/plugins/pixiv/pixiv_plugin.dart';
 import 'package:xta/plugins/plugin.dart';
 import 'package:xta/plugins/reddit/reddit_plugin.dart';
 import 'package:xta/plugins/stocks/stocks_plugin.dart';
@@ -16,6 +17,7 @@ final List<XtaPlugin> builtInPlugins = [
   ThreadsPlugin(),
   BlueskyPlugin(),
   MastodonPlugin(),
+  PixivPlugin(),
   StocksPlugin(),
   KarakeepPlugin(),
   DeepmarksPlugin(),

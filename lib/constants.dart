@@ -193,6 +193,19 @@ const optionPluginMastodonInstance = 'plugin.mastodon.instance';
 /// How many statuses one account contributes to the merged Mastodon feed.
 const mastodonPostsPerAccount = 20;
 
+/// Pixiv — private reading plugin. Refresh-token auth; no write actions.
+const pluginIdPixiv = 'pixiv';
+const optionPluginPixivEnabled = 'plugin.pixiv.enabled';
+const optionPluginPixivShowTab = 'plugin.pixiv.show_tab';
+const optionPluginPixivRefreshToken = 'plugin.pixiv.refresh_token';
+const optionPluginPixivAccessToken = 'plugin.pixiv.access_token';
+const optionPluginPixivAccessExpiresAt = 'plugin.pixiv.access_expires_at';
+const optionPluginPixivShowR18 = 'plugin.pixiv.show_r18';
+
+/// When true, the plugin store also lists [XtaPlugin.isPrivate] plugins that
+/// the public catalogue holds back with `available: false`.
+const optionPluginStoreShowPrivate = 'plugin_store.show_private';
+
 const optionShouldCheckForUpdates = 'should_check_for_updates';
 
 /// Marks that the update check has been turned off once for this fork. Without
@@ -462,6 +475,8 @@ const secretPrefKeys = {
   optionPluginRedditClientId,
   optionPluginRedditRefreshToken,
   optionPluginThreadsApiToken,
+  optionPluginPixivRefreshToken,
+  optionPluginPixivAccessToken,
 };
 
 /// The declared keys, plus anything shaped like a credential.

@@ -18,6 +18,10 @@ abstract class XtaPlugin {
   /// service, not a logo asset.
   Color get brandColor;
 
+  /// When true, the public catalogue never offers this plugin; the store only
+  /// surfaces it after “Show private plugins” or once it is already installed.
+  bool get isPrivate => false;
+
   String title(BuildContext context);
   String description(BuildContext context);
 

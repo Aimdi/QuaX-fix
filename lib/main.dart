@@ -35,6 +35,8 @@ import 'package:xta/plugins/bluesky/bluesky_client.dart';
 import 'package:xta/plugins/bluesky/bluesky_store.dart';
 import 'package:xta/plugins/mastodon/mastodon_client.dart';
 import 'package:xta/plugins/mastodon/mastodon_store.dart';
+import 'package:xta/plugins/pixiv/pixiv_client.dart';
+import 'package:xta/plugins/pixiv/pixiv_store.dart';
 import 'package:xta/plugins/threads/threads_api.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
 import 'package:xta/plugins/threads/threads_store.dart';
@@ -461,6 +463,13 @@ Future<void> main() async {
       optionPluginMastodonEnabled: false,
       optionPluginMastodonShowTab: true,
       optionPluginMastodonInstance: '',
+      optionPluginPixivEnabled: false,
+      optionPluginPixivShowTab: true,
+      optionPluginPixivRefreshToken: '',
+      optionPluginPixivAccessToken: '',
+      optionPluginPixivAccessExpiresAt: '',
+      optionPluginPixivShowR18: false,
+      optionPluginStoreShowPrivate: false,
       optionSubscriptionGroupsOrderByAscending: true,
       optionDisableWarningsForUnrelatedPostsInFeed: false,
       // Reading is the whole point of the app, so posts are not clipped unless
@@ -575,6 +584,8 @@ Future<void> main() async {
     final mastodonClient = MastodonClient();
     final mastodonAccounts = MastodonAccountsStore();
     final mastodonFeed = MastodonFeedStore(mastodonClient, prefService, mastodonAccounts);
+    final pixivClient = PixivClient(prefService);
+    final pixivFeed = PixivFeedStore(pixivClient);
 
     // Everything above only constructs; the reads all happen here. They were a
     // chain of awaits, each waiting on the last for no reason — none of them
@@ -654,6 +665,8 @@ Future<void> main() async {
             Provider(create: (_) => mastodonClient),
             Provider(create: (_) => mastodonAccounts),
             Provider(create: (_) => mastodonFeed),
+            Provider(create: (_) => pixivClient),
+            Provider(create: (_) => pixivFeed),
             ChangeNotifierProvider(create: (_) => VideoContextState(prefService.get(optionMediaDefaultMute))),
           ],
           child: FritterApp(),

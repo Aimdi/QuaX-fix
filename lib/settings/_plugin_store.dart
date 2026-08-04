@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
+import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/home/home_model.dart';
 import 'package:xta/plugins/plugin.dart';
@@ -56,10 +57,15 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
 
   /// Visible in the store: installed always, plus anything the catalogue still
   /// offers. Installed-but-withdrawn plugins stay so the reader can uninstall.
+  /// Private plugins only appear when show-private is on (or already installed).
   List<XtaPlugin> get _listed {
     final prefs = PrefService.of(context, listen: false);
+    final showPrivate = prefs.get<bool>(optionPluginStoreShowPrivate) == true;
     return builtInPlugins
-        .where((plugin) => plugin.isEnabled(prefs) || _offered.contains(plugin.id))
+        .where((plugin) =>
+            plugin.isEnabled(prefs) ||
+            _offered.contains(plugin.id) ||
+            (plugin.isPrivate && showPrivate))
         .toList();
   }
 
@@ -108,6 +114,22 @@ class _SettingsPluginStoreFragmentState extends State<SettingsPluginStoreFragmen
       appBar: AppBar(
         title: Text(l10n.plugin_store),
         actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) async {
+              if (value == 'private') {
+                final next = !(prefs.get<bool>(optionPluginStoreShowPrivate) == true);
+                await prefs.set(optionPluginStoreShowPrivate, next);
+                if (mounted) setState(() {});
+              }
+            },
+            itemBuilder: (context) => [
+              CheckedPopupMenuItem(
+                value: 'private',
+                checked: prefs.get<bool>(optionPluginStoreShowPrivate) == true,
+                child: Text(l10n.plugin_store_show_private),
+              ),
+            ],
+          ),
           IconButton(
             tooltip: l10n.retry,
             icon: const Icon(Icons.refresh),
