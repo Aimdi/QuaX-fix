@@ -209,6 +209,9 @@ const optionTickerChart = 'other.ticker_chart';
 const optionZenMode = 'other.zen_mode';
 const optionZenModePageCap = 'other.zen_mode_page_cap';
 const optionFeedReadingPosition = 'feed.reading_position';
+// Catch-up ("finish the feed") mode is per feed: the group id is appended to
+// this prefix by `feedCatchUpModeKey`. Off unless a feed opts in.
+const optionFeedCatchUpModePrefix = 'feed.catch_up_mode.';
 // Global defaults for feeds; a group can override each per-feed (null override
 // = follow these).
 const optionGlobalIncludeReplies = 'feed.global_include_replies';

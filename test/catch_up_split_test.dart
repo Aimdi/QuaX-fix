@@ -1,0 +1,102 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:quax/client/client.dart';
+import 'package:quax/group/feed_catch_up.dart';
+import 'package:quax/tweet/catch_up_split.dart';
+
+TweetChain chain(String id) => TweetChain(id: id, tweets: [TweetWithCard()], isPinned: false);
+
+void main() {
+  bool isSeen(TweetChain c) => c.id.startsWith('seen');
+
+  group('splitAtFirstSeen', () {
+    test('keeps a page of nothing but new chains and pages on', () {
+      final page = [chain('a'), chain('b')];
+      final split = splitAtFirstSeen(page, isSeen);
+
+      expect(split.reachedBoundary, isFalse);
+      expect(split.keep, page);
+      expect(split.held, isEmpty);
+    });
+
+    test('cuts at the first already-read chain and hands the rest back', () {
+      final page = [chain('a'), chain('b'), chain('seen1'), chain('c')];
+      final split = splitAtFirstSeen(page, isSeen);
+
+      expect(split.reachedBoundary, isTrue);
+      expect(split.keep.map((e) => e.id), ['a', 'b']);
+      // Nothing is dropped: "show older posts" puts these straight back.
+      expect(split.held.map((e) => e.id), ['seen1', 'c']);
+    });
+
+    test('a page whose very first chain is read keeps nothing', () {
+      final split = splitAtFirstSeen([chain('seen1'), chain('a')], isSeen);
+
+      expect(split.reachedBoundary, isTrue);
+      expect(split.keep, isEmpty);
+      expect(split.held.map((e) => e.id), ['seen1', 'a']);
+    });
+
+    test('an empty page never claims a boundary', () {
+      final split = splitAtFirstSeen(const <TweetChain>[], isSeen);
+
+      expect(split.reachedBoundary, isFalse);
+      expect(split.keep, isEmpty);
+      expect(split.held, isEmpty);
+    });
+  });
+
+  group('catchUpMessageFor', () {
+    test('an unfinished gap-fill outranks every other claim', () {
+      final incomplete = catchUpMessageFor(mayBeIncomplete: true, nothingNew: false);
+      final both = catchUpMessageFor(mayBeIncomplete: true, nothingNew: true);
+
+      expect(incomplete, CatchUpMessage.mayBeIncomplete);
+      expect(both, CatchUpMessage.mayBeIncomplete);
+    });
+
+    test('separates "nothing arrived" from "you read it all"', () {
+      expect(catchUpMessageFor(mayBeIncomplete: false, nothingNew: true), CatchUpMessage.nothingNew);
+      expect(catchUpMessageFor(mayBeIncomplete: false, nothingNew: false), CatchUpMessage.caughtUp);
+    });
+  });
+
+  group('feedGapRemains', () {
+    final stored = BigInt.from(100);
+
+    bool remains({BigInt? newest, BigInt? oldest, String? cursor = 'c', bool chains = true}) {
+      return feedGapRemains(
+        storedNewestId: newest,
+        oldestFetchedId: oldest,
+        cursorBottom: cursor,
+        pageHasChains: chains,
+      );
+    }
+
+    test('is false when there is nothing stored to catch up with', () {
+      expect(remains(newest: null, oldest: BigInt.from(200)), isFalse);
+    });
+
+    test('is true while the whole page is newer than the newest stored post', () {
+      expect(remains(newest: stored, oldest: BigInt.from(101)), isTrue);
+    });
+
+    test('is false once the page overlaps what was stored', () {
+      expect(remains(newest: stored, oldest: stored), isFalse);
+      expect(remains(newest: stored, oldest: BigInt.from(99)), isFalse);
+    });
+
+    test('is false with no cursor to follow, or no chains on the page', () {
+      expect(remains(newest: stored, oldest: BigInt.from(200), cursor: null), isFalse);
+      expect(remains(newest: stored, oldest: BigInt.from(200), chains: false), isFalse);
+    });
+
+    test('a page with no parseable ids counts as overlapping, not as paging on', () {
+      expect(remains(newest: stored, oldest: null), isFalse);
+    });
+  });
+
+  test('feedCatchUpModeKey is per feed', () {
+    expect(feedCatchUpModeKey('-1'), isNot(feedCatchUpModeKey('7')));
+    expect(feedCatchUpModeKey('7'), 'feed.catch_up_mode.7');
+  });
+}

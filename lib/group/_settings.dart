@@ -4,6 +4,7 @@ import 'package:pref/pref.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
 import 'package:quax/generated/l10n.dart';
+import 'package:quax/group/feed_catch_up.dart';
 import 'package:quax/group/group_custom_settings.dart';
 import 'package:quax/group/group_model.dart';
 
@@ -72,6 +73,15 @@ void showFeedSettings(BuildContext context, GroupModel model) {
                       value: includeRetweets,
                       onChanged: (value) async => await model.toggleSubscriptionGroupIncludeRetweets(value),
                     ),
+                    // Only chronological feeds have a "where I left off" to
+                    // stop at; in popular order the boundary is meaningless.
+                    if (!state.popular)
+                      SwitchListTile(
+                        title: Text(L10n.of(context).catch_up_mode),
+                        subtitle: Text(L10n.of(context).catch_up_mode_description),
+                        value: prefs.get(feedCatchUpModeKey(state.id)) == true,
+                        onChanged: (value) async => await prefs.set(feedCatchUpModeKey(state.id), value),
+                      ),
                     ExpansionTile(
                       leading: const Icon(Icons.sort),
                       title: Text(_sortModeLabel(context, model.state)),

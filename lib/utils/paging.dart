@@ -104,5 +104,20 @@ class CursorPagingController<C, T> {
     pagingController.fetchNextPage();
   }
 
+  /// Re-opens pagination by appending [items] the controller held back rather
+  /// than fetched, seeding [cursor] for whatever follows them (`null` ends
+  /// pagination there). Used when a stop was imposed part-way through a page.
+  void resumeWith(List<T> items, C? cursor) {
+    _setNextCursor(cursor);
+    final state = pagingController.value;
+    final keys = state.keys ?? const <int>[];
+    pagingController.value = PagingState<int, T>(
+      pages: [...?state.pages, items],
+      keys: [...keys, keys.isEmpty ? 0 : keys.last + 1],
+      hasNextPage: cursor != null,
+      error: null,
+    );
+  }
+
   void dispose() => pagingController.dispose();
 }

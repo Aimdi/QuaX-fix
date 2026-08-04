@@ -9,6 +9,7 @@ import 'package:quax/database/entities.dart';
 import 'package:quax/database/repository.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/feed_cache.dart';
+import 'package:quax/group/feed_catch_up.dart';
 import 'package:quax/group/feed_read_position.dart';
 import 'package:quax/group/feed_session_cache.dart';
 import 'package:quax/group/group_screen.dart';
@@ -20,6 +21,7 @@ import 'package:quax/plugins/substack/substack_client.dart';
 import 'package:quax/plugins/substack/substack_post_card.dart';
 import 'package:quax/plugins/substack/substack_store.dart';
 import 'package:quax/profile/profile_feed_settings.dart';
+import 'package:quax/tweet/catch_up_split.dart';
 import 'package:quax/tweet/interleaved_items.dart';
 import 'package:quax/tweet/paginated_tweet_list.dart';
 import 'package:quax/tweet/tweet_context_scope.dart';
@@ -31,6 +33,11 @@ import 'package:sqflite/sqflite.dart';
 import 'package:quax/utils/urls.dart';
 import 'package:quax/group/custom_feed_rules.dart';
 import 'package:quax/group/feed_rules.dart';
+
+/// One chunk's contribution to a feed page: its chains, whether its gap-fill
+/// ran out of allowance, and whether X answered with posts from outside the
+/// chunk's own subscriptions.
+typedef _ChunkResult = ({List<TweetChain> chains, bool gapCapped, bool unrelated});
 
 Iterable<BigInt> _tweetIdsOf(Iterable<TweetChain> chains) =>
     chains.expand((c) => c.tweets).map((t) => t.idStr).whereType<String>().map(BigInt.tryParse).whereType<BigInt>();
@@ -57,6 +64,9 @@ class SubscriptionGroupFeed extends StatefulWidget {
   // caller (e.g. the All/Following feed reuses the preview it already read while
   // its subscriptions were loading). Refined to this feed's own chunks once read.
   final List<TweetChain>? initialPreview;
+  // When those cached tweets were saved, so a failed load can say how old the
+  // posts it falls back on are.
+  final DateTime? initialPreviewCachedAt;
 
   /// Substack publications in this group. They are members like any other, but
   /// they have their own source and their own pagination, so they are fetched
@@ -76,6 +86,7 @@ class SubscriptionGroupFeed extends StatefulWidget {
       required this.mediaOnly,
       this.cacheKey,
       this.initialPreview,
+      this.initialPreviewCachedAt,
       this.publications = const [],
       this.subreddits = const []});
 
@@ -94,8 +105,14 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   ScrollController? _innerScrollController;
   bool _scrollRestoreScheduled = false;
   // Cached tweets shown while the first page loads, so opening the feed reveals
-  // its previously-loaded content instead of a full-screen spinner.
+  // its previously-loaded content instead of a full-screen spinner. They are
+  // also the fallback when the first page fails outright.
   List<TweetChain>? _cachedPreview;
+  DateTime? _cachedPreviewAt;
+  // Set when a first page stopped filling the gap between the newest posts and
+  // the stored ones because it ran out of allowance. The catch-up card must not
+  // claim the reader is finished when this is true.
+  bool _gapCapped = false;
 
   // Reading position: the boundary is loaded once per mount and stays frozen,
   // so the "You're caught up" divider never moves mid-session.
@@ -198,12 +215,40 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
   // Chronological feeds only: in popular order a "seen up to" boundary is
   // meaningless, and the media grid shares this loader but shows no divider.
+  bool get _supportsReadPosition => !widget.group.popular && !widget.mediaOnly;
+
+  /// Catch-up mode: this feed shows only what is new since the reader's last
+  /// position and stops there. Per feed, off unless turned on for this one.
+  bool get _catchUpEnabled =>
+      _supportsReadPosition &&
+      PrefService.of(context, listen: false).get(feedCatchUpModeKey(widget.group.id)) == true;
+
   bool get _tracksReadPosition =>
-      !widget.group.popular &&
-      !widget.mediaOnly &&
-      PrefService.of(context, listen: false).get(optionFeedReadingPosition) == true;
+      _supportsReadPosition &&
+      (PrefService.of(context, listen: false).get(optionFeedReadingPosition) == true || _catchUpEnabled);
 
   bool _isSeen(TweetChain chain) => _lastSeen != null && isChainSeen(chain, _lastSeen!);
+
+  /// The stop pagination applies in catch-up mode, or null when the mode is off
+  /// or there is no recorded position yet — in which case the feed pages as it
+  /// always did rather than hiding posts on a guess.
+  SeenChainPredicate? _catchUpPredicate() {
+    if (!mounted || _lastSeen == null || !_catchUpEnabled) {
+      return null;
+    }
+    return _isSeen;
+  }
+
+  /// The reader scrolled to the end of what was new. This is the only place
+  /// catch-up mode moves the read position: everything above the card has been
+  /// on screen, which a scroll back to the top does not prove.
+  void _recordCaughtUp() {
+    final items = _feedController.items;
+    if (items == null || items.isEmpty) {
+      return;
+    }
+    _recordReadPosition(items);
+  }
 
   CursorPagingController<String, MediaGridItem> get _mediaController =>
       _mediaPaging ??= CursorPagingController(_loadMediaPage);
@@ -218,9 +263,11 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       _feedController = TweetFeedController();
     }
     _feedController.pageCapProvider = _zenPageCap;
+    _feedController.catchUpPredicateProvider = _catchUpPredicate;
     // Cached (pop/push-restored) controllers already hold their tweets; only a
     // fresh controller needs the preview while it loads the first page.
     _cachedPreview = widget.initialPreview;
+    _cachedPreviewAt = widget.initialPreviewCachedAt;
     // The screen above may already have read and decoded the cached chunks for
     // us; doing it again here decoded the same rows a second time, on the UI
     // isolate, in the frames the reader is waiting on.
@@ -233,11 +280,14 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
   Future<void> _loadPreview() async {
     var repository = await Repository.readOnly();
-    var cached = await readCachedChainsForHashes(repository, widget.chunks.map((e) => e.hash));
-    cached = filterHiddenRetweets(cached, await hiddenRetweetScreenNames());
+    var stored = await readCachedChainsForHashes(repository, widget.chunks.map((e) => e.hash));
+    var cached = filterHiddenRetweets(stored.chains, await hiddenRetweetScreenNames());
     cached = filterHiddenReplies(cached, await hiddenReplyScreenNames());
     if (!mounted) return;
-    setState(() => _cachedPreview = cached);
+    setState(() {
+      _cachedPreview = cached;
+      _cachedPreviewAt = stored.cachedAt;
+    });
   }
 
   @override
@@ -277,7 +327,13 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       _cache!.saveOffset(widget.cacheKey!, metrics.pixels);
     }
     // Scrolled back up to the top: everything currently loaded counts as read.
-    if (_tracksReadPosition && metrics.hasPixels && metrics.pixels <= feedReadPositionTopThresholdPx) {
+    // Catch-up mode does not take that bet — being at the top says nothing
+    // about what was read, and there the position is written only on reaching
+    // the end of the new posts.
+    if (_tracksReadPosition &&
+        !_catchUpEnabled &&
+        metrics.hasPixels &&
+        metrics.pixels <= feedReadPositionTopThresholdPx) {
       final items = _feedController.items;
       if (items != null && items.isNotEmpty) {
         _recordReadPosition(items);
@@ -516,129 +572,109 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     return query;
   }
 
+  /// Where a chunk's page starts: the stored chains to show under it (first
+  /// page only) and the cursor the fresh search continues from.
+  Future<({String? cursor, List<TweetChain> stored})> _chunkStart(
+      Database repository, String hash, String? cursorKey) async {
+    if (cursorKey != null) {
+      // At the end of the current feed: the oldest chunk's cursor loads more.
+      var rows = await repository.query(tableFeedGroupChunk,
+          where: 'cursor_id = ? AND hash = ?', whereArgs: [int.parse(cursorKey), hash], limit: 1);
+      return (cursor: rows.firstOrNull?['cursor_bottom'] as String?, stored: const <TweetChain>[]);
+    }
+
+    // The newest chunks we already have. Reading every stored row put a week of
+    // accumulated JSON in front of the first paint, and the first page kept
+    // growing until a pull-to-refresh cleared it.
+    var rows = await repository.query(tableFeedGroupChunk,
+        where: 'hash = ?', whereArgs: [hash], orderBy: 'created_at DESC', limit: maxCachedChunkRows);
+    return (cursor: rows.firstOrNull?['cursor_top'] as String?, stored: chainsFromStoredChunks(rows));
+  }
+
+  Future<void> _storePage(Database repository, String nextCursor, String hash, TweetStatus page) async {
+    if (page.chains.isEmpty) {
+      return;
+    }
+    // The cursors ride along with the response, ready for the next paginate.
+    await repository.insert(tableFeedGroupChunk, {
+      'cursor_id': int.parse(nextCursor),
+      'hash': hash,
+      'cursor_top': page.cursorTop,
+      'cursor_bottom': page.cursorBottom,
+      'response': jsonEncode(page.chains.map((e) => e.toJson()).toList()),
+    });
+  }
+
+  /// One chunk's share of a feed page: its stored chains, the fresh search, and
+  /// the bounded gap-fill between the two.
+  Future<_ChunkResult> _loadChunk(
+      Database repository, String nextCursor, SubscriptionGroupFeedChunk chunk, String? cursorKey) async {
+    // Leaving the feed used to pay for every remaining chunk and every gap-fill
+    // page in full: the only mounted check was after the whole fan-out had
+    // finished.
+    if (!mounted) {
+      return (chains: const <TweetChain>[], gapCapped: false, unrelated: false);
+    }
+
+    var start = await _chunkStart(repository, chunk.hash, cursorKey);
+    var tweets = <TweetChain>[...start.stored];
+    // Newest row first, so this is the newest stored post, and the gap-fill
+    // below stops at the same place.
+    var storedNewestId = _newestTweetIdOf(tweets);
+
+    // Checked again here rather than only at the top: the stored-chunk read
+    // above is an await, so this is the first point where the reader can
+    // actually have left since the fan-out started.
+    if (!mounted) {
+      return (chains: tweets, gapCapped: false, unrelated: false);
+    }
+
+    var query = _buildSearchQuery(chunk.users);
+    var page = await Twitter.searchTweets(query, widget.includeReplies, cursor: start.cursor);
+    var unrelated = feedContainsUnrelatedTweets(page, chunk.users);
+    tweets.addAll(page.chains);
+    await _storePage(repository, nextCursor, chunk.hash, page);
+
+    bool gapRemains() => feedGapRemains(
+          storedNewestId: storedNewestId,
+          oldestFetchedId: _oldestTweetIdOf(page.chains),
+          cursorBottom: page.cursorBottom,
+          pageHasChains: page.chains.isNotEmpty,
+        );
+
+    // A single fetch returns only the newest page, so a long absence leaves a
+    // hole between it and the stored posts. Keep paging down until the fresh
+    // content overlaps what was stored (bounded, so a week away can't trigger
+    // dozens of requests).
+    var gapFills = 0;
+    while (mounted && gapFills < maxFeedGapFillPages && gapRemains()) {
+      page = await Twitter.searchTweets(query, widget.includeReplies, cursor: page.cursorBottom);
+      gapFills++;
+      tweets.addAll(page.chains);
+      await _storePage(repository, nextCursor, chunk.hash, page);
+    }
+
+    // Still ground to cover once the allowance ran out: the posts between here
+    // and what was stored were never fetched, and nothing downstream may claim
+    // the reader has seen them.
+    return (chains: tweets, gapCapped: gapRemains(), unrelated: unrelated);
+  }
+
   /// Search for our next "page" of tweets.
   ///
   /// Here, each page is actually a set of mappings, where the ID of each set is the hash of all the user IDs in that
   /// set. We store this along with the top and bottom pagination cursors, which we use to perform pagination for all
   /// sets at the same time, allowing us to create a feed made up of individual search queries.
   Future<TweetPageResult> _listTweets(String? cursorKey) async {
-    List<Future<List<TweetChain>>> futures = [];
-
     var repository = await Repository.writable();
     var nextCursor = await createCursor(repository);
-    bool shouldShowUnrelatedPostsInFeedWarning = false;
-
-    for (var chunk in widget.chunks) {
-      var hash = chunk.hash;
-
-      futures.add(Future(() async {
-        var tweets = <TweetChain>[];
-
-        // Leaving the feed used to pay for every remaining chunk and every
-        // gap-fill page in full: the only mounted check was after the whole
-        // fan-out had finished.
-        if (!mounted) {
-          return tweets;
-        }
-
-        String? searchCursor;
-        BigInt? storedNewestId;
-
-        if (cursorKey == null) {
-          // We're loading the initial content for the feed screen, so load the
-          // newest chunks we already have. Reading every stored row put a
-          // week of accumulated JSON in front of the first paint, and the
-          // first page kept growing until a pull-to-refresh cleared it.
-          var storedChunks = await repository.query(tableFeedGroupChunk,
-              where: 'hash = ?', whereArgs: [hash], orderBy: 'created_at DESC', limit: maxCachedChunkRows);
-
-          // Make sure we load any existing stored tweets from the chunk
-          tweets.addAll(chainsFromStoredChunks(storedChunks));
-          // Newest row first, so this is still the newest stored post and the
-          // gap-fill below stops at the same place.
-          storedNewestId = _newestTweetIdOf(tweets);
-
-          // Use the latest chunk's top cursor to load any new tweets since the last time we checked
-          var latestChunk = storedChunks.firstOrNull;
-          if (latestChunk != null) {
-            searchCursor = latestChunk['cursor_top'] as String;
-          } else {
-            // Otherwise we need to perform a fresh load from scratch for this chunk
-            searchCursor = null;
-          }
-        } else {
-          // We're currently at the end of our current feed, so load the oldest chunk and use its cursor to load more
-          var storedChunks = await repository.query(tableFeedGroupChunk,
-              where: 'cursor_id = ? AND hash = ?', whereArgs: [int.parse(cursorKey), hash], limit: 1);
-          if (storedChunks.isNotEmpty) {
-            searchCursor = storedChunks.first['cursor_bottom'] as String;
-          } else {
-            searchCursor = null;
-          }
-        }
-
-        // Checked again here rather than only at the top: the stored-chunk
-        // read above is an await, so this is the first point where the reader
-        // can actually have left since the fan-out started.
-        if (!mounted) {
-          return tweets;
-        }
-
-        // Perform our search for the next page of results for this chunk, and add those tweets to our collection
-        var query = _buildSearchQuery(chunk.users);
-        TweetStatus result =
-            await Twitter.searchTweets(query, widget.includeReplies, cursor: searchCursor);
-        shouldShowUnrelatedPostsInFeedWarning |= feedContainsUnrelatedTweets(result, chunk.users);
-
-        if (result.chains.isNotEmpty) {
-          tweets.addAll(result.chains);
-
-          // Make sure we insert the set of cursors for this latest chunk, ready for the next time we paginate
-          await repository.insert(tableFeedGroupChunk, {
-            'cursor_id': int.parse(nextCursor),
-            'hash': hash,
-            'cursor_top': result.cursorTop,
-            'cursor_bottom': result.cursorBottom,
-            'response': jsonEncode(result.chains.map((e) => e.toJson()).toList())
-          });
-        }
-
-        // A single fetch returns only the newest page, so a long absence
-        // leaves a hole between it and the stored posts. Keep paging down
-        // until the fresh content overlaps what was stored (bounded, so a
-        // week away can't trigger dozens of requests).
-        var page = result;
-        var gapFills = 0;
-        while (mounted &&
-            storedNewestId != null &&
-            page.chains.isNotEmpty &&
-            (_oldestTweetIdOf(page.chains) ?? BigInt.zero) > storedNewestId &&
-            page.cursorBottom != null &&
-            gapFills < maxFeedGapFillPages) {
-          page = await Twitter.searchTweets(query, widget.includeReplies, cursor: page.cursorBottom);
-          gapFills++;
-
-          if (page.chains.isNotEmpty) {
-            tweets.addAll(page.chains);
-            await repository.insert(tableFeedGroupChunk, {
-              'cursor_id': int.parse(nextCursor),
-              'hash': hash,
-              'cursor_top': page.cursorTop,
-              'cursor_bottom': page.cursorBottom,
-              'response': jsonEncode(page.chains.map((e) => e.toJson()).toList())
-            });
-          }
-        }
-
-        return tweets;
-      }));
-    }
 
     // Wait for all our searches to complete, then build our list of tweet conversations.
     // The stored chunks and the fresh fetch overlap at their window boundaries,
     // so drop repeated chains before display.
-    var result = (await Future.wait(futures));
-    var threads = _sortChains(dedupeChainsById(result.expand((element) => element).toList()));
+    var result = await Future.wait(
+        widget.chunks.map((chunk) => _loadChunk(repository, nextCursor, chunk, cursorKey)).toList());
+    var threads = _sortChains(dedupeChainsById(result.expand((element) => element.chains).toList()));
     threads = filterHiddenRetweets(threads, await hiddenRetweetScreenNames());
     threads = filterHiddenReplies(threads, await hiddenReplyScreenNames());
     threads = applyCustomFeedRules(threads, feedRulesOf(widget.group));
@@ -651,13 +687,18 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       threads = _applyZenMode(threads);
     }
 
-    if (shouldShowUnrelatedPostsInFeedWarning &&
+    if (result.any((e) => e.unrelated) &&
         !PrefService.of(context, listen: false).get(optionDisableWarningsForUnrelatedPostsInFeed)) {
       await showUnrelatedPostsInFeedWarning();
     }
 
-    if (cursorKey == null && _tracksReadPosition) {
-      _onFirstPageLoaded(threads);
+    if (cursorKey == null) {
+      _gapCapped = result.any((e) => e.gapCapped);
+      // Catch-up mode neither restores to the divider (the page it is about to
+      // show *is* the new posts) nor records anything here.
+      if (_tracksReadPosition && !_catchUpEnabled) {
+        _onFirstPageLoaded(threads);
+      }
     }
 
     return (chains: threads, nextCursor: nextCursor);
@@ -772,6 +813,9 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
             loadPage: _listTweets,
             username: null,
             firstPagePreview: _cachedPreview,
+            firstPagePreviewCachedAt: _cachedPreviewAt,
+            onCaughtUp: _catchUpEnabled ? _recordCaughtUp : null,
+            catchUpMayBeIncomplete: () => _gapCapped,
             onRefresh: () async {
               // Only this group's rows. The wipe used to take the whole table
               // with it, so pulling to refresh one feed made every other feed

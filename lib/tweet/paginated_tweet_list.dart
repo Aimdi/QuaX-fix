@@ -5,15 +5,29 @@ import 'package:quax/client/client.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/feed_refresh_controller.dart';
 import 'package:quax/tweet/cached_tweet_list.dart';
+import 'package:quax/tweet/catch_up_split.dart';
 import 'package:quax/tweet/conversation.dart';
 import 'package:quax/tweet/interleaved_items.dart';
+import 'package:quax/tweet/stale_feed_preview.dart';
 import 'package:quax/tweet/tweet_skeleton.dart';
 import 'package:quax/ui/caught_up_divider.dart';
+import 'package:quax/ui/caught_up_end_card.dart';
 import 'package:quax/ui/errors.dart';
+import 'package:quax/ui/stale_feed_banner.dart';
 import 'package:quax/utils/paging.dart';
 
 typedef TweetPageResult = ({List<TweetChain> chains, String? nextCursor});
 typedef TweetPageLoader = Future<TweetPageResult> Function(String? cursor);
+
+/// Why pagination stopped short of the end of the feed. Both stops are the
+/// same mechanism: hold the cursor back, show a card, resume on request.
+enum FeedPause {
+  /// Zen mode's per-session page cap.
+  pageCap,
+
+  /// Catch-up mode reached the reader's last read position.
+  caughtUp,
+}
 
 /// Owns a [CursorPagingController] for cursor-paginated tweet chains, bridging
 /// it onto the app's `(chains, nextCursor)` loaders.
@@ -30,10 +44,23 @@ class TweetFeedController {
   /// scrolling forever (`null` result → no cap). Feeds bind this to the
   /// zen-mode preference; search and quotes leave it unset.
   int? Function()? pageCapProvider;
+
+  /// The "already read" predicate while catch-up mode is on for this feed, or
+  /// `null` when it is off. Pagination then stops at the first chain the
+  /// predicate accepts, which makes the feed finishable.
+  SeenChainPredicate? Function()? catchUpPredicateProvider;
+
   int _pagesFetched = 0;
-  // The real next cursor stashed when the page cap paused pagination, so
-  // "load more anyway" can resume where the feed stopped.
-  String? _cappedCursor;
+  FeedPause? _pausedBy;
+  // The real next cursor stashed when a stop paused pagination, so "load more"
+  // can resume where the feed stopped.
+  String? _pausedCursor;
+  // Chains cut off the paused page. They were fetched, so they are handed back
+  // on resume rather than re-requested.
+  List<TweetChain> _heldBack = const [];
+  // Set once the reader has chosen to read past their last position, so the
+  // catch-up stop applies once per first page rather than on every page.
+  bool _catchUpPassed = false;
 
   TweetFeedController() {
     _paging = CursorPagingController<String, TweetChain>(_fetch);
@@ -48,27 +75,61 @@ class TweetFeedController {
   /// The chains loaded so far, or `null` before the first page.
   List<TweetChain>? get items => _paging.items;
 
-  bool get pausedByPageCap => _cappedCursor != null;
+  FeedPause? get pauseReason => _pausedBy;
 
-  /// Resumes pagination past the page cap, granting another cap's worth of
-  /// pages before pausing again.
-  void continuePastCap() {
-    final cursor = _cappedCursor;
-    if (cursor == null) {
+  /// Whether there is anything left to show past the pause. A feed that stopped
+  /// on the last page of results has nothing, and must not offer more.
+  bool get canContinuePastPause => _pausedCursor != null || _heldBack.isNotEmpty;
+
+  /// Resumes pagination past whichever stop paused it: the held-back chains go
+  /// on screen first, then paging continues from the stashed cursor.
+  void continuePastPause() {
+    final reason = _pausedBy;
+    if (reason == null) {
       return;
     }
-    _cappedCursor = null;
+    final cursor = _pausedCursor;
+    final held = _heldBack;
+    _pausedBy = null;
+    _pausedCursor = null;
+    _heldBack = const [];
     _pagesFetched = 0;
-    _paging.resume(cursor);
+    _catchUpPassed = _catchUpPassed || reason == FeedPause.caughtUp;
+    if (held.isNotEmpty) {
+      _paging.resumeWith(held, cursor);
+    } else if (cursor != null) {
+      _paging.resume(cursor);
+    }
+  }
+
+  /// Applies the stops that make a feed finite, in order of authority: the
+  /// reader's own position first, then the zen-mode page cap.
+  CursorPage<String, TweetChain> _applyStops(List<TweetChain> items, String? next) {
+    _pausedBy = null;
+    _pausedCursor = null;
+    _heldBack = const [];
+
+    final isSeen = _catchUpPassed ? null : catchUpPredicateProvider?.call();
+    if (isSeen != null) {
+      final split = splitAtFirstSeen(items, isSeen);
+      if (split.reachedBoundary) {
+        _pausedBy = FeedPause.caughtUp;
+        _pausedCursor = next;
+        _heldBack = split.held;
+        return (items: split.keep, nextCursor: null);
+      }
+    }
+
+    return (items: items, nextCursor: _applyPageCap(next));
   }
 
   String? _applyPageCap(String? next) {
     final cap = pageCapProvider?.call();
     if (next == null || cap == null || _pagesFetched < cap) {
-      _cappedCursor = null;
       return next;
     }
-    _cappedCursor = next;
+    _pausedBy = FeedPause.pageCap;
+    _pausedCursor = next;
     return null;
   }
 
@@ -83,10 +144,11 @@ class TweetFeedController {
     final items = result.chains.where((c) => seen.add(c.id)).toList();
     if (cursor == null) {
       _pagesFetched = 0;
+      _catchUpPassed = false;
     }
     _pagesFetched++;
     final naturalNext = _isLastPage(result.chains, next, cursor) ? null : next;
-    return (items: items, nextCursor: _applyPageCap(naturalNext));
+    return _applyStops(items, naturalNext);
   }
 
   // Pagination ends on an empty page, a missing/blank cursor, or a cursor that
@@ -102,7 +164,10 @@ class TweetFeedController {
       final result = await _loader!(null);
       final next = result.nextCursor;
       final isLast = _isLastPage(result.chains, next, null);
-      _paging.replaceFirstPage(result.chains, isLast ? null : next);
+      _pagesFetched = 1;
+      _catchUpPassed = false;
+      final page = _applyStops(result.chains, isLast ? null : next);
+      _paging.replaceFirstPage(page.items, page.nextCursor);
     } catch (e, stackTrace) {
       _paging.setError(e, stackTrace);
     }
@@ -128,8 +193,21 @@ class PaginatedTweetList extends StatefulWidget {
   final String emptyMessage;
   // Cached tweets shown in place of the first-page spinner while the initial
   // load is in flight, so a feed reveals its cached content instead of a
-  // full-screen progress indicator.
+  // full-screen progress indicator. They are also what the feed falls back to
+  // when the first page fails outright.
   final List<TweetChain>? firstPagePreview;
+  // When the cached tweets were saved. Shown on the stale banner: "these posts
+  // are from 14:05" is the difference between a feed that looks broken and one
+  // the reader can judge for themselves.
+  final DateTime? firstPagePreviewCachedAt;
+  // Reports that the reader reached the end of what was new in catch-up mode —
+  // the one moment at which moving their read position is deliberate.
+  final VoidCallback? onCaughtUp;
+  // Whether the load could not fetch everything between the newest posts and
+  // the reader's last position (the gap-fill cap), so the completion card must
+  // not claim the feed is finished. Read when the card builds, not when the
+  // widget is created.
+  final bool Function()? catchUpMayBeIncomplete;
   // Reading-position support: when set, a "You're caught up" divider is drawn
   // above the first chain this predicate marks as already seen. The predicate
   // must stay frozen for the mount so the divider doesn't move mid-session.
@@ -149,6 +227,9 @@ class PaginatedTweetList extends StatefulWidget {
     required this.emptyMessage,
     this.onRefresh,
     this.firstPagePreview,
+    this.firstPagePreviewCachedAt,
+    this.onCaughtUp,
+    this.catchUpMayBeIncomplete,
     this.isSeen,
     this.caughtUpDividerKey,
     this.interleaved = const [],
@@ -163,6 +244,9 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
   FeedRefreshController? _refreshController;
   bool _firstLoadStarted = false;
   bool _pendingInitialLoad = false;
+  // Local to the view: dismissing the stale banner hides the explanation, never
+  // the cached posts under it.
+  bool _staleBannerDismissed = false;
 
   PagingController<int, TweetChain> get _controller => widget.feed.controller;
 
@@ -255,6 +339,76 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
     return preview != null && preview.isNotEmpty && state.items == null && state.error == null;
   }
 
+  /// The cached posts under an explanation, when the first page failed and
+  /// there is something cached to fall back on.
+  ///
+  /// The error is not swallowed: a reader whose accounts are all rate-limited
+  /// has to know why nothing new arrived, and that these posts are old. It is
+  /// moved out of the way of a feed that could perfectly well be read.
+  Widget? _buildStaleView() {
+    final state = _controller.value;
+    final preview = widget.firstPagePreview;
+    if (!shouldShowStalePreview(error: state.error, items: state.items, preview: preview)) {
+      return null;
+    }
+
+    final list = CachedTweetList(preview!, username: widget.username);
+    if (_staleBannerDismissed) {
+      return list;
+    }
+
+    return Column(
+      children: [
+        StaleFeedBanner(
+          reason: staleFeedReasonOf(pagingErrorOf(state)?.error ?? state.error),
+          cachedAt: widget.firstPagePreviewCachedAt,
+          onRetry: _retryFirstPage,
+          onDismiss: () => setState(() => _staleBannerDismissed = true),
+        ),
+        Expanded(child: list),
+      ],
+    );
+  }
+
+  void _retryFirstPage() {
+    setState(() => _staleBannerDismissed = false);
+    _controller.fetchNextPage();
+  }
+
+  /// The card that closes a feed which stopped on purpose, or null when
+  /// pagination simply ran out.
+  Widget? _buildEndCard(List<TweetChain> loaded) {
+    final reason = widget.feed.pauseReason;
+    if (reason == FeedPause.caughtUp) {
+      return CaughtUpEndCard(
+        mayBeIncomplete: widget.catchUpMayBeIncomplete?.call() ?? false,
+        nothingNew: loaded.isEmpty,
+        onShowOlder: widget.feed.canContinuePastPause ? widget.feed.continuePastPause : null,
+        onReached: widget.onCaughtUp,
+      );
+    }
+    if (reason == FeedPause.pageCap) {
+      return _ZenFeedEndCard(onLoadMore: widget.feed.continuePastPause);
+    }
+    return null;
+  }
+
+  // A group can hold nothing but subreddits or publications, and a catch-up
+  // feed with nothing new holds no chains at all. Neither is "no posts", so the
+  // empty message is the last resort rather than the first.
+  Widget _buildEmpty(BuildContext context, List<InterleavedItem> items, Widget? endCard) {
+    if (items.isEmpty && endCard == null) {
+      return Center(child: Text(widget.emptyMessage));
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final item in items) item.build(context),
+        if (endCard != null) endCard,
+      ],
+    );
+  }
+
   // The PagedListView normally kicks off the first page when it mounts. While
   // the preview replaces it, nothing does — so trigger the load ourselves once.
   void _maybeStartFirstLoad() {
@@ -301,6 +455,11 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
       return _wrapWithRefresh(CachedTweetList(widget.firstPagePreview!, username: widget.username));
     }
 
+    final stale = _buildStaleView();
+    if (stale != null) {
+      return _wrapWithRefresh(stale);
+    }
+
     final list = PagingListener<int, TweetChain>(
       controller: _controller,
       builder: (context, state, fetchNextPage) {
@@ -310,6 +469,7 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
         final loaded = state.items ?? const <TweetChain>[];
         final boundary = seen == null ? null : _caughtUpBoundaryOf(loaded, seen);
         final buckets = placeInterleaved(loaded, widget.interleaved);
+        final endCard = _buildEndCard(loaded);
         return PagedListView<int, TweetChain>(
           padding: EdgeInsets.only(top: 4, bottom: MediaQuery.of(context).padding.bottom),
           state: state,
@@ -353,19 +513,8 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
               prefix: widget.newPageErrorPrefix,
               onRetry: fetchNextPage,
             ),
-            // A group can hold nothing but subreddits or publications. Its
-            // posts are all interleaved items, and X having no chains for it is
-            // not the same as the feed being empty — reporting "no posts" over
-            // the top of them is what made such a group look broken.
-            noItemsFoundIndicatorBuilder: (context) => buckets.last.isEmpty
-                ? Center(child: Text(widget.emptyMessage))
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [for (final item in buckets.last) item.build(context)],
-                  ),
-            noMoreItemsIndicatorBuilder: (context) => widget.feed.pausedByPageCap
-                ? _ZenFeedEndCard(onLoadMore: widget.feed.continuePastCap)
-                : const SizedBox.shrink(),
+            noItemsFoundIndicatorBuilder: (context) => _buildEmpty(context, buckets.last, endCard),
+            noMoreItemsIndicatorBuilder: (context) => endCard ?? const SizedBox.shrink(),
           ),
         );
       },

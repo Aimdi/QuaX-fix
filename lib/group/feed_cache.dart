@@ -39,16 +39,44 @@ List<TweetChain> sortChainsNewestFirst(List<TweetChain> chains) {
   }).toList();
 }
 
+/// Cached chains together with when the newest row behind them was written, so
+/// a feed showing them after a failed refresh can say how old they are.
+typedef CachedChains = ({List<TweetChain> chains, DateTime? cachedAt});
+
+DateTime? _newer(DateTime? a, DateTime? b) => a == null ? b : (b == null || a.isAfter(b) ? a : b);
+
+/// `created_at` defaults to SQLite's `CURRENT_TIMESTAMP`, which is UTC written
+/// without a zone ("2026-08-04 12:00:00"). [DateTime.tryParse] reads that as
+/// local time, which would make a cache written a minute ago look hours old (or
+/// in the future), so the zoneless form is pinned to UTC first.
+DateTime? parseChunkTimestamp(Object? raw) {
+  if (raw is! String) {
+    return null;
+  }
+  var text = raw.trim();
+  if (text.isEmpty) {
+    return null;
+  }
+  var zoned = text.contains('T') || text.endsWith('Z') ? text : '${text}Z';
+  return DateTime.tryParse(zoned)?.toLocal();
+}
+
+/// The most recent `created_at` across [rows], ignoring unparseable ones.
+DateTime? newestChunkTimestamp(Iterable<Map<String, Object?>> rows) =>
+    rows.map((e) => parseChunkTimestamp(e['created_at'])).fold<DateTime?>(null, _newer);
+
 /// Cached tweets for the given chunk [hashes], newest first, capped at
 /// [maxCachedChunkRows] rows per hash.
-Future<List<TweetChain>> readCachedChainsForHashes(Database repository, Iterable<String> hashes) async {
+Future<CachedChains> readCachedChainsForHashes(Database repository, Iterable<String> hashes) async {
   var chains = <TweetChain>[];
+  DateTime? cachedAt;
   for (var hash in hashes) {
     var storedChunks = await repository.query(tableFeedGroupChunk,
         where: 'hash = ?', whereArgs: [hash], orderBy: 'created_at DESC', limit: maxCachedChunkRows);
     chains.addAll(chainsFromStoredChunks(storedChunks));
+    cachedAt = _newer(cachedAt, newestChunkTimestamp(storedChunks));
   }
-  return sortChainsNewestFirst(dedupeChainsById(chains));
+  return (chains: sortChainsNewestFirst(dedupeChainsById(chains)), cachedAt: cachedAt);
 }
 
 /// The newest cached tweets across all chunks, de-duplicated. Used to preview
@@ -56,8 +84,11 @@ Future<List<TweetChain>> readCachedChainsForHashes(Database repository, Iterable
 /// the per-chunk hashes are known. This runs from the home tab's `initState`,
 /// so it is capped hard: it only has to fill the screen the reader is waiting
 /// for, and every extra row is JSON decoded ahead of the first paint.
-Future<List<TweetChain>> readAllCachedChains(Database repository) async {
+Future<CachedChains> readAllCachedChains(Database repository) async {
   var storedChunks =
       await repository.query(tableFeedGroupChunk, orderBy: 'created_at DESC', limit: maxCachedChunkRows);
-  return sortChainsNewestFirst(dedupeChainsById(chainsFromStoredChunks(storedChunks)));
+  return (
+    chains: sortChainsNewestFirst(dedupeChainsById(chainsFromStoredChunks(storedChunks))),
+    cachedAt: newestChunkTimestamp(storedChunks),
+  );
 }

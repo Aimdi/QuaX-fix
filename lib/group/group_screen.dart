@@ -106,7 +106,7 @@ class SubscriptionGroupScreenContent extends StatefulWidget {
 class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreenContent> {
   // Cached tweets shown while the group's subscriptions load, so the feed
   // reveals its content instead of a full-screen spinner on cold start.
-  List<TweetChain>? _preview;
+  CachedChains? _preview;
 
   @override
   void initState() {
@@ -121,15 +121,15 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
 
   Future<void> _loadPreview() async {
     var repository = await Repository.readOnly();
-    var chains = await readAllCachedChains(repository);
+    var cached = await readAllCachedChains(repository);
     if (!mounted) return;
-    setState(() => _preview = chains);
+    setState(() => _preview = cached);
   }
 
   Widget _loadingView() {
     var preview = _preview;
-    if (preview != null && preview.isNotEmpty) {
-      return TweetContextScope(child: CachedTweetList(preview));
+    if (preview != null && preview.chains.isNotEmpty) {
+      return TweetContextScope(child: CachedTweetList(preview.chains));
     }
     return const Center(child: CircularProgressIndicator());
   }
@@ -176,7 +176,8 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
           includeRetweets: includeRetweets,
           mediaOnly: widget.mediaOnly,
           cacheKey: widget.cacheKey,
-          initialPreview: _preview,
+          initialPreview: _preview?.chains,
+          initialPreviewCachedAt: _preview?.cachedAt,
         );
       },
     );
