@@ -63,13 +63,19 @@ there is a follow-up.
 ## Known gaps (not P0)
 
 - Comment `more` expansion / collapse / markdown
-- Listing pagination UI (`after` already parsed)
+- Comments / search / user posts still scrape publicly (OAuth wiring follow-up)
 - Top/controversial time window (`t=`)
 - Scrape/OAuth media parity; gallery pager; NSFW show/hide/blur choice
   (same-file preview/i.redd.it width variants are collapsed — no more
   low+high double display)
 - User profile beyond submitted posts; local saved Reddit posts
-- For You pull-to-refresh still does not reload the Reddit mix
+- Followed-tab (`RedditFeedStore`) pagination — listing screens paginate via
+  `after`; the merged followed feed still loads first pages only
+
+## Done (recent P0)
+
+- For You pull-to-refresh reloads the Reddit mix (`onRefresh: _loadRedditPosts`)
+- Subreddit / user listing infinite-scroll pagination (`after` cursor)
 
 ## Non-goals
 

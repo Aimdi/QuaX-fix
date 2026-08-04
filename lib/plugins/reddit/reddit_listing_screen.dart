@@ -4,6 +4,7 @@ import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_listing_page.dart';
 import 'package:xta/plugins/reddit/reddit_post_card.dart';
 import 'package:xta/plugins/reddit/reddit_read_session.dart';
 import 'package:xta/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
@@ -11,6 +12,9 @@ import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
 import 'package:xta/plugins/reddit/reddit_store.dart';
 import 'package:xta/subscriptions/users_model.dart';
 import 'package:xta/ui/errors.dart';
+
+/// How close to the end of the list (in px) triggers the next page.
+const double _loadMoreExtent = 400;
 
 /// A list of Reddit posts under a title.
 ///
@@ -37,6 +41,9 @@ class RedditListingScreen extends StatefulWidget {
 
 class _RedditListingScreenState extends State<RedditListingScreen> {
   List<RedditPost>? _posts;
+  String? _after;
+  bool _loadingMore = false;
+  Object? _loadingMoreError;
   Object? _error;
 
   @override
@@ -46,11 +53,20 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
   }
 
   Future<void> _load() async {
-    setState(() => _error = null);
+    setState(() {
+      _error = null;
+      _posts = null;
+      _after = null;
+      _loadingMore = false;
+      _loadingMoreError = null;
+    });
     try {
-      final posts = await _read();
+      final listing = await _read();
       if (mounted) {
-        setState(() => _posts = posts);
+        setState(() {
+          _posts = listing.posts;
+          _after = listing.after;
+        });
       }
     } catch (e) {
       if (mounted) {
@@ -59,24 +75,68 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
     }
   }
 
+  Future<void> _loadMore() async {
+    final after = _after;
+    if (after == null || _loadingMore || _posts == null) {
+      return;
+    }
+    setState(() {
+      _loadingMore = true;
+      _loadingMoreError = null;
+    });
+    try {
+      final listing = await _read(after: after);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _posts = appendRedditPosts(_posts!, listing.posts);
+        _after = listing.after;
+        _loadingMore = false;
+      });
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _loadingMore = false;
+          _loadingMoreError = e;
+        });
+      }
+    }
+  }
+
+  bool _onScroll(ScrollNotification notification) {
+    if (_after == null || _loadingMore || _posts == null) {
+      return false;
+    }
+    if (notification.metrics.pixels < notification.metrics.maxScrollExtent - _loadMoreExtent) {
+      return false;
+    }
+    // After a failure, wait for scroll-end near the bottom so continuous
+    // ScrollUpdate notifications do not hammer the next page.
+    if (_loadingMoreError != null && notification is! ScrollEndNotification) {
+      return false;
+    }
+    _loadMore();
+    return false;
+  }
+
   /// Reads through whichever route the reader chose, the same as the feed —
   /// a screen that quietly ignored the source setting would be a way around it.
-  Future<List<RedditPost>> _read() async {
+  Future<RedditListing> _read({String? after}) async {
     final client = context.read<RedditClient>();
     final subreddit = widget.subreddit;
     if (subreddit == null) {
-      return (await client.fetchUserPosts(widget.user!)).posts;
+      return client.fetchUserPosts(widget.user!, after: after);
     }
 
     final prefs = PrefService.of(context, listen: false);
     final session = await RedditReadSession.resolve(prefs: prefs);
-    final listing = await session.fetchSubreddit(
+    return session.fetchSubreddit(
       client,
       subreddit,
       sort: storedRedditSort(prefs),
+      after: after,
     );
-
-    return listing.posts;
   }
 
   @override
@@ -119,9 +179,21 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
       ]);
     }
 
-    return ListView.builder(
-      itemCount: posts.length,
-      itemBuilder: (context, index) => RedditPostCard(post: posts[index], showSourceBadge: false),
+    final showSpinner = _loadingMore;
+    return NotificationListener<ScrollNotification>(
+      onNotification: _onScroll,
+      child: ListView.builder(
+        itemCount: posts.length + (showSpinner ? 1 : 0),
+        itemBuilder: (context, index) {
+          if (index >= posts.length) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+          return RedditPostCard(post: posts[index], showSourceBadge: false);
+        },
+      ),
     );
   }
 }
