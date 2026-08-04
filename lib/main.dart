@@ -39,6 +39,7 @@ import 'package:xta/plugins/pixiv/pixiv_client.dart';
 import 'package:xta/plugins/pixiv/pixiv_store.dart';
 import 'package:xta/plugins/threads/threads_api.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
+import 'package:xta/plugins/threads/threads_direct_client.dart';
 import 'package:xta/plugins/threads/threads_store.dart';
 import 'package:xta/saved/liked_tweet_model.dart';
 import 'package:xta/saved/saved_folders_screen.dart';
@@ -469,6 +470,9 @@ Future<void> main() async {
       optionPluginPixivAccessToken: '',
       optionPluginPixivAccessExpiresAt: '',
       optionPluginPixivShowR18: false,
+      optionPluginThreadsDirectCookies: '',
+      optionPluginThreadsDirectBearer: '',
+      optionPluginThreadsDirectDeviceId: '',
       optionPluginStoreShowPrivate: false,
       optionSubscriptionGroupsOrderByAscending: true,
       optionDisableWarningsForUnrelatedPostsInFeed: false,
@@ -575,9 +579,10 @@ Future<void> main() async {
     final substackPublications = SubstackPublicationsStore(prefService);
     final substackRead = SubstackReadStore(prefService);
     final threadsClient = ThreadsClient();
+    final threadsDirect = ThreadsDirectClient(prefService);
     final threadsApi = ThreadsApi();
     final threadsAccounts = ThreadsAccountsStore();
-    final threadsFeed = ThreadsFeedStore(threadsClient, prefService, threadsAccounts);
+    final threadsFeed = ThreadsFeedStore(threadsClient, threadsDirect, prefService, threadsAccounts);
     final blueskyClient = BlueskyClient();
     final blueskyAccounts = BlueskyAccountsStore();
     final blueskyFeed = BlueskyFeedStore(blueskyClient, blueskyAccounts);
@@ -656,6 +661,7 @@ Future<void> main() async {
             Provider(create: (context) => SubstackAddPublicationStore(context.read<SubstackClient>())),
             Provider(create: (_) => substackRead),
             Provider(create: (_) => threadsClient),
+            Provider(create: (_) => threadsDirect),
             Provider(create: (_) => threadsApi),
             Provider(create: (_) => threadsAccounts),
             Provider(create: (_) => threadsFeed),

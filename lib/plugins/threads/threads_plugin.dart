@@ -64,6 +64,9 @@ class ThreadsPlugin extends XtaPlugin {
     await prefs.set(optionPluginThreadsInstance, '');
     await prefs.set(optionPluginThreadsApiBase, kThreadsApiDefaultBase);
     await prefs.set(optionPluginThreadsApiToken, '');
+    await prefs.set(optionPluginThreadsDirectCookies, '');
+    await prefs.set(optionPluginThreadsDirectBearer, '');
+    await prefs.set(optionPluginThreadsDirectDeviceId, '');
   }
 
   @override

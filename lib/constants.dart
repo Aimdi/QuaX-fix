@@ -153,11 +153,12 @@ const optionPluginSubstackReadIds = 'plugin.substack.read_ids';
 const substackFeedPageSize = 8;
 const substackReadIdsCap = 400;
 
-/// Threads, read through the reader's own RSSHub instance.
+/// Threads — RSSHub / Xy by default; optional direct Meta session for reads.
 ///
-/// There is no public instance default on purpose: the shared one is rate
-/// limited to the point of uselessness for this route, and pointing everyone's
-/// app at somebody else's server is neither reliable nor private.
+/// There is no public RSSHub instance default on purpose: the shared one is
+/// rate limited to the point of uselessness for this route. Direct mode pastes
+/// browser cookies and/or an `IGT:2` Bearer; sessions can die and accounts can
+/// be checkpointed — prefer a disposable secondary account.
 const pluginIdThreads = 'threads';
 const optionPluginThreadsEnabled = 'plugin.threads.enabled';
 const optionPluginThreadsShowTab = 'plugin.threads.show_tab';
@@ -172,6 +173,11 @@ const threadsPostsPerAccount = 20;
 const optionPluginThreadsApiBase = 'plugin.threads.api_base';
 const optionPluginThreadsApiToken = 'plugin.threads.api_token';
 const kThreadsApiDefaultBase = 'https://xy-threads.fly.dev';
+
+/// Direct Meta session (optional). Cookie header + Bearer are secrets.
+const optionPluginThreadsDirectCookies = 'plugin.threads.direct.cookies_token';
+const optionPluginThreadsDirectBearer = 'plugin.threads.direct.bearer_token';
+const optionPluginThreadsDirectDeviceId = 'plugin.threads.direct.device_id';
 
 /// Bluesky, read through the public AppView — local follows, no Bluesky account.
 const pluginIdBluesky = 'bluesky';
@@ -475,6 +481,8 @@ const secretPrefKeys = {
   optionPluginRedditClientId,
   optionPluginRedditRefreshToken,
   optionPluginThreadsApiToken,
+  optionPluginThreadsDirectCookies,
+  optionPluginThreadsDirectBearer,
   optionPluginPixivRefreshToken,
   optionPluginPixivAccessToken,
 };
