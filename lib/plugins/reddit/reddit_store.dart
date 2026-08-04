@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_triple/flutter_triple.dart';
+import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
@@ -97,6 +98,8 @@ class RedditSubredditsStore extends Store<List<String>> {
 /// subreddits; this loads one page each and interleaves by date, which is what
 /// makes a combined feed possible without inventing a cursor.
 class RedditFeedStore extends Store<List<RedditPost>> {
+  static final log = Logger('RedditFeedStore');
+
   final RedditClient client;
   final RedditSubredditsStore subreddits;
   final BasePrefService prefs;
@@ -131,12 +134,24 @@ class RedditFeedStore extends Store<List<RedditPost>> {
         }
       }
 
-      final posts = <RedditPost>[];
-      for (final name in names) {
-        final listing =
-            await client.fetchSubreddit(name, clientId: clientId, sort: order, limit: 15, userToken: userToken, preferPublic: preferPublic);
-        posts.addAll(listing.posts.where((p) => !p.stickied));
-      }
+      // Fetched together, and one at a time survivable: a single private or
+      // renamed subreddit used to throw out of here and turn the whole feed
+      // into an error screen, after every subreddit before it had already been
+      // paid for.
+      final listings = await Future.wait(names.map((name) async {
+        try {
+          final listing = await client.fetchSubreddit(name,
+              clientId: clientId, sort: order, limit: 15, userToken: userToken, preferPublic: preferPublic);
+
+          return listing.posts.where((p) => !p.stickied).toList();
+        } catch (e) {
+          log.warning('Unable to load r/$name: $e');
+
+          return const <RedditPost>[];
+        }
+      }));
+
+      final posts = listings.expand((e) => e).toList();
 
       posts.sort((a, b) {
         final left = a.createdAt;

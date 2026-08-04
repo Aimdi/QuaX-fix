@@ -46,11 +46,18 @@ class _SubscriptionImportScreenState extends State<SubscriptionImportScreen> {
 
       var createdAt = DateTime.now();
 
+      // Resolved once. getProfileFollows falls back to a UserByScreenName
+      // lookup whenever it is called without an id, so every page of the
+      // import used to re-resolve the same handle -- doubling the requests,
+      // and with them the chance of a rate limit ending the import halfway.
+      var userId = (await Twitter.getProfileByScreenName(screenName)).user.idStr;
+
       while (true) {
         var response = await Twitter.getProfileFollows(
           screenName,
           'following',
           cursor: cursor,
+          id: userId,
         );
 
         var next = response.cursorBottom;

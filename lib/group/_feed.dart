@@ -143,10 +143,19 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       return;
     }
 
-    final client = context.read<SubstackClient>();
-    final items = <InterleavedItem>[];
+    // A reader who switched the plugin off still had every publication fetched
+    // on each mount of this feed.
+    if (PrefService.of(context, listen: false).get<bool>(optionPluginSubstackEnabled) != true) {
+      return;
+    }
 
-    for (final publication in widget.publications) {
+    final client = context.read<SubstackClient>();
+
+    // Fetched together rather than one after another: the wait used to be the
+    // sum of the publications instead of the slowest one.
+    final perPublication = await Future.wait(widget.publications.map((publication) async {
+      final items = <InterleavedItem>[];
+
       try {
         final posts = await client.fetchPosts(publicationOf(publication), limit: substackFeedPageSize);
         for (final post in posts) {
@@ -164,10 +173,12 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
         // others, nor replace a working timeline with an error screen.
         _log.warning('Unable to load Substack posts for ${publication.id}: $e');
       }
-    }
+
+      return items;
+    }));
 
     if (mounted) {
-      setState(() => _substackItems = items);
+      setState(() => _substackItems = perPublication.expand((e) => e).toList());
     }
   }
 
@@ -604,12 +615,12 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       return (chains: <TweetChain>[], nextCursor: null);
     }
 
-    if (PrefService.of(context).get(optionZenMode) == true) {
+    if (PrefService.of(context, listen: false).get(optionZenMode) == true) {
       threads = _applyZenMode(threads);
     }
 
     if (shouldShowUnrelatedPostsInFeedWarning &&
-        !PrefService.of(context).get(optionDisableWarningsForUnrelatedPostsInFeed)) {
+        !PrefService.of(context, listen: false).get(optionDisableWarningsForUnrelatedPostsInFeed)) {
       await showUnrelatedPostsInFeedWarning();
     }
 
@@ -726,8 +737,17 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
             username: null,
             firstPagePreview: _cachedPreview,
             onRefresh: () async {
+              // Only this group's rows. The wipe used to take the whole table
+              // with it, so pulling to refresh one feed made every other feed
+              // refetch its first page from the network next time it opened.
+              final hashes = widget.chunks.map((e) => e.hash).toList();
+              if (hashes.isEmpty) {
+                return;
+              }
+
               var repository = await Repository.writable();
-              await repository.delete(tableFeedGroupChunk);
+              await repository.delete(tableFeedGroupChunk,
+                  where: 'hash IN (${List.filled(hashes.length, '?').join(', ')})', whereArgs: hashes);
             },
             firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets_for_the_feed,
             newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,

@@ -55,8 +55,12 @@ Future<List<InterleavedItem>> loadRedditInterleaved(
   final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
   final sort = storedRedditSort(prefs);
 
-  final items = <InterleavedItem>[];
-  for (final name in subreddits) {
+  // Fetched together rather than one after another. The anonymous route costs
+  // several requests per subreddit, so serially this was the sum of ten slow
+  // scrapes before the timeline could show a single card.
+  final perSubreddit = await Future.wait(subreddits.map((name) async {
+    final items = <InterleavedItem>[];
+
     try {
       final listing = await client.fetchSubreddit(name,
           clientId: clientId, sort: sort, limit: limit, preferPublic: preferPublic);
@@ -71,7 +75,9 @@ Future<List<InterleavedItem>> loadRedditInterleaved(
     } catch (e) {
       _log.warning('Unable to load r/$name: $e');
     }
-  }
 
-  return items;
+    return items;
+  }));
+
+  return perSubreddit.expand((e) => e).toList();
 }
