@@ -255,6 +255,20 @@ void main() {
       expect(media.images, ['https://i.redd.it/a.png']);
     });
 
+    test('low and high quality of the same picture collapse to the better one', () {
+      final media = parsePostMedia(_page('',
+          post: postThing(
+            dataUrl: 'https://www.reddit.com/gallery/p1',
+            expando: '<div class="media-gallery">'
+                '<img src="https://preview.redd.it/a.jpg?width=320&amp;s=lo">'
+                '<img src="https://preview.redd.it/a.jpg?width=1080&amp;s=hi">'
+                '<img src="https://i.redd.it/a.jpg">'
+                '</div>',
+          )));
+
+      expect(media.images, ['https://i.redd.it/a.jpg']);
+    });
+
     test('the same picture at two widths is one picture, preferring the larger', () {
       final media = parsePostMedia(_page('',
           post: postThing(

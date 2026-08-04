@@ -82,10 +82,15 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
       return;
     }
 
+    // data-url already is the picture — expando imgs are preview variants of
+    // that same file, not a gallery. Real galleries use reddit.com/gallery/…
+    // which does not resolve as an image URL.
+    final urlIsImage = external && redditImageUrl(url) != null;
+
     _post = _post.copyWith(
       url: external ? url : _post.url,
       isSelf: external ? false : _post.isSelf,
-      galleryImages: gallery.isEmpty ? null : gallery,
+      galleryImages: urlIsImage || gallery.isEmpty ? null : gallery,
     );
   }
 
