@@ -534,6 +534,13 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       futures.add(Future(() async {
         var tweets = <TweetChain>[];
 
+        // Leaving the feed used to pay for every remaining chunk and every
+        // gap-fill page in full: the only mounted check was after the whole
+        // fan-out had finished.
+        if (!mounted) {
+          return tweets;
+        }
+
         String? searchCursor;
         BigInt? storedNewestId;
 
@@ -570,6 +577,13 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
           }
         }
 
+        // Checked again here rather than only at the top: the stored-chunk
+        // read above is an await, so this is the first point where the reader
+        // can actually have left since the fan-out started.
+        if (!mounted) {
+          return tweets;
+        }
+
         // Perform our search for the next page of results for this chunk, and add those tweets to our collection
         var query = _buildSearchQuery(chunk.users);
         TweetStatus result =
@@ -595,7 +609,8 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
         // week away can't trigger dozens of requests).
         var page = result;
         var gapFills = 0;
-        while (storedNewestId != null &&
+        while (mounted &&
+            storedNewestId != null &&
             page.chains.isNotEmpty &&
             (_oldestTweetIdOf(page.chains) ?? BigInt.zero) > storedNewestId &&
             page.cursorBottom != null &&
