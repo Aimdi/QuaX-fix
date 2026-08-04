@@ -8,8 +8,8 @@ import 'package:xta/plugins/plugin.dart';
 import 'package:xta/plugins/stocks/stocks_screen.dart';
 import 'package:xta/plugins/stocks/stocks_store.dart';
 
-/// A watchlist of tickers, read-only like everything else here: quotes are
-/// shown, nothing is traded.
+/// StockTwits-shaped watchlist: prices in a strip, cashtag posts in a feed.
+/// Read-only — quotes are shown, nothing is traded.
 class StocksPlugin extends XtaPlugin {
   StocksPlugin();
 
