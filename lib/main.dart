@@ -12,6 +12,7 @@ import 'package:flutter_portal/flutter_portal.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:quax/client/accounts.dart';
 import 'package:quax/client/endpoint_overrides.dart';
+import 'package:quax/client/headers.dart';
 import 'package:quax/client/login_webview.dart';
 
 import 'package:quax/constants.dart';
@@ -394,6 +395,15 @@ Future<void> main() async {
   final endpointRegistry = EndpointRegistry(prefService);
   endpointRegistry.applyCached();
   unawaited(endpointRegistry.refresh());
+
+  // Deriving the transaction key costs two round trips to x.com and it is
+  // triggered lazily by the first API call, so it used to sit in front of the
+  // first feed fetch. Started here it overlaps the database work below
+  // instead. The result is cached inside TwitterHeaders; this call only warms
+  // it, and a failure is already rate-limited there, so it is swallowed rather
+  // than left as an unhandled async error.
+  unawaited(TwitterHeaders.getXClientTransactionIdHeader(Uri.parse('https://x.com/i/api/graphql/warmup'))
+      .catchError((Object _) => null));
 
   try {
     // Run the migrations early, so models work. We also do this later on so we can display errors to the user
