@@ -64,7 +64,7 @@ Optional, off by default, installed from Settings → plugin store (catalogue:
 |---|---|
 | **Reddit** | Read subreddits account-free; mix into home/groups; local upvotes |
 | **Substack** | Follow publications; reader + TTS; free preview when available |
-| **Stocks** | Read-only watchlist and charts; tickers as subscriptions |
+| **Stocks** | StockTwits-style watchlist strip + cashtag post feed; charts on ticker pages |
 | **Immich** | Upload a bookmark folder's photos/videos to your Immich server |
 | **Karakeep** | One-tap save to a self-hosted Karakeep instance |
 | **Deepmarks** | Save bookmarks over Nostr |
