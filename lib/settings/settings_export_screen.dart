@@ -10,6 +10,8 @@ import 'package:quax/saved/liked_tweet_model.dart';
 import 'package:quax/saved/saved_tweet_folder_model.dart';
 import 'package:quax/saved/saved_tweet_model.dart';
 import 'package:quax/settings/_data.dart';
+import 'package:quax/settings/backup_data.dart';
+import 'package:quax/settings/backup_rows.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/utils/crash_reporter.dart';
 import 'package:intl/intl.dart';
@@ -32,6 +34,8 @@ class _SettingsExportScreenState extends State<SettingsExportScreen> {
   bool _exportTweets = false;
   bool _exportSavedFolders = false;
   bool _exportLikedTweets = false;
+  bool _exportFilters = false;
+  bool _exportReadPositions = false;
   bool _exportAccounts = false;
 
   void toggleExportSubscriptionGroupMembersIfRequired() {
@@ -88,6 +92,18 @@ class _SettingsExportScreenState extends State<SettingsExportScreen> {
     });
   }
 
+  void toggleExportFilters() {
+    setState(() {
+      _exportFilters = !_exportFilters;
+    });
+  }
+
+  void toggleExportReadPositions() {
+    setState(() {
+      _exportReadPositions = !_exportReadPositions;
+    });
+  }
+
   void toggleExportAccounts() {
     setState(() {
       _exportAccounts = !_exportAccounts;
@@ -102,7 +118,73 @@ class _SettingsExportScreenState extends State<SettingsExportScreen> {
         _exportTweets ||
         _exportSavedFolders ||
         _exportLikedTweets ||
+        _exportFilters ||
+        _exportReadPositions ||
         _exportAccounts);
+  }
+
+  /// Users, saved searches, publications and subreddits are all subscriptions,
+  /// so one choice covers the four tables they live in.
+  List<T>? _subscriptionsOf<T extends Subscription>(List<Subscription> all) {
+    return _exportSubscriptions ? all.whereType<T>().toList() : null;
+  }
+
+  Future<SettingsData> _collect() async {
+    var groupModel = context.read<GroupsModel>();
+    var subscriptionsModel = context.read<SubscriptionsModel>();
+    var savedTweetModel = context.read<SavedTweetModel>();
+    var savedTweetFolderModel = context.read<SavedTweetFolderModel>();
+    var likedTweetModel = context.read<LikedTweetModel>();
+    var prefs = PrefService.of(context);
+
+    await groupModel.reloadGroups();
+    await subscriptionsModel.reloadSubscriptions();
+    await savedTweetModel.listSavedTweets();
+    await savedTweetFolderModel.listFolders();
+    await likedTweetModel.listLikedTweets();
+
+    var subscriptions = subscriptionsModel.state;
+
+    return SettingsData(
+      exportedAt: DateTime.now(),
+      appVersion: await appVersionLabel(),
+      settings: _exportSettings ? prefsMapWithoutSecrets(prefs.toMap()) : null,
+      searchSubscriptions: _subscriptionsOf<SearchSubscription>(subscriptions),
+      userSubscriptions: _subscriptionsOf<UserSubscription>(subscriptions),
+      substackSubscriptions: _subscriptionsOf<SubstackSubscription>(subscriptions),
+      redditSubscriptions: _subscriptionsOf<RedditSubscription>(subscriptions),
+      subscriptionGroups: _exportSubscriptionGroups ? groupModel.state : null,
+      subscriptionGroupMembers: _exportSubscriptionGroupMembers ? await groupModel.listGroupMembers() : null,
+      searchGroupMembers: _exportSubscriptionGroupMembers ? await readSearchGroupMembers() : null,
+      tweets: _exportTweets ? savedTweetModel.state : null,
+      savedTweetFolders: _exportSavedFolders ? savedTweetFolderModel.state : null,
+      likedTweets: _exportLikedTweets ? likedTweetModel.state : null,
+      retweetFilters: _exportFilters ? await readRetweetFilters() : null,
+      replyFilters: _exportFilters ? await readReplyFilters() : null,
+      feedReadPositions: _exportReadPositions ? await readFeedReadPositions() : null,
+      accounts: _exportAccounts ? await getAccounts() : null,
+    );
+  }
+
+  Future<void> _export() async {
+    var data = await _collect();
+    var exportData = jsonEncode(data.toJson());
+
+    var dateFormat = DateFormat('yyyy-MM-dd');
+    var fileName = 'quax-${dateFormat.format(DateTime.now())}.json';
+
+    var path = await FlutterFileDialog.saveFile(
+        params: SaveFileDialogParams(fileName: fileName, data: Uint8List.fromList(utf8.encode(exportData))));
+
+    if (path != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            L10n.of(context).data_exported_to_fileName(fileName),
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -114,73 +196,8 @@ class _SettingsExportScreenState extends State<SettingsExportScreen> {
       floatingActionButton: noExportOptionSelected()
           ? null
           : FloatingActionButton(
+              onPressed: _export,
               child: const Icon(Icons.save),
-              onPressed: () async {
-                var groupModel = context.read<GroupsModel>();
-                var savedTweetFolderModel = context.read<SavedTweetFolderModel>();
-                var likedTweetModel = context.read<LikedTweetModel>();
-                await groupModel.reloadGroups();
-
-                var subscriptionsModel = context.read<SubscriptionsModel>();
-                await subscriptionsModel.reloadSubscriptions();
-
-                var savedTweetModel = context.read<SavedTweetModel>();
-                await savedTweetModel.listSavedTweets();
-
-                await savedTweetFolderModel.listFolders();
-
-                await likedTweetModel.listLikedTweets();
-
-                List<Account>? accounts = _exportAccounts ? await getAccounts() : null;
-
-                var prefs = PrefService.of(context);
-
-                // TODO: Check exporting
-                var settings = _exportSettings ? prefsMapWithoutSecrets(prefs.toMap()) : null;
-
-                var subscriptions = _exportSubscriptions ? subscriptionsModel.state : null;
-
-                var subscriptionGroups = _exportSubscriptionGroups ? groupModel.state : null;
-
-                var subscriptionGroupMembers =
-                    _exportSubscriptionGroupMembers ? await groupModel.listGroupMembers() : null;
-
-                var tweets = _exportTweets ? savedTweetModel.state : null;
-
-                var savedTweetFolders = _exportSavedFolders ? savedTweetFolderModel.state : null;
-
-                var likedTweets = _exportLikedTweets ? likedTweetModel.state : null;
-
-                var data = SettingsData(
-                    settings: settings,
-                    searchSubscriptions: subscriptions?.whereType<SearchSubscription>().toList(),
-                    userSubscriptions: subscriptions?.whereType<UserSubscription>().toList(),
-                    subscriptionGroups: subscriptionGroups,
-                    subscriptionGroupMembers: subscriptionGroupMembers,
-                    tweets: tweets,
-                    savedTweetFolders: savedTweetFolders,
-                    likedTweets: likedTweets,
-                    accounts: accounts);
-
-                var exportData = jsonEncode(data.toJson());
-
-                var dateFormat = DateFormat('yyyy-MM-dd');
-                var fileName = 'quax-${dateFormat.format(DateTime.now())}.json';
-
-                // This platform can support the directory picker, so display it
-                var path = await FlutterFileDialog.saveFile(
-                    params:
-                        SaveFileDialogParams(fileName: fileName, data: Uint8List.fromList(utf8.encode(exportData))));
-                if (path != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        L10n.of(context).data_exported_to_fileName(fileName),
-                      ),
-                    ),
-                  );
-                }
-              },
             ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -219,6 +236,14 @@ class _SettingsExportScreenState extends State<SettingsExportScreen> {
                   value: _exportLikedTweets,
                   title: Text(L10n.of(context).export_liked_posts),
                   onChanged: (v) => toggleExportLikedTweets()),
+              CheckboxListTile(
+                  value: _exportFilters,
+                  title: Text(L10n.of(context).export_feed_filters),
+                  onChanged: (v) => toggleExportFilters()),
+              CheckboxListTile(
+                  value: _exportReadPositions,
+                  title: Text(L10n.of(context).export_reading_positions),
+                  onChanged: (v) => toggleExportReadPositions()),
               CheckboxListTile(
                   value: _exportAccounts,
                   title: Text(L10n.of(context).export_accounts),

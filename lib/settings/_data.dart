@@ -3,16 +3,21 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quax/client/accounts.dart';
 import 'package:quax/constants.dart';
 import 'package:quax/database/entities.dart';
-import 'package:quax/database/repository.dart';
 import 'package:quax/generated/l10n.dart';
 import 'package:quax/group/group_model.dart';
 import 'package:quax/import_data_model.dart';
+import 'package:quax/plugins/reddit/reddit_store.dart';
+import 'package:quax/plugins/substack/substack_store.dart';
 import 'package:quax/saved/liked_tweet_model.dart';
 import 'package:quax/saved/saved_tweet_folder_model.dart';
 import 'package:quax/saved/saved_tweet_model.dart';
+import 'package:quax/settings/backup_data.dart';
+import 'package:quax/settings/backup_rows.dart';
+import 'package:quax/settings/import_preview.dart';
 import 'package:quax/settings/sync_screen.dart';
 import 'package:quax/subscriptions/users_model.dart';
 import 'package:quax/utils/crash_reporter.dart';
@@ -20,171 +25,150 @@ import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 
-class SettingsData {
-  final Map<String, dynamic>? settings;
-  final List<SearchSubscription>? searchSubscriptions;
-  final List<UserSubscription>? userSubscriptions;
-  final List<SubscriptionGroup>? subscriptionGroups;
-  final List<SubscriptionGroupMember>? subscriptionGroupMembers;
-  final List<SavedTweet>? tweets;
-  final List<SavedTweetFolder>? savedTweetFolders;
-  final List<LikedTweet>? likedTweets;
-  final List<Account>? accounts;
-
-  SettingsData(
-      {required this.settings,
-      required this.searchSubscriptions,
-      required this.userSubscriptions,
-      required this.subscriptionGroups,
-      required this.subscriptionGroupMembers,
-      required this.tweets,
-      required this.savedTweetFolders,
-      required this.likedTweets,
-      required this.accounts});
-
-  factory SettingsData.fromJson(Map<String, dynamic> json) {
-    return SettingsData(
-        settings: json['settings'],
-        searchSubscriptions: json['searchSubscriptions'] != null
-            ? List.from(json['searchSubscriptions']).map((e) => SearchSubscription.fromMap(e)).toList()
-            : null,
-        userSubscriptions: json['subscriptions'] != null
-            ? List.from(json['subscriptions']).map((e) => UserSubscription.fromMap(e)).toList()
-            : null,
-        subscriptionGroups: json['subscriptionGroups'] != null
-            ? List.from(json['subscriptionGroups']).map((e) => SubscriptionGroup.fromMap(e)).toList()
-            : null,
-        subscriptionGroupMembers: json['subscriptionGroupMembers'] != null
-            ? List.from(json['subscriptionGroupMembers']).map((e) => SubscriptionGroupMember.fromMap(e)).toList()
-            : null,
-        tweets: json['tweets'] != null ? List.from(json['tweets']).map((e) => SavedTweet.fromMap(e)).toList() : null,
-        savedTweetFolders: json['savedTweetFolders'] != null
-            ? List.from(json['savedTweetFolders']).map((e) => SavedTweetFolder.fromMap(e)).toList()
-            : null,
-        likedTweets: json['likedTweets'] != null
-            ? List.from(json['likedTweets']).map((e) => LikedTweet.fromMap(e)).toList()
-            : null,
-        accounts: json['accounts'] != null ? List.from(json['accounts']).map((e) => Account.fromMap(e)).toList() : null);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'settings': settings,
-      'searchSubscriptions': searchSubscriptions?.map((e) => e.toMap()).toList(),
-      'subscriptions': userSubscriptions?.map((e) => e.toMap()).toList(),
-      'subscriptionGroups': subscriptionGroups?.map((e) => e.toMap()).toList(),
-      'subscriptionGroupMembers': subscriptionGroupMembers?.map((e) => e.toMap()).toList(),
-      'tweets': tweets?.map((e) => e.toMap()).toList(),
-      'savedTweetFolders': savedTweetFolders?.map((e) => e.toMap()).toList(),
-      'likedTweets': likedTweets?.map((e) => e.toMap()).toList(),
-      'accounts': accounts?.map((e) => e.toMap()).toList()
-    };
-  }
-}
-
 Future<void> _importFromFile(BuildContext context, File file) async {
   await importSettingsJson(context, file.readAsStringSync());
 }
 
-/// Applies an exported backup document. Shared by the file import and the
-/// WebDAV restore so a restore can never diverge from what a file does.
+/// Applies an exported backup document, once the reader has seen what is in it.
+/// Shared by the file import and the WebDAV restore so a restore can never
+/// diverge from what a file does.
 Future<void> importSettingsJson(BuildContext context, String json) async {
-  var content = jsonDecode(json);
+  var data = _parseBackup(json);
+  if (data == null) {
+    _notify(context, L10n.of(context).unable_to_import);
+    return;
+  }
 
+  if (!isSupportedBackupVersion(data.formatVersion)) {
+    _notify(context, L10n.of(context).import_unsupported_version);
+    return;
+  }
+
+  if (backupCounts(data).isEmpty) {
+    _notify(context, L10n.of(context).unable_to_import);
+    return;
+  }
+
+  var choice = await showImportPreview(context, data);
+  if (choice != null && context.mounted) {
+    await _applyBackup(context, data, choice);
+  }
+}
+
+/// Null for anything that is not a backup document. Nothing is applied from a
+/// file we could not read whole.
+SettingsData? _parseBackup(String json) {
+  try {
+    var content = jsonDecode(json);
+
+    return content is Map<String, dynamic> ? SettingsData.fromJson(content) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+void _notify(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+}
+
+Future<void> _applyBackup(BuildContext context, SettingsData data, ImportChoice choice) async {
   var importModel = context.read<ImportDataModel>();
   var groupModel = context.read<GroupsModel>();
   var prefs = PrefService.of(context);
-
-  var data = SettingsData.fromJson(content);
 
   var settings = data.settings;
   if (settings != null) {
     prefs.fromMap(settings);
   }
 
-  var dataToImport = <String, List<ToMappable>>{};
-
-  var searchSubscriptions = data.searchSubscriptions;
-  if (searchSubscriptions != null) {
-    dataToImport[tableSearchSubscription] = searchSubscriptions;
-  }
-
-  var userSubscriptions = data.userSubscriptions;
-  if (userSubscriptions != null) {
-    dataToImport[tableSubscription] = userSubscriptions;
-  }
-
-  var subscriptionGroups = data.subscriptionGroups;
-  if (subscriptionGroups != null) {
-    dataToImport[tableSubscriptionGroup] = subscriptionGroups;
-  }
-
-  var subscriptionGroupMembers = data.subscriptionGroupMembers;
-  if (subscriptionGroupMembers != null) {
-    dataToImport[tableSubscriptionGroupMember] = subscriptionGroupMembers;
-  }
-
-  var tweets = data.tweets;
-  if (tweets != null) {
-    dataToImport[tableSavedTweet] = tweets;
-  }
-
-  var savedTweetFolders = data.savedTweetFolders;
-  if (savedTweetFolders != null) {
-    dataToImport[tableSavedTweetFolder] = savedTweetFolders;
-  }
-
-  var likedTweets = data.likedTweets;
-  if (likedTweets != null) {
-    dataToImport[tableLikedTweet] = likedTweets;
-  }
-
-  var accounts = data.accounts;
-  if(accounts != null) {
-    dataToImport[tableAccounts] = accounts;
-  }
-
-  await importModel.importData(dataToImport);
+  await importModel.importData(backupTables(data, includeReadPositions: choice.includeReadPositions));
   await groupModel.reloadGroups();
-  context.mounted ? await context.read<SubscriptionsModel>().reloadSubscriptions() : null;
-  context.mounted ? await context.read<SavedTweetFolderModel>().listFolders() : null;
-  context.mounted ? await context.read<LikedTweetModel>().listLikedTweets() : null;
 
   if (context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(L10n.of(context).data_imported_successfully),
-    ));
+    await _reloadAfterImport(context);
   }
+
+  if (context.mounted) {
+    _notify(context, L10n.of(context).data_imported_successfully);
+  }
+}
+
+/// Every store holding a table the import may have just replaced.
+Future<void> _reloadAfterImport(BuildContext context) async {
+  var subscriptions = context.read<SubscriptionsModel>();
+  var folders = context.read<SavedTweetFolderModel>();
+  var likedTweets = context.read<LikedTweetModel>();
+  var subreddits = context.read<RedditSubredditsStore>();
+  var publications = context.read<SubstackPublicationsStore>();
+
+  await subscriptions.reloadSubscriptions();
+  await folders.listFolders();
+  await likedTweets.listLikedTweets();
+  await subreddits.load();
+  await publications.load();
 }
 
 /// The whole backup payload as JSON, for callers that write it somewhere other
 /// than a file. Accounts are opt-in because they carry X session tokens.
 Future<String> exportSettingsJson(BuildContext context, {required bool includeAccounts}) async {
-  final groupModel = context.read<GroupsModel>();
-  final subscriptionsModel = context.read<SubscriptionsModel>();
-  final savedTweetModel = context.read<SavedTweetModel>();
-  final savedTweetFolderModel = context.read<SavedTweetFolderModel>();
-  final likedTweetModel = context.read<LikedTweetModel>();
-  final prefs = PrefService.of(context, listen: false);
+  var data = await collectBackup(context, includeAccounts: includeAccounts);
 
+  return jsonEncode(data.toJson());
+}
+
+/// Every backed-up table, so a WebDAV upload carries exactly what a manual
+/// export of everything would.
+Future<SettingsData> collectBackup(BuildContext context, {required bool includeAccounts}) async {
+  var groupModel = context.read<GroupsModel>();
+  var subscriptionsModel = context.read<SubscriptionsModel>();
+  var prefs = PrefService.of(context, listen: false);
+
+  var saved = await collectSavedPosts(context);
   await subscriptionsModel.reloadSubscriptions();
-  await savedTweetModel.listSavedTweets();
-  await savedTweetFolderModel.listFolders();
-  await likedTweetModel.listLikedTweets();
+  var subscriptions = subscriptionsModel.state;
 
-  final subscriptions = subscriptionsModel.state;
-
-  return jsonEncode(SettingsData(
+  return SettingsData(
+    exportedAt: DateTime.now(),
+    appVersion: await appVersionLabel(),
     settings: prefsMapWithoutSecrets(prefs.toMap()),
     searchSubscriptions: subscriptions.whereType<SearchSubscription>().toList(),
     userSubscriptions: subscriptions.whereType<UserSubscription>().toList(),
+    substackSubscriptions: subscriptions.whereType<SubstackSubscription>().toList(),
+    redditSubscriptions: subscriptions.whereType<RedditSubscription>().toList(),
     subscriptionGroups: groupModel.state,
     subscriptionGroupMembers: await groupModel.listGroupMembers(),
-    tweets: savedTweetModel.state,
-    savedTweetFolders: savedTweetFolderModel.state,
-    likedTweets: likedTweetModel.state,
+    searchGroupMembers: await readSearchGroupMembers(),
+    tweets: saved.tweets,
+    savedTweetFolders: saved.folders,
+    likedTweets: saved.liked,
+    retweetFilters: await readRetweetFilters(),
+    replyFilters: await readReplyFilters(),
+    feedReadPositions: await readFeedReadPositions(),
     accounts: includeAccounts ? await getAccounts() : null,
-  ).toJson());
+  );
+}
+
+/// The saved side of a backup, refreshed from the database first so an export
+/// never writes a stale list.
+Future<({List<SavedTweet> tweets, List<SavedTweetFolder> folders, List<LikedTweet> liked})> collectSavedPosts(
+  BuildContext context,
+) async {
+  var tweets = context.read<SavedTweetModel>();
+  var folders = context.read<SavedTweetFolderModel>();
+  var liked = context.read<LikedTweetModel>();
+
+  await tweets.listSavedTweets();
+  await folders.listFolders();
+  await liked.listLikedTweets();
+
+  return (tweets: tweets.state, folders: folders.state, liked: liked.state);
+}
+
+/// The build that wrote a file, so its reader can tell where it came from.
+Future<String> appVersionLabel() async {
+  var info = await PackageInfo.fromPlatform();
+
+  return '${info.version}+${info.buildNumber}';
 }
 
 Future<void> importBackup(BuildContext context) async {
