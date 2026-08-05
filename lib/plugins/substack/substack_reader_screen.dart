@@ -3,12 +3,15 @@ import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/plugin_links.dart';
+import 'package:xta/plugins/substack/substack_article_cache.dart';
 import 'package:xta/plugins/substack/substack_client.dart';
 import 'package:xta/plugins/substack/substack_html.dart';
 import 'package:xta/plugins/substack/substack_models.dart';
 import 'package:xta/plugins/substack/substack_archive_screen.dart';
 import 'package:xta/plugins/substack/substack_audio_player.dart';
 import 'package:xta/plugins/substack/substack_comments_screen.dart';
+import 'package:xta/plugins/substack/substack_links.dart';
 import 'package:xta/plugins/substack/substack_store.dart';
 import 'package:xta/speech/speech_store.dart';
 import 'package:xta/speech/tts_settings.dart';
@@ -29,6 +32,7 @@ class SubstackReaderScreen extends StatefulWidget {
 class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
   late final WebViewController _controller;
   late SubstackPost _post;
+  final _articleCache = SubstackArticleCache();
   Object? _error;
   var _loading = true;
   var _empty = false;
@@ -43,34 +47,73 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
   void initState() {
     super.initState();
     _post = widget.post;
-    _controller = WebViewController()..setJavaScriptMode(JavaScriptMode.unrestricted);
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(NavigationDelegate(
+        onNavigationRequest: _onNavigation,
+        onPageFinished: (_) {
+          if (mounted) setState(() => _loading = false);
+        },
+      ));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SubstackReadStore>().markRead(_post.id);
       _load();
     });
   }
 
+  NavigationDecision _onNavigation(NavigationRequest request) {
+    final url = request.url;
+    if (url.startsWith('about:blank') || url.startsWith('data:')) {
+      return NavigationDecision.navigate;
+    }
+    // Same article (canonical or relative) may reload; let the webview keep it.
+    final canonical = _post.canonicalUrl;
+    if (canonical != null && url.split('#').first == canonical.split('#').first) {
+      return NavigationDecision.navigate;
+    }
+    final link = substackLinkFor(context, url);
+    if (link != null && link.slug != _post.slug) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => SubstackReaderScreen(
+            post: substackPostStub(link, publicationName: _post.publicationName),
+          ),
+        ),
+      );
+      return NavigationDecision.prevent;
+    }
+    return NavigationDecision.navigate;
+  }
+
   Future<void> _load() async {
+    final client = context.read<SubstackClient>();
     try {
-      final client = context.read<SubstackClient>();
+      final cached = await _articleCache.get(_post.publication, _post.slug);
+      if (cached != null && (cached.bodyHtml?.trim().isNotEmpty ?? false) && mounted) {
+        _post = cached;
+        _error = null;
+        await _showContent(cached);
+      }
+
       final full = await client.fetchPost(_post.publication, _post.slug);
       if (!mounted) return;
       _post = full;
       _error = null;
+      await _articleCache.put(full);
       await _showContent(full);
     } catch (e) {
       if (!mounted) return;
+      if (_post.bodyHtml?.trim().isNotEmpty == true) {
+        // Offline / stale body already on screen from cache.
+        return;
+      }
       if (_post.canonicalUrl != null) {
         _error = null;
         _paywalled = false;
         _partial = false;
         _empty = false;
         _speakText = null;
-        _controller.setNavigationDelegate(NavigationDelegate(
-          onPageFinished: (_) {
-            if (mounted) setState(() => _loading = false);
-          },
-        ));
         await _controller.loadRequest(Uri.parse(_post.canonicalUrl!));
       } else {
         setState(() {
@@ -111,11 +154,6 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
         bodyHtml: html,
       );
       _partial = post.isPaywalled;
-      _controller.setNavigationDelegate(NavigationDelegate(
-        onPageFinished: (_) {
-          if (mounted) setState(() => _loading = false);
-        },
-      ));
       final scheme = Theme.of(context).colorScheme;
       final isDark = Theme.of(context).brightness == Brightness.dark;
       await _controller.loadHtmlString(
@@ -145,11 +183,6 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
       _partial = false;
       _empty = false;
       _speakText = null;
-      _controller.setNavigationDelegate(NavigationDelegate(
-        onPageFinished: (_) {
-          if (mounted) setState(() => _loading = false);
-        },
-      ));
       await _controller.loadRequest(Uri.parse(post.canonicalUrl!));
       return;
     }

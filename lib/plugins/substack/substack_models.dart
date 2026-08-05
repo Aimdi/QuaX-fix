@@ -221,6 +221,110 @@ class SubstackFeedSnapshot {
   }
 }
 
+/// Local filter on the merged Substack feed (inbox-style, no account needed).
+enum SubstackFeedFilter {
+  all,
+  unread,
+  free,
+  podcast,
+}
+
+bool postMatchesSubstackFilter(SubstackPost post, SubstackFeedFilter filter, Set<String> readIds) {
+  return switch (filter) {
+    SubstackFeedFilter.all => true,
+    SubstackFeedFilter.unread => !readIds.contains(post.id),
+    SubstackFeedFilter.free => !post.isPaywalled,
+    SubstackFeedFilter.podcast => post.isPodcast,
+  };
+}
+
+/// One public Note from Substack's reader discovery feed.
+class SubstackNote {
+  final String id;
+  final String body;
+  final String? authorName;
+  final String? authorHandle;
+  final String? authorPhotoUrl;
+  final DateTime? at;
+  final int? reactionCount;
+  final String? imageUrl;
+  final String? url;
+  final SubstackPublication? publication;
+
+  const SubstackNote({
+    required this.id,
+    required this.body,
+    this.authorName,
+    this.authorHandle,
+    this.authorPhotoUrl,
+    this.at,
+    this.reactionCount,
+    this.imageUrl,
+    this.url,
+    this.publication,
+  });
+
+  factory SubstackNote.fromReaderItem(Map<String, dynamic> item) {
+    final comment = item['comment'];
+    final commentMap = comment is Map ? Map<String, dynamic>.from(comment) : const <String, dynamic>{};
+    final pubRaw = item['publication'] ?? commentMap['user_primary_publication'];
+    final pubMap = pubRaw is Map ? Map<String, dynamic>.from(pubRaw) : null;
+    final handle = (commentMap['handle'] as String?)?.trim();
+    final id = '${commentMap['id'] ?? item['entity_key'] ?? ''}';
+    final attachments = commentMap['attachments'];
+    String? imageUrl;
+    if (attachments is List) {
+      for (final a in attachments) {
+        if (a is Map && a['type'] == 'image') {
+          imageUrl = a['imageUrl'] as String?;
+          if (imageUrl != null && imageUrl.isNotEmpty) break;
+        }
+      }
+    }
+
+    SubstackPublication? publication;
+    if (pubMap != null) {
+      final subdomain = (pubMap['subdomain'] as String?)?.trim() ?? '';
+      final custom = (pubMap['custom_domain'] as String?)?.trim();
+      if (subdomain.isNotEmpty || (custom != null && custom.isNotEmpty)) {
+        final base = custom != null && custom.isNotEmpty
+            ? 'https://$custom'
+            : 'https://$subdomain.substack.com';
+        publication = SubstackPublication(
+          subdomain: subdomain.isNotEmpty ? subdomain : subdomainOf(Uri.parse(base)),
+          baseUrl: base,
+          name: pubMap['name'] as String? ?? subdomain,
+          logoUrl: pubMap['logo_url'] as String?,
+        );
+      }
+    }
+
+    final notePath = handle != null && handle.isNotEmpty && id.isNotEmpty
+        ? 'https://substack.com/@$handle/note/c-$id'
+        : null;
+
+    return SubstackNote(
+      id: id.isEmpty ? (item['entity_key'] as String? ?? '') : id,
+      body: (commentMap['body'] as String?)?.trim() ?? '',
+      authorName: commentMap['name'] as String?,
+      authorHandle: handle,
+      authorPhotoUrl: commentMap['photo_url'] as String?,
+      at: DateTime.tryParse(commentMap['date'] as String? ?? '')?.toLocal(),
+      reactionCount: commentMap['reaction_count'] is num ? (commentMap['reaction_count'] as num).toInt() : null,
+      imageUrl: imageUrl,
+      url: notePath,
+      publication: publication,
+    );
+  }
+}
+
+class SubstackNotesPage {
+  final List<SubstackNote> notes;
+  final String? nextCursor;
+
+  const SubstackNotesPage({this.notes = const [], this.nextCursor});
+}
+
 /// Resolve a user-entered Substack handle or URL into a base publication URL.
 Uri? resolveSubstackBase(String input) {
   final trimmed = input.trim();

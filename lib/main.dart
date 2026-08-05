@@ -659,6 +659,7 @@ Future<void> main() async {
             Provider(create: (_) => substackPublications),
             Provider(create: (context) => SubstackFeedStore(context.read<SubstackClient>(), substackPublications)),
             Provider(create: (context) => SubstackAddPublicationStore(context.read<SubstackClient>())),
+            Provider(create: (context) => SubstackNotesStore(context.read<SubstackClient>(), substackPublications)),
             Provider(create: (_) => substackRead),
             Provider(create: (_) => threadsClient),
             Provider(create: (_) => threadsDirect),

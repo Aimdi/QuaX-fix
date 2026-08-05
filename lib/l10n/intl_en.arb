@@ -1049,7 +1049,7 @@
   "@plugin_substack_comments": {},
   "plugin_substack_continue_on_site": "Continue on the publication’s site",
   "@plugin_substack_continue_on_site": {},
-  "plugin_substack_description": "Follow newsletters and read public Substack posts",
+  "plugin_substack_description": "Follow newsletters, skim public Notes, and read free Substack posts",
   "@plugin_substack_description": {},
   "plugin_substack_done": "Done",
   "@plugin_substack_done": {},
@@ -1059,8 +1059,20 @@
   "@plugin_substack_empty_description": {},
   "plugin_substack_feed_empty": "No public posts yet",
   "@plugin_substack_feed_empty": {},
+  "plugin_substack_filter_all": "All",
+  "plugin_substack_filter_free": "Free",
+  "plugin_substack_filter_podcast": "Podcasts",
+  "plugin_substack_filter_unread": "Unread",
   "plugin_substack_follow": "Follow",
   "@plugin_substack_follow": {},
+  "plugin_substack_followed": "Following {name}",
+  "@plugin_substack_followed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_substack_load_error": "Unable to load Substack",
   "@plugin_substack_load_error": {},
   "plugin_substack_load_more": "Load more",
@@ -1069,6 +1081,8 @@
   "@plugin_substack_no_comments": {},
   "plugin_substack_no_content": "This post has no readable content",
   "@plugin_substack_no_content": {},
+  "plugin_substack_notes_empty": "No Notes to show right now",
+  "plugin_substack_notes_intro": "Public Notes from around Substack — not your personal Following feed. Tap a note to open it on the site, or follow its publication.",
   "plugin_substack_open_pasted_post": "Open the pasted post",
   "@plugin_substack_open_pasted_post": {},
   "plugin_substack_partial_error": "{count, plural, one{1 publication failed to load} other{{count} publications failed to load}}",
@@ -1085,6 +1099,8 @@
   "@plugin_substack_preview_ends": {},
   "plugin_substack_publication": "Publication",
   "@plugin_substack_publication": {},
+  "plugin_substack_tab_notes": "Notes",
+  "plugin_substack_tab_posts": "Posts",
   "plugin_substack_title": "Substack",
   "@plugin_substack_title": {},
   "plugin_substack_tts_default": "System default",
@@ -1610,5 +1626,13 @@
   "zen_mode_page_cap": "Zen feed length",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "How many pages a feed loads in zen mode before pausing.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_substack_filter_all": {},
+  "@plugin_substack_filter_free": {},
+  "@plugin_substack_filter_podcast": {},
+  "@plugin_substack_filter_unread": {},
+  "@plugin_substack_notes_empty": {},
+  "@plugin_substack_notes_intro": {},
+  "@plugin_substack_tab_notes": {},
+  "@plugin_substack_tab_posts": {}
 }
