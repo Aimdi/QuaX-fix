@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "添加股票代码",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "无需账号即可关注股价",
+  "plugin_stocks_description": "自选股价与 cashtag 帖子 — StockTwits 风格，无需账号",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "添加股票代码开始关注",
+  "plugin_stocks_empty": "添加股票代码以开始自选信息流",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "这不是股票代码",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "可用",
+  "@plugin_available": {},
+  "plugin_installed": "已安装",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "与自选相关的帖子显示在下方。点按符号可筛选；长按打开其页面。",
+  "@plugin_stocks_feed_hint": {}
 }

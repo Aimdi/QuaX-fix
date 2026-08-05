@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Sembol ekle",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Hesap olmadan hisse fiyatlarını takip edin",
+  "plugin_stocks_description": "İzleme listesi fiyatları ve cashtag gönderileri — StockTwits tarzı, hesapsız",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Takip etmeye başlamak için bir sembol ekleyin",
+  "plugin_stocks_empty": "İzleme listesi akışını başlatmak için bir ticker ekleyin",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "Bu bir hisse sembolü değil",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Kullanılabilir",
+  "@plugin_available": {},
+  "plugin_installed": "Yüklü",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Ticker’larınızla ilgili gönderiler aşağıda. Filtrelemek için dokunun; sayfayı açmak için basılı tutun.",
+  "@plugin_stocks_feed_hint": {}
 }

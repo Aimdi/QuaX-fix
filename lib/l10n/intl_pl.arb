@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Dodaj ticker",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Śledź kursy akcji bez konta",
+  "plugin_stocks_description": "Ceny z watchlisty i posty z cashtagami — w stylu StockTwits, bez konta",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Dodaj ticker, aby zacząć śledzić",
+  "plugin_stocks_empty": "Dodaj ticker, aby uruchomić feed watchlisty",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "To nie jest symbol giełdowy",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Dostępne",
+  "@plugin_available": {},
+  "plugin_installed": "Zainstalowane",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Posty o Twoich tickerach pojawiają się poniżej. Dotknij symbolu, by filtrować; przytrzymaj, by otworzyć stronę.",
+  "@plugin_stocks_feed_hint": {}
 }

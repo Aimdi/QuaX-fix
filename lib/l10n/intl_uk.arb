@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Додати тікер",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Стежте за котируваннями без акаунта",
+  "plugin_stocks_description": "Котирування вотчлиста й дописи з кештегами — у стилі StockTwits, без облікового запису",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Додайте тікер, щоб почати стежити",
+  "plugin_stocks_empty": "Додайте тікер, щоб розпочати стрічку вотчлиста",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "Це не біржовий тікер",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Доступні",
+  "@plugin_available": {},
+  "plugin_installed": "Встановлені",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Дописи про ваші тікери з’являються нижче. Торкніться символу, щоб фільтрувати; утримуйте, щоб відкрити сторінку.",
+  "@plugin_stocks_feed_hint": {}
 }

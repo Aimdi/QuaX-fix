@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Přidat ticker",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Sledujte ceny akcií bez účtu",
+  "plugin_stocks_description": "Kurzy z watchlistu a příspěvky s cashtagy — ve stylu StockTwits, bez účtu",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Přidejte ticker a začněte sledovat",
+  "plugin_stocks_empty": "Přidejte ticker a spusťte feed watchlistu",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "To není burzovní symbol",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Dostupné",
+  "@plugin_available": {},
+  "plugin_installed": "Nainstalované",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Příspěvky o vašich tickerech jsou níže. Klepnutím filtrujete; dlouhým stiskem otevřete stránku.",
+  "@plugin_stocks_feed_hint": {}
 }

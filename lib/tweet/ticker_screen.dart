@@ -4,6 +4,7 @@ import 'package:pref/pref.dart';
 import 'package:xta/client/client.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/stocks/stocks_format.dart';
 import 'package:xta/tweet/paginated_tweet_list.dart';
 import 'package:xta/tweet/ticker/ticker_chart.dart';
 import 'package:xta/tweet/ticker/ticker_client.dart';
@@ -114,38 +115,48 @@ class _TickerScreenState extends State<_TickerScreen> {
     return (chains: result.chains, nextCursor: result.cursorBottom);
   }
 
+  /// StockTwits-style symbol header: cashtag large, price loud, day's move as
+  /// a coloured pill — then the chart and the community feed below.
   Widget _quoteHeader(BuildContext context, TickerQuote quote) {
     final theme = Theme.of(context);
     final scrubbed = _scrubbed;
     final price = scrubbed?.close ?? quote.price ?? quote.points.last.close;
     final percent = quote.changePercent;
-    final up = quote.isUp ?? true;
-    final money = NumberFormat.decimalPatternDigits(decimalDigits: 2);
+    final change = quote.change;
+    final colour = stockChangeColour(quote.isUp);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.baseline,
-        textBaseline: TextBaseline.alphabetic,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(money.format(price), style: theme.textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w700)),
-          if (quote.currency != null) ...[
-            const SizedBox(width: 4),
-            Text(quote.currency!, style: theme.textTheme.bodySmall),
-          ],
-          const Spacer(),
-          // While scrubbing, when that point was — a price with no moment
-          // attached to it is not worth reading.
-          if (scrubbed != null)
-            Text(DateFormat.yMMMd().add_Hm().format(scrubbed.at), style: theme.textTheme.bodySmall)
-          else if (percent != null)
-            Text(
-              '${up ? '+' : ''}${percent.toStringAsFixed(2)}%',
-              style: theme.textTheme.titleMedium!.copyWith(
-                fontWeight: FontWeight.w700,
-                color: up ? const Color(0xFF00BA7C) : const Color(0xFFF4212E),
+          Text(
+            '\$${widget.symbol.toUpperCase()}',
+            style: theme.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w900, letterSpacing: 0.2),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                stockMoneyFormat.format(price),
+                style: theme.textTheme.headlineMedium!.copyWith(fontWeight: FontWeight.w800),
               ),
-            ),
+              if (quote.currency != null) ...[
+                const SizedBox(width: 6),
+                Text(quote.currency!, style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              ],
+              const Spacer(),
+              if (scrubbed != null)
+                Text(DateFormat.yMMMd().add_Hm().format(scrubbed.at), style: theme.textTheme.bodySmall)
+              else if (percent != null)
+                _ChangeBadge(
+                  changeLabel: change == null ? null : stockChangeLabel(change),
+                  percentLabel: stockPercentLabel(percent),
+                  colour: colour,
+                ),
+            ],
+          ),
         ],
       ),
     );
@@ -222,10 +233,8 @@ class _TickerScreenState extends State<_TickerScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text('\$${widget.symbol.toUpperCase()}')),
-      // The chart scrolls away with the posts rather than holding the top of the
-      // screen. It was a fixed child of a Column with the list in an Expanded
-      // below, so posts scrolled under a chart that never moved — and on a
-      // phone that chart is most of the screen.
+      // Chart scrolls away so the cashtag feed — the StockTwits reason to open
+      // a symbol — owns most of the screen.
       body: NestedScrollView(
         headerSliverBuilder: (context, _) => [
           if (chart != null) SliverToBoxAdapter(child: chart),
@@ -240,6 +249,44 @@ class _TickerScreenState extends State<_TickerScreen> {
             emptyMessage: L10n.of(context).no_posts_match_your_search,
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Day's move as a filled pill — StockTwits's quick read of up vs down.
+class _ChangeBadge extends StatelessWidget {
+  final String? changeLabel;
+  final String percentLabel;
+  final Color colour;
+
+  const _ChangeBadge({
+    required this.changeLabel,
+    required this.percentLabel,
+    required this.colour,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: colour.withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            percentLabel,
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800, color: colour),
+          ),
+          if (changeLabel != null)
+            Text(
+              changeLabel!,
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w600, color: colour),
+            ),
+        ],
       ),
     );
   }

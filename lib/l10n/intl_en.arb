@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Add ticker",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Follow share prices without an account",
+  "plugin_stocks_description": "Watchlist prices and cashtag posts — StockTwits-style, no account",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Add a ticker to start watching",
+  "plugin_stocks_empty": "Add a ticker to start your watchlist feed",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "That is not a ticker symbol",
   "@plugin_stocks_error": {},
@@ -1634,5 +1634,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Available",
+  "@plugin_available": {},
+  "plugin_installed": "Installed",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Posts about your tickers show up below. Tap a symbol to filter; long-press opens its page.",
+  "@plugin_stocks_feed_hint": {}
 }

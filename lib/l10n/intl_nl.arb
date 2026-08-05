@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Ticker toevoegen",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Volg aandelenkoersen zonder account",
+  "plugin_stocks_description": "Watchlistkoersen en cashtag-berichten — StockTwits-stijl, zonder account",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Voeg een ticker toe om te volgen",
+  "plugin_stocks_empty": "Voeg een ticker toe om je watchlistfeed te starten",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "Dat is geen tickersymbool",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Beschikbaar",
+  "@plugin_available": {},
+  "plugin_installed": "Geïnstalleerd",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Berichten over je tickers verschijnen hieronder. Tik om te filteren; lang indrukken opent de pagina.",
+  "@plugin_stocks_feed_hint": {}
 }

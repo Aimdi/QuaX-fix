@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "新增股票代號",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "無需帳號即可追蹤股價",
+  "plugin_stocks_description": "自選股價與 cashtag 貼文 — StockTwits 風格，無需帳號",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "新增股票代號開始追蹤",
+  "plugin_stocks_empty": "新增股票代號以開始自選資訊流",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "這不是股票代號",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "可用",
+  "@plugin_available": {},
+  "plugin_installed": "已安裝",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "與自選相關的貼文顯示在下方。點一下符號可篩選；長按開啟其頁面。",
+  "@plugin_stocks_feed_hint": {}
 }

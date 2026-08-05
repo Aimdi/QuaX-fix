@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Tambah ticker",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Ikuti harga saham tanpa akun",
+  "plugin_stocks_description": "Harga watchlist dan kiriman cashtag — gaya StockTwits, tanpa akun",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Tambahkan ticker untuk mulai memantau",
+  "plugin_stocks_empty": "Tambahkan ticker untuk memulai feed watchlist Anda",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "Itu bukan simbol saham",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Tersedia",
+  "@plugin_available": {},
+  "plugin_installed": "Terpasang",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Kiriman tentang ticker Anda muncul di bawah. Ketuk untuk memfilter; tekan lama untuk membuka halaman.",
+  "@plugin_stocks_feed_hint": {}
 }

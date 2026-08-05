@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "ティッカーを追加",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "アカウントなしで株価を追う",
+  "plugin_stocks_description": "ウォッチリストの株価とキャッシュタグ投稿 — StockTwits風、アカウント不要",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "見始めるにはティッカーを追加してください",
+  "plugin_stocks_empty": "ティッカーを追加してウォッチリストのフィードを始めましょう",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "それはティッカーシンボルではありません",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "利用可能",
+  "@plugin_available": {},
+  "plugin_installed": "インストール済み",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "ティッカーに関する投稿が下に表示されます。タップで絞り込み、長押しでページを開きます。",
+  "@plugin_stocks_feed_hint": {}
 }

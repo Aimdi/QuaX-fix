@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Gehitu tickerra",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Jarraitu akzioen prezioak konturik gabe",
+  "plugin_stocks_description": "Watchlist prezioak eta cashtag mezuak — StockTwits estiloan, konturik gabe",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Gehitu ticker bat jarraitzen hasteko",
+  "plugin_stocks_empty": "Gehitu ticker bat watchlist feeda hasteko",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "Hori ez da burtsa-sinbolo bat",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Erabilgarri",
+  "@plugin_available": {},
+  "plugin_installed": "Instalatuta",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Zure tickerrei buruzko mezuak behean agertzen dira. Sakatu iragazteko; luze sakatu orria irekitzeko.",
+  "@plugin_stocks_feed_hint": {}
 }

@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Aldoni tikeron",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Sekvu akciajn kursojn sen konto",
+  "plugin_stocks_description": "Watchlist-prezoj kaj kashtag-afiŝoj — StockTwits-stile, sen konto",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Aldonu tikeron por komenci observi",
+  "plugin_stocks_empty": "Aldonu tikeron por komenci vian watchlist-fluon",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "Tio ne estas tikera simbolo",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Disponeblaj",
+  "@plugin_available": {},
+  "plugin_installed": "Instalitaj",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Afiŝoj pri viaj tikeroy aperas sube. Tuŝu por filtri; longe premu por malfermi la paĝon.",
+  "@plugin_stocks_feed_hint": {}
 }

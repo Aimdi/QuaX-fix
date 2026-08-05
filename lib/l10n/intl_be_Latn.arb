@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Dadać tyker",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Sačycie za koštam akcyj biez akaŭnta",
+  "plugin_stocks_description": "Kaciroŭki votčlista i pasty z keštehami — u duchu StockTwits, biez akaŭnta",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Dadajcie tyker, kab pačać sačyć",
+  "plugin_stocks_empty": "Dadajcie tykier, kab pačać stužku votčlista",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "Heta nie biržavy tyker",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Dastupnyja",
+  "@plugin_available": {},
+  "plugin_installed": "Ustalavanyja",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Pasty pra vašy tykiery zjaŭlajucca nižej. Nacisnicie simval dlia filtra; doŭhaje naciskannie adkryvaje staronku.",
+  "@plugin_stocks_feed_hint": {}
 }

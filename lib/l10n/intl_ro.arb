@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Adaugă simbol",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Urmărește prețul acțiunilor fără cont",
+  "plugin_stocks_description": "Cotații din watchlist și postări cu cashtag — în stil StockTwits, fără cont",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Adaugă un simbol pentru a începe urmărirea",
+  "plugin_stocks_empty": "Adaugă un ticker ca să începi feedul watchlistului",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "Acesta nu este un simbol bursier",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Disponibile",
+  "@plugin_available": {},
+  "plugin_installed": "Instalate",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Postările despre tickerele tale apar mai jos. Atinge un simbol pentru filtru; apasă lung pentru a deschide pagina.",
+  "@plugin_stocks_feed_hint": {}
 }

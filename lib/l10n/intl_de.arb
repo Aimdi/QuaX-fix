@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Ticker hinzufügen",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Aktienkurse ohne Konto verfolgen",
+  "plugin_stocks_description": "Watchlist-Kurse und Cashtag-Beiträge — wie StockTwits, ohne Konto",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Füge einen Ticker hinzu, um zu beobachten",
+  "plugin_stocks_empty": "Füge einen Ticker hinzu, um deinen Watchlist-Feed zu starten",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "Das ist kein Tickersymbol",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Verfügbar",
+  "@plugin_available": {},
+  "plugin_installed": "Installiert",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Beiträge zu deinen Tickern erscheinen unten. Tippen filtert; langes Drücken öffnet die Seite.",
+  "@plugin_stocks_feed_hint": {}
 }

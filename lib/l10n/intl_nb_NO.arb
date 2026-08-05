@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Legg til ticker",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Følg aksjekurser uten konto",
+  "plugin_stocks_description": "Watchlist-kurser og cashtag-innlegg — StockTwits-stil, uten konto",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Legg til en ticker for å begynne å følge med",
+  "plugin_stocks_empty": "Legg til en ticker for å starte watchlist-feeden",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "Dette er ikke et tickersymbol",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Tilgjengelig",
+  "@plugin_available": {},
+  "plugin_installed": "Installert",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "Innlegg om tickerne dine vises under. Trykk for å filtrere; langt trykk åpner siden.",
+  "@plugin_stocks_feed_hint": {}
 }

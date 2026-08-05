@@ -1009,9 +1009,9 @@
   "@plugin_show_as_tab_description": {},
   "plugin_stocks_add": "Aggiungi ticker",
   "@plugin_stocks_add": {},
-  "plugin_stocks_description": "Segui i prezzi delle azioni senza account",
+  "plugin_stocks_description": "Prezzi della watchlist e post con cashtag — in stile StockTwits, senza account",
   "@plugin_stocks_description": {},
-  "plugin_stocks_empty": "Aggiungi un ticker per iniziare a seguire",
+  "plugin_stocks_empty": "Aggiungi un ticker per avviare il feed della watchlist",
   "@plugin_stocks_empty": {},
   "plugin_stocks_error": "Questo non è un simbolo di borsa",
   "@plugin_stocks_error": {},
@@ -1622,5 +1622,11 @@
   "@plugin_substack_notes_empty": {},
   "@plugin_substack_notes_intro": {},
   "@plugin_substack_tab_notes": {},
-  "@plugin_substack_tab_posts": {}
+  "@plugin_substack_tab_posts": {},
+  "plugin_available": "Disponibili",
+  "@plugin_available": {},
+  "plugin_installed": "Installati",
+  "@plugin_installed": {},
+  "plugin_stocks_feed_hint": "I post sui tuoi ticker compaiono sotto. Tocca un simbolo per filtrare; tieni premuto per aprire la pagina.",
+  "@plugin_stocks_feed_hint": {}
 }
