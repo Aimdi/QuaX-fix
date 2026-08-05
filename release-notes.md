@@ -16,39 +16,45 @@ drift whenever the list happened to sit near the top.
 **Posts when the network is not there.** A feed that fails to load no longer
 throws away the posts already on your phone. You get them, with a line saying
 how old they are and why the refresh failed — rate limited, no working account,
-or simply offline — and a retry. The reason is never hidden; only the posts
-stop disappearing.
+or simply offline — and a retry.
+
+**More places to read, still nothing to post.** Bluesky via the public AppView,
+Mastodon through a home instance you choose, an optional private Pixiv following
+feed (refresh token; hidden until you ask for private plugins), and Threads that
+can use a pasted browser session or Bearer when you want Following without
+RSSHub — guest pages and your own proxies stay as fallbacks. Substack got RSS
+fallback, unread/free/podcast filters, public Notes discovery, and article
+caching. The plugin store groups things by purpose and shows each plugin with a
+brand mark.
+
+**Stocks, Reddit.** The Stocks tab is closer to a StockTwits-style watchlist
+feed. Reddit comment threads, For You refresh, and listing “Load more” share one
+read session and fall back when OAuth is not enough.
 
 **Mutes that stay muted.** Muted words, the content filter and the like and
 repost thresholds used to apply only while a group was sorted one particular
-way. Sort it differently and everything you had muted came back. They are the
-group's rules now, whatever it is sorted by.
+way. They are the group's rules now, whatever it is sorted by.
 
 ### Fixed
 
 **Backups were losing things quietly.** Followed subreddits, followed Substack
 publications, saved searches' group membership and the per-account
-hide-reposts and hide-replies settings were all missing from an export — and so
-from WebDAV sync, and so from whatever you restored onto a new phone. Backups
-carry them now, name the version they came from, and show you what is in a file
-before importing it. Older backups still import exactly as they did.
+hide-reposts and hide-replies settings were all missing from an export. Backups
+carry them now. Older backups still import exactly as they did.
 
 **Saved and liked posts** showed as neither until you had opened the Saved tab
-once, so a post you had just saved looked unsaved in the feed.
-
-Also: deleting one account no longer leaves the row beneath it in a strange
-state; a tall screenshot beside ordinary photos no longer stretches the whole
-post and pushes its buttons off screen; and pulling to refresh one feed no
-longer discards every other feed's cached posts.
+once. Also: deleting one account no longer leaves the row beneath it in a
+strange state; a tall screenshot beside ordinary photos no longer stretches the
+whole post; and pulling to refresh one feed no longer discards every other
+feed's cached posts.
 
 ### Faster
 
 Startup no longer decodes a week of cached posts before drawing anything, and
 no longer builds the video engine and every plugin for a reader who opens
-neither. Images decode at the size they are drawn at rather than the size X
-serves them. Scrolling stopped laying out each post's text twice, and stopped
-rebuilding a whole post when you bookmark it. Opening a profile you just
-looked at, importing a follow list, and searching all make fewer requests.
+neither. Images decode at the size they are drawn at. Scrolling stopped laying
+out each post's text twice, and stopped rebuilding a whole post when you
+bookmark it.
 
 ---
 
