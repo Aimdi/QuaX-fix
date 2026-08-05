@@ -6,6 +6,7 @@ import 'package:xta/database/entities.dart';
 import 'package:xta/database/repository.dart';
 import 'package:xta/group/future_pool.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
+import 'package:xta/plugins/threads/threads_direct_client.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 
 /// The Threads accounts the reader follows, kept in the database so they can
@@ -61,50 +62,63 @@ ThreadsAccount accountOf(ThreadsSubscription subscription) => ThreadsAccount(
       avatarUrl: subscription.avatarUrl,
     );
 
-/// The merged timeline of every followed account, newest first.
+/// The merged timeline of every followed account, newest first — or the Meta
+/// Following feed when a Bearer session is pasted.
 class ThreadsFeedStore extends Store<List<ThreadsPost>> {
   final ThreadsClient client;
+  final ThreadsDirectClient direct;
   final BasePrefService prefs;
   final ThreadsAccountsStore accounts;
 
-  ThreadsFeedStore(this.client, this.prefs, this.accounts) : super(const []);
+  ThreadsFeedStore(this.client, this.direct, this.prefs, this.accounts) : super(const []);
 
   String get _instance => prefs.get<String>(optionPluginThreadsInstance) ?? '';
 
-  /// Reads every account and merges them.
-  ///
-  /// One account failing does not empty the timeline — a handle that was
-  /// renamed, or one RSSHub cannot currently serve, would otherwise take every
-  /// other account's posts down with it. The error only surfaces when nothing
-  /// at all could be read.
+  /// Reads the best available source (see docs/specs/threads-direct.md).
   Future<void> refresh() async {
     await execute(() async {
-      if (_instance.trim().isEmpty) {
-        throw ThreadsException(ThreadsErrorKind.notConfigured, 'no instance configured');
+      if (direct.hasBearer) {
+        return await direct.fetchFollowingTimeline();
       }
 
       final handles = accounts.state.map((e) => e.handle).toList(growable: false);
       if (handles.isEmpty) {
-        return const <ThreadsPost>[];
-      }
-
-      Object? lastError;
-      final batches = await mapWithConcurrency(handles, 3, (handle) async {
-        try {
-          return await client.fetchAccount(_instance, handle);
-        } catch (e) {
-          lastError = e;
+        if (direct.hasCookies || _instance.trim().isNotEmpty) {
           return const <ThreadsPost>[];
         }
-      });
-
-      final posts = batches.expand((e) => e.take(threadsPostsPerAccount)).toList();
-      if (posts.isEmpty && lastError != null) {
-        throw lastError!;
+        throw ThreadsException(ThreadsErrorKind.notConfigured, 'no accounts or session');
       }
 
-      posts.sort((a, b) => (b.publishedAt ?? DateTime(0)).compareTo(a.publishedAt ?? DateTime(0)));
-      return posts;
+      if (direct.hasCookies) {
+        return _mergeAccounts(handles, (h) => direct.fetchUserThreads(h));
+      }
+      if (_instance.trim().isNotEmpty) {
+        return _mergeAccounts(handles, (h) => client.fetchAccount(_instance, h));
+      }
+      return _mergeAccounts(handles, (h) => direct.fetchGuestAccount(h));
     });
+  }
+
+  Future<List<ThreadsPost>> _mergeAccounts(
+    List<String> handles,
+    Future<List<ThreadsPost>> Function(String handle) fetch,
+  ) async {
+    Object? lastError;
+    final batches = await mapWithConcurrency(handles, 2, (handle) async {
+      try {
+        return await fetch(handle);
+      } catch (e) {
+        lastError = e;
+        return const <ThreadsPost>[];
+      }
+    });
+
+    final posts = batches.expand((e) => e.take(threadsPostsPerAccount)).toList();
+    if (posts.isEmpty && lastError != null) {
+      throw lastError!;
+    }
+
+    posts.sort((a, b) => (b.publishedAt ?? DateTime(0)).compareTo(a.publishedAt ?? DateTime(0)));
+    return posts;
   }
 }

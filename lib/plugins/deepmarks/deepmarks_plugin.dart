@@ -4,6 +4,7 @@ import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/deepmarks/deepmarks_settings_screen.dart';
 import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/plugin_category.dart';
 
 /// Saves links to Deepmarks, the Nostr-backed bookmarking service. Like the
 /// Karakeep plugin this adds an action rather than a feed, plus a settings
@@ -18,7 +19,14 @@ class DeepmarksPlugin extends XtaPlugin {
   String get enabledPrefKey => optionPluginDeepmarksEnabled;
 
   @override
-  IconData get icon => Icons.bookmarks_outlined;
+  IconData get icon => Icons.hub;
+
+  @override
+  PluginCategory get category => PluginCategory.bookmarks;
+
+  /// Nostr-adjacent purple — Deepmarks is bookmarking on that network.
+  @override
+  Color get brandColor => const Color(0xFF8B5CF6);
 
   @override
   String title(BuildContext context) => L10n.of(context).plugin_deepmarks_title;

@@ -6,6 +6,7 @@ import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/threads/threads_api.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
+import 'package:xta/plugins/threads/threads_direct_client.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 import 'package:xta/plugins/threads/threads_store.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
@@ -19,17 +20,24 @@ class ThreadsSettingsScreen extends StatefulWidget {
 }
 
 class _ThreadsSettingsScreenState extends State<ThreadsSettingsScreen> {
+  late final TextEditingController _cookies;
+  late final TextEditingController _bearer;
   late final TextEditingController _instance;
   late final TextEditingController _apiBase;
   late final TextEditingController _apiToken;
+  bool _testingDirect = false;
   bool _testing = false;
   bool _testingApi = false;
+  bool _cookiesHidden = true;
+  bool _bearerHidden = true;
   bool _tokenHidden = true;
 
   @override
   void initState() {
     super.initState();
     final prefs = PrefService.of(context, listen: false);
+    _cookies = TextEditingController(text: prefs.get<String>(optionPluginThreadsDirectCookies) ?? '');
+    _bearer = TextEditingController(text: prefs.get<String>(optionPluginThreadsDirectBearer) ?? '');
     _instance = TextEditingController(text: prefs.get<String>(optionPluginThreadsInstance) ?? '');
     _apiBase = TextEditingController(
         text: prefs.get<String>(optionPluginThreadsApiBase) ?? kThreadsApiDefaultBase);
@@ -38,10 +46,46 @@ class _ThreadsSettingsScreenState extends State<ThreadsSettingsScreen> {
 
   @override
   void dispose() {
+    _cookies.dispose();
+    _bearer.dispose();
     _instance.dispose();
     _apiBase.dispose();
     _apiToken.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveDirect() async {
+    final prefs = PrefService.of(context, listen: false);
+    await prefs.set(optionPluginThreadsDirectCookies, _cookies.text.trim());
+    await prefs.set(optionPluginThreadsDirectBearer, _bearer.text.trim());
+  }
+
+  Future<void> _testDirect() async {
+    final l10n = L10n.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final direct = context.read<ThreadsDirectClient>();
+
+    await _saveDirect();
+    setState(() => _testingDirect = true);
+    String message;
+    try {
+      final who = await direct.verify();
+      message = l10n.plugin_threads_direct_test_ok(who);
+    } catch (e) {
+      message = threadsSettingsError(l10n, e);
+    }
+
+    if (mounted) {
+      setState(() => _testingDirect = false);
+      messenger.showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
+  Future<void> _clearDirect() async {
+    _cookies.clear();
+    _bearer.clear();
+    await _saveDirect();
+    if (mounted) setState(() {});
   }
 
   Future<void> _save() async {
@@ -75,11 +119,6 @@ class _ThreadsSettingsScreenState extends State<ThreadsSettingsScreen> {
     await prefs.set(optionPluginThreadsApiToken, _apiToken.text.trim());
   }
 
-  /// Asks the server whether it is up.
-  ///
-  /// `/health` takes no token on purpose, so a failure here means the address
-  /// is wrong rather than the token — which is the distinction worth having
-  /// before anyone starts rotating credentials.
   Future<void> _testApi() async {
     final l10n = L10n.of(context);
     final messenger = ScaffoldMessenger.of(context);
@@ -118,6 +157,58 @@ class _ThreadsSettingsScreenState extends State<ThreadsSettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          Text(l10n.plugin_threads_direct_intro, style: theme.textTheme.bodyMedium),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _cookies,
+            obscureText: _cookiesHidden,
+            autocorrect: false,
+            enableSuggestions: false,
+            maxLines: _cookiesHidden ? 1 : 4,
+            decoration: InputDecoration(
+              labelText: l10n.plugin_threads_direct_cookies,
+              hintText: l10n.plugin_threads_direct_cookies_hint,
+              border: const OutlineInputBorder(),
+              suffixIcon: IconButton(
+                icon: Icon(_cookiesHidden ? Icons.visibility : Icons.visibility_off),
+                onPressed: () => setState(() => _cookiesHidden = !_cookiesHidden),
+              ),
+            ),
+            onChanged: (_) => _saveDirect(),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _bearer,
+            obscureText: _bearerHidden,
+            autocorrect: false,
+            enableSuggestions: false,
+            decoration: InputDecoration(
+              labelText: l10n.plugin_threads_direct_bearer,
+              hintText: l10n.plugin_threads_direct_bearer_hint,
+              border: const OutlineInputBorder(),
+              suffixIcon: IconButton(
+                icon: Icon(_bearerHidden ? Icons.visibility : Icons.visibility_off),
+                onPressed: () => setState(() => _bearerHidden = !_bearerHidden),
+              ),
+            ),
+            onChanged: (_) => _saveDirect(),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              FilledButton.tonal(
+                onPressed: _testingDirect ? null : _testDirect,
+                child: Text(l10n.plugin_threads_direct_test),
+              ),
+              TextButton(
+                onPressed: _clearDirect,
+                child: Text(l10n.plugin_threads_direct_clear),
+              ),
+            ],
+          ),
+          const Divider(height: 32),
           Text(l10n.plugin_threads_settings_intro, style: theme.textTheme.bodyMedium),
           const SizedBox(height: 16),
           TextField(
@@ -228,8 +319,6 @@ String threadsApiSettingsError(L10n l10n, Object error) {
   };
 }
 
-/// The settings screen says the same things the feed does, plus the one only a
-/// test can produce: an address that is not an RSSHub at all.
 String threadsSettingsError(L10n l10n, Object error) {
   if (error is! ThreadsException) {
     return l10n.plugin_threads_error_unreachable;
@@ -239,5 +328,7 @@ String threadsSettingsError(L10n l10n, Object error) {
     ThreadsErrorKind.noSuchFeed => l10n.plugin_threads_error_no_route,
     ThreadsErrorKind.throttled => l10n.plugin_threads_error_throttled,
     ThreadsErrorKind.unreachable => l10n.plugin_threads_error_unreachable,
+    ThreadsErrorKind.unauthorized => l10n.plugin_threads_error_unauthorized,
+    ThreadsErrorKind.sessionSuspended => l10n.plugin_threads_error_session_suspended,
   };
 }

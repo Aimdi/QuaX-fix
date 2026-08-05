@@ -1,0 +1,154 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:xta/plugins/mastodon/mastodon_models.dart';
+
+void main() {
+  group('normaliseMastodonInstance', () {
+    test('adds https and strips a trailing slash', () {
+      expect(normaliseMastodonInstance('mastodon.social'), 'https://mastodon.social');
+      expect(normaliseMastodonInstance('https://mastodon.social/'), 'https://mastodon.social');
+      expect(normaliseMastodonInstance('http://localhost:3000'), 'http://localhost:3000');
+    });
+
+    test('refuses empty or scheme-less garbage', () {
+      expect(normaliseMastodonInstance(''), isNull);
+      expect(normaliseMastodonInstance('   '), isNull);
+      expect(normaliseMastodonInstance('not a host'), isNull);
+    });
+  });
+
+  group('normaliseMastodonAcct', () {
+    test('accepts bare users, @users, user@domain and profile URLs', () {
+      expect(normaliseMastodonAcct('Gargron'), 'gargron');
+      expect(normaliseMastodonAcct('@Gargron'), 'gargron');
+      expect(normaliseMastodonAcct('dansup@pixelfed.social'), 'dansup@pixelfed.social');
+      expect(normaliseMastodonAcct('https://mastodon.social/@Gargron'), 'gargron@mastodon.social');
+      expect(normaliseMastodonAcct('https://mastodon.social/users/Gargron'), 'gargron@mastodon.social');
+    });
+
+    test('refuses what is not an address', () {
+      expect(normaliseMastodonAcct(''), isNull);
+      expect(normaliseMastodonAcct('@'), isNull);
+      expect(normaliseMastodonAcct('two words'), isNull);
+      expect(normaliseMastodonAcct('user@nodot'), isNull);
+    });
+  });
+
+  group('canonicalMastodonAcct', () {
+    test('attaches the home domain to a local username', () {
+      expect(canonicalMastodonAcct('Gargron', homeDomain: 'mastodon.social'), 'gargron@mastodon.social');
+      expect(canonicalMastodonAcct('dansup@pixelfed.social', homeDomain: 'mastodon.social'),
+          'dansup@pixelfed.social');
+    });
+  });
+
+  group('parseMastodonStatuses', () {
+    test('reads text, author, images and unwraps a boost', () {
+      final posts = parseMastodonStatuses([
+        {
+          'id': '1',
+          'created_at': '2026-08-01T09:00:00.000Z',
+          'content': '<p>Hello <br>there</p>',
+          'url': 'https://mastodon.social/@a/1',
+          'account': {
+            'id': '10',
+            'username': 'alice',
+            'acct': 'alice',
+            'display_name': 'Alice',
+            'avatar': 'https://example.org/a.jpg',
+            'note': '',
+            'url': 'https://mastodon.social/@alice',
+            'followers_count': 1,
+            'following_count': 2,
+            'statuses_count': 3,
+          },
+          'media_attachments': [
+            {'type': 'image', 'preview_url': 'https://example.org/thumb.jpg', 'url': 'https://example.org/full.jpg'},
+            {'type': 'video', 'preview_url': 'https://example.org/v.jpg'},
+          ],
+          'reblog': null,
+        },
+        {
+          'id': '2',
+          'created_at': '2026-08-01T10:00:00.000Z',
+          'content': '',
+          'url': 'https://mastodon.social/@a/2',
+          'account': {
+            'id': '10',
+            'username': 'alice',
+            'acct': 'alice',
+            'display_name': 'Alice',
+            'note': '',
+            'url': 'https://mastodon.social/@alice',
+          },
+          'media_attachments': [],
+          'reblog': {
+            'id': '99',
+            'created_at': '2026-08-01T08:00:00.000Z',
+            'content': '<p>Boosted</p>',
+            'url': 'https://other.social/@bob/99',
+            'spoiler_text': '',
+            'account': {
+              'id': '20',
+              'username': 'bob',
+              'acct': 'bob@other.social',
+              'display_name': 'Bob',
+              'note': '',
+              'url': 'https://other.social/@bob',
+            },
+            'media_attachments': [],
+          },
+        },
+      ], homeDomain: 'mastodon.social');
+
+      expect(posts, hasLength(2));
+      expect(posts.first.text, 'Hello \nthere');
+      expect(posts.first.acct, 'alice@mastodon.social');
+      expect(posts.first.images, ['https://example.org/thumb.jpg']);
+      expect(posts.first.boosted, isFalse);
+
+      expect(posts.last.id, '99');
+      expect(posts.last.text, 'Boosted');
+      expect(posts.last.acct, 'bob@other.social');
+      expect(posts.last.boosted, isTrue);
+    });
+
+    test('drops empty items and tolerates a reshaped payload', () {
+      expect(parseMastodonStatuses(null), isEmpty);
+      expect(parseMastodonStatuses('nope'), isEmpty);
+      expect(
+        parseMastodonStatuses([
+          {
+            'id': '1',
+            'content': '   ',
+            'account': {'acct': 'alice', 'username': 'alice'},
+            'media_attachments': [],
+          }
+        ]),
+        isEmpty,
+      );
+    });
+  });
+
+  group('MastodonProfile.fromJson', () {
+    test('reads documented fields and becomes a followable account', () {
+      final profile = MastodonProfile.fromJson({
+        'id': '1',
+        'username': 'Gargron',
+        'acct': 'Gargron',
+        'display_name': 'Eugen',
+        'avatar': 'https://example.org/a.jpg',
+        'note': '<p>Building</p>',
+        'url': 'https://mastodon.social/@Gargron',
+        'followers_count': 10,
+        'following_count': 2,
+        'statuses_count': 40,
+        'locked': false,
+      }, homeDomain: 'mastodon.social');
+
+      expect(profile.acct, 'gargron@mastodon.social');
+      expect(profile.displayName, 'Eugen');
+      expect(profile.note, 'Building');
+      expect(profile.toAccount().acct, 'gargron@mastodon.social');
+    });
+  });
+}

@@ -13,9 +13,10 @@ void main() {
 
     test('an entry marked unavailable is held back rather than offered', () {
       final ids = parsePluginCatalogue(
-          '{"plugins":[{"id":"reddit","available":false},{"id":"stocks","available":true}]}');
+          '{"plugins":[{"id":"reddit","available":false},{"id":"stocks","available":true},{"id":"pixiv","available":false}]}');
 
       expect(ids, ['stocks']);
+      expect(ids, isNot(contains('pixiv')));
     });
 
     test('every id it names is one this build actually has', () {

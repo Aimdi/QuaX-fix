@@ -153,11 +153,12 @@ const optionPluginSubstackReadIds = 'plugin.substack.read_ids';
 const substackFeedPageSize = 8;
 const substackReadIdsCap = 400;
 
-/// Threads, read through the reader's own RSSHub instance.
+/// Threads — RSSHub / Xy by default; optional direct Meta session for reads.
 ///
-/// There is no public instance default on purpose: the shared one is rate
-/// limited to the point of uselessness for this route, and pointing everyone's
-/// app at somebody else's server is neither reliable nor private.
+/// There is no public RSSHub instance default on purpose: the shared one is
+/// rate limited to the point of uselessness for this route. Direct mode pastes
+/// browser cookies and/or an `IGT:2` Bearer; sessions can die and accounts can
+/// be checkpointed — prefer a disposable secondary account.
 const pluginIdThreads = 'threads';
 const optionPluginThreadsEnabled = 'plugin.threads.enabled';
 const optionPluginThreadsShowTab = 'plugin.threads.show_tab';
@@ -172,6 +173,44 @@ const threadsPostsPerAccount = 20;
 const optionPluginThreadsApiBase = 'plugin.threads.api_base';
 const optionPluginThreadsApiToken = 'plugin.threads.api_token';
 const kThreadsApiDefaultBase = 'https://xy-threads.fly.dev';
+
+/// Direct Meta session (optional). Cookie header + Bearer are secrets.
+const optionPluginThreadsDirectCookies = 'plugin.threads.direct.cookies_token';
+const optionPluginThreadsDirectBearer = 'plugin.threads.direct.bearer_token';
+const optionPluginThreadsDirectDeviceId = 'plugin.threads.direct.device_id';
+
+/// Bluesky, read through the public AppView — local follows, no Bluesky account.
+const pluginIdBluesky = 'bluesky';
+const optionPluginBlueskyEnabled = 'plugin.bluesky.enabled';
+const optionPluginBlueskyShowTab = 'plugin.bluesky.show_tab';
+
+/// How many posts one account contributes to the merged Bluesky feed.
+const blueskyPostsPerAccount = 20;
+
+/// Mastodon / Fediverse, read through a home instance's public REST API.
+///
+/// No login: public account lookup and statuses only. The home instance is
+/// required because Mastodon account ids are local to each server.
+const pluginIdMastodon = 'mastodon';
+const optionPluginMastodonEnabled = 'plugin.mastodon.enabled';
+const optionPluginMastodonShowTab = 'plugin.mastodon.show_tab';
+const optionPluginMastodonInstance = 'plugin.mastodon.instance';
+
+/// How many statuses one account contributes to the merged Mastodon feed.
+const mastodonPostsPerAccount = 20;
+
+/// Pixiv — private reading plugin. Refresh-token auth; no write actions.
+const pluginIdPixiv = 'pixiv';
+const optionPluginPixivEnabled = 'plugin.pixiv.enabled';
+const optionPluginPixivShowTab = 'plugin.pixiv.show_tab';
+const optionPluginPixivRefreshToken = 'plugin.pixiv.refresh_token';
+const optionPluginPixivAccessToken = 'plugin.pixiv.access_token';
+const optionPluginPixivAccessExpiresAt = 'plugin.pixiv.access_expires_at';
+const optionPluginPixivShowR18 = 'plugin.pixiv.show_r18';
+
+/// When true, the plugin store also lists [XtaPlugin.isPrivate] plugins that
+/// the public catalogue holds back with `available: false`.
+const optionPluginStoreShowPrivate = 'plugin_store.show_private';
 
 const optionShouldCheckForUpdates = 'should_check_for_updates';
 
@@ -442,6 +481,10 @@ const secretPrefKeys = {
   optionPluginRedditClientId,
   optionPluginRedditRefreshToken,
   optionPluginThreadsApiToken,
+  optionPluginThreadsDirectCookies,
+  optionPluginThreadsDirectBearer,
+  optionPluginPixivRefreshToken,
+  optionPluginPixivAccessToken,
 };
 
 /// The declared keys, plus anything shaped like a credential.
