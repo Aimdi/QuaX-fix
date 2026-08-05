@@ -1628,5 +1628,7 @@
   "plugin_installed": "Installitud",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Sinu tickerite postitused ilmuvad all. Puuduta filtreerimiseks; hoia all lehe avamiseks.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Laadi rohkem",
+  "@plugin_reddit_load_more": {}
 }

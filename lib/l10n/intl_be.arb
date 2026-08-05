@@ -1628,5 +1628,7 @@
   "plugin_installed": "Усталяваныя",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Пасты пра вашы тыкеры з’яўляюцца ніжэй. Націсніце сімвал для фільтра; доўгае націсканне адкрывае старонку.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Загрузіць яшчэ",
+  "@plugin_reddit_load_more": {}
 }

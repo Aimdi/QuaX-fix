@@ -9,6 +9,7 @@ import 'package:xta/database/repository.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:xta/plugins/reddit/reddit_auth.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_read_session.dart';
 import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
 
 /// Subreddits the reader follows, kept in the database.
@@ -114,25 +115,13 @@ class RedditFeedStore extends Store<List<RedditPost>> {
   Future<void> refresh({RedditSort? sort}) async {
     await execute(() async {
       final order = sort ?? storedRedditSort(prefs);
-      final clientId = prefs.get<String>(optionPluginRedditClientId) ?? '';
-      final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
       final names = subreddits.state;
       if (names.isEmpty) {
         return const <RedditPost>[];
       }
 
-      // Signed in: one access token for the whole refresh, rather than one per
-      // subreddit. A refresh token Reddit no longer accepts means the session
-      // is over, so it is dropped and the read falls back to the public route.
-      String? userToken;
-      final refreshToken = prefs.get<String>(optionPluginRedditRefreshToken) ?? '';
-      if (!preferPublic && refreshToken.isNotEmpty) {
-        try {
-          userToken = await auth.accessToken(clientId: clientId, refreshToken: refreshToken);
-        } on RedditException {
-          await prefs.set(optionPluginRedditRefreshToken, '');
-        }
-      }
+      // Same credential resolution as home/group interleave and listing screens.
+      final session = await RedditReadSession.resolve(prefs: prefs, auth: auth);
 
       // Fetched together, and one at a time survivable: a single private or
       // renamed subreddit used to throw out of here and turn the whole feed
@@ -140,8 +129,7 @@ class RedditFeedStore extends Store<List<RedditPost>> {
       // paid for.
       final listings = await Future.wait(names.map((name) async {
         try {
-          final listing = await client.fetchSubreddit(name,
-              clientId: clientId, sort: order, limit: 15, userToken: userToken, preferPublic: preferPublic);
+          final listing = await session.fetchSubreddit(client, name, sort: order, limit: 15);
 
           return listing.posts.where((p) => !p.stickied).toList();
         } catch (e) {

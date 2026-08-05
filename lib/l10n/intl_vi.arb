@@ -1628,5 +1628,7 @@
   "plugin_installed": "Đã cài đặt",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Bài viết về mã của bạn hiện bên dưới. Chạm để lọc; nhấn giữ để mở trang.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Tải thêm",
+  "@plugin_reddit_load_more": {}
 }

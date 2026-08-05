@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
+import 'package:xta/plugins/reddit/reddit_listing_page.dart';
 import 'package:xta/plugins/reddit/reddit_post_card.dart';
+import 'package:xta/plugins/reddit/reddit_read_session.dart';
 import 'package:xta/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
 import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
 import 'package:xta/plugins/reddit/reddit_store.dart';
@@ -37,7 +38,11 @@ class RedditListingScreen extends StatefulWidget {
 
 class _RedditListingScreenState extends State<RedditListingScreen> {
   List<RedditPost>? _posts;
+  String? _after;
+  bool _loadingMore = false;
   Object? _error;
+
+  bool get canLoadMore => _after != null;
 
   @override
   void initState() {
@@ -46,11 +51,19 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
   }
 
   Future<void> _load() async {
-    setState(() => _error = null);
+    setState(() {
+      _error = null;
+      _posts = null;
+      _after = null;
+      _loadingMore = false;
+    });
     try {
-      final posts = await _read();
+      final listing = await _read();
       if (mounted) {
-        setState(() => _posts = posts);
+        setState(() {
+          _posts = listing.posts;
+          _after = listing.after;
+        });
       }
     } catch (e) {
       if (mounted) {
@@ -59,24 +72,46 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
     }
   }
 
+  Future<void> _loadMore() async {
+    final after = _after;
+    if (after == null || _loadingMore || _posts == null) {
+      return;
+    }
+    setState(() => _loadingMore = true);
+    try {
+      final listing = await _read(after: after);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _posts = appendRedditPosts(_posts!, listing.posts);
+        _after = listing.after;
+        _loadingMore = false;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() => _loadingMore = false);
+      }
+    }
+  }
+
   /// Reads through whichever route the reader chose, the same as the feed —
   /// a screen that quietly ignored the source setting would be a way around it.
-  Future<List<RedditPost>> _read() async {
+  Future<RedditListing> _read({String? after}) async {
     final client = context.read<RedditClient>();
     final subreddit = widget.subreddit;
     if (subreddit == null) {
-      return (await client.fetchUserPosts(widget.user!)).posts;
+      return client.fetchUserPosts(widget.user!, after: after);
     }
 
     final prefs = PrefService.of(context, listen: false);
-    final listing = await client.fetchSubreddit(
+    final session = await RedditReadSession.resolve(prefs: prefs);
+    return session.fetchSubreddit(
+      client,
       subreddit,
-      clientId: prefs.get<String>(optionPluginRedditClientId) ?? '',
       sort: storedRedditSort(prefs),
-      preferPublic: prefs.get<String>(optionPluginRedditSource) == redditSourcePublic,
+      after: after,
     );
-
-    return listing.posts;
   }
 
   @override
@@ -120,8 +155,28 @@ class _RedditListingScreenState extends State<RedditListingScreen> {
     }
 
     return ListView.builder(
-      itemCount: posts.length,
-      itemBuilder: (context, index) => RedditPostCard(post: posts[index], showSourceBadge: false),
+      padding: const EdgeInsets.only(bottom: 24),
+      itemCount: posts.length + (canLoadMore ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index >= posts.length) {
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: Center(
+              child: OutlinedButton(
+                onPressed: _loadingMore ? null : _loadMore,
+                child: _loadingMore
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(l10n.plugin_reddit_load_more),
+              ),
+            ),
+          );
+        }
+        return RedditPostCard(post: posts[index], showSourceBadge: false);
+      },
     );
   }
 }

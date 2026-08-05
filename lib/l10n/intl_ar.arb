@@ -1628,5 +1628,7 @@
   "plugin_installed": "مثبَّتة",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "تظهر المنشورات عن رموزك بالأسفل. المس رمزًا للتصفية؛ اضغط مطولًا لفتح صفحته.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "تحميل المزيد",
+  "@plugin_reddit_load_more": {}
 }

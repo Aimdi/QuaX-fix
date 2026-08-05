@@ -1628,5 +1628,7 @@
   "plugin_installed": "インストール済み",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "ティッカーに関する投稿が下に表示されます。タップで絞り込み、長押しでページを開きます。",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "さらに読み込む",
+  "@plugin_reddit_load_more": {}
 }

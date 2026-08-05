@@ -1628,5 +1628,7 @@
   "plugin_installed": "इंस्टॉल किए गए",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "आपके टिकरों के पोस्ट नीचे दिखते हैं। फ़िल्टर के लिए टैप करें; पेज खोलने के लिए देर तक दबाएँ।",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "और लोड करें",
+  "@plugin_reddit_load_more": {}
 }

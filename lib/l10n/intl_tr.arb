@@ -1628,5 +1628,7 @@
   "plugin_installed": "Yüklü",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Ticker’larınızla ilgili gönderiler aşağıda. Filtrelemek için dokunun; sayfayı açmak için basılı tutun.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Daha fazla yükle",
+  "@plugin_reddit_load_more": {}
 }

@@ -1628,5 +1628,7 @@
   "plugin_installed": "Installati",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "I post sui tuoi ticker compaiono sotto. Tocca un simbolo per filtrare; tieni premuto per aprire la pagina.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Carica altri",
+  "@plugin_reddit_load_more": {}
 }

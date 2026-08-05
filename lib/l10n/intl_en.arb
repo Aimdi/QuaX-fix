@@ -1640,5 +1640,7 @@
   "plugin_installed": "Installed",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Posts about your tickers show up below. Tap a symbol to filter; long-press opens its page.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Load more",
+  "@plugin_reddit_load_more": {}
 }

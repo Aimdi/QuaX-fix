@@ -1628,5 +1628,7 @@
   "plugin_installed": "Ustalavanyja",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Pasty pra vašy tykiery zjaŭlajucca nižej. Nacisnicie simval dlia filtra; doŭhaje naciskannie adkryvaje staronku.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Zahruzić jašče",
+  "@plugin_reddit_load_more": {}
 }

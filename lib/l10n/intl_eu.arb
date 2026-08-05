@@ -1628,5 +1628,7 @@
   "plugin_installed": "Instalatuta",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Zure tickerrei buruzko mezuak behean agertzen dira. Sakatu iragazteko; luze sakatu orria irekitzeko.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Kargatu gehiago",
+  "@plugin_reddit_load_more": {}
 }

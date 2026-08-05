@@ -65,4 +65,49 @@ void main() {
       expect(isRedditVideoHost(null), isFalse);
     });
   });
+
+  group('collapseRedditImageUrls', () {
+    test('different widths of the same path collapse to the larger width', () {
+      expect(
+        collapseRedditImageUrls([
+          'https://preview.redd.it/abc.jpg?width=320&s=a',
+          'https://preview.redd.it/abc.jpg?width=1080&s=b',
+        ]),
+        ['https://preview.redd.it/abc.jpg?width=1080&s=b'],
+      );
+    });
+
+    test('preview and i.redd.it of the same file collapse to i.redd.it', () {
+      expect(
+        collapseRedditImageUrls([
+          'https://preview.redd.it/abc.jpg?width=1080&s=a',
+          'https://i.redd.it/abc.jpg',
+        ]),
+        ['https://i.redd.it/abc.jpg'],
+      );
+    });
+
+    test('different filenames stay separate, in first-seen order', () {
+      expect(
+        collapseRedditImageUrls([
+          'https://preview.redd.it/one.jpg?width=640',
+          'https://preview.redd.it/two.jpg?width=640',
+        ]),
+        [
+          'https://preview.redd.it/one.jpg?width=640',
+          'https://preview.redd.it/two.jpg?width=640',
+        ],
+      );
+    });
+
+    test('exact duplicate URLs collapse to one', () {
+      expect(
+        collapseRedditImageUrls([
+          'https://i.redd.it/a.png',
+          'https://i.redd.it/a.png',
+        ]),
+        ['https://i.redd.it/a.png'],
+      );
+    });
+  });
 }

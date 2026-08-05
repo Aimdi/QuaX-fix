@@ -1628,5 +1628,7 @@
   "plugin_installed": "Встановлені",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Дописи про ваші тікери з’являються нижче. Торкніться символу, щоб фільтрувати; утримуйте, щоб відкрити сторінку.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Завантажити ще",
+  "@plugin_reddit_load_more": {}
 }

@@ -1628,5 +1628,7 @@
   "plugin_installed": "Nainstalované",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Příspěvky o vašich tickerech jsou níže. Klepnutím filtrujete; dlouhým stiskem otevřete stránku.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Načíst další",
+  "@plugin_reddit_load_more": {}
 }

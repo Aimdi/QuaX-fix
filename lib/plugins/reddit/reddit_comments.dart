@@ -281,16 +281,16 @@ List<RedditComment> parseComments(String body) {
   final url = thing?.attributes['data-url'];
   final absolute = url != null && url.startsWith('http') ? url : null;
 
-  final images = <String>[];
+  final collected = <String>[];
   for (final img in document.querySelectorAll('#siteTable .expando img, #siteTable .media-gallery img')) {
     final src = (img.attributes['src'] ?? img.attributes['data-lazy-src'])?.replaceAll('&amp;', '&');
     final host = src == null ? null : Uri.tryParse(src)?.host;
-    if (src != null && (host == 'preview.redd.it' || host == 'i.redd.it') && !images.contains(src)) {
-      images.add(src);
+    if (src != null && (host == 'preview.redd.it' || host == 'i.redd.it')) {
+      collected.add(src);
     }
   }
 
-  return (url: absolute, images: images);
+  return (url: absolute, images: collapseRedditImageUrls(collected));
 }
 
 /// The post's own text on a comment page, for a self post whose body the

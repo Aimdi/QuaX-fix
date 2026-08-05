@@ -1628,5 +1628,7 @@
   "plugin_installed": "Geïnstalleerd",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Berichten over je tickers verschijnen hieronder. Tik om te filteren; lang indrukken opent de pagina.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Meer laden",
+  "@plugin_reddit_load_more": {}
 }

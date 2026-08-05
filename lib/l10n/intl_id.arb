@@ -1628,5 +1628,7 @@
   "plugin_installed": "Terpasang",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Kiriman tentang ticker Anda muncul di bawah. Ketuk untuk memfilter; tekan lama untuk membuka halaman.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Muat lebih banyak",
+  "@plugin_reddit_load_more": {}
 }

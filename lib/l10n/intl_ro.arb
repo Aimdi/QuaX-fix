@@ -1628,5 +1628,7 @@
   "plugin_installed": "Instalate",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Postările despre tickerele tale apar mai jos. Atinge un simbol pentru filtru; apasă lung pentru a deschide pagina.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Încarcă mai mult",
+  "@plugin_reddit_load_more": {}
 }

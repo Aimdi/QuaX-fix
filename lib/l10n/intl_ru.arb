@@ -1628,5 +1628,7 @@
   "plugin_installed": "Установленные",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Посты о ваших тикерах появляются ниже. Нажмите символ для фильтра; долгое нажатие открывает страницу.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Загрузить ещё",
+  "@plugin_reddit_load_more": {}
 }

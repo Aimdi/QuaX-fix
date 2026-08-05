@@ -1628,5 +1628,7 @@
   "plugin_installed": "설치됨",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "티커에 대한 게시물이 아래에 표시됩니다. 탭하면 필터링되고, 길게 누르면 페이지가 열립니다.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "더 불러오기",
+  "@plugin_reddit_load_more": {}
 }

@@ -1628,5 +1628,7 @@
   "plugin_installed": "已安裝",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "與自選相關的貼文顯示在下方。點一下符號可篩選；長按開啟其頁面。",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "載入更多",
+  "@plugin_reddit_load_more": {}
 }

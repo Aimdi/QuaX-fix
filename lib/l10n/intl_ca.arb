@@ -1628,5 +1628,7 @@
   "plugin_installed": "Instal·lats",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Les publicacions sobre els teus tickers apareixen a sota. Toca un símbol per filtrar; mantén premut per obrir-ne la pàgina.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Carrega’n més",
+  "@plugin_reddit_load_more": {}
 }

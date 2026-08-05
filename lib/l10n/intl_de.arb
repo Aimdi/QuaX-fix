@@ -1628,5 +1628,7 @@
   "plugin_installed": "Installiert",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Beiträge zu deinen Tickern erscheinen unten. Tippen filtert; langes Drücken öffnet die Seite.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Mehr laden",
+  "@plugin_reddit_load_more": {}
 }

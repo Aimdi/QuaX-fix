@@ -1628,5 +1628,7 @@
   "plugin_installed": "Instalados",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Posts sobre seus tickers aparecem abaixo. Toque em um símbolo para filtrar; pressione e segure para abrir a página.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Carregar mais",
+  "@plugin_reddit_load_more": {}
 }

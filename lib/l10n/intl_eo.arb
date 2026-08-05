@@ -1628,5 +1628,7 @@
   "plugin_installed": "Instalitaj",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Afiŝoj pri viaj tikeroy aperas sube. Tuŝu por filtri; longe premu por malfermi la paĝon.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Ŝargi pli",
+  "@plugin_reddit_load_more": {}
 }

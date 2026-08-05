@@ -1628,5 +1628,7 @@
   "plugin_installed": "Installert",
   "@plugin_installed": {},
   "plugin_stocks_feed_hint": "Innlegg om tickerne dine vises under. Trykk for å filtrere; langt trykk åpner siden.",
-  "@plugin_stocks_feed_hint": {}
+  "@plugin_stocks_feed_hint": {},
+  "plugin_reddit_load_more": "Last mer",
+  "@plugin_reddit_load_more": {}
 }

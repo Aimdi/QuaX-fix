@@ -135,3 +135,69 @@ String _bareHost(String host) {
   final lower = host.toLowerCase();
   return lower.startsWith('www.') ? lower.substring(4) : lower;
 }
+
+/// Collapses Reddit image URLs that are the same asset under different hosts
+/// or widths into one URL each.
+///
+/// Identity is the filename (last path segment), not the full URL — so
+/// `preview.redd.it/x.jpg?width=320` and `i.redd.it/x.jpg` are one image.
+/// When collapsing, prefer `i.redd.it` over `preview.redd.it`, else the
+/// largest `width` query param, else the first seen. Order of first
+/// occurrence of each unique image is preserved; different filenames stay
+/// separate (real galleries).
+List<String> collapseRedditImageUrls(Iterable<String> urls) {
+  final result = <String>[];
+  final indexByKey = <String, int>{};
+
+  for (final url in urls) {
+    final key = _redditImageKey(url);
+    if (key == null) {
+      result.add(url);
+      continue;
+    }
+
+    final existing = indexByKey[key];
+    if (existing == null) {
+      indexByKey[key] = result.length;
+      result.add(url);
+      continue;
+    }
+
+    if (_preferRedditImage(url, result[existing])) {
+      result[existing] = url;
+    }
+  }
+
+  return result;
+}
+
+/// Filename identity for a Reddit image URL, or null when the URL has no path.
+String? _redditImageKey(String url) {
+  final uri = Uri.tryParse(url);
+  if (uri == null) {
+    return null;
+  }
+
+  final segments = uri.pathSegments.where((s) => s.isNotEmpty);
+  return segments.isEmpty ? null : segments.last.toLowerCase();
+}
+
+/// Whether [candidate] is a better representation of the same image than
+/// [current]: `i.redd.it` wins over `preview.redd.it`, else larger `width`.
+bool _preferRedditImage(String candidate, String current) {
+  final candidateUri = Uri.tryParse(candidate);
+  final currentUri = Uri.tryParse(current);
+  if (candidateUri == null || currentUri == null) {
+    return false;
+  }
+
+  final candidateIsDirect = _bareHost(candidateUri.host) == 'i.redd.it';
+  final currentIsDirect = _bareHost(currentUri.host) == 'i.redd.it';
+  if (candidateIsDirect != currentIsDirect) {
+    return candidateIsDirect;
+  }
+
+  final candidateWidth = int.tryParse(candidateUri.queryParameters['width'] ?? '') ?? -1;
+  final currentWidth = int.tryParse(currentUri.queryParameters['width'] ?? '') ?? -1;
+  return candidateWidth > currentWidth;
+}
