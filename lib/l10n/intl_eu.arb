@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Hasierako kontuak",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Zuretzat aukeratutako kontu bakoitzaren kronologiak batzen ditu. Jarraitzen oraindik zure tokiko harpidetzak erabiltzen ditu; desgaitutako kontuak jario hori kargatzean ere saltatzen dira.",
+  "home_feed_accounts_description": "Zuretzat aukeratutako kontu bakoitzaren kronologiak batzen ditu. Jarraitzen oraindik zure tokiko harpidetzak erabiltzen ditu.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Gehitu kontu bat Zuretzat kargatzeko.",
   "@home_feed_accounts_empty": {},

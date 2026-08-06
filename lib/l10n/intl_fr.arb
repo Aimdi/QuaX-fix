@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Comptes du fil d'accueil",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Pour vous fusionne les fils de chaque compte laissé activé. Abonnements utilise toujours vos abonnements locaux ; les comptes désactivés sont aussi ignorés pour charger ce fil.",
+  "home_feed_accounts_description": "Pour vous fusionne les fils de chaque compte laissé activé. Abonnements utilise toujours vos abonnements locaux.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Ajoutez un compte pour charger Pour vous.",
   "@home_feed_accounts_empty": {},

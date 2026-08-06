@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Kontoj de la ĉefa fluo",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Por vi kunfandas templiniojn de ĉiu ŝaltita konto. Sekvataj ankoraŭ uzas viajn lokajn abonojn; malŝaltitaj kontoj ankaŭ estas preterlasitaj kiam tiu fluo estas petata.",
+  "home_feed_accounts_description": "Por vi kunfandas templiniojn de ĉiu ŝaltita konto. Sekvataj ankoraŭ uzas viajn lokajn abonojn.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Aldonu konton por ŝargi Por vi.",
   "@home_feed_accounts_empty": {},

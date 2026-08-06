@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Tài khoản bảng tin chính",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Dành cho bạn gộp dòng thời gian từ mỗi tài khoản bạn để bật. Đang theo dõi vẫn dùng đăng ký cục bộ; tài khoản tắt cũng bị bỏ qua khi tải bảng tin đó.",
+  "home_feed_accounts_description": "Dành cho bạn gộp dòng thời gian từ mỗi tài khoản bạn để bật. Đang theo dõi vẫn dùng đăng ký cục bộ.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Thêm tài khoản để tải Dành cho bạn.",
   "@home_feed_accounts_empty": {},

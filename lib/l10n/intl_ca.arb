@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Comptes del fil d'inici",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Per a tu fusiona les chronologies de cada compte que deixis activat. Seguint encara fa servir les teves subscripcions locals; els comptes desactivats també s'ometen en carregar aquest fil.",
+  "home_feed_accounts_description": "Per a tu fusiona les chronologies de cada compte que deixis activat. Seguint encara fa servir les teves subscripcions locals.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Afegeix un compte per carregar Per a tu.",
   "@home_feed_accounts_empty": {},

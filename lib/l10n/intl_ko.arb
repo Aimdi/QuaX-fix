@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "홈 피드 계정",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "추천은 켜 둔 각 계정의 타임라인을 합칩니다. 팔로잉은 계속 기기의의 구독을 쓰고, 끈 계정은 그 피드를 가져올 때도 건너뜁니다.",
+  "home_feed_accounts_description": "추천은 켜 둔 각 계정의 타임라인을 합칩니다. 팔로잉은 계속 기기의의 구독을 씁니다.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "추천을 불러오려면 계정을 추가하세요.",
   "@home_feed_accounts_empty": {},

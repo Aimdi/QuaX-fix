@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Account della home",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Per te unisce le timeline di ogni account lasciato attivo. Seguiti continua a usare le tue iscrizioni locali; gli account disattivati vengono saltati anche quando si carica quel feed.",
+  "home_feed_accounts_description": "Per te unisce le timeline di ogni account lasciato attivo. Seguiti continua a usare le tue iscrizioni locali.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Aggiungi un account per caricare Per te.",
   "@home_feed_accounts_empty": {},

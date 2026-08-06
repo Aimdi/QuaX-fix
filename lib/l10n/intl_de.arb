@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Konten für die Start-Timeline",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Für dich führt die Timelines jedes eingeschalteten Kontos zusammen. Folge verwendet weiter deine lokalen Abonnements; ausgeschaltete Konten werden beim Laden dieses Feeds ebenfalls übersprungen.",
+  "home_feed_accounts_description": "Für dich führt die Timelines jedes eingeschalteten Kontos zusammen. Folge verwendet weiter deine lokalen Abonnements.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Konto hinzufügen, um Für dich zu laden.",
   "@home_feed_accounts_empty": {},

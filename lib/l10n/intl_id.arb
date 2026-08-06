@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Akun umpan beranda",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Untuk Anda menggabungkan linimasa dari setiap akun yang tetap dinyalakan. Mengikuti tetap memakai langganan lokal Anda; akun yang dimatikan juga dilewati saat mengambil umpan itu.",
+  "home_feed_accounts_description": "Untuk Anda menggabungkan linimasa dari setiap akun yang tetap dinyalakan. Mengikuti tetap memakai langganan lokal Anda.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Tambahkan akun untuk memuat Untuk Anda.",
   "@home_feed_accounts_empty": {},

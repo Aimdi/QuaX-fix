@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:xta/client/account_fetch_gate.dart';
 import 'package:xta/client/accounts.dart';
 import 'package:xta/client/client.dart';
 import 'package:xta/constants.dart';
@@ -179,19 +178,11 @@ class HomeAccountFilterStore extends Store<Set<String>> {
   final BasePrefService prefs;
 
   HomeAccountFilterStore(this.prefs)
-      : super(homeFeedDisabledIdsFromPrefs(prefs.get(optionHomeFeedDisabledAccountIds)).toSet()) {
-    AccountFetchGate.disabledIds = Set<String>.from(state);
-  }
-
-  void _publish(Set<String> disabled) {
-    AccountFetchGate.disabledIds = Set<String>.from(disabled);
-  }
+      : super(homeFeedDisabledIdsFromPrefs(prefs.get(optionHomeFeedDisabledAccountIds)).toSet());
 
   Future<void> reload() async {
     await execute(() async {
-      final next = homeFeedDisabledIdsFromPrefs(prefs.get(optionHomeFeedDisabledAccountIds)).toSet();
-      _publish(next);
-      return next;
+      return homeFeedDisabledIdsFromPrefs(prefs.get(optionHomeFeedDisabledAccountIds)).toSet();
     });
   }
 
@@ -211,7 +202,6 @@ class HomeAccountFilterStore extends Store<Set<String>> {
         next.add(accountId);
       }
       await prefs.set(optionHomeFeedDisabledAccountIds, homeFeedDisabledIdsToPrefs(next));
-      _publish(next);
       return next;
     });
   }

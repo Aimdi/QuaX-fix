@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Conturi pentru fluxul principal",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Pentru tine îmbină cronologiile fiecărui cont lăsat pornit. Urmărești folosește în continuare abonamentele locale; conturile oprite sunt omise și la încărcarea acelui flux.",
+  "home_feed_accounts_description": "Pentru tine îmbină cronologiile fiecărui cont lăsat pornit. Urmărești folosește în continuare abonamentele locale.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Adaugă un cont pentru a încărca Pentru tine.",
   "@home_feed_accounts_empty": {},

@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "主頁動態帳號",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "「為你推薦」會合併你開啟的各個帳號時間軸。「正在跟隨」仍使用本機訂閱；關閉的帳號在擷取該動態時也會略過。",
+  "home_feed_accounts_description": "「為你推薦」會合併你開啟的各個帳號時間軸。「正在跟隨」仍使用本機訂閱。",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "請新增帳號以載入「為你推薦」。",
   "@home_feed_accounts_empty": {},

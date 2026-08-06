@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Contas do início",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Para você junta as timelines de cada conta que deixar ligada. Seguindo ainda usa suas assinaturas locais; contas desligadas também são ignoradas ao buscar esse feed.",
+  "home_feed_accounts_description": "Para você junta as timelines de cada conta que deixar ligada. Seguindo ainda usa suas assinaturas locais.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Adicione uma conta para carregar Para você.",
   "@home_feed_accounts_empty": {},

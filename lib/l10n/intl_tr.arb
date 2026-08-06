@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Ana akış hesapları",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Sana özel, açık bıraktığın her hesabın zaman akışını birleştirir. Takip edilenler hâlâ yerel aboneliklerini kullanır; kapatılan hesaplar o akış alınırken de atlanır.",
+  "home_feed_accounts_description": "Sana özel, açık bıraktığın her hesabın zaman akışını birleştirir. Takip edilenler hâlâ yerel aboneliklerini kullanır.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Sana özel’i yüklemek için bir hesap ekleyin.",
   "@home_feed_accounts_empty": {},

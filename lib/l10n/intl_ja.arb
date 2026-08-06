@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "ホームのアカウント",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "おすすめはオンにした各アカウントのタイムラインをまとめます。フォロー中はこれまでどおり端末内の購読を使います。オフにしたアカウントはその取得でも使いません。",
+  "home_feed_accounts_description": "おすすめはオンにした各アカウントのタイムラインをまとめます。フォロー中はこれまでどおり端末内の購読を使います。",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "おすすめを表示するにはアカウントを追加してください。",
   "@home_feed_accounts_empty": {},

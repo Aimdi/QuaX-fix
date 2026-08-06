@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Accounts voor de starttijdlijn",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Voor jou voegt de tijdlijnen van elk ingeschakeld account samen. Volgend gebruikt nog steeds je lokale abonnementen; uitgeschakelde accounts worden bij het laden van die feed ook overgeslagen.",
+  "home_feed_accounts_description": "Voor jou voegt de tijdlijnen van elk ingeschakeld account samen. Volgend gebruikt nog steeds je lokale abonnementen.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Voeg een account toe om Voor jou te laden.",
   "@home_feed_accounts_empty": {},

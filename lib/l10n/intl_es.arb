@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Cuentas del inicio",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Para ti fusiona las cronologías de cada cuenta que dejes activada. Siguiendo sigue usando tus suscripciones locales; las cuentas desactivadas también se omiten al cargar ese feed.",
+  "home_feed_accounts_description": "Para ti fusiona las cronologías de cada cuenta que dejes activada. Siguiendo sigue usando tus suscripciones locales.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Añade una cuenta para cargar Para ti.",
   "@home_feed_accounts_empty": {},

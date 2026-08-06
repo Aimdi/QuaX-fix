@@ -511,7 +511,7 @@
   "@home": {},
   "home_feed_accounts": "Konta na osi głównej",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Dla Ciebie łączy osie z każdego włączonego konta. Obserwowani nadal korzystają z lokalnych subskrypcji; wyłączone konta są też pomijane przy pobieraniu tego kanału.",
+  "home_feed_accounts_description": "Dla Ciebie łączy osie z każdego włączonego konta. Obserwowani nadal korzystają z lokalnych subskrypcji.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Dodaj konto, aby wczytać Dla Ciebie.",
   "@home_feed_accounts_empty": {},
