@@ -198,6 +198,18 @@ class PixivClient {
           ..._baseHeaders,
           'Authorization': 'Bearer $token',
         }));
+
+    if (response.statusCode == 401) {
+      await refreshAccessToken();
+      final retryToken = (prefs.get<String>(optionPluginPixivAccessToken) ?? '').trim();
+      final retry = await _send(() => httpClient.get(uri, headers: {
+            ..._baseHeaders,
+            'Authorization': 'Bearer $retryToken',
+          }));
+      _throwForStatus(retry, uri);
+      return _decode(retry, uri);
+    }
+
     _throwForStatus(response, uri);
     return _decode(response, uri);
   }

@@ -43,6 +43,16 @@ class _PixivLoginWebviewState extends State<PixivLoginWebview> {
       return NavigationDecision.navigate;
     }
 
+    if (PixivAuth.deniedIn(uri)) {
+      _close(null);
+      return NavigationDecision.prevent;
+    }
+
+    if (uri.scheme == 'pixiv') {
+      _close(PixivAuth.codeFrom(uri));
+      return NavigationDecision.prevent;
+    }
+
     final code = PixivAuth.codeFrom(uri);
     if (code != null) {
       _close(code);

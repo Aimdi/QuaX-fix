@@ -7,6 +7,7 @@ import 'package:xta/plugins/pixiv/pixiv_auth.dart';
 import 'package:xta/plugins/pixiv/pixiv_client.dart';
 import 'package:xta/plugins/pixiv/pixiv_login_webview.dart';
 import 'package:xta/plugins/pixiv/pixiv_models.dart';
+import 'package:xta/plugins/pixiv/pixiv_store.dart';
 import 'package:xta/ui/errors.dart';
 
 String pixivErrorMessage(L10n l10n, Object error) {
@@ -114,20 +115,26 @@ class _PixivSettingsScreenState extends State<PixivSettingsScreen> {
 
   Future<void> _signIn() async {
     setState(() => _signingIn = true);
-    final user = await runPixivSignIn(context);
-    if (mounted) {
-      final prefs = PrefService.of(context, listen: false);
-      setState(() {
-        _signingIn = false;
-        _signedInName = user?.displayName;
-        _token.text = prefs.get<String>(optionPluginPixivRefreshToken) ?? '';
-      });
+    try {
+      final user = await runPixivSignIn(context);
+      if (mounted) {
+        final prefs = PrefService.of(context, listen: false);
+        setState(() {
+          _signedInName = user?.displayName;
+          _token.text = prefs.get<String>(optionPluginPixivRefreshToken) ?? '';
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _signingIn = false);
+      }
     }
   }
 
   Future<void> _signOut() async {
     await context.read<PixivClient>().signOut();
     if (mounted) {
+      context.read<PixivFeedStore>().update(const []);
       setState(() {
         _signedInName = null;
         _token.text = '';

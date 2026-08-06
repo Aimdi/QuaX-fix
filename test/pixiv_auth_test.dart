@@ -48,6 +48,11 @@ void main() {
       expect(PixivAuth.codeFrom(uri), 'auth-code-2');
     });
 
+    test('reads code from pixiv://account/login path', () {
+      final uri = Uri.parse('pixiv://account/login?code=auth-code-3');
+      expect(PixivAuth.codeFrom(uri), 'auth-code-3');
+    });
+
     test('returns null for unrelated URLs', () {
       expect(PixivAuth.codeFrom(Uri.parse('https://www.pixiv.net/')), isNull);
       expect(PixivAuth.codeFrom(Uri.parse('https://example.com/?code=x')), isNull);
@@ -55,6 +60,23 @@ void main() {
 
     test('returns null when code is missing', () {
       expect(PixivAuth.codeFrom(Uri.parse(PixivAuth.redirectUri)), isNull);
+    });
+  });
+
+  group('PixivAuth deniedIn', () {
+    test('detects error query on https callback', () {
+      final uri = Uri.parse('${PixivAuth.redirectUri}?error=access_denied');
+      expect(PixivAuth.deniedIn(uri), isTrue);
+    });
+
+    test('detects error query on pixiv scheme', () {
+      final uri = Uri.parse('pixiv://account/login?error=access_denied');
+      expect(PixivAuth.deniedIn(uri), isTrue);
+    });
+
+    test('returns false when no error', () {
+      expect(PixivAuth.deniedIn(Uri.parse('pixiv://account/login?code=x')), isFalse);
+      expect(PixivAuth.deniedIn(Uri.parse('https://www.pixiv.net/')), isFalse);
     });
   });
 

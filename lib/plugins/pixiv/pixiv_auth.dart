@@ -40,12 +40,20 @@ class PixivAuth {
 
   /// Authorization code from the redirect, or null when this URL is not the callback.
   static String? codeFrom(Uri uri) {
-    final url = uri.toString();
-    if (!url.startsWith(redirectUri) && !url.startsWith('pixiv://account')) {
+    if (uri.scheme != 'pixiv' && !uri.toString().startsWith(redirectUri)) {
       return null;
     }
     final code = uri.queryParameters['code'];
     return (code == null || code.isEmpty) ? null : code;
+  }
+
+  /// OAuth denial or other error surfaced in the redirect query.
+  static bool deniedIn(Uri uri) {
+    if (uri.scheme != 'pixiv' && !uri.toString().startsWith(redirectUri)) {
+      return false;
+    }
+    final error = uri.queryParameters['error'];
+    return error != null && error.isNotEmpty;
   }
 
   /// Trades the one-time code for access + refresh tokens.
