@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localized_locales/flutter_localized_locales.dart';
+import 'package:xta/utils/native_locale_names.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/settings/_browser_picker.dart';
 import 'package:xta/generated/l10n.dart';
@@ -19,7 +19,7 @@ class SettingLocale {
 
   factory SettingLocale.fromLocale(Locale locale) {
     var code = locale.toLanguageTag().replaceAll('-', '_');
-    var name = LocaleNamesLocalizationsDelegate.nativeLocaleNames[code] ?? code;
+    var name = nativeLocaleNameOf(code) ?? code;
 
     return SettingLocale(code, name);
   }
