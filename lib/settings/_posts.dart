@@ -126,6 +126,11 @@ class _SettingsPostsFragmentState extends State<SettingsPostsFragment> {
             subtitle: Text(L10n.of(context).zen_mode_description),
             pref: optionZenMode,
           ),
+          PrefSwitch(
+            title: Text(L10n.of(context).calm_mode),
+            subtitle: Text(L10n.of(context).calm_mode_description),
+            pref: optionCalmMode,
+          ),
           PrefDropdown(
             fullWidth: false,
             title: Text(L10n.of(context).zen_mode_page_cap),

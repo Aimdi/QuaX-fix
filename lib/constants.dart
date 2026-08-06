@@ -352,6 +352,9 @@ const optionTickerChart = 'other.ticker_chart';
 
 const optionZenMode = 'other.zen_mode';
 const optionZenModePageCap = 'other.zen_mode_page_cap';
+// Hide engagement counts on posts; text and media stay visible. Unlike zen
+// mode, this does not cap feeds or hide replies.
+const optionCalmMode = 'other.calm_mode';
 const optionFeedReadingPosition = 'feed.reading_position';
 // Catch-up ("finish the feed") mode is per feed: the group id is appended to
 // this prefix by `feedCatchUpModeKey`. Off unless a feed opts in.

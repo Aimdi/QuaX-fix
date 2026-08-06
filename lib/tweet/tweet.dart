@@ -548,7 +548,9 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     Widget content = Container();
 
     if (tweet.displayTextRange![1] != 0) {
-      content = Container(
+      content = DefaultTextStyle.merge(
+          style: theme.textTheme.bodyLarge!,
+          child: Container(
           // Fill the width so both RTL and LTR text are displayed correctly
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -561,7 +563,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
               maxLines:
                   PrefService.of(context, listen: false).get(alwaysShowFullTweetContents) ? null : kTweetTextMaxLines,
             ),
-          ));
+          )));
     }
 
     final locale = _effectiveLocale();
@@ -682,7 +684,10 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
               Flexible(
                   child: Text(tweet.user!.name!,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.w700))),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ))),
               if (tweet.user!.verified ?? false) const SizedBox(width: 4),
               if (tweet.user!.verified ?? false)
                 Icon(Icons.verified, size: 18, color: Theme.of(context).colorScheme.primary)
@@ -691,17 +696,21 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         ),
     ]);
 
+    final metaStyle = theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant);
+
     final subtitleRow = Row(
       mainAxisAlignment: hideAuthorInformation ? MainAxisAlignment.end : MainAxisAlignment.spaceBetween,
       children: [
         // Twitter name
         if (!hideAuthorInformation) ...[
-          Flexible(child: Text('@${tweet.user!.screenName!}', overflow: TextOverflow.ellipsis)),
+          Flexible(
+              child: Text('@${tweet.user!.screenName!}',
+                  overflow: TextOverflow.ellipsis, style: metaStyle)),
           const SizedBox(width: 4),
         ],
         if (createdAt != null)
           DefaultTextStyle(
-              style: theme.textTheme.bodySmall!,
+              style: metaStyle ?? theme.textTheme.bodySmall!,
               child: Timestamp(
                   timestamp: createdAt,
                   absoluteTimestamp: prefs.get(optionUseAbsoluteTimestamp),
@@ -783,8 +792,17 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    DefaultTextStyle.merge(style: theme.textTheme.bodyLarge, child: titleRow),
-                                    DefaultTextStyle.merge(style: theme.textTheme.bodyMedium, child: subtitleRow),
+                                    DefaultTextStyle.merge(
+                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          color: theme.colorScheme.onSurfaceVariant,
+                                        ),
+                                        child: titleRow),
+                                    DefaultTextStyle.merge(
+                                        style: theme.textTheme.labelMedium?.copyWith(
+                                          color: theme.colorScheme.onSurfaceVariant,
+                                        ),
+                                        child: subtitleRow),
                                   ],
                                 ),
                               ),

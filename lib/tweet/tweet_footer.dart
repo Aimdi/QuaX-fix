@@ -175,7 +175,7 @@ Color? tweetFooterButtonsColor(Color? base) {
 }
 
 Color? tweetFooterButtonsColorOf(BuildContext context) =>
-    tweetFooterButtonsColor(Theme.of(context).textTheme.bodyMedium?.color);
+    Theme.of(context).colorScheme.onSurfaceVariant;
 
 /// Replace t.co redirectors with cleaned destinations so shares skip X click tracking.
 String shareableTweetText(TweetWithCard tweet, String text) {
@@ -361,7 +361,8 @@ class TweetFooterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final zen = PrefService.of(context, listen: false).get(optionZenMode) == true;
+    final prefs = PrefService.of(context, listen: false);
+    final hideCounts = prefs.get(optionZenMode) == true || prefs.get(optionCalmMode) == true;
     final tint = tweetFooterButtonsColorOf(context);
     // Both stores are registered with a plain Provider, so a Consumer over them
     // would depend on a value whose identity never changes and never rebuild.
@@ -374,12 +375,12 @@ class TweetFooterBar extends StatelessWidget {
       alignment: Alignment.center,
       margin: isArticle ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 8),
       child: LayoutBuilder(builder: (context, constraints) {
-        final replyLabel = zen || tweet.replyCount == null ? '' : numberFormat.format(tweet.replyCount);
-        final repostLabel = !zen && tweet.retweetCount != null && tweet.quoteCount != null
+        final replyLabel = hideCounts || tweet.replyCount == null ? '' : numberFormat.format(tweet.replyCount);
+        final repostLabel = !hideCounts && tweet.retweetCount != null && tweet.quoteCount != null
             ? numberFormat.format(tweet.retweetCount! + tweet.quoteCount!)
             : null;
-        final likeLabel = zen || tweet.favoriteCount == null ? '' : numberFormat.format(tweet.favoriteCount);
-        final viewsLabel = !zen && tweet.viewCount != null ? numberFormat.format(tweet.viewCount) : null;
+        final likeLabel = hideCounts || tweet.favoriteCount == null ? '' : numberFormat.format(tweet.favoriteCount);
+        final viewsLabel = !hideCounts && tweet.viewCount != null ? numberFormat.format(tweet.viewCount) : null;
 
         final measure = _LabelMeasure(context);
         final fit = resolveFooterFit(

@@ -399,6 +399,7 @@ Future<void> main() async {
       optionTweetsShowSubscribeBadge: true,
       optionZenMode: false,
       optionZenModePageCap: 5,
+      optionCalmMode: false,
       optionFeedReadingPosition: false,
       optionGlobalIncludeReplies: true,
       optionGlobalIncludeRetweets: true,
