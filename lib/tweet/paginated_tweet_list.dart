@@ -7,6 +7,7 @@ import 'package:xta/generated/l10n.dart';
 import 'package:xta/group/feed_refresh_controller.dart';
 import 'package:xta/tweet/cached_tweet_list.dart';
 import 'package:xta/tweet/conversation.dart';
+import 'package:xta/tweet/folded_chain.dart';
 import 'package:xta/tweet/interleaved_items.dart';
 import 'package:xta/tweet/tweet_skeleton.dart';
 import 'package:xta/ui/caught_up_divider.dart';
@@ -218,6 +219,9 @@ class PaginatedTweetList extends StatefulWidget {
   /// Posts from somewhere other than X, slotted among the chains by date.
   final List<InterleavedItem> interleaved;
 
+  /// Chain ids that should render folded behind a one-line reason.
+  final Map<String, String> foldReasons;
+
   const PaginatedTweetList({
     super.key,
     required this.feed,
@@ -234,6 +238,7 @@ class PaginatedTweetList extends StatefulWidget {
     this.isSeen,
     this.caughtUpDividerKey,
     this.interleaved = const [],
+    this.foldReasons = const {},
   });
 
   @override
@@ -317,8 +322,18 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
 
   // Keyed by chain id so a prepending refresh shifts elements instead of
   // re-associating every visible tile with a different chain by index.
-  Widget _buildChain(BuildContext context, TweetChain chain) => TweetConversation(
-      key: ValueKey(chain.id), id: chain.id, tweets: chain.tweets, username: widget.username, isPinned: chain.isPinned);
+  Widget _buildChain(BuildContext context, TweetChain chain) {
+    final reason = widget.foldReasons[chain.id];
+    if (reason != null) {
+      return FoldedChain(key: ValueKey('fold-${chain.id}'), chain: chain, reason: reason, username: widget.username);
+    }
+    return TweetConversation(
+        key: ValueKey(chain.id),
+        id: chain.id,
+        tweets: chain.tweets,
+        username: widget.username,
+        isPinned: chain.isPinned);
+  }
 
   // The caught-up boundary and the interleaved buckets are both O(loaded
   // history), and the list builder runs on every paging notification — so they

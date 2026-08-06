@@ -163,6 +163,8 @@ class _SettingsExportScreenState extends State<SettingsExportScreen> {
       replyFilters: _exportFilters ? await readReplyFilters() : null,
       feedReadPositions: _exportReadPositions ? await readFeedReadPositions() : null,
       accounts: _exportAccounts ? await getAccounts() : null,
+      profileNotes: _exportFilters ? await readProfileNotes() : null,
+      antennas: _exportFilters ? await readAntennas() : null,
     );
   }
 

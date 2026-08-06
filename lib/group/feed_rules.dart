@@ -9,8 +9,8 @@ import 'package:xta/group/custom_feed_rules.dart';
 /// hide; they stopped applying the moment the feed was sorted by Recent or
 /// Popular, which is not something anyone sets a mute list expecting.
 CustomFeedRules feedRulesOf(SubscriptionGroupGet group) => CustomFeedRules(
-  contentFilter: group.contentFilter,
-  minLikes: group.minLikes,
-  minRetweets: group.minRetweets,
-  mutedKeywords: group.mutedKeywords,
-);
+      contentFilter: group.contentFilter,
+      minLikes: group.minLikes,
+      minRetweets: group.minRetweets,
+      mutedKeywords: group.mutedKeywords,
+    );

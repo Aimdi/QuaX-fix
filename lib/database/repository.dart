@@ -37,8 +37,10 @@ const String tablePostNotification = 'post_notification';
 const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
+const String tableProfileNote = 'profile_note';
+const String tableAntenna = 'antenna';
 
-const int databaseVersion = 48;
+const int databaseVersion = 49;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -595,6 +597,34 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
       'in_feed INTEGER NOT NULL DEFAULT 1, '
       'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
       reverseSql: 'DROP TABLE $tableMastodonSubscription',
+    ),
+  ],
+  49: [
+    // Clip note on a saved post (Misskey-style); searchable from Saved.
+    SqlMigration(
+      'ALTER TABLE $tableSavedTweet ADD COLUMN note TEXT',
+      reverseSql: 'ALTER TABLE $tableSavedTweet DROP COLUMN note',
+    ),
+    // Private, never-synced note on any profile id.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableProfileNote ('
+      'id VARCHAR PRIMARY KEY, note TEXT NOT NULL, '
+      'updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableProfileNote',
+    ),
+    // Keyword listeners as first-class feeds (Misskey antennas).
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableAntenna ('
+      'id VARCHAR PRIMARY KEY, name VARCHAR NOT NULL, '
+      'include_terms TEXT NOT NULL, exclude_terms TEXT, '
+      'scope VARCHAR NOT NULL DEFAULT \'search\', '
+      'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableAntenna',
+    ),
+    // Per-account cap: max chains from this author per feed load.
+    SqlMigration(
+      'ALTER TABLE $tableSubscription ADD COLUMN max_posts_per_load INTEGER',
+      reverseSql: 'ALTER TABLE $tableSubscription DROP COLUMN max_posts_per_load',
     ),
   ],
 });
