@@ -98,22 +98,18 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   // (translate / show original) rather than on every build of the tile.
   List<InlineSpan> _displaySpans = const [];
 
-  // Everything below derives from [tweet] alone, which never changes for a
-  // given State (a changed post gets a new key, hence a new State), so each is
-  // computed once on first use instead of on every build.
-
   /// The post actually shown: a retweet displays the post it carries.
-  late final TweetWithCard _displayedTweet = tweet.retweetedStatusWithCard ?? tweet;
+  TweetWithCard get _displayedTweet => tweet.retweetedStatusWithCard ?? tweet;
 
   /// A link to a long-form X article, which carries nothing a preview could be
   /// built from and so rendered as a bare truncated URL.
-  late final String? _articleLink = _displayedTweet.article != null
+  String? get _articleLink => _displayedTweet.article != null
       ? null
       : firstArticleLink(_displayedTweet.entities?.urls?.map((e) => e.expandedUrl) ?? const []);
 
   /// When the retweet happened, for the "X retweeted" banner. Relative dates
   /// are pinned at first display here, exactly as [Timestamp] pins its own.
-  late final String? _retweetRelativeDate =
+  String? get _retweetRelativeDate =>
       tweet.retweetedStatusWithCard == null || tweet.createdAt == null ? null : createRelativeDate(tweet.createdAt!);
 
   bool _isInitialized = false;
@@ -138,7 +134,8 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   @override
   void didUpdateWidget(TweetTile oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.tweet.idStr != oldWidget.tweet.idStr) {
+    final sameId = widget.tweet.idStr == oldWidget.tweet.idStr;
+    if (!sameId || !identical(widget.tweet, oldWidget.tweet)) {
       clickable = widget.clickable;
       currentUsername = widget.currentUsername;
       tweet = widget.tweet;
@@ -147,9 +144,11 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       isQuotedTweet = widget.isQuotedTweet;
       addSeparator = widget.addSeparator;
       isBirdwatchQuote = widget.isBirdwatchQuote;
-      _translationStatus = TranslationStatus.original;
-      disposeRichTextParts(_translatedParts);
-      _translatedParts = [];
+      if (!sameId) {
+        _translationStatus = TranslationStatus.original;
+        disposeRichTextParts(_translatedParts);
+        _translatedParts = [];
+      }
       _initializeTweetParts();
     }
   }
@@ -190,7 +189,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     // Get the text to display from the actual tweet, i.e. the retweet if there is one, otherwise we end up with "RT @" crap in our text
     var actualTweet = _displayedTweet;
     // get the longest tweet between legacy (still used most of the time) and noteText (mostly ny premium users?)
-    var tweetTextFinal = actualTweet.noteText ?? actualTweet.fullText ?? actualTweet.text!;
+    var tweetTextFinal = actualTweet.noteText ?? actualTweet.fullText ?? actualTweet.text ?? '';
     var entitiesFinal = actualTweet.noteEntities ?? actualTweet.entities;
 
     List<RichTextPart> tweetParts = buildRichText(context, tweetTextFinal, entitiesFinal);

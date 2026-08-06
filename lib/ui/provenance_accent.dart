@@ -15,12 +15,11 @@ Color provenanceAccentColor(BuildContext context, String pluginId) {
 
 /// Misskey-style 2px leading strip marking where an interleaved card came from.
 Widget provenanceAccent({required BuildContext context, required Color color, required Widget child}) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      ColoredBox(color: color, child: const SizedBox(width: 2)),
-      Expanded(child: child),
-    ],
+  return DecoratedBox(
+    decoration: BoxDecoration(
+      border: Border(left: BorderSide(color: color, width: 2)),
+    ),
+    child: child,
   );
 }
 
