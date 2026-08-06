@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 const optionDisableAnimations = 'accessibility.disable_animations';
 const optionTextScaleFactor = 'accessibility.text_scale_factor';
 
-const optionWizardCompleted = 'option.wizard_completed';
-
 const optionDisableScreenshots = 'disable_screenshots';
 const optionHelloLastBuild = 'hello.last_build';
 

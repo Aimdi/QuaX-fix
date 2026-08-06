@@ -140,8 +140,14 @@ Future checkForAccounts(BuildContext context) async {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("⚠️ ${L10n.of(context).not_logged_in}"),
-          content: Text(L10n.of(context).xta_doesnt_work_without_account_please_login),
+          content: Text(L10n.of(context).sign_in_why_needed),
           actions: [
+            // A way out that is not signing in. The app does try as a guest, so
+            // dismissing this is a real choice rather than a refusal to start.
+            TextButton(
+              child: Text(L10n.of(context).cancel),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
             TextButton(
               child: Text(L10n.of(context).import_backup),
               onPressed: () async {

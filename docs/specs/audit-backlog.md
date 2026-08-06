@@ -49,17 +49,35 @@ indexed on `created_at` (migration, additively, tests green).
 
 A `timeline_cache` row cap is still open — the index is in, the bound is not.
 
+Since then: the Reddit plugin reads every surface through one shared
+`RedditPostSource`, so a subreddit followed in the tab, the home timeline and a
+group is fetched once; refusals from the anonymous route are named
+(`RedditPageKind`) instead of all reading as one error, and a verdict ends the
+route search rather than asking two more hosts to agree.
+
+Backup covered 14 of 18 tables; it now covers 17, and a test compares the
+document against `sqlite_master` so the next table cannot be missed quietly.
+`immich_upload` is the one deliberate omission, for the reason recorded in
+`test/backup_coverage_test.dart`.
+
+Correctness since: a Substack post could run JavaScript in the reader (the
+sanitiser dropped `script` elements but left every `on…` attribute, in a web
+view with scripting on); deleting an X account left its session cookies on the
+device, so the account was still signed in as far as x.com was concerned; every
+full-page error screen overflowed at twice the text size and took its own retry
+button off the bottom of the screen; and the release workflow, run by hand,
+built an APK stamped `main` and published nothing.
+
+The first-run and sign-in dialogs said two things the code contradicts — that
+the app does not work without an account, and that accounts are picked
+"randomly" — in all 29 locales. Both are corrected.
+
 ## Not done — worth doing
 
 **Fewer gap-fill pages.** Passing `limit: 40` to `Twitter.searchTweets` (the
 parameter exists, defaulting to 20) would cut how many gap-fill pages a first
 load needs. Not done: it changes response size and parse cost per request, so
 it wants measuring rather than assuming.
-
-**One Reddit store instead of three fetches.** `reddit_interleaved.dart`, the
-For You feed and `RedditFeedStore` each fetch overlapping subreddit sets with no
-shared cache, so Following → For You re-downloads the same listings. On the
-anonymous path each subreddit is an old.reddit HTML scrape, up to four requests.
 
 **Icon tree-shaking.** Group icons are deserialized at runtime
 (`group_model.dart:19-31`), so `--no-tree-shake-icons` is on in all four
@@ -75,16 +93,14 @@ decision rather than a patch.
 
 ## Not done — UX
 
-The account list still has no swipe background, no confirmation and no undo on
-the one action that can leave the app unable to fetch anything. The first-run
-dialog claims the app "doesn't work without an X account", which `transport.dart`
-contradicts — a guest request is attempted first — and the explanation of why
-accounts are needed only appears after the reader has committed to logging in;
-it also still says accounts are picked "randomly", which stopped being true when
-selection became health-based. A rate limit and broken auth are visually
-indistinguishable. The drawer in `home_screen.dart:283` is unreachable:
-`openDrawer` has zero call sites. `optionWizardCompleted` and
-`SettingsScreen.initialPage` are both declared and never read.
+The explanation of why accounts are needed still only appears after the reader
+has committed to logging in. A rate limit and broken auth are visually
+indistinguishable.
+
+Two entries here were wrong and have been dropped rather than fixed: the drawer
+is reachable (`_account_avatar.dart:54` calls `openDrawer`), and the audit that
+called it dead had simply missed the call site. Re-grep before trusting the rest
+of this file for the same reason.
 
 ## Considered and rejected
 

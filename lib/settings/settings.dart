@@ -16,9 +16,7 @@ import 'package:xta/settings/diagnostics_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsScreen extends StatefulWidget {
-  final String? initialPage;
-
-  const SettingsScreen({super.key, this.initialPage});
+  const SettingsScreen({super.key});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
