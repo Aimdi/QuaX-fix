@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/mastodon/mastodon_client.dart';
 import 'package:xta/plugins/mastodon/mastodon_models.dart';
@@ -55,23 +54,14 @@ class _MastodonProfileScreenState extends State<MastodonProfileScreen> {
     });
 
     final prefs = PrefService.of(context, listen: false);
-    final instance = normaliseMastodonInstance(prefs.get<String>(optionPluginMastodonInstance) ?? '');
-    if (instance == null) {
-      setState(() {
-        _error = MastodonException(MastodonErrorKind.notConfigured, 'no instance');
-        _loading = false;
-      });
-      return;
-    }
-
     final client = context.read<MastodonClient>();
     try {
-      final profile = await client.lookup(instance, widget.acct);
-      final posts = await client.getStatuses(instance, profile.id);
+      final candidates = mastodonInstanceCandidates(widget.acct, configured: mastodonConfiguredInstances(prefs));
+      final thread = await client.profileAnywhere(candidates, widget.acct);
       if (mounted) {
         setState(() {
-          _profile = profile;
-          _posts = posts;
+          _profile = thread.profile;
+          _posts = thread.posts;
           _loading = false;
         });
       }
@@ -155,12 +145,7 @@ class MastodonProfileCard extends StatelessWidget {
   final bool following;
   final VoidCallback? onFollowToggle;
 
-  const MastodonProfileCard({
-    super.key,
-    required this.profile,
-    required this.following,
-    this.onFollowToggle,
-  });
+  const MastodonProfileCard({super.key, required this.profile, required this.following, this.onFollowToggle});
 
   @override
   Widget build(BuildContext context) {
@@ -180,24 +165,31 @@ class MastodonProfileCard extends StatelessWidget {
                       seed: profile.acct,
                       displayName: profile.displayName,
                       size: 64,
-                      accent: theme.colorScheme.primary)
-                  : ExtendedImage.network(avatar,
+                      accent: theme.colorScheme.primary,
+                    )
+                  : ExtendedImage.network(
+                      avatar,
                       width: 64,
                       height: 64,
                       fit: BoxFit.cover,
-                      cacheWidth: (64 * MediaQuery.devicePixelRatioOf(context)).ceil()),
+                      cacheWidth: (64 * MediaQuery.devicePixelRatioOf(context)).ceil(),
+                    ),
             ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(profile.displayName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700)),
-                  Text('@${profile.acct}',
-                      style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                  Text(
+                    profile.displayName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  Text(
+                    '@${profile.acct}',
+                    style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  ),
                 ],
               ),
             ),
@@ -235,9 +227,20 @@ class MastodonProfileCard extends StatelessWidget {
   Widget _count(BuildContext context, String value, String label) {
     final theme = Theme.of(context);
 
-    return Text.rich(TextSpan(children: [
-      TextSpan(text: value, style: const TextStyle(fontWeight: FontWeight.w700)),
-      TextSpan(text: ' $label', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
-    ]), style: theme.textTheme.bodyMedium);
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+            text: value,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+          TextSpan(
+            text: ' $label',
+            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+          ),
+        ],
+      ),
+      style: theme.textTheme.bodyMedium,
+    );
   }
 }

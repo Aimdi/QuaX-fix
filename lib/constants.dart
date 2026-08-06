@@ -197,6 +197,9 @@ const optionPluginMastodonEnabled = 'plugin.mastodon.enabled';
 const optionPluginMastodonShowTab = 'plugin.mastodon.show_tab';
 const optionPluginMastodonInstance = 'plugin.mastodon.instance';
 
+/// JSON list of further instances the reader added, tried after the home one.
+const optionPluginMastodonInstances = 'plugin.mastodon.instances';
+
 /// How many statuses one account contributes to the merged Mastodon feed.
 const mastodonPostsPerAccount = 20;
 

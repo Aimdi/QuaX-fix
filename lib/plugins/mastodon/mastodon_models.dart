@@ -83,11 +83,7 @@ class MastodonProfile {
     );
   }
 
-  MastodonAccount toAccount() => MastodonAccount(
-        acct: acct,
-        name: displayName,
-        avatarUrl: avatarUrl,
-      );
+  MastodonAccount toAccount() => MastodonAccount(acct: acct, name: displayName, avatarUrl: avatarUrl);
 }
 
 /// An account the reader follows locally — not a Mastodon follow-graph edge.
@@ -97,17 +93,55 @@ class MastodonAccount {
   final String name;
   final String? avatarUrl;
 
-  const MastodonAccount({
-    required this.acct,
-    required this.name,
-    this.avatarUrl,
-  });
+  const MastodonAccount({required this.acct, required this.name, this.avatarUrl});
 
-  MastodonAccount copyWith({String? name, String? avatarUrl}) => MastodonAccount(
-        acct: acct,
-        name: name ?? this.name,
-        avatarUrl: avatarUrl ?? this.avatarUrl,
-      );
+  MastodonAccount copyWith({String? name, String? avatarUrl}) =>
+      MastodonAccount(acct: acct, name: name ?? this.name, avatarUrl: avatarUrl ?? this.avatarUrl);
+}
+
+/// Instances the plugin can read through with nothing configured.
+///
+/// Chosen for reach rather than character: large, long-lived, open general
+/// instances whose public API answers without a login, ordered by the size of
+/// the slice of the Fediverse each one federates with. The first two are run
+/// by Mastodon gGmbH itself; the rest are the biggest independent generalists
+/// that have stayed up and open for years. Broad instances are the point —
+/// a big instance's federated view contains what the small ones see.
+///
+/// This list is the *fallback*, not the strategy. Coverage of the whole
+/// Fediverse comes from [mastodonInstanceCandidates] asking an account's own
+/// instance first: the origin has every post its accounts ever made, which no
+/// amount of federation guarantees anywhere else. The client walks the list,
+/// so an instance being down or newly closed costs one failed try, never the
+/// feature.
+const kMastodonDefaultInstances = [
+  'https://mastodon.social',
+  'https://mastodon.online',
+  'https://mstdn.social',
+  'https://mas.to',
+  'https://mastodon.world',
+];
+
+/// Every instance worth asking about [acct], best answer first.
+///
+/// Order is the whole design: the account's own instance (complete by
+/// definition — though a Misskey-family origin will not answer the Mastodon
+/// API, which is why the walk goes on), then the reader's instances in the
+/// order they gave them, then the built-in defaults. Duplicates collapse to
+/// their first appearance, so a reader whose home is an origin or a default
+/// never asks it twice.
+List<String> mastodonInstanceCandidates(String acct, {List<String> configured = const []}) {
+  final normalisedAcct = normaliseMastodonAcct(acct) ?? acct.trim();
+  final at = normalisedAcct.indexOf('@');
+  final origin = at > 0 ? normalisedAcct.substring(at + 1).trim().toLowerCase() : '';
+
+  final ordered = [if (origin.isNotEmpty) 'https://$origin', ...configured, ...kMastodonDefaultInstances];
+
+  final seen = <String>{};
+  return [
+    for (final candidate in ordered)
+      if (normaliseMastodonInstance(candidate) case final instance? when seen.add(instance)) instance,
+  ];
 }
 
 /// Strip scheme/trailing slash; require http(s). Null when unusable.
@@ -247,10 +281,7 @@ MastodonPost? mastodonPostFromStatus(Object? json, {String? homeDomain}) {
   final author = MastodonProfile.fromJson(status['account'].raw, homeDomain: homeDomain);
   final spoiler = status['spoiler_text'].string?.trim() ?? '';
   final body = mastodonHtmlToText(status['content'].string);
-  final text = [
-    if (spoiler.isNotEmpty) spoiler,
-    if (body.isNotEmpty) body,
-  ].join('\n\n');
+  final text = [if (spoiler.isNotEmpty) spoiler, if (body.isNotEmpty) body].join('\n\n');
   final images = mastodonImagesOf(status);
   if (text.isEmpty && images.isEmpty) {
     return null;
@@ -278,8 +309,5 @@ MastodonPost? mastodonPostFromStatus(Object? json, {String? homeDomain}) {
 List<MastodonPost> parseMastodonStatuses(Object? json, {String? homeDomain}) {
   final root = Json(json);
   final items = root.raw is List ? root.list : const <Json>[];
-  return [
-    for (final item in items)
-      ?mastodonPostFromStatus(item.raw, homeDomain: homeDomain),
-  ];
+  return [for (final item in items) ?mastodonPostFromStatus(item.raw, homeDomain: homeDomain)];
 }

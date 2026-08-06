@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
-import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/mastodon/mastodon_client.dart';
 import 'package:xta/plugins/mastodon/mastodon_models.dart';
@@ -32,37 +31,19 @@ class _MastodonScreenState extends State<MastodonScreen> {
     });
   }
 
-  bool get _hasInstance {
-    final prefs = PrefService.of(context, listen: false);
-    return normaliseMastodonInstance(prefs.get<String>(optionPluginMastodonInstance) ?? '') != null;
-  }
-
   Future<void> _lookUpProfile() async {
-    if (!_hasInstance) {
-      _toastNotConfigured();
-      return;
-    }
-
     final acct = await showMastodonAddAccountDialog(context, lookup: true);
     if (acct == null || !mounted) {
       return;
     }
 
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => MastodonProfileScreen(acct: acct)),
-    );
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => MastodonProfileScreen(acct: acct)));
     if (mounted) {
       await context.read<MastodonFeedStore>().refresh();
     }
   }
 
   Future<void> _addAccount() async {
-    if (!_hasInstance) {
-      _toastNotConfigured();
-      return;
-    }
-
     final acct = await showMastodonAddAccountDialog(context);
     if (acct == null || !mounted) {
       return;
@@ -70,13 +51,15 @@ class _MastodonScreenState extends State<MastodonScreen> {
 
     final messenger = ScaffoldMessenger.of(context);
     final prefs = PrefService.of(context, listen: false);
-    final instance = normaliseMastodonInstance(prefs.get<String>(optionPluginMastodonInstance) ?? '')!;
     final client = context.read<MastodonClient>();
     final accounts = context.read<MastodonAccountsStore>();
     final l10n = L10n.of(context);
 
     try {
-      final profile = await client.lookup(instance, acct);
+      // No instance required any more: the acct's own instance is asked first,
+      // then the reader's, then the built-in defaults.
+      final candidates = mastodonInstanceCandidates(acct, configured: mastodonConfiguredInstances(prefs));
+      final profile = await client.lookupAnywhere(candidates, acct);
       await accounts.add(profile.toAccount());
     } catch (e) {
       if (mounted) {
@@ -90,11 +73,6 @@ class _MastodonScreenState extends State<MastodonScreen> {
     }
   }
 
-  void _toastNotConfigured() {
-    final l10n = L10n.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.plugin_mastodon_not_configured)));
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
@@ -103,16 +81,8 @@ class _MastodonScreenState extends State<MastodonScreen> {
       appBar: AppBar(
         title: Text(l10n.plugin_mastodon_title),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            tooltip: l10n.plugin_mastodon_lookup,
-            onPressed: _lookUpProfile,
-          ),
-          IconButton(
-            icon: const Icon(Icons.person_add_alt),
-            tooltip: l10n.plugin_mastodon_add,
-            onPressed: _addAccount,
-          ),
+          IconButton(icon: const Icon(Icons.search), tooltip: l10n.plugin_mastodon_lookup, onPressed: _lookUpProfile),
+          IconButton(icon: const Icon(Icons.person_add_alt), tooltip: l10n.plugin_mastodon_add, onPressed: _addAccount),
         ],
       ),
       body: ScopedBuilder<MastodonFeedStore, List<MastodonPost>>.transition(
@@ -175,10 +145,7 @@ Future<String?> showMastodonAddAccountDialog(BuildContext context, {bool lookup 
           content: TextField(
             controller: controller,
             autofocus: true,
-            decoration: InputDecoration(
-              hintText: l10n.plugin_mastodon_handle_hint,
-              errorText: error,
-            ),
+            decoration: InputDecoration(hintText: l10n.plugin_mastodon_handle_hint, errorText: error),
             onSubmitted: (_) {
               final acct = normaliseMastodonAcct(controller.text);
               if (acct == null) {

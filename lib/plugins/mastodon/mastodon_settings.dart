@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
@@ -20,6 +22,8 @@ class MastodonSettingsScreen extends StatefulWidget {
 
 class _MastodonSettingsScreenState extends State<MastodonSettingsScreen> {
   late final TextEditingController _instance;
+  late final TextEditingController _newInstance;
+  late List<String> _extras;
   bool _testing = false;
 
   @override
@@ -27,12 +31,46 @@ class _MastodonSettingsScreenState extends State<MastodonSettingsScreen> {
     super.initState();
     final prefs = PrefService.of(context, listen: false);
     _instance = TextEditingController(text: prefs.get<String>(optionPluginMastodonInstance) ?? '');
+    _newInstance = TextEditingController();
+    _extras = _storedExtras(prefs);
+  }
+
+  static List<String> _storedExtras(BasePrefService prefs) {
+    try {
+      final decoded = jsonDecode(prefs.get<String>(optionPluginMastodonInstances) ?? '[]');
+      return decoded is List ? decoded.whereType<String>().toList() : const [];
+    } catch (_) {
+      return const [];
+    }
   }
 
   @override
   void dispose() {
     _instance.dispose();
+    _newInstance.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveExtras() async {
+    await PrefService.of(context, listen: false).set(optionPluginMastodonInstances, jsonEncode(_extras));
+  }
+
+  Future<void> _addExtra() async {
+    final normalised = normaliseMastodonInstance(_newInstance.text);
+    if (normalised == null || _extras.contains(normalised)) {
+      return;
+    }
+
+    setState(() {
+      _extras = [..._extras, normalised];
+      _newInstance.clear();
+    });
+    await _saveExtras();
+  }
+
+  Future<void> _removeExtra(String instance) async {
+    setState(() => _extras = _extras.where((e) => e != instance).toList());
+    await _saveExtras();
   }
 
   Future<void> _save() async {
@@ -106,6 +144,43 @@ class _MastodonSettingsScreenState extends State<MastodonSettingsScreen> {
             ),
           ),
           const SizedBox(height: 28),
+          Text(l10n.plugin_mastodon_more_instances, style: theme.textTheme.titleSmall),
+          const SizedBox(height: 8),
+          for (final instance in _extras)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+              title: Text(instance),
+              trailing: IconButton(icon: const Icon(Icons.delete_outline), onPressed: () => _removeExtra(instance)),
+            ),
+          TextField(
+            controller: _newInstance,
+            decoration: InputDecoration(
+              hintText: l10n.plugin_mastodon_instance_hint,
+              border: const OutlineInputBorder(),
+              suffixIcon: IconButton(icon: const Icon(Icons.add), onPressed: _addExtra),
+            ),
+            keyboardType: TextInputType.url,
+            autocorrect: false,
+            onSubmitted: (_) => _addExtra(),
+          ),
+          const SizedBox(height: 28),
+          Text(l10n.plugin_mastodon_builtin_instances, style: theme.textTheme.titleSmall),
+          const SizedBox(height: 8),
+          Text(
+            l10n.plugin_mastodon_builtin_instances_description,
+            style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          ),
+          const SizedBox(height: 8),
+          for (final instance in kMastodonDefaultInstances)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Text(
+                mastodonInstanceDomain(instance) ?? instance,
+                style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              ),
+            ),
+          const SizedBox(height: 28),
           Text(l10n.plugin_mastodon_accounts, style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),
           ScopedBuilder<MastodonAccountsStore, List<MastodonAccount>>(
@@ -114,8 +189,10 @@ class _MastodonSettingsScreenState extends State<MastodonSettingsScreen> {
               if (accounts.isEmpty) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Text(l10n.plugin_mastodon_no_accounts,
-                      style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                  child: Text(
+                    l10n.plugin_mastodon_no_accounts,
+                    style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  ),
                 );
               }
 
@@ -130,7 +207,8 @@ class _MastodonSettingsScreenState extends State<MastodonSettingsScreen> {
                                 seed: account.acct,
                                 displayName: account.name,
                                 size: 40,
-                                accent: theme.colorScheme.primary)
+                                accent: theme.colorScheme.primary,
+                              )
                             : Image.network(account.avatarUrl!, width: 40, height: 40, fit: BoxFit.cover),
                       ),
                       title: Text(account.name),

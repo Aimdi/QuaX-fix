@@ -37,10 +37,7 @@ class MastodonPostCard extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(post.text, style: theme.textTheme.bodyMedium),
                   ],
-                  if (post.hasMedia) ...[
-                    const SizedBox(height: 10),
-                    _media(context),
-                  ],
+                  if (post.hasMedia) ...[const SizedBox(height: 10), _media(context)],
                 ],
               ),
             ),
@@ -65,32 +62,37 @@ class MastodonPostCard extends StatelessWidget {
                   seed: post.acct,
                   displayName: post.authorName,
                   size: 32,
-                  accent: theme.colorScheme.primary)
-              : ExtendedImage.network(avatar,
+                  accent: theme.colorScheme.primary,
+                )
+              : ExtendedImage.network(
+                  avatar,
                   width: 32,
                   height: 32,
                   fit: BoxFit.cover,
-                  cacheWidth: (32 * MediaQuery.devicePixelRatioOf(context)).ceil()),
+                  cacheWidth: (32 * MediaQuery.devicePixelRatioOf(context)).ceil(),
+                ),
         ),
         const SizedBox(width: 8),
         Flexible(
-          child: Text(post.authorName,
-              overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w700)),
+          child: Text(
+            post.authorName,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
         ),
         const SizedBox(width: 4),
         Flexible(
-          child: Text('@${post.acct}',
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          child: Text(
+            '@${post.acct}',
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          ),
         ),
         if (post.boosted) ...[
           const SizedBox(width: 6),
           Icon(Icons.repeat, size: 14, color: theme.colorScheme.onSurfaceVariant),
         ],
-        if (showSourceBadge) ...[
-          const SizedBox(width: 6),
-          _badge(context, l10n.plugin_mastodon_title),
-        ],
+        if (showSourceBadge) ...[const SizedBox(width: 6), _badge(context, l10n.plugin_mastodon_title)],
         const Spacer(),
         if (date != null) Text(createCompactDate(date), style: theme.textTheme.bodySmall),
       ],
@@ -118,8 +120,7 @@ class MastodonPostCard extends StatelessWidget {
     if (post.images.length == 1) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(radius),
-        child: ExtendedImage.network(post.images.first,
-            fit: BoxFit.cover, cacheWidth: (width * scale).ceil()),
+        child: ExtendedImage.network(post.images.first, fit: BoxFit.cover, cacheWidth: (width * scale).ceil()),
       );
     }
 
@@ -131,8 +132,13 @@ class MastodonPostCard extends StatelessWidget {
         separatorBuilder: (_, _) => const SizedBox(width: 6),
         itemBuilder: (context, index) => ClipRRect(
           borderRadius: BorderRadius.circular(radius),
-          child: ExtendedImage.network(post.images[index],
-              width: 200, height: 220, fit: BoxFit.cover, cacheWidth: (200 * scale).ceil()),
+          child: ExtendedImage.network(
+            post.images[index],
+            width: 200,
+            height: 220,
+            fit: BoxFit.cover,
+            cacheWidth: (200 * scale).ceil(),
+          ),
         ),
       ),
     );
