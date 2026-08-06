@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -11,12 +13,14 @@ void main() {
   late PrefServiceCache prefs;
 
   setUp(() async {
-    prefs = PrefServiceCache(cache: {
-      optionPluginPixivRefreshToken: 'refresh-me',
-      optionPluginPixivAccessToken: '',
-      optionPluginPixivAccessExpiresAt: '',
-      optionPluginPixivShowR18: false,
-    });
+    prefs = PrefServiceCache(
+      cache: {
+        optionPluginPixivRefreshToken: 'refresh-me',
+        optionPluginPixivAccessToken: '',
+        optionPluginPixivAccessExpiresAt: '',
+        optionPluginPixivShowR18: false,
+      },
+    );
   });
 
   group('PixivClient', () {
@@ -69,7 +73,7 @@ void main() {
                   'page_count': 1,
                   'x_restrict': 0,
                   'sanity_level': 2,
-                }
+                },
               ],
               'next_url': null,
             }),
@@ -92,5 +96,91 @@ void main() {
         throwsA(isA<PixivException>().having((e) => e.kind, 'kind', PixivErrorKind.notConfigured)),
       );
     });
+
+    // Pixiv's token endpoint checks a signed timestamp on every request — the
+    // official app always sends the pair, and without it a perfectly valid
+    // refresh token is refused. That is exactly what "the right token doesn't
+    // connect" looks like from the outside.
+    group('client time signature', () {
+      test('every request carries the time and its hash, and they agree', () async {
+        final requests = <http.Request>[];
+        final client = PixivClient(
+          prefs,
+          // A fixed instant, so the expected header values are knowable.
+          clock: () => DateTime.utc(2026, 8, 6, 1, 2, 3),
+          httpClient: MockClient((request) async {
+            requests.add(request);
+            return _json({
+              'access_token': 'access-1',
+              'expires_in': 3600,
+              'user': {'id': '123', 'name': 'Reader', 'account': 'reader'},
+            }, 200);
+          }),
+        );
+
+        await client.verify();
+
+        final headers = requests.single.headers;
+        const time = '2026-08-06T01:02:03+00:00';
+        expect(headers['X-Client-Time'], time);
+        expect(
+          headers['X-Client-Hash'],
+          md5.convert(utf8.encode('$time${PixivClient.clientHashSalt}')).toString(),
+          reason: 'the hash must be of exactly the time string that was sent',
+        );
+      });
+
+      test('the API requests are signed the same way', () async {
+        await prefs.set(optionPluginPixivAccessToken, 'access-1');
+        await prefs.set(
+          optionPluginPixivAccessExpiresAt,
+          DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+        );
+
+        final requests = <http.Request>[];
+        final client = PixivClient(
+          prefs,
+          httpClient: MockClient((request) async {
+            requests.add(request);
+            return _json({'illusts': [], 'next_url': null}, 200);
+          }),
+        );
+
+        await client.following();
+
+        final headers = requests.single.headers;
+        expect(headers['X-Client-Time'], isNotNull);
+        expect(
+          headers['X-Client-Hash'],
+          md5.convert(utf8.encode('${headers['X-Client-Time']}${PixivClient.clientHashSalt}')).toString(),
+        );
+      });
+    });
+
+    test('a refused token surfaces what Pixiv actually said', () async {
+      final client = PixivClient(
+        prefs,
+        httpClient: MockClient(
+          (_) async => _json({
+            'has_error': true,
+            'errors': {
+              'system': {'message': 'Invalid refresh token', 'code': 1508},
+            },
+          }, 403),
+        ),
+      );
+
+      await expectLater(
+        client.verify(),
+        throwsA(
+          isA<PixivException>()
+              .having((e) => e.kind, 'kind', PixivErrorKind.unauthorized)
+              .having((e) => e.message, 'message', contains('Invalid refresh token')),
+        ),
+      );
+    });
   });
 }
+
+http.Response _json(Object body, int status) =>
+    http.Response(jsonEncode(body), status, headers: {'content-type': 'application/json'});
