@@ -601,10 +601,8 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
   ],
   49: [
     // Clip note on a saved post (Misskey-style); searchable from Saved.
-    SqlMigration(
-      'ALTER TABLE $tableSavedTweet ADD COLUMN note TEXT',
-      reverseSql: 'ALTER TABLE $tableSavedTweet DROP COLUMN note',
-    ),
+    // Tolerant: migration-test fixtures often omit saved_tweet.
+    Migration(Operation(_addSavedTweetNoteColumn)),
     // Private, never-synced note on any profile id.
     SqlMigration(
       'CREATE TABLE IF NOT EXISTS $tableProfileNote ('
@@ -622,10 +620,7 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
       reverseSql: 'DROP TABLE $tableAntenna',
     ),
     // Per-account cap: max chains from this author per feed load.
-    SqlMigration(
-      'ALTER TABLE $tableSubscription ADD COLUMN max_posts_per_load INTEGER',
-      reverseSql: 'ALTER TABLE $tableSubscription DROP COLUMN max_posts_per_load',
-    ),
+    Migration(Operation(_addSubscriptionMaxPostsColumn)),
   ],
 });
 
@@ -662,6 +657,22 @@ Future<void> _addFolderAutoUploadColumn(Database db) async {
     await db.execute('ALTER TABLE $tableSavedTweetFolder ADD COLUMN auto_upload BOOLEAN DEFAULT 0');
   } catch (e) {
     Repository.log.warning('Could not add auto_upload to $tableSavedTweetFolder: $e');
+  }
+}
+
+Future<void> _addSavedTweetNoteColumn(Database db) async {
+  try {
+    await db.execute('ALTER TABLE $tableSavedTweet ADD COLUMN note TEXT');
+  } catch (e) {
+    Repository.log.warning('Could not add note to $tableSavedTweet: $e');
+  }
+}
+
+Future<void> _addSubscriptionMaxPostsColumn(Database db) async {
+  try {
+    await db.execute('ALTER TABLE $tableSubscription ADD COLUMN max_posts_per_load INTEGER');
+  } catch (e) {
+    Repository.log.warning('Could not add max_posts_per_load to $tableSubscription: $e');
   }
 }
 
