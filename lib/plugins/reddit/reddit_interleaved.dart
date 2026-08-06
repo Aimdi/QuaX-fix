@@ -3,6 +3,7 @@ import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
+import 'package:xta/ui/provenance_accent.dart';
 import 'package:xta/plugins/reddit/reddit_auth.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_post_card.dart';
@@ -75,7 +76,11 @@ Future<List<InterleavedItem>> loadRedditInterleaved(
       if (date == null) {
         continue;
       }
-      items.add((date: date, build: (context) => RedditPostCard(post: post)));
+      items.add(provenanceInterleavedItem(
+        date: date,
+        pluginId: pluginIdReddit,
+        build: (_) => RedditPostCard(post: post),
+      ));
     }
   }
 

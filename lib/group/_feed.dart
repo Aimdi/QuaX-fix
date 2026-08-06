@@ -22,6 +22,7 @@ import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:logging/logging.dart';
 import 'package:xta/plugins/reddit/reddit_interleaved.dart';
 import 'package:xta/plugins/substack/substack_client.dart';
+import 'package:xta/ui/provenance_accent.dart';
 import 'package:xta/plugins/substack/substack_post_card.dart';
 import 'package:xta/plugins/substack/substack_store.dart';
 import 'package:xta/profile/profile_feed_settings.dart';
@@ -203,7 +204,11 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
         if (date == null) {
           continue;
         }
-        items.add((date: date, build: (context) => SubstackPostCard(post: post, logoUrl: publication.logoUrl)));
+        items.add(provenanceInterleavedItem(
+          date: date,
+          pluginId: pluginIdSubstack,
+          build: (_) => SubstackPostCard(post: post, logoUrl: publication.logoUrl),
+        ));
       }
     }
 
