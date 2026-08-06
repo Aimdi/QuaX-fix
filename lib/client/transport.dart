@@ -12,12 +12,14 @@ import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:xta/catcher/exceptions.dart';
+import 'package:xta/client/account_fetch_gate.dart';
 import 'package:xta/client/account_selector.dart';
 import 'package:xta/client/accounts.dart';
 import 'package:xta/client/client_regular_account.dart';
 import 'package:xta/client/client_unauthenticated.dart';
 import 'package:xta/client/rate_limit_tracker.dart';
 import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
 
 const Duration _defaultTimeout = Duration(seconds: 30);
 
@@ -54,10 +56,44 @@ class QuackerTwitterClient extends TwitterClient {
   /// rate-limited on the endpoint, [NoWorkingAccountException] when they all
   /// returned 404, and [NoAccountAvailableException] only when there is no account
   /// and the guest request also failed.
+  /// Fetches [uri] with a single pinned [account] — no rotation.
+  ///
+  /// Used when a feed intentionally merges several accounts' timelines and
+  /// must know which credentials produced each page.
+  static Future<http.Response> fetchAs(Account account, Uri uri, {Map<String, String>? headers}) async {
+    final endpoint = uri.path;
+    final response = await XRegularAccount().fetch(
+      uri,
+      headers: headers,
+      log: log,
+      authHeader: json.decode(account.authHeader),
+    );
+    final code = response.statusCode;
+    if (code >= 200 && code < 300) {
+      RateLimitTracker.clear(account.id, endpoint);
+      if (!account.isClean) {
+        await recordAccountSuccess(account.id);
+      }
+      return response;
+    }
+    if (code == 429) {
+      RateLimitTracker.flag(account.id, endpoint, _resetFromHeaders(response));
+      throw RateLimitedException();
+    }
+    return response;
+  }
+
   static Future<http.Response> fetch(Uri uri, {Map<String, String>? headers}) async {
     final endpoint = uri.path;
     final now = DateTime.now();
-    final accounts = await getAccounts();
+    var accounts = await getAccounts();
+    final disabled = AccountFetchGate.disabledIds;
+    if (disabled.isNotEmpty) {
+      final preferred = accounts.where((a) => !disabled.contains(a.id)).toList(growable: false);
+      if (preferred.isNotEmpty) {
+        accounts = preferred;
+      }
+    }
     final selector = AccountSelector(
       accounts,
       now,

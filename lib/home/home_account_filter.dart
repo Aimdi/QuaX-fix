@@ -1,0 +1,298 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
+import 'package:pref/pref.dart';
+import 'package:provider/provider.dart';
+import 'package:xta/client/account_fetch_gate.dart';
+import 'package:xta/client/accounts.dart';
+import 'package:xta/client/client.dart';
+import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/client/login_webview.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/future_pool.dart';
+import 'package:xta/tweet/paginated_tweet_list.dart';
+
+const int homeTimelineMergeConcurrency = 2;
+
+List<String> homeFeedDisabledIdsFromPrefs(String? raw) {
+  if (raw == null || raw.isEmpty) {
+    return const [];
+  }
+  try {
+    final decoded = jsonDecode(raw);
+    if (decoded is! List) {
+      return const [];
+    }
+    return decoded.whereType<String>().where((e) => e.isNotEmpty).toList(growable: false);
+  } catch (_) {
+    return const [];
+  }
+}
+
+String homeFeedDisabledIdsToPrefs(Iterable<String> ids) => jsonEncode(ids.toList(growable: false));
+
+/// Accounts that still participate in the merged For you timeline.
+List<Account> enabledHomeAccounts(List<Account> accounts, Set<String> disabledIds) {
+  if (disabledIds.isEmpty) {
+    return accounts;
+  }
+  final enabled = accounts.where((a) => !disabledIds.contains(a.id)).toList(growable: false);
+  // Never leave For you with zero sources while accounts exist.
+  return enabled.isEmpty ? accounts : enabled;
+}
+
+bool isHomeAccountEnabled(String accountId, Set<String> disabledIds) => !disabledIds.contains(accountId);
+
+/// Per-account HomeTimeline cursors, encoded as a JSON object for pagination.
+Map<String, String> decodeHomeTimelineCursors(String? raw) {
+  if (raw == null || raw.isEmpty || !raw.startsWith('{')) {
+    return const {};
+  }
+  try {
+    final decoded = jsonDecode(raw);
+    if (decoded is! Map) {
+      return const {};
+    }
+    return {
+      for (final entry in decoded.entries)
+        if (entry.key is String && entry.value is String && (entry.value as String).isNotEmpty)
+          entry.key as String: entry.value as String,
+    };
+  } catch (_) {
+    return const {};
+  }
+}
+
+String? encodeHomeTimelineCursors(Map<String, String> cursors) {
+  if (cursors.isEmpty) {
+    return null;
+  }
+  return jsonEncode(cursors);
+}
+
+DateTime _chainSortTime(TweetChain chain) {
+  for (final tweet in chain.tweets) {
+    final created = tweet.createdAt;
+    if (created != null) {
+      return created;
+    }
+  }
+  return DateTime.fromMillisecondsSinceEpoch(0);
+}
+
+/// Newest-first merge with stable dedupe by chain id.
+List<TweetChain> mergeHomeTimelineChains(Iterable<List<TweetChain>> batches) {
+  final seen = <String>{};
+  final merged = <TweetChain>[];
+  for (final batch in batches) {
+    for (final chain in batch) {
+      if (seen.add(chain.id)) {
+        merged.add(chain);
+      }
+    }
+  }
+  merged.sort((a, b) => _chainSortTime(b).compareTo(_chainSortTime(a)));
+  return merged;
+}
+
+class _AccountTimelinePage {
+  final String accountId;
+  final List<TweetChain> chains;
+  final String? nextCursor;
+
+  const _AccountTimelinePage({required this.accountId, required this.chains, required this.nextCursor});
+}
+
+/// Loads and merges HomeTimeline pages from every enabled login account.
+Future<TweetPageResult> loadMergedForYouPage({
+  required List<Account> accounts,
+  required Set<String> disabledIds,
+  required String? cursor,
+  required int count,
+  required bool includeReplies,
+  required int Function() getTweetsCounter,
+  required void Function() incrementTweetsCounter,
+}) async {
+  final sources = enabledHomeAccounts(accounts, disabledIds);
+  if (sources.isEmpty) {
+    return (chains: const <TweetChain>[], nextCursor: null);
+  }
+
+  // Single account: keep a plain X cursor so behaviour matches the old path.
+  if (sources.length == 1) {
+    final account = sources.first;
+    final result = await Twitter.getTimelineTweetsForAccount(
+      account,
+      cursor: cursor,
+      count: count,
+      includeReplies: includeReplies,
+      getTweetsCounter: getTweetsCounter,
+      incrementTweetsCounter: incrementTweetsCounter,
+    );
+    return (chains: result.chains, nextCursor: result.cursorBottom);
+  }
+
+  final previous = cursor == null ? const <String, String>{} : decodeHomeTimelineCursors(cursor);
+  Object? lastError;
+
+  final pages = await mapWithConcurrency(sources, homeTimelineMergeConcurrency, (account) async {
+    final accountCursor = cursor == null ? null : previous[account.id];
+    if (cursor != null && accountCursor == null) {
+      return _AccountTimelinePage(accountId: account.id, chains: const [], nextCursor: null);
+    }
+    try {
+      final result = await Twitter.getTimelineTweetsForAccount(
+        account,
+        cursor: accountCursor,
+        count: count,
+        includeReplies: includeReplies,
+        getTweetsCounter: getTweetsCounter,
+        incrementTweetsCounter: incrementTweetsCounter,
+      );
+      return _AccountTimelinePage(
+        accountId: account.id,
+        chains: result.chains,
+        nextCursor: result.cursorBottom,
+      );
+    } catch (e) {
+      lastError = e;
+      return _AccountTimelinePage(accountId: account.id, chains: const [], nextCursor: accountCursor);
+    }
+  });
+
+  final chains = mergeHomeTimelineChains(pages.map((p) => p.chains));
+  if (chains.isEmpty && lastError != null) {
+    throw lastError!;
+  }
+
+  final next = <String, String>{
+    for (final page in pages)
+      if (page.nextCursor != null && page.nextCursor!.isNotEmpty) page.accountId: page.nextCursor!,
+  };
+  return (chains: chains, nextCursor: encodeHomeTimelineCursors(next));
+}
+
+/// Which login accounts are excluded from the merged For you timeline.
+class HomeAccountFilterStore extends Store<Set<String>> {
+  final BasePrefService prefs;
+
+  HomeAccountFilterStore(this.prefs)
+      : super(homeFeedDisabledIdsFromPrefs(prefs.get(optionHomeFeedDisabledAccountIds)).toSet()) {
+    AccountFetchGate.disabledIds = Set<String>.from(state);
+  }
+
+  void _publish(Set<String> disabled) {
+    AccountFetchGate.disabledIds = Set<String>.from(disabled);
+  }
+
+  Future<void> reload() async {
+    await execute(() async {
+      final next = homeFeedDisabledIdsFromPrefs(prefs.get(optionHomeFeedDisabledAccountIds)).toSet();
+      _publish(next);
+      return next;
+    });
+  }
+
+  Future<void> setEnabled(String accountId, bool enabled, {required List<Account> accounts}) async {
+    await execute(() async {
+      final next = Set<String>.from(state);
+      if (enabled) {
+        next.remove(accountId);
+      } else {
+        final known = accounts.map((a) => a.id).toSet();
+        final wouldDisable = Set<String>.from(next)..add(accountId);
+        final stillOn = known.where((id) => !wouldDisable.contains(id)).length;
+        // Keep at least one account contributing when several are saved.
+        if (stillOn <= 0) {
+          return state;
+        }
+        next.add(accountId);
+      }
+      await prefs.set(optionHomeFeedDisabledAccountIds, homeFeedDisabledIdsToPrefs(next));
+      _publish(next);
+      return next;
+    });
+  }
+}
+
+void showHomeAccountFilterSheet(BuildContext context, {VoidCallback? onChanged}) {
+  final filter = context.read<HomeAccountFilterStore>();
+  showModalBottomSheet(
+    context: context,
+    builder: (sheetContext) {
+      return SafeArea(
+        child: FutureBuilder<List<Account>>(
+          future: getAccounts(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Padding(
+                padding: EdgeInsets.all(24),
+                child: LinearProgressIndicator(),
+              );
+            }
+            final accounts = snapshot.data ?? const <Account>[];
+            return ScopedBuilder<HomeAccountFilterStore, Set<String>>(
+              store: filter,
+              onState: (_, disabled) {
+                return SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        leading: IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () => Navigator.of(sheetContext).pop(),
+                        ),
+                        title: Text(
+                          L10n.of(context).home_feed_accounts,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+                        child: Text(
+                          L10n.of(context).home_feed_accounts_description,
+                          style: TextStyle(color: Theme.of(context).disabledColor),
+                        ),
+                      ),
+                      if (accounts.isEmpty)
+                        ListTile(
+                          title: Text(L10n.of(context).home_feed_accounts_empty),
+                          trailing: TextButton(
+                            onPressed: () {
+                              Navigator.of(sheetContext).pop();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const TwitterLoginWebview()),
+                              );
+                            },
+                            child: Text(L10n.of(context).add_account),
+                          ),
+                        )
+                      else
+                        ...accounts.map((account) {
+                          final enabled = isHomeAccountEnabled(account.id, disabled);
+                          return SwitchListTile(
+                            secondary: const Icon(Icons.account_circle),
+                            title: Text(account.screenName ?? L10n.of(context).unknown_username),
+                            subtitle: Text(L10n.of(context).home_feed_include_in_for_you),
+                            value: enabled,
+                            onChanged: (value) async {
+                              await filter.setEnabled(account.id, value, accounts: accounts);
+                              onChanged?.call();
+                            },
+                          );
+                        }),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      );
+    },
+  );
+}

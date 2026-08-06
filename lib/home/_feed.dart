@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/home/_account_avatar.dart';
 import 'package:xta/home/_for_you.dart';
+import 'package:xta/home/home_account_filter.dart';
 import 'package:xta/tweet/paginated_tweet_list.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/group/_feed_shell.dart';
@@ -187,6 +188,20 @@ class _FeedScreenState extends State<FeedScreen> {
             showRefresh: tab == FeedTab.foryou,
             onRefresh: () => _refreshActiveTab(tab),
             showSettings: false,
+            extra: [
+              IconButton(
+                icon: const Icon(Icons.manage_accounts_outlined),
+                tooltip: L10n.of(context).home_feed_accounts,
+                onPressed: () => showHomeAccountFilterSheet(
+                  context,
+                  onChanged: () {
+                    if (tab == FeedTab.foryou) {
+                      _refreshActiveTab(FeedTab.foryou);
+                    }
+                  },
+                ),
+              ),
+            ],
           );
         },
         bodyBuilder: (context) => switch (tab) {

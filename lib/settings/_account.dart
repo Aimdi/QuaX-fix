@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
+import 'package:provider/provider.dart';
 import 'package:xta/client/client_regular_account.dart';
 import 'package:xta/client/login_webview.dart';
 import 'package:xta/database/entities.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/client/accounts.dart';
+import 'package:xta/home/home_account_filter.dart';
 
 class SettingsAccountFragment extends StatefulWidget {
   const SettingsAccountFragment({super.key});
@@ -16,6 +19,7 @@ class _SettingsAccountFragment extends State<SettingsAccountFragment> {
   @override
   Widget build(BuildContext context) {
     var model = XRegularAccount();
+    final filter = context.read<HomeAccountFilterStore>();
     return Scaffold(
       appBar: AppBar(
         title: Text(L10n.current.account),
@@ -32,23 +36,44 @@ class _SettingsAccountFragment extends State<SettingsAccountFragment> {
               return const LinearProgressIndicator();
             } else {
               List<Account> data = snapshot.data;
-              return ListView.builder(
-                  itemCount: data.length,
-                  itemBuilder: (BuildContext itemContext, int index) {
-                    return Dismissible(
-                        // Every row shared one key, so dismissing an account
-                        // handed its dismissed state to the row beneath it.
-                        key: ValueKey(data[index].id),
-                        onDismissed: (DismissDirection direction) async {
-                          await model.deleteAccount(data[index].id.toString());
-                          setState(() {});
-                        },
-                        child: Card(
-                            child: ListTile(
-                          title: Text(data[index].screenName ?? L10n.of(context).unknown_username),
-                          leading: const Icon(Icons.account_circle),
-                        )));
-                  });
+              if (data.isEmpty) {
+                return Center(child: Text(L10n.of(context).home_feed_accounts_empty));
+              }
+              return ScopedBuilder<HomeAccountFilterStore, Set<String>>(
+                store: filter,
+                onState: (_, disabled) {
+                  return ListView(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        child: Text(
+                          L10n.of(context).home_feed_accounts_description,
+                          style: TextStyle(color: Theme.of(context).disabledColor),
+                        ),
+                      ),
+                      ...data.map((account) {
+                        final enabled = isHomeAccountEnabled(account.id, disabled);
+                        return Dismissible(
+                          key: ValueKey(account.id),
+                          onDismissed: (DismissDirection direction) async {
+                            await model.deleteAccount(account.id.toString());
+                            setState(() {});
+                          },
+                          child: SwitchListTile(
+                            secondary: const Icon(Icons.account_circle),
+                            title: Text(account.screenName ?? L10n.of(context).unknown_username),
+                            subtitle: Text(L10n.of(context).home_feed_include_in_for_you),
+                            value: enabled,
+                            onChanged: (value) async {
+                              await filter.setEnabled(account.id, value, accounts: data);
+                            },
+                          ),
+                        );
+                      }),
+                    ],
+                  );
+                },
+              );
             }
           }),
     );
