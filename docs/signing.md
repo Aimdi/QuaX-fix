@@ -75,3 +75,16 @@ apply in place.
 
 `ci.yml` may still produce **debug-signed** APK artifacts for PR testing.
 Those are not for Obtainium or long-lived installs.
+
+### Agent / API cut
+
+From a token that can create `repository_dispatch` events (but not
+`workflow_dispatch`):
+
+```bash
+gh api -X POST repos/Aimdi/XTA/dispatches \
+  -f event_type=build-release \
+  -f 'client_payload[tag]=aimdi78'
+```
+
+Or push tag `aimdiNN` to run `.github/workflows/release.yml`.
