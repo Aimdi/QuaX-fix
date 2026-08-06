@@ -9,6 +9,7 @@ const optionHelloLastBuild = 'hello.last_build';
 const optionHomePages = 'home.pages';
 const optionHomeInitialTab = 'home.initial_tab';
 const optionHomeDefaultFeedTab = 'home.default_feed_tab';
+
 /// Plugin tabs already offered to the bar once, so removing one sticks.
 const optionSeededPluginTabs = 'plugins.seeded_tabs';
 
@@ -117,6 +118,7 @@ const redditSortHot = 'hot';
 /// Where the subreddit artwork is kept, named here so the plugin can delete
 /// the same directory it fills.
 const redditIconsCacheName = 'reddit_icons';
+
 /// Set once the reader signs in; the only long-lived Reddit credential kept.
 const optionPluginRedditRefreshToken = 'plugin.reddit.refresh_token';
 
@@ -137,6 +139,7 @@ const optionPluginStocksEnabled = 'plugin.stocks.enabled';
 const optionPluginStocksShowTab = 'plugin.stocks.show_tab';
 
 const pluginIdSubstack = 'substack';
+
 /// Reading aloud: which engine, which voice, how fast. Shared rather than
 /// per-plugin — a reader picks a voice once, not once per source.
 const optionTtsEngine = 'tts.engine';
@@ -246,12 +249,7 @@ const xLookBackgroundLight = 'light';
 const xLookBackgroundDim = 'dim';
 const xLookBackgroundLightsOut = 'lights_out';
 
-const xLookBackgrounds = [
-  xLookBackgroundSystem,
-  xLookBackgroundLight,
-  xLookBackgroundDim,
-  xLookBackgroundLightsOut,
-];
+const xLookBackgrounds = [xLookBackgroundSystem, xLookBackgroundLight, xLookBackgroundDim, xLookBackgroundLightsOut];
 
 const xLookAccentBlue = 'blue';
 
@@ -348,17 +346,24 @@ const maxFeedGapFillPages = 4;
 // painted anything -- for posts far below where anyone scrolls.
 const maxCachedChunkRows = 8;
 
+// How many timeline_cache rows survive the startup purge, newest first.
+//
+// The 7-day purge bounds how *old* a row gets, not how many there are: a row is
+// written for every thread opened and every profile visited, each holding a
+// whole first page of chains. A week of ordinary reading is thousands of them,
+// and none is ever read again once the reader has moved on.
+const maxTimelineCacheRows = 300;
+
 // Reading position ("You're caught up"): how close to the top counts as
 // having read everything, and how many frames the divider restore may take.
 const feedReadPositionTopThresholdPx = 8.0;
 const maxCaughtUpRestoreFrames = 30;
 
-
 final Map<String, String> userAgentHeader = {
   'user-agent':
       "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Mobile Safari/537.3",
   "Pragma": "no-cache",
-  "Cache-Control": "no-cache"
+  "Cache-Control": "no-cache",
   // "If-Modified-Since": "Sat, 1 Jan 2000 00:00:00 GMT",
 };
 
@@ -390,14 +395,14 @@ const optionEndpointRegistryEnabled = 'api.endpoint_registry.enabled';
 const optionEndpointRegistryUrl = 'api.endpoint_registry.url';
 const optionEndpointRegistryCache = 'api.endpoint_registry.cache';
 const optionEndpointRegistryFetchedAt = 'api.endpoint_registry.fetched_at';
+
 /// The branch the published documents are read from.
 ///
 /// Named once: both registries pointed at `master`, which this fork does not
 /// have, so every fetch 404'd and neither had ever been read.
 const githubPublishBranch = 'main';
 
-const defaultEndpointRegistryUrl =
-    'https://raw.githubusercontent.com/$githubRepo/$githubPublishBranch/endpoints.json';
+const defaultEndpointRegistryUrl = 'https://raw.githubusercontent.com/$githubRepo/$githubPublishBranch/endpoints.json';
 const Duration endpointRegistryTimeout = Duration(seconds: 10);
 
 // Plugin catalogue: decides which plugins the store offers, published the same
@@ -406,8 +411,7 @@ const Duration endpointRegistryTimeout = Duration(seconds: 10);
 const optionPluginCatalogueUrl = 'plugin.catalogue.url';
 const optionPluginCatalogueCache = 'plugin.catalogue.cache';
 const optionPluginCatalogueFetchedAt = 'plugin.catalogue.fetched_at';
-const defaultPluginCatalogueUrl =
-    'https://raw.githubusercontent.com/$githubRepo/$githubPublishBranch/plugins.json';
+const defaultPluginCatalogueUrl = 'https://raw.githubusercontent.com/$githubRepo/$githubPublishBranch/plugins.json';
 
 // Offline read cache for threads and profile timelines (feed_group_chunk covers
 // group feeds). Short windows: these are re-read within a session far more

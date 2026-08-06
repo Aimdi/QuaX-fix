@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:xta/constants.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:logging/logging.dart';
 import 'package:sqflite/sqflite.dart';
@@ -705,9 +706,24 @@ class Repository {
       await repository.delete(tableFeedGroupChunk, where: "created_at <= date('now', '-7 day')");
       await repository.delete(tableFeedGroupCursor, where: "created_at <= date('now', '-7 day')");
       await repository.delete(tableTimelineCache, where: "created_at <= date('now', '-7 day')");
+      await trimTimelineCache(repository);
     } catch (e) {
       log.warning('Could not clean up old cached feeds: $e');
     }
+  }
+
+  /// Keeps only the newest [maxTimelineCacheRows] cached timelines.
+  ///
+  /// Age alone does not bound this table — a row is written for every thread
+  /// opened and every profile visited — and the rows the reader has moved past
+  /// are never read again. Done here rather than on write so no read pays for
+  /// it: this already runs once per process, in the background.
+  static Future<void> trimTimelineCache(Database database, {int keep = maxTimelineCacheRows}) async {
+    await database.rawDelete(
+      'DELETE FROM $tableTimelineCache WHERE key NOT IN '
+      '(SELECT key FROM $tableTimelineCache ORDER BY created_at DESC LIMIT ?)',
+      [keep],
+    );
   }
 
   Future<bool> migrate() async {
