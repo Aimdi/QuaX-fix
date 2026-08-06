@@ -33,13 +33,21 @@ abstract class Entity {
 class HashtagEntity extends Entity {
   final Hashtag hashtag;
   final VoidCallback onTap;
+  final VoidCallback onLongPress;
 
-  HashtagEntity(this.hashtag, this.onTap) : super(hashtag.indices);
+  HashtagEntity(this.hashtag, this.onTap, this.onLongPress) : super(hashtag.indices);
 
   @override
   InlineSpan getContent(EntitySpanContext context) {
-    return TextSpan(
-        text: '#${hashtag.text}', style: context.linkStyle, recognizer: context.recognizer(onTap));
+    return WidgetSpan(
+      alignment: PlaceholderAlignment.baseline,
+      baseline: TextBaseline.alphabetic,
+      child: GestureDetector(
+        onTap: onTap,
+        onLongPress: onLongPress,
+        child: Text('#${hashtag.text}', style: context.linkStyle),
+      ),
+    );
   }
 }
 

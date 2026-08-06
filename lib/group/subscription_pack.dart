@@ -1,5 +1,10 @@
 import 'dart:convert';
 
+import 'package:xta/database/entities.dart';
+import 'package:xta/database/repository.dart';
+import 'package:xta/group/group_model.dart';
+import 'package:xta/subscriptions/users_model.dart';
+
 /// One member of an exported subscription pack.
 class PackMember {
   final String type;
@@ -63,3 +68,55 @@ String encodeSubscriptionPack(SubscriptionPack pack) => jsonEncode(pack.toJson()
 
 SubscriptionPack decodeSubscriptionPack(String raw) =>
     SubscriptionPack.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+
+PackMember? packMemberFrom(Subscription subscription) => switch (subscription) {
+      UserSubscription(:final id, :final screenName) =>
+        PackMember(type: 'user', id: id, screenName: screenName),
+      SearchSubscription(:final id) => PackMember(type: 'search', id: id),
+      _ => null,
+    };
+
+SubscriptionPack packFromSubscriptions(String name, Iterable<Subscription> subscriptions) {
+  final members =
+      subscriptions.map(packMemberFrom).whereType<PackMember>().toList(growable: false);
+  return SubscriptionPack(name: name, members: members);
+}
+
+/// Creates missing subscription rows, then a new group holding every pack member.
+Future<int> importSubscriptionPack(
+  SubscriptionPack pack,
+  GroupsModel groups,
+  SubscriptionsModel subscriptions,
+) async {
+  final database = await Repository.writable();
+  final memberIds = <String>{};
+
+  for (final member in pack.members) {
+    switch (member.type) {
+      case 'user':
+        final exists = subscriptions.state.any((s) => s.id == member.id);
+        if (!exists) {
+          await database.insert(tableSubscription, {
+            'id': member.id,
+            'screen_name': member.screenName ?? member.id,
+            'name': member.screenName ?? member.id,
+            'profile_image_url_https': null,
+            'verified': 0,
+          });
+        }
+        memberIds.add(member.id);
+      case 'search':
+        final exists = subscriptions.state.any((s) => s.id == member.id);
+        if (!exists) {
+          await database.insert(tableSearchSubscription, {'id': member.id});
+        }
+        memberIds.add(member.id);
+      default:
+        continue;
+    }
+  }
+
+  await subscriptions.reloadSubscriptions();
+  await groups.saveGroup(null, pack.name, defaultGroupIcon, null, memberIds);
+  return memberIds.length;
+}
