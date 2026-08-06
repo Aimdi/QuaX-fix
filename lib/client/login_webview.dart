@@ -80,11 +80,14 @@ class _TwitterLoginWebviewState extends State<TwitterLoginWebview> {
                 };
 
                 final database = await Repository.writable();
-                database.insert(
+                // Awaited, and the handle left open: this is sqflite's shared
+                // instance for the whole app, so closing it here tore down
+                // every other query in flight — racing the very insert that
+                // stores the account the reader just signed in with.
+                await database.insert(
                   tableAccounts,
                   Account(id: csrfToken, screenName: screenName, authHeader: json.encode(authHeader)).toMap(),
                 );
-                database.close();
               }
               if (context.mounted) {
                 Navigator.pop(context);

@@ -89,7 +89,6 @@ dependencies:
   package_info_plus: ^10.2.1
   path: ^1.9.1
   path_provider: ^2.1.4
-  permission_handler: ^12.0.3
   quiver: ^3.2.2
   scroll_to_index: ^3.0.1
   secure_content: ^1.0.1
