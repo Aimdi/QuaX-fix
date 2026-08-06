@@ -1,7 +1,42 @@
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html_parser;
 
-/// Strip Substack chrome that hurts reading (expand buttons, SVGs, scripts).
+/// URL schemes that are code rather than a destination.
+///
+/// `javascript:` is the obvious one; `data:` can carry a whole HTML document,
+/// which is the same thing wearing a different hat.
+final _executableUrl = RegExp(r'^\s*(javascript|vbscript|data)\s*:', caseSensitive: false);
+
+/// Attributes that hold a URL, and so can smuggle one of the above.
+const _urlAttributes = {'href', 'src', 'srcset', 'action', 'formaction', 'poster', 'background', 'data'};
+
+/// Removes the parts of a post that are code rather than writing.
+///
+/// Dropping `<script>` is not enough on its own: `onerror`, `onload` and their
+/// forty-odd siblings are attributes, and they run without a script tag
+/// anywhere on the page. A post is written by whoever runs the publication, so
+/// this is not hypothetical — and the reader screen renders the result in a
+/// real web view.
+///
+/// The article itself is loaded with JavaScript switched off, which is the
+/// actual defence; this is the second lock on the same door, and it also keeps
+/// the text clean for anything else that reads it.
+void _stripExecutable(Element element) {
+  // Keyed by `Object`, because a namespaced attribute is an `AttributeName`
+  // rather than a string — so the key has to be carried through to the removal
+  // instead of the name it prints as.
+  for (final key in element.attributes.keys.toList()) {
+    final name = '$key'.toLowerCase();
+
+    if (name.startsWith('on') ||
+        (_urlAttributes.contains(name) && _executableUrl.hasMatch(element.attributes[key] ?? ''))) {
+      element.attributes.remove(key);
+    }
+  }
+}
+
+/// Strip Substack chrome that hurts reading (expand buttons, SVGs, scripts),
+/// and anything in the markup that would run rather than be read.
 String sanitizeSubstackBodyHtml(String raw) {
   final fragment = html_parser.parseFragment(raw);
   final removable = fragment.querySelectorAll(
@@ -29,6 +64,10 @@ String sanitizeSubstackBodyHtml(String raw) {
     if (node.text.trim().isEmpty && node.querySelector('img, iframe, video, picture, table') == null) {
       node.remove();
     }
+  }
+
+  for (final node in fragment.querySelectorAll('*')) {
+    _stripExecutable(node);
   }
 
   return fragment.nodes.map((node) => node is Element ? node.outerHtml : node.text).join();
@@ -86,11 +125,7 @@ String substackHtmlToPlainText(String raw) {
   }
 
   walk(body);
-  return buffer
-      .toString()
-      .replaceAll(RegExp(r'[ \t]+\n'), '\n')
-      .replaceAll(RegExp(r'\n{3,}'), '\n\n')
-      .trim();
+  return buffer.toString().replaceAll(RegExp(r'[ \t]+\n'), '\n').replaceAll(RegExp(r'\n{3,}'), '\n\n').trim();
 }
 
 String buildSubstackSpeakText({
@@ -297,8 +332,5 @@ String _footerHtml(String? text, String? link, String? linkLabel) {
   return '<div class="preview-end"><p>${_escape(text)}</p>$action</div>';
 }
 
-String _escape(String value) => value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
+String _escape(String value) =>
+    value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
