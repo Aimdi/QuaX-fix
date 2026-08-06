@@ -519,3 +519,6 @@ const routeSettingsHome = '/settings/home';
 const routeQuotes = '/quotes';
 const routeTicker = '/ticker';
 const routeStatus = '/status';
+const routeAntennas = '/antennas';
+const routeAntennaFeed = '/antenna';
+const routeDeck = '/deck';

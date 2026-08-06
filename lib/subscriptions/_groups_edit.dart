@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:pref/pref.dart';
 import 'package:xta/database/entities.dart';
 import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/deck_groups.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/group/group_tree.dart';
 import 'package:xta/group/subscription_pack.dart';
@@ -375,6 +377,8 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
     final l10n = L10n.of(context);
     final isPinned = widget.id != null &&
         context.read<GroupsModel>().state.any((g) => g.id == widget.id && g.pinned);
+    final prefs = PrefService.of(context, listen: false);
+    final deckPinned = widget.id != null && isDeckPinned(prefs, widget.id!);
 
     // Group-level actions sit with the group's own fields rather than in the
     // bottom bar: with pin and merge added to this fork, five buttons plus
@@ -389,6 +393,16 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
           onPressed: () async {
             final groupsModel = context.read<GroupsModel>();
             await groupsModel.toggleGroupPinned(widget.id!, !isPinned);
+            if (mounted) setState(() {});
+          },
+        ),
+      if (widget.id != null)
+        TextButton.icon(
+          style: _discreetActionStyle(context),
+          icon: Icon(deckPinned ? Icons.view_column : Icons.view_column_outlined, size: 18),
+          label: Text(deckPinned ? l10n.deck_unpin_group : l10n.deck_pin_group),
+          onPressed: () async {
+            await toggleDeckPin(prefs, widget.id!);
             if (mounted) setState(() {});
           },
         ),

@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
-import 'package:xta/home/edge_swipe.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
-import 'package:xta/group/group_model.dart';
 import 'package:xta/group/subscription_pack.dart';
+import 'package:xta/home/edge_swipe.dart';
+import 'package:xta/group/group_model.dart';
 import 'package:xta/subscriptions/_cleanup.dart';
 import 'package:xta/subscriptions/_groups.dart';
 import 'package:xta/subscriptions/_import.dart';
@@ -167,6 +167,10 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
                   context.read<SubscriptionsModel>().toggleOrderSubscriptionsAscending();
                 case _SubscriptionsMenuAction.settings:
                   Navigator.pushNamed(context, routeSettings);
+                case _SubscriptionsMenuAction.antennas:
+                  Navigator.pushNamed(context, routeAntennas);
+                case _SubscriptionsMenuAction.openDeck:
+                  Navigator.pushNamed(context, routeDeck);
               }
             },
             itemBuilder: (context) => [
@@ -237,6 +241,15 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
               ],
               const PopupMenuDivider(),
               PopupMenuItem(
+                value: _SubscriptionsMenuAction.antennas,
+                child: Text(l10n.antenna_title),
+              ),
+              if (_onGroups)
+                PopupMenuItem(
+                  value: _SubscriptionsMenuAction.openDeck,
+                  child: Text(l10n.deck_title),
+                ),
+              PopupMenuItem(
                 value: _SubscriptionsMenuAction.settings,
                 child: Text(l10n.settings),
               ),
@@ -276,5 +289,7 @@ enum _SubscriptionsMenuAction {
   sortSubsByUsername,
   sortSubsByDate,
   toggleSubsOrder,
+  antennas,
+  openDeck,
   settings,
 }
