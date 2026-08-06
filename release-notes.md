@@ -29,8 +29,8 @@ long-press to read the description.
 ### Fixed
 
 Caught-up restore on group feeds no longer races the database read of your last
-position. Migration 49 ALTER columns tolerate partial test fixtures so upgrades
-do not fail mid-way.
+position. Database upgrades tolerate missing tables on partially restored backups
+instead of stopping mid-way.
 
 ---
 
