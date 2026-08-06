@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/group/group_model.dart';
+import 'package:xta/group/language_filter.dart';
 import 'package:pref/pref.dart';
 
 class SettingsPostsFragment extends StatefulWidget {
@@ -14,11 +15,31 @@ class SettingsPostsFragment extends StatefulWidget {
 
 class _SettingsPostsFragmentState extends State<SettingsPostsFragment> {
   ({int replies, int retweets})? _overrides;
+  late final TextEditingController _languageController;
+  LanguageFilterAction _languageAction = LanguageFilterAction.off;
 
   @override
   void initState() {
     super.initState();
+    final prefs = PrefService.of(context, listen: false);
+    _languageController = TextEditingController(text: prefs.get(optionFeedLanguages) as String? ?? '');
+    _languageAction = parseLanguageFilterAction(prefs.get(optionFeedLanguageAction) as String?);
     _loadOverrides();
+  }
+
+  @override
+  void dispose() {
+    _languageController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveLanguages(String value) async {
+    await PrefService.of(context, listen: false).set(optionFeedLanguages, value.trim());
+  }
+
+  Future<void> _saveLanguageAction(LanguageFilterAction action) async {
+    setState(() => _languageAction = action);
+    await PrefService.of(context, listen: false).set(optionFeedLanguageAction, action.stored);
   }
 
   Future<void> _loadOverrides() async {
@@ -126,6 +147,11 @@ class _SettingsPostsFragmentState extends State<SettingsPostsFragment> {
             subtitle: Text(L10n.of(context).zen_mode_description),
             pref: optionZenMode,
           ),
+          PrefSwitch(
+            title: Text(L10n.of(context).calm_mode),
+            subtitle: Text(L10n.of(context).calm_mode_description),
+            pref: optionCalmMode,
+          ),
           PrefDropdown(
             fullWidth: false,
             title: Text(L10n.of(context).zen_mode_page_cap),
@@ -140,6 +166,45 @@ class _SettingsPostsFragmentState extends State<SettingsPostsFragment> {
             title: Text(L10n.of(context).remember_reading_position),
             subtitle: Text(L10n.of(context).remember_reading_position_description),
             pref: optionFeedReadingPosition,
+          ),
+          ListTile(
+            title: Text(L10n.of(context).language_filter),
+            subtitle: Text(L10n.of(context).language_filter_description),
+            isThreeLine: true,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: TextField(
+              controller: _languageController,
+              decoration: InputDecoration(
+                labelText: L10n.of(context).language_filter_languages,
+                border: const OutlineInputBorder(),
+                isDense: true,
+              ),
+              onChanged: _saveLanguages,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: SegmentedButton<LanguageFilterAction>(
+              segments: [
+                ButtonSegment(value: LanguageFilterAction.off, label: Text(L10n.of(context).language_filter_off)),
+                ButtonSegment(value: LanguageFilterAction.hide, label: Text(L10n.of(context).language_filter_hide)),
+                ButtonSegment(value: LanguageFilterAction.fold, label: Text(L10n.of(context).language_filter_fold)),
+              ],
+              selected: {_languageAction},
+              onSelectionChanged: (value) => _saveLanguageAction(value.first),
+            ),
+          ),
+          ListTile(
+            title: Text(L10n.of(context).language_filter_action),
+            subtitle: Text(
+              switch (_languageAction) {
+                LanguageFilterAction.hide => L10n.of(context).language_filter_hide,
+                LanguageFilterAction.fold => L10n.of(context).language_filter_fold,
+                LanguageFilterAction.off => L10n.of(context).language_filter_off,
+              },
+            ),
           ),
         ]),
       ),

@@ -79,3 +79,7 @@ Future<List<SearchGroupMember>> readSearchGroupMembers() =>
 
 Future<List<FeedReadPositionRow>> readFeedReadPositions() =>
     _readRows(tableFeedReadPosition, FeedReadPositionRow.fromMap);
+
+Future<List<ProfileNote>> readProfileNotes() => _readRows(tableProfileNote, ProfileNote.fromMap);
+
+Future<List<Antenna>> readAntennas() => _readRows(tableAntenna, Antenna.fromMap);

@@ -143,13 +143,26 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
     );
   }
 
-  /// Case-insensitive match against the parsed post the store already holds:
-  /// post text (including long-post note text) plus author name and handle.
+  /// Case-insensitive match against the parsed post the store already holds.
   List<T> _applySearch<T>(List<T> items, String Function(T) idOf, SavedContent? Function(String) contentOf) {
     if (_query.isEmpty) {
       return items;
     }
     return items.where((e) => contentOf(idOf(e))?.matches(_query) ?? false).toList();
+  }
+
+  /// Case-insensitive match against note text and parsed post content.
+  List<SavedTweet> _applySavedSearch(List<SavedTweet> items, SavedContent? Function(String) contentOf) {
+    if (_query.isEmpty) {
+      return items;
+    }
+    return items.where((saved) {
+      final note = saved.note?.toLowerCase() ?? '';
+      if (note.contains(_query)) {
+        return true;
+      }
+      return contentOf(saved.id)?.matches(_query) ?? false;
+    }).toList();
   }
 
   void _onQueryChanged(String value) {
@@ -167,7 +180,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
       child: TextField(
         focusNode: _searchFocusNode,
         decoration: InputDecoration(
-          hintText: L10n.of(context).search_saved_posts,
+          hintText: L10n.of(context).clip_note_search_hint,
           prefixIcon: const Icon(Icons.search),
           isDense: true,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
@@ -177,7 +190,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
     );
   }
 
-  Widget _buildList({required int itemCount, required SavedTweetTile Function(int) tileAt}) {
+  Widget _buildList({required int itemCount, required Widget Function(int) tileAt}) {
     return ListView.builder(
       controller: widget.scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
@@ -408,7 +421,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
       ),
       onLoading: (_) => const Center(child: CircularProgressIndicator()),
       onState: (_, data) {
-        var filtered = _applySearch(_applyFilter(data), (SavedTweet e) => e.id, model.contentOf);
+        var filtered = _applySavedSearch(_applyFilter(data), model.contentOf);
 
         if (_mediaOnly && filtered.isNotEmpty) {
           return _buildMediaGrid(filtered.map((e) => model.contentOf(e.id)?.tweet),
@@ -421,7 +434,12 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
               ? _buildEmptyState()
               : _buildList(
                   itemCount: filtered.length,
-                  tileAt: (i) => SavedTweetTile(id: filtered[i].id, tweet: model.contentOf(filtered[i].id)?.tweet)),
+                  tileAt: (i) => SavedClipTile(
+                    saved: filtered[i],
+                    tweet: model.contentOf(filtered[i].id)?.tweet,
+                    onNoteChanged: (note) => model.setNote(filtered[i].id, note),
+                  ),
+                ),
         );
       },
     );
@@ -489,7 +507,8 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
               ? _buildEmptyState()
               : _buildList(
                   itemCount: filtered.length,
-                  tileAt: (i) => SavedTweetTile(id: filtered[i].id, tweet: model.contentOf(filtered[i].id)?.tweet)),
+                  tileAt: (i) => SavedTweetTile(id: filtered[i].id, tweet: model.contentOf(filtered[i].id)?.tweet),
+                ),
         );
       },
     );
@@ -577,6 +596,99 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Saved post with an optional local note shown underneath.
+class SavedClipTile extends StatefulWidget {
+  final SavedTweet saved;
+  final TweetWithCard? tweet;
+  final Future<void> Function(String?) onNoteChanged;
+
+  const SavedClipTile({super.key, required this.saved, required this.tweet, required this.onNoteChanged});
+
+  @override
+  State<SavedClipTile> createState() => _SavedClipTileState();
+}
+
+class _SavedClipTileState extends State<SavedClipTile> {
+  bool _editing = false;
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.saved.note ?? '');
+  }
+
+  @override
+  void didUpdateWidget(covariant SavedClipTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.saved.note != widget.saved.note && !_editing) {
+      _controller.text = widget.saved.note ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveNote() async {
+    await widget.onNoteChanged(_controller.text);
+    if (mounted) {
+      setState(() => _editing = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final note = widget.saved.note;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SavedTweetTile(id: widget.saved.id, tweet: widget.tweet),
+        if (_editing)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    minLines: 1,
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                      hintText: L10n.of(context).clip_note_hint,
+                      isDense: true,
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                IconButton(icon: const Icon(Icons.check), onPressed: _saveNote),
+              ],
+            ),
+          )
+        else if (note != null && note.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: InkWell(
+              onTap: () => setState(() => _editing = true),
+              child: Text(note, style: Theme.of(context).textTheme.bodySmall),
+            ),
+          )
+        else
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () => setState(() => _editing = true),
+              icon: const Icon(Icons.note_add_outlined, size: 18),
+              label: Text(L10n.of(context).clip_note_hint),
+            ),
+          ),
+      ],
     );
   }
 }

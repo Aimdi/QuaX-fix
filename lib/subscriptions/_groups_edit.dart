@@ -1,8 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:pref/pref.dart';
 import 'package:xta/database/entities.dart';
 import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/deck_groups.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/group/group_tree.dart';
+import 'package:xta/group/subscription_pack.dart';
 import 'package:xta/plugins/reddit/reddit_avatar.dart';
 import 'package:xta/subscriptions/_group_add_member.dart';
 import 'package:xta/subscriptions/group_identity.dart';
@@ -123,6 +130,18 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
         ...subscriptions.where((s) => !members.contains(s.id)),
       ];
     });
+  }
+
+  Future<void> _exportPack() async {
+    final subscriptions = context.read<SubscriptionsModel>().state.where((s) => members.contains(s.id));
+    final pack = packFromSubscriptions(name ?? '', subscriptions);
+    final dir = await getTemporaryDirectory();
+    final file = File('${dir.path}/xta-pack-${DateTime.now().millisecondsSinceEpoch}.json');
+    await file.writeAsString(encodeSubscriptionPack(pack));
+    await Share.shareXFiles([XFile(file.path, mimeType: 'application/json')]);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.of(context).subscription_pack_exported)));
+    }
   }
 
   Future<void> _openMergeSheet(BuildContext context) async {
@@ -358,6 +377,8 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
     final l10n = L10n.of(context);
     final isPinned = widget.id != null &&
         context.read<GroupsModel>().state.any((g) => g.id == widget.id && g.pinned);
+    final prefs = PrefService.of(context, listen: false);
+    final deckPinned = widget.id != null && isDeckPinned(prefs, widget.id!);
 
     // Group-level actions sit with the group's own fields rather than in the
     // bottom bar: with pin and merge added to this fork, five buttons plus
@@ -374,6 +395,23 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
             await groupsModel.toggleGroupPinned(widget.id!, !isPinned);
             if (mounted) setState(() {});
           },
+        ),
+      if (widget.id != null)
+        TextButton.icon(
+          style: _discreetActionStyle(context),
+          icon: Icon(deckPinned ? Icons.view_column : Icons.view_column_outlined, size: 18),
+          label: Text(deckPinned ? l10n.deck_unpin_group : l10n.deck_pin_group),
+          onPressed: () async {
+            await toggleDeckPin(prefs, widget.id!);
+            if (mounted) setState(() {});
+          },
+        ),
+      if (widget.id != null)
+        TextButton.icon(
+          style: _discreetActionStyle(context),
+          icon: const Icon(Icons.upload_outlined, size: 18),
+          label: Text(l10n.subscription_pack_export),
+          onPressed: _exportPack,
         ),
       if (widget.id != null)
         TextButton.icon(

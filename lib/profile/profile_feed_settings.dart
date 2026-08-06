@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:xta/client/client.dart';
 import 'package:xta/database/repository.dart';
 import 'package:xta/generated/l10n.dart';
+import 'package:xta/subscriptions/users_model.dart';
 import 'package:xta/user.dart';
+import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// Per-user feed filters ("turn off reposts"): users listed in
@@ -112,6 +114,39 @@ List<TweetChain> filterHiddenReplies(List<TweetChain> chains, Set<String> hidden
   }).toList();
 }
 
+const quietAccountChoices = <int?>[null, 1, 2, 3, 5, 10];
+
+Future<int?> loadMaxPostsPerLoad(String userId) async {
+  final repository = await Repository.readOnly();
+  final rows = await repository.query(
+    tableSubscription,
+    columns: ['max_posts_per_load'],
+    where: 'id = ?',
+    whereArgs: [userId],
+    limit: 1,
+  );
+  if (rows.isEmpty) {
+    return null;
+  }
+  return rows.first['max_posts_per_load'] as int?;
+}
+
+Future<bool> setMaxPostsPerLoad(String userId, int? value) async {
+  final repository = await Repository.writable();
+  final updated = await repository.update(
+    tableSubscription,
+    {'max_posts_per_load': value},
+    where: 'id = ?',
+    whereArgs: [userId],
+  );
+  return updated > 0;
+}
+
+String quietAccountLabel(BuildContext context, int? value) {
+  final l10n = L10n.of(context);
+  return value == null ? l10n.quiet_account_off : '$value';
+}
+
 /// The wrench button on a profile: per-user feed filters, like X's
 /// "turn off reposts".
 class ProfileFeedSettingsButton extends StatelessWidget {
@@ -131,8 +166,10 @@ class ProfileFeedSettingsButton extends StatelessWidget {
       color: color,
       tooltip: L10n.of(context).filters,
       onPressed: () async {
+        final subscribed = context.read<SubscriptionsModel>().state.any((e) => e.id == user.idStr);
         var hidden = await isRetweetsHidden(user.idStr!);
         var repliesHidden = await isRepliesHidden(user.idStr!);
+        var maxPosts = await loadMaxPostsPerLoad(user.idStr!);
         if (!context.mounted) {
           return;
         }
@@ -163,6 +200,31 @@ class ProfileFeedSettingsButton extends StatelessWidget {
                           setSheetState(() => repliesHidden = value);
                         },
                       ),
+                      if (subscribed)
+                        ListTile(
+                          title: Text(L10n.of(sheetContext).quiet_account),
+                          subtitle: Text(L10n.of(sheetContext).quiet_account_description),
+                          trailing: DropdownButton<int?>(
+                            value: quietAccountChoices.contains(maxPosts) ? maxPosts : null,
+                            items: [
+                              for (final choice in quietAccountChoices)
+                                DropdownMenuItem(
+                                  value: choice,
+                                  child: Text(quietAccountLabel(sheetContext, choice)),
+                                ),
+                            ],
+                            onChanged: (value) async {
+                              final ok = await setMaxPostsPerLoad(user.idStr!, value);
+                              if (!ok && sheetContext.mounted) {
+                                ScaffoldMessenger.of(sheetContext).showSnackBar(
+                                  SnackBar(content: Text(L10n.of(sheetContext).unable_to_load_the_profile)),
+                                );
+                                return;
+                              }
+                              setSheetState(() => maxPosts = value);
+                            },
+                          ),
+                        ),
                     ],
                   ),
                 ),

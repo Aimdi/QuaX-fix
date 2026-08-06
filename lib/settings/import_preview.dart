@@ -121,4 +121,6 @@ String _label(BuildContext context, BackupCategory category) => switch (category
   BackupCategory.filters => L10n.of(context).filters,
   BackupCategory.readPositions => L10n.of(context).reading_positions,
   BackupCategory.accounts => L10n.of(context).account,
+  BackupCategory.profileNotes => L10n.of(context).profile_note_title,
+  BackupCategory.antennas => L10n.of(context).antenna_title,
 };

@@ -10,6 +10,7 @@ import 'package:xta/constants.dart';
 import 'package:xta/database/entities.dart';
 import 'package:xta/database/repository.dart';
 import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/author_caps.dart';
 import 'package:xta/group/custom_feed_rules.dart';
 import 'package:xta/group/feed_cache.dart';
 import 'package:xta/group/feed_gap.dart';
@@ -17,6 +18,7 @@ import 'package:xta/group/feed_read_position.dart';
 import 'package:xta/group/feed_session_cache.dart';
 import 'package:xta/group/future_pool.dart';
 import 'package:xta/group/group_screen.dart';
+import 'package:xta/group/language_filter.dart';
 import 'package:xta/profile/media_grid/media_grid.dart';
 import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:logging/logging.dart';
@@ -96,6 +98,7 @@ class SubscriptionGroupFeed extends StatefulWidget {
 }
 
 class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
+  Map<String, String> _foldReasons = const {};
   late final TweetFeedController _feedController;
   // Grid-mode paging, created on first use. Kept separately from the tweet
   // list's controller so toggling the media filter swaps views without
@@ -709,13 +712,35 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     var threads = _sortChains(dedupeChainsById(chunkResults.expand((e) => e.chains).toList()));
     threads = filterHiddenRetweets(threads, await hiddenRetweetScreenNames());
     threads = filterHiddenReplies(threads, await hiddenReplyScreenNames());
-    threads = applyCustomFeedRules(threads, feedRulesOf(widget.group));
+    final rulesOutcome = applyCustomFeedRules(threads, feedRulesOf(widget.group));
+    threads = rulesOutcome.chains;
+
+    final caps = <String, int>{};
+    for (final sub in widget.group.subscriptions.whereType<UserSubscription>()) {
+      final max = sub.maxPostsPerLoad;
+      if (max != null && max > 0) {
+        caps[sub.id] = max;
+      }
+    }
+    threads = capChainsPerAuthor(threads, caps);
 
     if (!mounted) {
       return (chains: <TweetChain>[], nextCursor: null);
     }
 
-    if (PrefService.of(context, listen: false).get(optionZenMode) == true) {
+    final prefs = PrefService.of(context, listen: false);
+    final languageOutcome = applyLanguageFilter(
+      threads,
+      allowedLanguages: parseFeedLanguages(prefs.get(optionFeedLanguages) as String?),
+      action: parseLanguageFilterAction(prefs.get(optionFeedLanguageAction) as String?),
+      priorFolds: rulesOutcome.foldReasons,
+    );
+    threads = languageOutcome.chains;
+    if (mounted) {
+      _foldReasons = languageOutcome.foldReasons;
+    }
+
+    if (prefs.get(optionZenMode) == true) {
       threads = _applyZenMode(threads);
     }
 
@@ -846,6 +871,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
             username: null,
             firstPagePreview: _cachedPreview,
             firstPagePreviewCachedAt: _cachedPreviewAt,
+            foldReasons: _foldReasons,
             onCaughtUp: _catchUpEnabled ? _recordCaughtUp : null,
             catchUpMayBeIncomplete: () => _gapCapped,
             onRefresh: () async {

@@ -48,6 +48,25 @@ class SavedTweetModel extends Store<List<SavedTweet>> {
     update(state.map((e) => e.id == id ? e.copyWith(folderId: folderId) : e).toList(), force: true);
   }
 
+  Future<void> setNote(String id, String? note) async {
+    final database = await Repository.writable();
+    final trimmed = note?.trim();
+
+    await database.update(
+      tableSavedTweet,
+      {'note': trimmed == null || trimmed.isEmpty ? null : trimmed},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    update(
+      state
+          .map((e) => e.id == id ? e.copyWith(note: trimmed == null || trimmed.isEmpty ? null : trimmed) : e)
+          .toList(),
+      force: true,
+    );
+  }
+
   Future<void> removeSavedTweets(List<String> ids) async {
     var database = await Repository.writable();
 

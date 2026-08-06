@@ -27,6 +27,10 @@ import 'package:xta/group/group_screen.dart';
 import 'package:xta/home/_feed.dart';
 import 'package:xta/home/home_model.dart';
 import 'package:xta/home/home_screen.dart';
+import 'package:xta/antenna/antenna_feed_screen.dart';
+import 'package:xta/antenna/antenna_model.dart';
+import 'package:xta/antenna/antenna_screen.dart';
+import 'package:xta/home/deck_screen.dart';
 import 'package:xta/import_data_model.dart';
 import 'package:xta/profile/profile.dart';
 import 'package:xta/plugins/substack/substack_client.dart';
@@ -399,6 +403,10 @@ Future<void> main() async {
       optionTweetsShowSubscribeBadge: true,
       optionZenMode: false,
       optionZenModePageCap: 5,
+      optionCalmMode: false,
+      optionFeedLanguages: '',
+      optionFeedLanguageAction: 'off',
+      optionDeckGroupIds: '',
       optionFeedReadingPosition: false,
       optionGlobalIncludeReplies: true,
       optionGlobalIncludeRetweets: true,
@@ -634,6 +642,7 @@ Future<void> main() async {
             ChangeNotifierProvider(create: (context) => importDataModel),
             Provider(create: (context) => subscriptionsModel),
             Provider(create: (context) => SavedTweetModel()),
+            Provider(create: (context) => AntennaModel()),
             Provider(create: (context) => SavedTweetFolderModel()),
             Provider(create: (context) => LikedTweetModel()),
             Provider(create: (context) => SearchUsersModel()),
@@ -878,6 +887,9 @@ class _FritterAppState extends State<FritterApp> {
                   routeQuotes: (context) => const QuotesScreen(),
                   routeTicker: (context) => const TickerScreen(),
                   routeStatus: (context) => const StatusScreen(),
+                  routeAntennas: (context) => const AntennaScreen(),
+                  routeAntennaFeed: (context) => const AntennaFeedScreen(),
+                  routeDeck: (context) => const DeckScreen(),
                 },
                 builder: (context, child) {
                   if (_checkUpdates && !_updateDialogShown) {

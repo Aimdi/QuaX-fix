@@ -4,6 +4,7 @@ import 'package:pref/pref.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/database/entities.dart';
 import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/deck_groups.dart';
 import 'package:xta/group/feed_catch_up.dart';
 import 'package:xta/group/group_custom_settings.dart';
 import 'package:xta/group/group_model.dart';
@@ -82,6 +83,20 @@ void showFeedSettings(BuildContext context, GroupModel model) {
                         value: prefs.get(feedCatchUpModeKey(state.id)) == true,
                         onChanged: (value) async => await prefs.set(feedCatchUpModeKey(state.id), value),
                       ),
+                    SwitchListTile(
+                      title: Text(
+                        isDeckPinned(prefs, state.id)
+                            ? L10n.of(context).deck_unpin_group
+                            : L10n.of(context).deck_pin_group,
+                      ),
+                      subtitle: Text(L10n.of(context).deck_title),
+                      value: isDeckPinned(prefs, state.id),
+                      onChanged: (_) async {
+                        await toggleDeckPin(prefs, state.id);
+                        // Force the sheet to rebuild so the label flips.
+                        (context as Element).markNeedsBuild();
+                      },
+                    ),
                     ExpansionTile(
                       leading: const Icon(Icons.sort),
                       title: Text(_sortModeLabel(context, model.state)),

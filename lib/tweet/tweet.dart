@@ -403,6 +403,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         username: tweet.user!.screenName!,
         initialMediaIndex: widget.initialMediaIndex,
         tweetId: tweet.idStr,
+        tweet: tweet,
       );
     }
 

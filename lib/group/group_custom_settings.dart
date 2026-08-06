@@ -256,23 +256,33 @@ class _MutedKeywordsSectionState extends State<_MutedKeywordsSection> {
   }
 
   Future<void> _add() async {
-    final terms = parseMutedKeywords(_controller.text);
+    final terms = parseMutedKeywordTerms(_controller.text);
     if (terms.isEmpty) {
       return;
     }
 
-    final existing = widget.state.mutedKeywords.map((e) => e.toLowerCase()).toSet();
+    final existing = widget.state.mutedKeywords.map((e) => e.term.toLowerCase()).toSet();
     final next = [
       ...widget.state.mutedKeywords,
-      ...terms.where((term) => !existing.contains(term.toLowerCase())),
+      ...terms
+          .where((term) => !existing.contains(term.toLowerCase()))
+          .map((term) => MutedKeyword(term: term)),
     ];
 
     _controller.clear();
     await widget.model.setSubscriptionGroupMutedKeywords(next);
   }
 
-  Future<void> _remove(String term) async {
-    final next = widget.state.mutedKeywords.where((e) => e != term).toList(growable: false);
+  Future<void> _remove(MutedKeyword keyword) async {
+    final next = widget.state.mutedKeywords.where((e) => e.term != keyword.term).toList(growable: false);
+    await widget.model.setSubscriptionGroupMutedKeywords(next);
+  }
+
+  Future<void> _setExpiry(MutedKeyword keyword, Duration? duration) async {
+    final until = duration == null ? null : DateTime.now().add(duration);
+    final next = widget.state.mutedKeywords
+        .map((e) => e.term == keyword.term ? e.copyWith(until: until, clearUntil: duration == null) : e)
+        .toList(growable: false);
     await widget.model.setSubscriptionGroupMutedKeywords(next);
   }
 
@@ -319,16 +329,96 @@ class _MutedKeywordsSectionState extends State<_MutedKeywordsSection> {
               spacing: 8,
               runSpacing: 8,
               children: [
-                for (final term in keywords)
+                for (final keyword in keywords)
                   InputChip(
-                    label: Text(term),
-                    onDeleted: () => _remove(term),
+                    label: Text(_keywordChipLabel(l10n, keyword)),
+                    onPressed: () => _showKeywordOptions(context, keyword),
+                    onDeleted: () => _remove(keyword),
                     deleteIcon: const Icon(Icons.close, size: 16),
+                    avatar: Icon(
+                      keyword.action == KeywordFilterAction.fold ? Icons.unfold_more : Icons.visibility_off_outlined,
+                      size: 16,
+                    ),
                   ),
               ],
             ),
           ],
         ],
+      ),
+    );
+  }
+
+  String _keywordChipLabel(L10n l10n, MutedKeyword keyword) {
+    final action = keyword.action == KeywordFilterAction.fold ? l10n.filter_action_fold : l10n.filter_action_hide;
+    if (keyword.until == null) {
+      return '${keyword.term} · $action';
+    }
+    return '${keyword.term} · $action · ${l10n.filter_until_short}';
+  }
+
+  Future<void> _showKeywordOptions(BuildContext context, MutedKeyword keyword) async {
+    final l10n = L10n.of(context);
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.visibility_off_outlined),
+              title: Text(l10n.filter_action_hide),
+              onTap: () async {
+                Navigator.pop(sheetContext);
+                await widget.model.setSubscriptionGroupMutedKeywords(
+                  widget.state.mutedKeywords
+                      .map((e) => e.term == keyword.term ? e.copyWith(action: KeywordFilterAction.hide) : e)
+                      .toList(growable: false),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.unfold_more),
+              title: Text(l10n.filter_action_fold),
+              onTap: () async {
+                Navigator.pop(sheetContext);
+                await widget.model.setSubscriptionGroupMutedKeywords(
+                  widget.state.mutedKeywords
+                      .map((e) => e.term == keyword.term ? e.copyWith(action: KeywordFilterAction.fold) : e)
+                      .toList(growable: false),
+                );
+              },
+            ),
+            const Divider(height: 1),
+            ListTile(
+              title: Text(l10n.filter_expire_never),
+              onTap: () async {
+                Navigator.pop(sheetContext);
+                await _setExpiry(keyword, null);
+              },
+            ),
+            ListTile(
+              title: Text(l10n.filter_expire_1_day),
+              onTap: () async {
+                Navigator.pop(sheetContext);
+                await _setExpiry(keyword, const Duration(days: 1));
+              },
+            ),
+            ListTile(
+              title: Text(l10n.filter_expire_1_week),
+              onTap: () async {
+                Navigator.pop(sheetContext);
+                await _setExpiry(keyword, const Duration(days: 7));
+              },
+            ),
+            ListTile(
+              title: Text(l10n.filter_expire_1_month),
+              onTap: () async {
+                Navigator.pop(sheetContext);
+                await _setExpiry(keyword, const Duration(days: 30));
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

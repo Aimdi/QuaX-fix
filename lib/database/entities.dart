@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/group/custom_feed_rules.dart';
 import 'package:xta/group/group_model.dart';
+import 'package:xta/group/muted_keyword.dart';
 import 'package:xta/subscriptions/group_mark_style.dart';
 import 'package:xta/user.dart';
 import 'package:intl/intl.dart';
@@ -17,32 +18,107 @@ class SavedTweet with ToMappable {
   final String? user;
   final String? content;
   final String? folderId;
+  final String? note;
 
-  SavedTweet({required this.id, required this.user, required this.content, this.folderId});
+  SavedTweet({required this.id, required this.user, required this.content, this.folderId, this.note});
 
   factory SavedTweet.fromMap(Map<String, Object?> map) {
     return SavedTweet(
         id: map['id'] as String,
         user: map['user_id'] as String?,
         content: map['content'] as String?,
-        folderId: map['folder_id'] as String?);
+        folderId: map['folder_id'] as String?,
+        note: map['note'] as String?);
   }
 
   // `folderId` is nullable and null is meaningful ("unfiled"), so the sentinel lets
   // callers distinguish "leave unchanged" from "clear the folder".
   static const _unset = Object();
 
-  SavedTweet copyWith({String? id, String? user, String? content, Object? folderId = _unset}) {
+  SavedTweet copyWith({
+    String? id,
+    String? user,
+    String? content,
+    Object? folderId = _unset,
+    Object? note = _unset,
+  }) {
     return SavedTweet(
         id: id ?? this.id,
         user: user ?? this.user,
         content: content ?? this.content,
-        folderId: identical(folderId, _unset) ? this.folderId : folderId as String?);
+        folderId: identical(folderId, _unset) ? this.folderId : folderId as String?,
+        note: identical(note, _unset) ? this.note : note as String?);
   }
 
   @override
   Map<String, dynamic> toMap() {
-    return {'id': id, 'content': content, 'user_id': user, 'folder_id': folderId};
+    return {'id': id, 'content': content, 'user_id': user, 'folder_id': folderId, 'note': note};
+  }
+}
+
+/// A private note the reader keeps on a profile — never synced anywhere.
+class ProfileNote with ToMappable {
+  final String id;
+  final String note;
+  final DateTime updatedAt;
+
+  ProfileNote({required this.id, required this.note, required this.updatedAt});
+
+  factory ProfileNote.fromMap(Map<String, Object?> map) {
+    return ProfileNote(
+      id: map['id'] as String,
+      note: map['note'] as String? ?? '',
+      updatedAt: DateTime.tryParse((map['updated_at'] as String?) ?? '') ?? DateTime.now(),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {'id': id, 'note': note, 'updated_at': updatedAt.toIso8601String()};
+  }
+}
+
+/// A saved keyword listener feed (Misskey antenna).
+class Antenna with ToMappable {
+  final String id;
+  final String name;
+  final List<String> includeTerms;
+  final List<String> excludeTerms;
+
+  /// `search` (all of X search) or `following` (only accounts you follow).
+  final String scope;
+  final DateTime createdAt;
+
+  Antenna({
+    required this.id,
+    required this.name,
+    required this.includeTerms,
+    this.excludeTerms = const [],
+    this.scope = 'search',
+    required this.createdAt,
+  });
+
+  factory Antenna.fromMap(Map<String, Object?> map) {
+    return Antenna(
+      id: map['id'] as String,
+      name: map['name'] as String? ?? '',
+      includeTerms: parseMutedKeywordTerms(map['include_terms'] as String?),
+      excludeTerms: parseMutedKeywordTerms(map['exclude_terms'] as String?),
+      scope: (map['scope'] as String?) == 'following' ? 'following' : 'search',
+      createdAt: DateTime.tryParse((map['created_at'] as String?) ?? '') ?? DateTime.now(),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'include_terms': includeTerms.join(', '),
+      'exclude_terms': excludeTerms.isEmpty ? null : excludeTerms.join(', '),
+      'scope': scope,
+      'created_at': createdAt.toIso8601String(),
+    };
   }
 }
 
@@ -157,6 +233,9 @@ class SearchSubscription extends Subscription {
 }
 
 class UserSubscription extends Subscription {
+  /// Max posts from this account kept per feed load; null/0 = uncapped.
+  final int? maxPostsPerLoad;
+
   UserSubscription(
       {required super.id,
       required super.screenName,
@@ -164,8 +243,8 @@ class UserSubscription extends Subscription {
       required super.profileImageUrlHttps,
       required super.verified,
       required super.createdAt,
-      required super.inFeed
-      });
+      required super.inFeed,
+      this.maxPostsPerLoad});
 
   factory UserSubscription.fromMap(Map<String, Object?> map) {
     var verified = map['verified'] is int;
@@ -179,8 +258,8 @@ class UserSubscription extends Subscription {
         profileImageUrlHttps: map['profile_image_url_https'] as String?,
         verified: verified ? map['verified'] == 1 : false,
         createdAt: createdAt,
-        inFeed: inFeed ? map['in_feed'] == 1 : false
-    );
+        inFeed: inFeed ? map['in_feed'] == 1 : false,
+        maxPostsPerLoad: map['max_posts_per_load'] as int?);
   }
 
   factory UserSubscription.fromUser(UserWithExtra user) {
@@ -192,6 +271,19 @@ class UserSubscription extends Subscription {
         verified: user.verified!,
         createdAt: user.createdAt!,
         inFeed: true
+    );
+  }
+
+  UserSubscription copyWith({int? maxPostsPerLoad, bool clearMaxPosts = false}) {
+    return UserSubscription(
+      id: id,
+      screenName: screenName,
+      name: name,
+      profileImageUrlHttps: profileImageUrlHttps,
+      verified: verified,
+      createdAt: createdAt,
+      inFeed: inFeed,
+      maxPostsPerLoad: clearMaxPosts ? null : (maxPostsPerLoad ?? this.maxPostsPerLoad),
     );
   }
 
@@ -212,6 +304,7 @@ class UserSubscription extends Subscription {
       'verified': verified ? 1 : 0,
       'created_at': sqliteDateFormat.format(createdAt),
       'in_feed': inFeed ? 1 : 0,
+      'max_posts_per_load': maxPostsPerLoad,
     };
   }
 
@@ -611,8 +704,8 @@ class SubscriptionGroupGet {
   int minLikes;
   int minRetweets;
 
-  /// Terms whose posts this feed hides.
-  List<String> mutedKeywords;
+  /// Terms whose posts this feed hides or folds.
+  List<MutedKeyword> mutedKeywords;
 
   SubscriptionGroupGet(
       {required this.id,
@@ -647,7 +740,7 @@ class SubscriptionGroupGet {
       String? contentFilter,
       int? minLikes,
       int? minRetweets,
-      List<String>? mutedKeywords}) {
+      List<MutedKeyword>? mutedKeywords}) {
     return SubscriptionGroupGet(
         id: id,
         name: name,

@@ -12,6 +12,7 @@ import 'package:xta/profile/_saved.dart';
 import 'package:xta/profile/_tweets.dart';
 import 'package:xta/profile/profile_feed_settings.dart';
 import 'package:xta/profile/profile_model.dart';
+import 'package:xta/profile/profile_note.dart';
 import 'package:xta/search/search.dart';
 import 'package:xta/tweet/_media.dart';
 import 'package:xta/ui/errors.dart';
@@ -542,6 +543,7 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> with TickerProvid
                                                           )))
                                                 ]),
                                           )),
+                                      if (user.idStr != null) ProfileNoteCard(userId: user.idStr!),
                                     ],
                                   ),
                                 ),
