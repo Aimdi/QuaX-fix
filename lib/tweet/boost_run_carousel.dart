@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xta/client/client.dart';
 import 'package:xta/constants.dart';
+import 'package:xta/generated/l10n.dart';
 import 'package:xta/status.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/user.dart';
@@ -14,15 +15,29 @@ class BoostRunCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 88,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-        itemCount: chains.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 8),
-        itemBuilder: (context, index) => _BoostCard(chain: chains[index], username: username),
-      ),
+    final theme = Theme.of(context);
+    final labelStyle = theme.textTheme.labelSmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: Text(L10n.of(context).boosts_row_label, style: labelStyle),
+        ),
+        SizedBox(
+          height: 88,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            itemCount: chains.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 8),
+            itemBuilder: (context, index) =>
+                _BoostCard(chain: chains[index], username: username),
+          ),
+        ),
+      ],
     );
   }
 }

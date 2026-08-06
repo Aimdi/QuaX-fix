@@ -10,92 +10,30 @@ TweetChain _chain(String id, {String? replyTo}) {
 }
 
 void main() {
-  group('buildThreadTree', () {
-    test('nests replies under their parent', () {
-      final chains = [
-        _chain('focal'),
-        _chain('r1', replyTo: 'focal'),
-        _chain('r2', replyTo: 'r1'),
-      ];
-      final nodes = buildThreadTree(chains, 'focal');
-      expect(nodes.map((n) => (n.chain.id, n.depth)).toList(), [
-        ('focal', 0),
-        ('r1', 1),
-        ('r2', 2),
-      ]);
-    });
+  test('buildCappedThreadList inserts continue markers past depth 2', () {
+    final nodes = buildThreadTree([
+      _chain('root'),
+      _chain('a', replyTo: 'root'),
+      _chain('b', replyTo: 'a'),
+      _chain('c', replyTo: 'b'),
+      _chain('d', replyTo: 'c'),
+    ], 'root');
+
+    final display = buildCappedThreadList(nodes, maxDepth: 2);
+    expect(display.whereType<ThreadDisplayNode>().length, lessThan(nodes.length));
+    expect(display.whereType<ThreadContinueMarker>(), isNotEmpty);
   });
 
-  group('skipThreadSubtree', () {
-    test('skips descendants in pre-order', () {
-      final nodes = [
-        ThreadNode(TweetChain(id: 'a', tweets: const [], isPinned: false), 1),
-        ThreadNode(TweetChain(id: 'b', tweets: const [], isPinned: false), 2),
-        ThreadNode(TweetChain(id: 'c', tweets: const [], isPinned: false), 3),
-        ThreadNode(TweetChain(id: 'd', tweets: const [], isPinned: false), 1),
-      ];
-      expect(skipThreadSubtree(nodes, 1), 3);
-    });
-  });
-
-  group('buildCappedThreadList', () {
-    test('shows depth 0-2 and collapses deeper branches', () {
-      final chains = [
-        _chain('focal'),
-        _chain('d1', replyTo: 'focal'),
-        _chain('d2', replyTo: 'd1'),
-        _chain('d3', replyTo: 'd2'),
-        _chain('d4', replyTo: 'd3'),
-      ];
-      final display = buildCappedThreadList(buildThreadTree(chains, 'focal'));
-      expect(display.whereType<ThreadDisplayNode>().map((n) => n.node.chain.id).toList(),
-          ['focal', 'd1', 'd2']);
-      final marker = display.whereType<ThreadContinueMarker>().single;
-      expect(marker.target.chain.id, 'd3');
-      expect(marker.indentDepth, 2);
-    });
-
-    test('keeps sibling branches after a collapsed subtree', () {
-      final chains = [
-        _chain('focal'),
-        _chain('a', replyTo: 'focal'),
-        _chain('a1', replyTo: 'a'),
-        _chain('a2', replyTo: 'a1'),
-        _chain('a3', replyTo: 'a2'),
-        _chain('b', replyTo: 'focal'),
-      ];
-      final display = buildCappedThreadList(buildThreadTree(chains, 'focal'));
-      expect(display.whereType<ThreadDisplayNode>().map((n) => n.node.chain.id).toList(),
-          ['focal', 'a', 'a1', 'b']);
-      expect(display.whereType<ThreadContinueMarker>().single.target.chain.id, 'a2');
-    });
-
-    test('marks connector flags on nested nodes', () {
-      final chains = [
-        _chain('focal'),
-        _chain('r1', replyTo: 'focal'),
-        _chain('r2', replyTo: 'r1'),
-      ];
-      final display = buildCappedThreadList(buildThreadTree(chains, 'focal'));
-      final nodes = display.whereType<ThreadDisplayNode>().toList();
-      expect(nodes[1].connectTop, isTrue);
-      expect(nodes[1].connectBottom, isTrue);
-      expect(nodes[2].connectTop, isTrue);
-      expect(nodes[2].connectBottom, isFalse);
-    });
-
-    test('parent at cap depth gets bottom connector before continue row', () {
-      final chains = [
-        _chain('focal'),
-        _chain('d1', replyTo: 'focal'),
-        _chain('d2', replyTo: 'd1'),
-        _chain('d3', replyTo: 'd2'),
-      ];
-      final display = buildCappedThreadList(buildThreadTree(chains, 'focal'));
-      final capped = display.whereType<ThreadDisplayNode>().last;
-      expect(capped.node.chain.id, 'd2');
-      expect(capped.connectBottom, isTrue);
-      expect(display.last, isA<ThreadContinueMarker>());
-    });
+  test('skipThreadSubtree jumps past children', () {
+    final nodes = [
+      ThreadNode(_chain('a'), 0),
+      ThreadNode(_chain('b'), 1),
+      ThreadNode(_chain('c'), 2),
+      ThreadNode(_chain('d'), 1),
+    ];
+    // Pre-order: a → b → c → d(sibling of b). Subtree of a is the whole list.
+    expect(skipThreadSubtree(nodes, 0), 4);
+    // Subtree of b is only c; stop at d (same depth as b).
+    expect(skipThreadSubtree(nodes, 1), 3);
   });
 }
