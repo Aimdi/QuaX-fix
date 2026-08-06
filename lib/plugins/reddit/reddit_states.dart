@@ -63,10 +63,6 @@ String redditErrorEmoji(Object error) {
 }
 
 /// A failure with a way out of it.
-///
-/// Scrollable, because the shared error layout is a centred column: at twice
-/// the text size it pushed its own retry button off the bottom of the screen,
-/// which turned every failure into a dead end.
 class RedditErrorState extends StatelessWidget {
   final Object error;
   final VoidCallback onRetry;
@@ -81,17 +77,16 @@ class RedditErrorState extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      child: ActionableErrorWidget(
-        emoji: redditErrorEmoji(error),
-        title: redditErrorHeadline(l10n, error),
-        details: redditErrorDetail(error),
-        actions: [
-          FilledButton.icon(icon: const Icon(Icons.refresh), label: Text(l10n.retry), onPressed: onRetry),
-          ...actions,
-        ],
-      ),
+    // Scrolling when the text is large is the shared layout's job now, so this
+    // must not add a scroll view of its own around it.
+    return ActionableErrorWidget(
+      emoji: redditErrorEmoji(error),
+      title: redditErrorHeadline(l10n, error),
+      details: redditErrorDetail(error),
+      actions: [
+        FilledButton.icon(icon: const Icon(Icons.refresh), label: Text(l10n.retry), onPressed: onRetry),
+        ...actions,
+      ],
     );
   }
 }
