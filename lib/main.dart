@@ -498,6 +498,7 @@ Future<void> main() async {
       optionThemeTrueBlackTweetCards: true,
       optionShowNavigationLabels: false,
       optionTweetsHideSensitive: true,
+      optionAlwaysShowSensitiveMedia: false,
       optionSavedShowAllTab: true,
       optionSavedShowUnfiledTab: true,
       optionSavedShowFavoritesTab: true,

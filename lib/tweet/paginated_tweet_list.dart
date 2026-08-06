@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:xta/client/client.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/group/feed_refresh_controller.dart';
+import 'package:xta/tweet/boost_run_carousel.dart';
+import 'package:xta/tweet/boost_runs.dart';
 import 'package:xta/tweet/cached_tweet_list.dart';
 import 'package:xta/tweet/conversation.dart';
 import 'package:xta/tweet/interleaved_items.dart';
@@ -320,6 +322,17 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
   Widget _buildChain(BuildContext context, TweetChain chain) => TweetConversation(
       key: ValueKey(chain.id), id: chain.id, tweets: chain.tweets, username: widget.username, isPinned: chain.isPinned);
 
+  Widget _buildChainAt(BuildContext context, List<TweetChain> loaded, int index) {
+    final runLength = boostRunLengthAt(loaded, index);
+    if (runLength > 0) {
+      return BoostRunCarousel(chains: loaded.sublist(index, index + runLength), username: widget.username);
+    }
+    if (isContinuationOfBoostRun(loaded, index)) {
+      return const SizedBox.shrink();
+    }
+    return _buildChain(context, loaded[index]);
+  }
+
   // The caught-up boundary and the interleaved buckets are both O(loaded
   // history), and the list builder runs on every paging notification — so they
   // are remembered per items-list identity rather than recomputed each build.
@@ -501,7 +514,7 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
           cacheExtent: 600,
           builderDelegate: PagedChildBuilderDelegate(
             itemBuilder: (context, chain, index) {
-              final conversation = _buildChain(context, chain);
+              final conversation = _buildChainAt(context, loaded, index);
               final above = index < buckets.length ? buckets[index] : const <InterleavedItem>[];
               // Anything older than every chain loaded so far rides along with
               // the last one, so it is on screen rather than waiting for a page

@@ -4,6 +4,7 @@ import 'package:xta/generated/l10n.dart';
 import 'package:xta/home/_saved.dart';
 import 'package:xta/profile/profile.dart';
 import 'package:xta/saved/saved_tweet_model.dart';
+import 'package:xta/tweet/sensitive_media_gate.dart';
 import 'package:xta/ui/errors.dart';
 import 'package:xta/user.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -46,18 +47,11 @@ class _ProfileSavedState extends State<ProfileSaved> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TweetContextState>(builder: (context, model, child) {
-      if (model.hideSensitive && (widget.user.possiblySensitive ?? false)) {
-        return EmojiErrorWidget(
-          emoji: '🍆🙈🍆',
-          message: L10n.current.possibly_sensitive,
-          errorMessage: L10n.current.possibly_sensitive_profile,
-          onRetry: () async => model.setHideSensitive(false),
-          retryText: L10n.current.yes_please,
-        );
-      }
-
-      return PagingListener<int, SavedTweet>(
+    return SensitiveMediaGate(
+      sensitive: widget.user.possiblySensitive ?? false,
+      errorMessage: L10n.current.possibly_sensitive_profile,
+      wrapInCard: false,
+      child: PagingListener<int, SavedTweet>(
         controller: _pagingController,
         builder: (context, state, fetchNextPage) => PagedListView<int, SavedTweet>(
           padding: EdgeInsets.zero,
@@ -87,7 +81,7 @@ class _ProfileSavedState extends State<ProfileSaved> {
             },
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 }

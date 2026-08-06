@@ -565,7 +565,7 @@ class _SavedScreenState extends State<SavedScreen> with AutomaticKeepAliveClient
       body: MultiProvider(
         providers: [
           ChangeNotifierProvider<TweetContextState>(
-              create: (_) => TweetContextState(prefs.get(optionTweetsHideSensitive))),
+              create: (_) => TweetContextState.fromPrefs(prefs)),
         ],
         child: Column(
           children: [

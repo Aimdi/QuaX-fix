@@ -208,7 +208,7 @@ class _ResultsScreenState extends State<_ResultsScreen> with SingleTickerProvide
       body: MultiProvider(
         providers: [
           ChangeNotifierProvider<TweetContextState>(
-              create: (_) => TweetContextState(prefs.get(optionTweetsHideSensitive))),
+              create: (_) => TweetContextState.fromPrefs(prefs)),
           ChangeNotifierProvider<VideoContextState>(
               create: (_) => VideoContextState(prefs.get(optionMediaDefaultMute))),
         ],

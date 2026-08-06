@@ -322,6 +322,8 @@ const themeColors = {
 };
 
 const optionTweetsHideSensitive = 'tweets.hide_sensitive';
+/// Once true, sensitive-media gates stay open across sessions (Bluesky-style).
+const optionAlwaysShowSensitiveMedia = 'tweets.always_show_sensitive_media';
 
 const optionSavedShowAllTab = 'saved.show_all_tab';
 const optionSavedShowUnfiledTab = 'saved.show_unfiled_tab';

@@ -9,18 +9,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:xta/home/edge_swipe.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
-import 'package:xta/profile/profile.dart';
 import 'package:xta/tweet/_photo.dart';
 import 'package:xta/tweet/media_strip.dart';
 import 'package:xta/tweet/_video.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/tweet/sensitive_media_gate.dart';
 import 'package:xta/ui/errors.dart';
 import 'package:xta/ui/x_look_theme.dart';
 import 'package:xta/utils/downloads.dart';
 import 'package:xta/utils/media_quality.dart';
 import 'package:path/path.dart' as path;
 import 'package:pref/pref.dart';
-import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
@@ -255,75 +254,68 @@ class _TweetMediaState extends State<TweetMedia> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TweetContextState>(builder: (context, model, child) {
-      if (model.hideSensitive && (widget.sensitive ?? false)) {
-        return Card(
-          child: Center(
-              child: EmojiErrorWidget(
-            emoji: '🍆🙈🍆',
-            message: L10n.current.possibly_sensitive,
-            errorMessage: L10n.current.possibly_sensitive_tweet,
-            retryText: L10n.current.yes_please,
-            onRetry: () async => model.setHideSensitive(false),
-          )),
-        );
-      }
+    return SensitiveMediaGate(
+      sensitive: widget.sensitive ?? false,
+      errorMessage: L10n.current.possibly_sensitive_tweet,
+      child: _buildMedia(context),
+    );
+  }
 
-      final tokens = XLookTokens.maybeOf(context);
-      final radius = tokens?.mediaRadius ?? kTweetMediaRadius;
+  Widget _buildMedia(BuildContext context) {
+    final tokens = XLookTokens.maybeOf(context);
+    final radius = tokens?.mediaRadius ?? kTweetMediaRadius;
 
-      if (widget.media.length == 1) {
-        return RepaintBoundary(
-          child: Container(
-            margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
-            child: AspectRatio(
-              aspectRatio: singleMediaAspect(_aspects().single),
-              child: _card(context, 0, fit: BoxFit.contain, showCounter: false),
-            ),
-          ),
-        );
-      }
-
+    if (widget.media.length == 1) {
       return RepaintBoundary(
-        // No right margin: the row runs off the edge of the screen, which is
-        // what says there is more of it than fits.
         child: Container(
-          margin: const EdgeInsets.only(top: 8, left: 16),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final layout = mediaStripLayout(width: constraints.maxWidth, aspects: _aspects());
-              _placeAt(layout);
-
-              return SizedBox(
-                height: layout.height,
-                // The row owns horizontal drags that start on it, so without
-                // this a swipe over a post's media could not reach the home
-                // page view.
-                child: edgeSwipeToChangeHomePage(
-                  context,
-                  ListView.separated(
-                    controller: _controller,
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.only(right: 16),
-                    itemCount: widget.media.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: kMediaCardGap),
-                    itemBuilder: (context, index) => SizedBox(
-                      width: layout.widths[index],
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(radius),
-                        child: _card(context, index, fit: BoxFit.cover, showCounter: false),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
+          margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
+          child: AspectRatio(
+            aspectRatio: singleMediaAspect(_aspects().single),
+            child: _card(context, 0, fit: BoxFit.contain, showCounter: false),
           ),
         ),
       );
-    });
+    }
+
+    return RepaintBoundary(
+      // No right margin: the row runs off the edge of the screen, which is
+      // what says there is more of it than fits.
+      child: Container(
+        margin: const EdgeInsets.only(top: 8, left: 16),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final layout = mediaStripLayout(width: constraints.maxWidth, aspects: _aspects());
+            _placeAt(layout);
+
+            return SizedBox(
+              height: layout.height,
+              // The row owns horizontal drags that start on it, so without
+              // this a swipe over a post's media could not reach the home
+              // page view.
+              child: edgeSwipeToChangeHomePage(
+                context,
+                ListView.separated(
+                  controller: _controller,
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.only(right: 16),
+                  itemCount: widget.media.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: kMediaCardGap),
+                  itemBuilder: (context, index) => SizedBox(
+                    width: layout.widths[index],
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(radius),
+                      child: _card(context, index, fit: BoxFit.cover, showCounter: false),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   /// The aspect ratio of every item, for the row to size itself from.

@@ -6,6 +6,7 @@ import 'package:xta/generated/l10n.dart';
 import 'package:xta/profile/media_grid/media_grid.dart';
 import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:xta/profile/profile.dart';
+import 'package:xta/tweet/sensitive_media_gate.dart';
 import 'package:xta/ui/errors.dart';
 import 'package:xta/user.dart';
 import 'package:xta/utils/paging.dart';
@@ -97,23 +98,16 @@ class _ProfileMediaGridState extends State<ProfileMediaGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TweetContextState>(builder: (context, model, child) {
-      if (model.hideSensitive && (widget.user.possiblySensitive ?? false)) {
-        return EmojiErrorWidget(
-          emoji: '🍆🙈🍆',
-          message: L10n.current.possibly_sensitive,
-          errorMessage: L10n.current.possibly_sensitive_profile,
-          onRetry: () async => model.setHideSensitive(false),
-          retryText: L10n.current.yes_please,
-        );
-      }
-
-      return MediaGrid(
+    return SensitiveMediaGate(
+      sensitive: widget.user.possiblySensitive ?? false,
+      errorMessage: L10n.current.possibly_sensitive_profile,
+      wrapInCard: false,
+      child: MediaGrid(
         controller: _paging.pagingController,
         firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets,
         newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
         emptyMessage: L10n.of(context).could_not_find_any_tweets_by_this_user,
-      );
-    });
+      ),
+    );
   }
 }
