@@ -34,21 +34,22 @@ class RedditAuth {
   ///
   /// `duration=permanent` is what makes Reddit return a refresh token; without
   /// it the session would die in an hour and ask again.
-  static Uri authorizeUrl({required String clientId, required String state}) =>
-      Uri.parse(_authorizeEndpoint).replace(queryParameters: {
-        'client_id': clientId.trim(),
-        'response_type': 'code',
-        'state': state,
-        'redirect_uri': redirectUri,
-        'duration': 'permanent',
-        'scope': scopes,
-      });
+  static Uri authorizeUrl({required String clientId, required String state}) => Uri.parse(_authorizeEndpoint).replace(
+    queryParameters: {
+      'client_id': clientId.trim(),
+      'response_type': 'code',
+      'state': state,
+      'redirect_uri': redirectUri,
+      'duration': 'permanent',
+      'scope': scopes,
+    },
+  );
 
   /// The authorization code Reddit put on the redirect, or null when this is
   /// not the redirect — or when it carried an error or a mismatched state,
   /// which is the check that stops another page from injecting a code.
   static String? codeFrom(Uri uri, {required String expectedState}) {
-    if (!uri.toString().startsWith(redirectUri)) {
+    if (!isRedirect(uri)) {
       return null;
     }
     if (uri.queryParameters['state'] != expectedState) {
@@ -59,25 +60,30 @@ class RedditAuth {
     return (code == null || code.isEmpty) ? null : code;
   }
 
+  /// Whether Reddit is coming back to us at all, whatever it brought.
+  ///
+  /// The redirect resolves to no page, so the sign-in screen has to recognise
+  /// one it cannot read as well as one it can — otherwise a mismatched state
+  /// leaves the reader watching a page that will never load.
+  static bool isRedirect(Uri uri) => uri.toString().startsWith(redirectUri);
+
   /// Whether the redirect says the reader declined, so the screen can close
   /// quietly instead of reporting a failure.
-  static bool deniedIn(Uri uri) =>
-      uri.toString().startsWith(redirectUri) && uri.queryParameters['error'] != null;
+  static bool deniedIn(Uri uri) => isRedirect(uri) && uri.queryParameters['error'] != null;
 
   /// Trades the one-time code for a refresh token.
-  Future<String> exchangeCode({required String clientId, required String code}) async =>
-      _tokenRequest(clientId: clientId, body: {
-        'grant_type': 'authorization_code',
-        'code': code,
-        'redirect_uri': redirectUri,
-      }, want: 'refresh_token');
+  Future<String> exchangeCode({required String clientId, required String code}) async => _tokenRequest(
+    clientId: clientId,
+    body: {'grant_type': 'authorization_code', 'code': code, 'redirect_uri': redirectUri},
+    want: 'refresh_token',
+  );
 
   /// A fresh access token for an already signed-in reader.
-  Future<String> accessToken({required String clientId, required String refreshToken}) async =>
-      _tokenRequest(clientId: clientId, body: {
-        'grant_type': 'refresh_token',
-        'refresh_token': refreshToken,
-      }, want: 'access_token');
+  Future<String> accessToken({required String clientId, required String refreshToken}) async => _tokenRequest(
+    clientId: clientId,
+    body: {'grant_type': 'refresh_token', 'refresh_token': refreshToken},
+    want: 'access_token',
+  );
 
   Future<String> _tokenRequest({
     required String clientId,

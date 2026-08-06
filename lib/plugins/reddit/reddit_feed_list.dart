@@ -48,14 +48,19 @@ class _RedditFeedListState extends State<RedditFeedList> with AutomaticKeepAlive
     final feed = context.read<RedditFeedStore>();
 
     return RefreshIndicator(
-      onRefresh: feed.refresh,
+      // Forced: a pull that was answered out of the shared cache would hand
+      // back the posts already on screen, which is not what a pull is for.
+      onRefresh: () => feed.refresh(force: true),
       child: ScopedBuilder<RedditFeedStore, List<RedditPost>>.transition(
         store: feed,
         onError: (_, error) => FullPageErrorWidget(
           error: error,
           stackTrace: null,
           prefix: redditErrorMessage(l10n, error!),
-          onRetry: feed.refresh,
+          // Also forced: the failure it is retrying is remembered for a while
+          // so every surface does not ask a broken subreddit again, and this
+          // is the reader saying to ask anyway.
+          onRetry: () => feed.refresh(force: true),
         ),
         onLoading: (_) => const Center(child: CircularProgressIndicator()),
         onState: (_, posts) => posts.isEmpty ? _empty(context, l10n) : _list(posts),

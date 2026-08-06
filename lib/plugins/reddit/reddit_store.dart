@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/database/entities.dart';
@@ -9,7 +8,7 @@ import 'package:xta/database/repository.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:xta/plugins/reddit/reddit_auth.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
-import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
+import 'package:xta/plugins/reddit/reddit_post_source.dart';
 
 /// Subreddits the reader follows, kept in the database.
 ///
@@ -98,71 +97,28 @@ class RedditSubredditsStore extends Store<List<String>> {
 /// subreddits; this loads one page each and interleaves by date, which is what
 /// makes a combined feed possible without inventing a cursor.
 class RedditFeedStore extends Store<List<RedditPost>> {
-  static final log = Logger('RedditFeedStore');
-
-  final RedditClient client;
   final RedditSubredditsStore subreddits;
-  final BasePrefService prefs;
-  final RedditAuth auth;
 
-  RedditFeedStore(this.client, this.subreddits, this.prefs, {RedditAuth? auth})
-      : auth = auth ?? RedditAuth(),
-        super(const []);
+  /// Shared with the home timeline and For you, which is what stops the same
+  /// subreddit being downloaded once per surface. It is reached through this
+  /// store because this is the Reddit object every surface can already see.
+  final RedditPostSource source;
+
+  RedditFeedStore(
+    RedditClient client,
+    this.subreddits,
+    BasePrefService prefs, {
+    RedditAuth? auth,
+    RedditPostSource? source,
+  }) : source = source ?? RedditPostSource(client, prefs, auth: auth),
+       super(const []);
 
   /// [sort] defaults to the reader's stored choice rather than hot, so the tab
   /// and the timeline agree about what they are showing.
-  Future<void> refresh({RedditSort? sort}) async {
-    await execute(() async {
-      final order = sort ?? storedRedditSort(prefs);
-      final clientId = prefs.get<String>(optionPluginRedditClientId) ?? '';
-      final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
-      final names = subreddits.state;
-      if (names.isEmpty) {
-        return const <RedditPost>[];
-      }
-
-      // Signed in: one access token for the whole refresh, rather than one per
-      // subreddit. A refresh token Reddit no longer accepts means the session
-      // is over, so it is dropped and the read falls back to the public route.
-      String? userToken;
-      final refreshToken = prefs.get<String>(optionPluginRedditRefreshToken) ?? '';
-      if (!preferPublic && refreshToken.isNotEmpty) {
-        try {
-          userToken = await auth.accessToken(clientId: clientId, refreshToken: refreshToken);
-        } on RedditException {
-          await prefs.set(optionPluginRedditRefreshToken, '');
-        }
-      }
-
-      // Fetched together, and one at a time survivable: a single private or
-      // renamed subreddit used to throw out of here and turn the whole feed
-      // into an error screen, after every subreddit before it had already been
-      // paid for.
-      final listings = await Future.wait(names.map((name) async {
-        try {
-          final listing = await client.fetchSubreddit(name,
-              clientId: clientId, sort: order, limit: 15, userToken: userToken, preferPublic: preferPublic);
-
-          return listing.posts.where((p) => !p.stickied).toList();
-        } catch (e) {
-          log.warning('Unable to load r/$name: $e');
-
-          return const <RedditPost>[];
-        }
-      }));
-
-      final posts = listings.expand((e) => e).toList();
-
-      posts.sort((a, b) {
-        final left = a.createdAt;
-        final right = b.createdAt;
-        if (left == null || right == null) {
-          return b.score.compareTo(a.score);
-        }
-        return right.compareTo(left);
-      });
-
-      return posts;
-    });
+  ///
+  /// [force] is the pull-to-refresh: it goes past the shared cache, which is
+  /// otherwise how the reader would pull down and be handed the same posts.
+  Future<void> refresh({RedditSort? sort, bool force = false}) async {
+    await execute(() => source.posts(subreddits.state, sort: sort, forceRefresh: force));
   }
 }

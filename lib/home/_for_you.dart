@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:xta/client/client.dart';
@@ -67,9 +69,15 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
     _maybeLoadReadPosition();
   }
 
-  Future<void> _loadRedditPosts() async {
-    final items = await loadRedditInterleaved(context, redditHomeSubreddits(context));
-    if (mounted && items.isNotEmpty) {
+  Future<void> _loadRedditPosts({bool force = false}) async {
+    // Read through the shared source: the subreddits this timeline mixes in are
+    // the ones the Following feed and the Reddit tab show, and swiping between
+    // them used to download each of them again.
+    final items = await loadRedditInterleaved(context, redditHomeSubreddits(context), forceRefresh: force);
+    // An empty result is assigned too, so a subreddit the reader stopped
+    // following takes its posts with it — but only when there is something to
+    // clear, rather than a rebuild per mount for the readers with none.
+    if (mounted && (items.isNotEmpty || _redditItems.isNotEmpty)) {
       setState(() => _redditItems = items);
     }
   }
@@ -244,7 +252,10 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
                 loadPage: _loadTweets,
                 interleaved: _redditItems,
                 username: user.screenName,
-                onRefresh: () async {},
+                // Reddit alongside X's reload rather than in front of it: a
+                // pull has to reach Reddit too, or the cache would keep
+                // handing back the posts already on screen.
+                onRefresh: () async => unawaited(_loadRedditPosts(force: true)),
                 firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets,
                 newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
                 emptyMessage: L10n.of(context).unable_to_load_the_tweets_for_the_feed,

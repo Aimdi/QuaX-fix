@@ -62,9 +62,25 @@ class RedditComment {
 
   bool get isStub => moreCount != null || (body.isEmpty && permalink != null && replies.isEmpty);
 
+  /// Reddit kept the row but took the words: the author deleted it, or a
+  /// moderator removed it. The replies underneath are usually still there,
+  /// which is why the row survives at all.
+  ///
+  /// Reddit says so in the body rather than in a class the old site is
+  /// consistent about, so the body is what is read. A comment whose *author*
+  /// is gone but whose text is intact is not this — it still says something.
+  bool get isRemoved => !isStub && redditRemovedBodies.contains(body.trim().toLowerCase());
+
+  /// Nobody left to open a profile for: a deleted account, or a row Reddit
+  /// rendered without one.
+  bool get hasAuthor => author != null && author != '[deleted]' && author!.isNotEmpty;
+
   /// This comment and everything under it, which is what a flat list needs.
   int get totalCount => 1 + replies.fold<int>(0, (sum, reply) => sum + reply.totalCount);
 }
+
+/// What Reddit puts in a comment's place once its text is gone.
+const redditRemovedBodies = {'[deleted]', '[removed]', '[unavailable]', '[ removed by reddit ]'};
 
 /// A comment flattened for display, keeping how deep it sat.
 typedef FlatComment = ({RedditComment comment, int depth});
@@ -106,10 +122,7 @@ RedditComment? _commentFrom(Element thing) {
 
   // Only this comment's own entry, never a reply's: `querySelector` searches
   // the whole subtree, so the child block has to be excluded explicitly.
-  final entry = thing.children.firstWhere(
-    (e) => e.classes.contains('entry'),
-    orElse: () => Element.tag('div'),
-  );
+  final entry = thing.children.firstWhere((e) => e.classes.contains('entry'), orElse: () => Element.tag('div'));
 
   final markdown = entry.querySelector('.usertext-body .md');
   final media = _mediaIn(markdown);
@@ -239,9 +252,7 @@ List<RedditComment> _repliesOf(Element thing) {
   }
 
   final listing = child.children.where((e) => e.classes.contains('sitetable')).firstOrNull;
-  return listing == null
-      ? const []
-      : _commentsIn(listing, parentPermalink: thing.attributes['data-permalink']);
+  return listing == null ? const [] : _commentsIn(listing, parentPermalink: thing.attributes['data-permalink']);
 }
 
 /// Direct comment children of a listing block, in order.
@@ -297,19 +308,23 @@ List<RedditComment> parseComments(String body) {
 /// listing did not carry.
 String? parseSelfText(String body) {
   final document = html.parse(body);
-  final text = document.querySelector('#siteTable .expando .usertext-body .md')?.text.trim() ??
+  final text =
+      document.querySelector('#siteTable .expando .usertext-body .md')?.text.trim() ??
       document.querySelector('#siteTable .usertext-body .md')?.text.trim();
 
   return text == null || text.isEmpty ? null : text;
 }
+
+/// One row of a thread: the comment, and how many replies its fold is holding.
+typedef VisibleComment = ({FlatComment entry, int hidden});
 
 /// The rows a thread screen should show, honouring [collapsed] subtrees.
 ///
 /// A collapsed comment stays as its own row, carrying how many replies it is
 /// hiding; everything under it is skipped. Pure, so the fold behaviour can be
 /// tested without a widget tree.
-List<({FlatComment entry, int hidden})> visibleComments(List<FlatComment> all, Set<String> collapsed) {
-  final out = <({FlatComment entry, int hidden})>[];
+List<VisibleComment> visibleComments(List<FlatComment> all, Set<String> collapsed) {
+  final out = <VisibleComment>[];
   var i = 0;
   while (i < all.length) {
     final entry = all[i];
@@ -329,3 +344,39 @@ List<({FlatComment entry, int hidden})> visibleComments(List<FlatComment> all, S
   }
   return out;
 }
+
+/// The row a "next top-level comment" jump should land on, or null when [from]
+/// is already in the last one.
+///
+/// A long thread is one argument after another, and scrolling past a hundred
+/// replies to reach the next one is the reason people give up on threads.
+int? nextTopLevelRow(List<VisibleComment> rows, int from) {
+  for (var i = from + 1; i < rows.length; i++) {
+    if (rows[i].entry.depth == 0) {
+      return i;
+    }
+  }
+  return null;
+}
+
+/// The row a "previous top-level comment" jump should land on.
+///
+/// From inside a subtree that is the top of the *current* argument, which is
+/// what makes the two buttons a pair rather than a way to lose your place.
+int? previousTopLevelRow(List<VisibleComment> rows, int from) {
+  final start = from > rows.length ? rows.length : from;
+  for (var i = start - 1; i >= 0; i--) {
+    if (rows[i].entry.depth == 0) {
+      return i;
+    }
+  }
+  return null;
+}
+
+/// Every top-level comment that has replies to fold, for a collapse-everything
+/// toggle: folding them turns a thousand-comment page into a list of the
+/// arguments it is actually made of.
+Set<String> foldableTopLevelIds(List<FlatComment> all) => {
+  for (final e in all)
+    if (e.depth == 0 && e.comment.replies.isNotEmpty) e.comment.id,
+};

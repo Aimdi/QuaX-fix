@@ -10,8 +10,14 @@ import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_screen.dart';
 import 'package:xta/plugins/reddit/reddit_store.dart';
 import 'package:xta/plugins/reddit/reddit_settings_screen.dart';
+import 'package:xta/plugins/reddit/reddit_votes_store.dart';
 
-/// Account-free Reddit reading, in the spirit of Stealth: no login, no posting.
+/// Reddit, read-only, in the spirit of Stealth.
+///
+/// Account-free by default and account-free for good if the reader wants it:
+/// signing in is offered because it is the most reliable route Reddit leaves
+/// open, never required, and asks for read scopes only. Nothing is ever written
+/// back to Reddit — no posting, no voting, no subscribing.
 ///
 /// A reimplementation against Reddit's documented API rather than a port of
 /// Stealth itself, which is GPLv3 Kotlin — see docs/specs/reddit-plugin.md.
@@ -74,9 +80,16 @@ class RedditPlugin extends XtaPlugin {
 
   @override
   Future<void> forgetLoadedData(BuildContext context) async {
+    // Read before the await: afterwards this context may be gone, and these
+    // stores outlive the screen either way.
+    final client = context.read<RedditClient>();
+    final votes = context.read<RedditVotesStore>();
+
     await context.read<RedditSubredditsStore>().load();
-    if (context.mounted) {
-      context.read<RedditClient>().forgetToken();
-    }
+    client.forgetToken();
+    // The rows are deleted by [tables], but the set that was read from them is
+    // still in memory — an uninstall that left the arrows lit would look like
+    // the votes had been kept.
+    votes.update(const <String>{});
   }
 }

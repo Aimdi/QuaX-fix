@@ -1,20 +1,18 @@
 import 'package:flutter/widgets.dart';
-import 'package:logging/logging.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_post_card.dart';
-import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
+import 'package:xta/plugins/reddit/reddit_post_source.dart';
 import 'package:xta/plugins/reddit/reddit_store.dart';
 import 'package:xta/tweet/interleaved_items.dart';
-
-final _log = Logger('RedditInterleaved');
 
 /// How many posts each subreddit contributes to a shared timeline.
 ///
 /// Small on purpose: the X side pages on and on, and a subreddit that dropped
 /// twenty-five posts in would own the top of the feed rather than joining it.
+/// The fetch is the same size either way — this is how much of it is shown.
 const int kRedditInterleavedPageSize = 10;
 
 /// Whether followed subreddits belong in the home timeline. Off unless asked
@@ -37,46 +35,28 @@ List<String> redditHomeSubreddits(BuildContext context) {
 /// One page of each subreddit, as dated items a tweet list can slot between its
 /// chains.
 ///
-/// One unreachable subreddit must not empty the timeline of the others, so each
-/// is caught on its own. A post with no date is dropped rather than guessed at:
-/// there is nowhere in a chronological feed to put it.
+/// Read through the shared [RedditPostSource], so a subreddit already fetched
+/// for the Reddit tab or the other timeline is not downloaded again here. Per
+/// subreddit failure isolation and the newest-first order come from there too.
 Future<List<InterleavedItem>> loadRedditInterleaved(
   BuildContext context,
   List<String> subreddits, {
   int limit = kRedditInterleavedPageSize,
+  bool forceRefresh = false,
 }) async {
   if (subreddits.isEmpty) {
     return const [];
   }
 
-  final client = context.read<RedditClient>();
-  final prefs = PrefService.of(context, listen: false);
-  final clientId = prefs.get<String>(optionPluginRedditClientId) ?? '';
-  final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
-  final sort = storedRedditSort(prefs);
+  final source = context.read<RedditFeedStore>().source;
+  final posts = await source.posts(subreddits, limit: limit, forceRefresh: forceRefresh);
 
-  // Fetched together rather than one after another: a group with six
-  // subreddits paid six round trips end to end, and the feed waited on the sum.
-  final listings = await Future.wait(subreddits.map((name) async {
-    try {
-      return await client.fetchSubreddit(name,
-          clientId: clientId, sort: sort, limit: limit, preferPublic: preferPublic);
-    } catch (e) {
-      _log.warning('Unable to load r/$name: $e');
-      return null;
-    }
-  }));
-
-  final items = <InterleavedItem>[];
-  for (final listing in listings.nonNulls) {
-    for (final post in listing.posts.where((p) => !p.stickied)) {
-      final date = post.createdAt;
-      if (date == null) {
-        continue;
-      }
-      items.add((date: date, build: (context) => RedditPostCard(post: post)));
-    }
-  }
-
-  return items;
+  return redditInterleavedItems(posts);
 }
+
+/// Posts as dated items. One with no date is dropped rather than guessed at:
+/// there is nowhere in a chronological feed to put it.
+List<InterleavedItem> redditInterleavedItems(Iterable<RedditPost> posts) => [
+  for (final post in posts)
+    if (post.createdAt case final date?) (date: date, build: (context) => RedditPostCard(post: post)),
+];

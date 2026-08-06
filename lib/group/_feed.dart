@@ -147,7 +147,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
   void _mergeInterleaved() => _interleaved = [..._substackItems, ..._redditItems];
 
-  Future<void> _loadRedditPosts() async {
+  Future<void> _loadRedditPosts({bool force = false}) async {
     if (widget.mediaOnly) {
       return;
     }
@@ -159,7 +159,10 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       if (widget.group.id == '-1') ...redditHomeSubreddits(context),
     }.toList(growable: false);
 
-    final items = await loadRedditInterleaved(context, names);
+    // Subreddits are read through the shared source, so the ones this group has
+    // in common with the Reddit tab or For you are not fetched twice; [force]
+    // is the reader pulling to refresh, which has to reach Reddit itself.
+    final items = await loadRedditInterleaved(context, names, forceRefresh: force);
     // Assigned whatever came back, empty included: a subreddit taken out of the
     // group has to take its posts with it, and keeping the old ones on an empty
     // result would leave them there for good.
@@ -849,6 +852,9 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
             onCaughtUp: _catchUpEnabled ? _recordCaughtUp : null,
             catchUpMayBeIncomplete: () => _gapCapped,
             onRefresh: () async {
+              // Not awaited: the reader is waiting on X's first page, and
+              // Reddit is beside it rather than in front of it.
+              unawaited(_loadRedditPosts(force: true));
               // Only this group's rows. The wipe used to take the whole table
               // with it, so pulling to refresh one feed made every other feed
               // refetch its first page from the network next time it opened.

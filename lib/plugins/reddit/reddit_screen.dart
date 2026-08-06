@@ -1,28 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:pref/pref.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/reddit/reddit_actions.dart';
-import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_feed_list.dart';
+import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
 
-String redditErrorMessage(L10n l10n, Object error) {
-  if (error is RedditException) {
-    final explanation = switch (error.kind) {
-      RedditErrorKind.notConfigured => l10n.plugin_reddit_not_configured,
-      RedditErrorKind.unauthorized => l10n.plugin_reddit_error_client_id,
-      RedditErrorKind.blocked => l10n.plugin_reddit_error_blocked,
-      RedditErrorKind.notFound => l10n.plugin_reddit_error_not_found,
-      RedditErrorKind.rateLimited => l10n.plugin_reddit_error_rate_limited,
-      RedditErrorKind.badResponse => l10n.plugin_reddit_error_response,
-      RedditErrorKind.network => l10n.plugin_reddit_error_network,
-    };
-
-    // The translated sentence says what to do; the detail says what actually
-    // happened. Without it a refusal, a timeout and a reshaped response all
-    // read the same, and "it doesn't work" is all anyone can report back.
-    return error.detail.isEmpty ? explanation : '$explanation\n\n${error.detail}';
-  }
-  return '$error';
-}
+// The failure wording moved to reddit_states.dart, next to the widget that
+// renders it. Re-exported so the several files that ask this screen for it
+// keep working.
+export 'package:xta/plugins/reddit/reddit_states.dart' show redditErrorMessage;
 
 /// Account-free Reddit reading: the subreddits you follow, newest first.
 class RedditScreen extends StatelessWidget {
@@ -33,11 +19,36 @@ class RedditScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(L10n.of(context).plugin_reddit_title),
-        actions: const [RedditFeedActions()],
-      ),
+      appBar: AppBar(title: const RedditFeedTitle(), actions: const [RedditFeedActions()]),
       body: RedditFeedList(scrollController: scrollController),
+    );
+  }
+}
+
+/// "Reddit", and underneath it the order the feed is actually in.
+///
+/// The sort is one stored choice that every listing obeys, and it was visible
+/// only inside the sheet that sets it — so a reader who had once chosen Top had
+/// nothing on screen telling them why their feed looked the way it did.
+class RedditFeedTitle extends StatelessWidget {
+  const RedditFeedTitle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final sort = redditSortLabel(context, storedRedditSort(PrefService.of(context)));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(L10n.of(context).plugin_reddit_title, overflow: TextOverflow.ellipsis),
+        Text(
+          sort.label,
+          style: theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 }
