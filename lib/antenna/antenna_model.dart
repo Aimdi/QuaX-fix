@@ -15,9 +15,10 @@ class AntennaModel extends Store<List<Antenna>> {
 
     await execute(() async {
       final database = await Repository.readOnly();
-      return (await database.query(tableAntenna, orderBy: 'created_at DESC'))
-          .map(Antenna.fromMap)
-          .toList(growable: false);
+      return (await database.query(
+        tableAntenna,
+        orderBy: 'created_at DESC',
+      )).map(Antenna.fromMap).toList(growable: false);
     });
   }
 
@@ -50,9 +51,7 @@ class AntennaModel extends Store<List<Antenna>> {
 
     await database.insert(tableAntenna, antenna.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
 
-    final next = id == null
-        ? [antenna, ...state]
-        : state.map((e) => e.id == id ? antenna : e).toList(growable: false);
+    final next = id == null ? [antenna, ...state] : state.map((e) => e.id == id ? antenna : e).toList(growable: false);
     update(next, force: true);
     return antenna;
   }

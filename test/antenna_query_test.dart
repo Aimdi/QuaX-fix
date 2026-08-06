@@ -25,10 +25,7 @@ void main() {
       return TweetChain(id: id, tweets: [tweet], isPinned: false);
     }
 
-    final kept = filterAntennaFollowingScope(
-      [chain('1', 'a'), chain('2', 'b')],
-      {'a'},
-    );
+    final kept = filterAntennaFollowingScope([chain('1', 'a'), chain('2', 'b')], {'a'});
 
     expect(kept.map((c) => c.id), ['1']);
   });

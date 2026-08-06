@@ -13,17 +13,13 @@ class PackMember {
 
   const PackMember({required this.type, required this.id, this.screenName});
 
-  Map<String, dynamic> toJson() => {
-        'type': type,
-        'id': id,
-        if (screenName != null) 'screen_name': screenName,
-      };
+  Map<String, dynamic> toJson() => {'type': type, 'id': id, if (screenName != null) 'screen_name': screenName};
 
   factory PackMember.fromJson(Map<String, dynamic> json) => PackMember(
-        type: (json['type'] as String?) ?? '',
-        id: (json['id'] as String?) ?? '',
-        screenName: json['screen_name'] as String?,
-      );
+    type: (json['type'] as String?) ?? '',
+    id: (json['id'] as String?) ?? '',
+    screenName: json['screen_name'] as String?,
+  );
 }
 
 /// Portable export of one group's members — no credentials.
@@ -37,11 +33,11 @@ class SubscriptionPack {
   const SubscriptionPack({required this.name, required this.members});
 
   Map<String, dynamic> toJson() => {
-        'format': format,
-        'v': version,
-        'name': name,
-        'members': members.map((member) => member.toJson()).toList(growable: false),
-      };
+    'format': format,
+    'v': version,
+    'name': name,
+    'members': members.map((member) => member.toJson()).toList(growable: false),
+  };
 
   factory SubscriptionPack.fromJson(Map<String, dynamic> json) {
     if (json['format'] != format) {
@@ -57,10 +53,7 @@ class SubscriptionPack {
         .map((row) => PackMember.fromJson(Map<String, dynamic>.from(row)))
         .toList(growable: false);
 
-    return SubscriptionPack(
-      name: (json['name'] as String?) ?? '',
-      members: members,
-    );
+    return SubscriptionPack(name: (json['name'] as String?) ?? '', members: members);
   }
 }
 
@@ -70,24 +63,18 @@ SubscriptionPack decodeSubscriptionPack(String raw) =>
     SubscriptionPack.fromJson(jsonDecode(raw) as Map<String, dynamic>);
 
 PackMember? packMemberFrom(Subscription subscription) => switch (subscription) {
-      UserSubscription(:final id, :final screenName) =>
-        PackMember(type: 'user', id: id, screenName: screenName),
-      SearchSubscription(:final id) => PackMember(type: 'search', id: id),
-      _ => null,
-    };
+  UserSubscription(:final id, :final screenName) => PackMember(type: 'user', id: id, screenName: screenName),
+  SearchSubscription(:final id) => PackMember(type: 'search', id: id),
+  _ => null,
+};
 
 SubscriptionPack packFromSubscriptions(String name, Iterable<Subscription> subscriptions) {
-  final members =
-      subscriptions.map(packMemberFrom).whereType<PackMember>().toList(growable: false);
+  final members = subscriptions.map(packMemberFrom).whereType<PackMember>().toList(growable: false);
   return SubscriptionPack(name: name, members: members);
 }
 
 /// Creates missing subscription rows, then a new group holding every pack member.
-Future<int> importSubscriptionPack(
-  SubscriptionPack pack,
-  GroupsModel groups,
-  SubscriptionsModel subscriptions,
-) async {
+Future<int> importSubscriptionPack(SubscriptionPack pack, GroupsModel groups, SubscriptionsModel subscriptions) async {
   final database = await Repository.writable();
   final memberIds = <String>{};
 

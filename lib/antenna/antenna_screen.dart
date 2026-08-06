@@ -43,10 +43,7 @@ class _AntennaScreenState extends State<AntennaScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.antenna_title)),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openEditor(),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: FloatingActionButton(onPressed: () => _openEditor(), child: const Icon(Icons.add)),
       body: ScopedBuilder<AntennaModel, List<Antenna>>.transition(
         store: model,
         onError: (_, error) => FullPageErrorWidget(
@@ -68,10 +65,7 @@ class _AntennaScreenState extends State<AntennaScreen> {
               return ListTile(
                 title: Text(antenna.name),
                 subtitle: Text(antenna.includeTerms.join(', ')),
-                trailing: IconButton(
-                  icon: const Icon(Icons.edit_outlined),
-                  onPressed: () => _openEditor(antenna),
-                ),
+                trailing: IconButton(icon: const Icon(Icons.edit_outlined), onPressed: () => _openEditor(antenna)),
                 onTap: () => Navigator.pushNamed(context, routeAntennaFeed, arguments: AntennaFeedArguments(antenna)),
               );
             },
@@ -146,7 +140,10 @@ class _AntennaEditorSheetState extends State<_AntennaEditorSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(widget.existing == null ? l10n.antenna_new : l10n.antenna_title, style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            widget.existing == null ? l10n.antenna_new : l10n.antenna_title,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const SizedBox(height: 12),
           TextField(
             controller: _name,

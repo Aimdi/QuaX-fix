@@ -6,7 +6,7 @@ import 'package:xta/profile/profile.dart';
 import 'package:xta/plugins/reddit/reddit_interleaved.dart';
 import 'package:xta/tweet/interleaved_items.dart';
 import 'package:xta/tweet/paginated_tweet_list.dart';
-import 'package:xta/ui/errors.dart';
+import 'package:xta/tweet/sensitive_media_gate.dart';
 import 'package:xta/user.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:pref/pref.dart';
@@ -225,36 +225,27 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
     return MultiProvider(
         providers: [
           ChangeNotifierProvider<TweetContextState>(
-              create: (_) => TweetContextState(PrefService.of(context).get(optionTweetsHideSensitive)))
+              create: (_) => TweetContextState.fromPrefs(PrefService.of(context))),
         ],
-        builder: (context, child) {
-          return Consumer<TweetContextState>(builder: (context, model, child) {
-            if (model.hideSensitive && (user.possiblySensitive ?? false)) {
-              return EmojiErrorWidget(
-                emoji: '🍆🙈🍆',
-                message: L10n.current.possibly_sensitive,
-                errorMessage: L10n.current.possibly_sensitive_profile,
-                onRetry: () async => model.setHideSensitive(false),
-                retryText: L10n.current.yes_please,
-              );
-            }
-
-            return NotificationListener<ScrollNotification>(
-              onNotification: _onScrollNotification,
-              child: PaginatedTweetList(
-                feed: widget.feed,
-                loadPage: _loadTweets,
-                interleaved: _redditItems,
-                username: user.screenName,
-                onRefresh: _loadRedditPosts,
-                firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets,
-                newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
-                emptyMessage: L10n.of(context).unable_to_load_the_tweets_for_the_feed,
-                isSeen: _tracksReadPosition && _lastSeen != null ? _isSeen : null,
-                caughtUpDividerKey: _caughtUpKey,
-              ),
-            );
-          });
-        });
+        child: SensitiveMediaGate(
+          sensitive: user.possiblySensitive ?? false,
+          errorMessage: L10n.current.possibly_sensitive_profile,
+          wrapInCard: false,
+          child: NotificationListener<ScrollNotification>(
+            onNotification: _onScrollNotification,
+            child: PaginatedTweetList(
+              feed: widget.feed,
+              loadPage: _loadTweets,
+              interleaved: _redditItems,
+              username: user.screenName,
+              onRefresh: _loadRedditPosts,
+              firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets,
+              newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
+              emptyMessage: L10n.of(context).unable_to_load_the_tweets_for_the_feed,
+              isSeen: _tracksReadPosition && _lastSeen != null ? _isSeen : null,
+              caughtUpDividerKey: _caughtUpKey,
+            ),
+          ),
+        ));
   }
 }

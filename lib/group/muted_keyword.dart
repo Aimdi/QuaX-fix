@@ -6,14 +6,14 @@ enum KeywordFilterAction {
   fold;
 
   static KeywordFilterAction parse(String? raw) => switch (raw) {
-        'fold' => KeywordFilterAction.fold,
-        _ => KeywordFilterAction.hide,
-      };
+    'fold' => KeywordFilterAction.fold,
+    _ => KeywordFilterAction.hide,
+  };
 
   String get stored => switch (this) {
-        KeywordFilterAction.fold => 'fold',
-        KeywordFilterAction.hide => 'hide',
-      };
+    KeywordFilterAction.fold => 'fold',
+    KeywordFilterAction.hide => 'hide',
+  };
 }
 
 /// One muted keyword with optional expiry and fold/hide action.
@@ -25,17 +25,13 @@ class MutedKeyword {
   final DateTime? until;
   final KeywordFilterAction action;
 
-  const MutedKeyword({
-    required this.term,
-    this.until,
-    this.action = KeywordFilterAction.hide,
-  });
+  const MutedKeyword({required this.term, this.until, this.action = KeywordFilterAction.hide});
 
   Map<String, dynamic> toJson() => {
-        'term': term,
-        if (until != null) 'until': until!.toIso8601String(),
-        if (action != KeywordFilterAction.hide) 'action': action.stored,
-      };
+    'term': term,
+    if (until != null) 'until': until!.toIso8601String(),
+    if (action != KeywordFilterAction.hide) 'action': action.stored,
+  };
 
   factory MutedKeyword.fromJson(Map<String, dynamic> json) {
     final untilRaw = json['until'] as String?;
@@ -48,12 +44,7 @@ class MutedKeyword {
 
   static const _unset = Object();
 
-  MutedKeyword copyWith({
-    String? term,
-    Object? until = _unset,
-    KeywordFilterAction? action,
-    bool clearUntil = false,
-  }) {
+  MutedKeyword copyWith({String? term, Object? until = _unset, KeywordFilterAction? action, bool clearUntil = false}) {
     return MutedKeyword(
       term: term ?? this.term,
       until: clearUntil ? null : (identical(until, _unset) ? this.until : until as DateTime?),
@@ -103,10 +94,12 @@ String encodeMutedKeywordsStored(List<MutedKeyword> keywords) {
 /// Drops keywords whose [until] is in the past.
 List<MutedKeyword> activeMutedKeywords(List<MutedKeyword> keywords, {DateTime? now}) {
   final clock = now ?? DateTime.now();
-  return keywords.where((keyword) {
-    final until = keyword.until;
-    return until == null || !until.isBefore(clock);
-  }).toList(growable: false);
+  return keywords
+      .where((keyword) {
+        final until = keyword.until;
+        return until == null || !until.isBefore(clock);
+      })
+      .toList(growable: false);
 }
 
 /// Splits what the user typed into plain terms (commas and newlines).

@@ -19,7 +19,7 @@ List<({PluginCategory category, List<XtaPlugin> plugins})> groupPluginsByCategor
 /// Leading mark for the plugin store: brand tint + the plugin's icon.
 Widget pluginBrandIcon(BuildContext context, XtaPlugin plugin, {double size = 40}) {
   final scheme = Theme.of(context).colorScheme;
-  final brand = _readableBrand(context, plugin.brandColor);
+  final brand = readableBrandColor(context, plugin.brandColor);
   return Container(
     width: size,
     height: size,
@@ -33,7 +33,7 @@ Widget pluginBrandIcon(BuildContext context, XtaPlugin plugin, {double size = 40
 }
 
 /// Near-black brand colours vanish on a dark surface; lighten them there.
-Color _readableBrand(BuildContext context, Color brand) {
+Color readableBrandColor(BuildContext context, Color brand) {
   if (Theme.of(context).brightness == Brightness.dark && brand.computeLuminance() < 0.12) {
     return Color.lerp(brand, Colors.white, 0.72)!;
   }

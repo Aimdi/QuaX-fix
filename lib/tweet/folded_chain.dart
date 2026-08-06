@@ -30,9 +30,7 @@ class _FoldedChainState extends State<FoldedChain> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
               child: Text(
                 L10n.of(context).filter_fold_hide_again,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Theme.of(context).colorScheme.primary),
               ),
             ),
           ),
@@ -57,9 +55,9 @@ class _FoldedChainState extends State<FoldedChain> {
             Expanded(
               child: Text(
                 L10n.of(context).filter_fold_matched(widget.reason),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
             Icon(Icons.expand_more, color: Theme.of(context).colorScheme.onSurfaceVariant),

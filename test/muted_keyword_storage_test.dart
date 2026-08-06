@@ -38,10 +38,9 @@ void main() {
 
   group('activeMutedKeywords', () {
     test('drops expired terms', () {
-      final active = activeMutedKeywords(
-        [MutedKeyword(term: 'old', until: DateTime.utc(2020, 1, 1))],
-        now: DateTime.utc(2025, 1, 1),
-      );
+      final active = activeMutedKeywords([
+        MutedKeyword(term: 'old', until: DateTime.utc(2020, 1, 1)),
+      ], now: DateTime.utc(2025, 1, 1));
 
       expect(active, isEmpty);
     });

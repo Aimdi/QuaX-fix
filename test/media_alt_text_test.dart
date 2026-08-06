@@ -6,15 +6,8 @@ void main() {
   test('extracts ext_alt_text keyed by media id_str', () {
     final alt = extractMediaAltText({
       'media': [
-        {
-          'id_str': '123',
-          'type': 'photo',
-          'ext_alt_text': 'A cat sitting on a keyboard',
-        },
-        {
-          'id_str': '456',
-          'type': 'photo',
-        },
+        {'id_str': '123', 'type': 'photo', 'ext_alt_text': 'A cat sitting on a keyboard'},
+        {'id_str': '456', 'type': 'photo'},
       ],
     });
 

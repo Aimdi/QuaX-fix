@@ -5,16 +5,13 @@ List<String> parseDeckGroupIds(String? raw) {
   if (raw == null || raw.trim().isEmpty) {
     return const [];
   }
-  return raw
-      .split(',')
-      .map((part) => part.trim())
-      .where((part) => part.isNotEmpty)
-      .toList(growable: false);
+  return raw.split(',').map((part) => part.trim()).where((part) => part.isNotEmpty).toList(growable: false);
 }
 
 String joinDeckGroupIds(Iterable<String> ids) => ids.join(',');
 
-bool isDeckPinned(BasePrefService prefs, String groupId) => parseDeckGroupIds(prefs.get(optionDeckGroupIds) as String?).contains(groupId);
+bool isDeckPinned(BasePrefService prefs, String groupId) =>
+    parseDeckGroupIds(prefs.get(optionDeckGroupIds) as String?).contains(groupId);
 
 Future<void> toggleDeckPin(BasePrefService prefs, String groupId) async {
   final ids = parseDeckGroupIds(prefs.get(optionDeckGroupIds) as String?).toList();

@@ -19,22 +19,14 @@ void main() {
   group('applyLanguageFilter', () {
     test('off passes everything through', () {
       final chains = [_chain('1', 'de')];
-      final outcome = applyLanguageFilter(
-        chains,
-        allowedLanguages: const ['en'],
-        action: LanguageFilterAction.off,
-      );
+      final outcome = applyLanguageFilter(chains, allowedLanguages: const ['en'], action: LanguageFilterAction.off);
 
       expect(outcome.chains, chains);
     });
 
     test('hide drops non-matching languages', () {
       final chains = [_chain('1', 'en'), _chain('2', 'de')];
-      final outcome = applyLanguageFilter(
-        chains,
-        allowedLanguages: const ['en'],
-        action: LanguageFilterAction.hide,
-      );
+      final outcome = applyLanguageFilter(chains, allowedLanguages: const ['en'], action: LanguageFilterAction.hide);
 
       expect(outcome.chains.single.id, '1');
     });

@@ -12,12 +12,7 @@ TweetChain _chain(String id, String authorId) {
 
 void main() {
   test('caps chains per author, keeping newest first', () {
-    final chains = [
-      _chain('1', 'a'),
-      _chain('2', 'a'),
-      _chain('3', 'a'),
-      _chain('4', 'b'),
-    ];
+    final chains = [_chain('1', 'a'), _chain('2', 'a'), _chain('3', 'a'), _chain('4', 'b')];
 
     final kept = capChainsPerAuthor(chains, {'a': 2});
 

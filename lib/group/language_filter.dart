@@ -8,16 +8,16 @@ enum LanguageFilterAction {
   fold;
 
   static LanguageFilterAction parse(String? raw) => switch (raw) {
-        'hide' => LanguageFilterAction.hide,
-        'fold' => LanguageFilterAction.fold,
-        _ => LanguageFilterAction.off,
-      };
+    'hide' => LanguageFilterAction.hide,
+    'fold' => LanguageFilterAction.fold,
+    _ => LanguageFilterAction.off,
+  };
 
   String get stored => switch (this) {
-        LanguageFilterAction.hide => 'hide',
-        LanguageFilterAction.fold => 'fold',
-        LanguageFilterAction.off => 'off',
-      };
+    LanguageFilterAction.hide => 'hide',
+    LanguageFilterAction.fold => 'fold',
+    LanguageFilterAction.off => 'off',
+  };
 }
 
 LanguageFilterAction parseLanguageFilterAction(String? raw) => LanguageFilterAction.parse(raw);
@@ -27,11 +27,7 @@ List<String> parseFeedLanguages(String? raw) {
   if (raw == null || raw.trim().isEmpty) {
     return const [];
   }
-  return raw
-      .split(',')
-      .map((part) => part.trim())
-      .where((part) => part.isNotEmpty)
-      .toList(growable: false);
+  return raw.split(',').map((part) => part.trim()).where((part) => part.isNotEmpty).toList(growable: false);
 }
 
 String? _chainLanguage(TweetChain chain) => chain.tweets.firstOrNull?.lang;
