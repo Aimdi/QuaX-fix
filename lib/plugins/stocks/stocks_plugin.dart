@@ -5,11 +5,12 @@ import 'package:xta/database/repository.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/home/home_screen.dart';
 import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/plugin_category.dart';
 import 'package:xta/plugins/stocks/stocks_screen.dart';
 import 'package:xta/plugins/stocks/stocks_store.dart';
 
-/// A watchlist of tickers, read-only like everything else here: quotes are
-/// shown, nothing is traded.
+/// StockTwits-shaped watchlist: prices in a strip, cashtag posts in a feed.
+/// Read-only — quotes are shown, nothing is traded.
 class StocksPlugin extends XtaPlugin {
   StocksPlugin();
 
@@ -20,7 +21,14 @@ class StocksPlugin extends XtaPlugin {
   String get enabledPrefKey => optionPluginStocksEnabled;
 
   @override
-  IconData get icon => Icons.show_chart;
+  IconData get icon => Icons.candlestick_chart;
+
+  @override
+  PluginCategory get category => PluginCategory.markets;
+
+  /// StockTwits green — the colour of a rising tape on that app.
+  @override
+  Color get brandColor => const Color(0xFF00C805);
 
   @override
   String? get homeTabPrefKey => optionPluginStocksShowTab;
@@ -36,8 +44,8 @@ class StocksPlugin extends XtaPlugin {
     return NavigationPage(
       pluginIdStocks,
       (c) => L10n.of(c).plugin_stocks_title,
-      const Icon(Icons.show_chart),
-      const Icon(Icons.show_chart),
+      const Icon(Icons.candlestick_chart_outlined),
+      const Icon(Icons.candlestick_chart),
     );
   }
 

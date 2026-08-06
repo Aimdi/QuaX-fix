@@ -20,6 +20,8 @@ String threadsErrorMessage(L10n l10n, Object error) {
     ThreadsErrorKind.noSuchFeed => l10n.plugin_threads_error_no_feed,
     ThreadsErrorKind.throttled => l10n.plugin_threads_error_throttled,
     ThreadsErrorKind.unreachable => l10n.plugin_threads_error_unreachable,
+    ThreadsErrorKind.unauthorized => l10n.plugin_threads_error_unauthorized,
+    ThreadsErrorKind.sessionSuspended => l10n.plugin_threads_error_session_suspended,
   };
 }
 

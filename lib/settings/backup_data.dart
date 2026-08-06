@@ -34,6 +34,8 @@ enum BackupCategory {
   subreddits,
   stocks,
   threads,
+  bluesky,
+  mastodon,
   groups,
   groupMembers,
   savedPosts,
@@ -56,6 +58,8 @@ class SettingsData {
   final List<RedditSubscription>? redditSubscriptions;
   final List<StockSubscription>? stockSubscriptions;
   final List<ThreadsSubscription>? threadsSubscriptions;
+  final List<BlueskySubscription>? blueskySubscriptions;
+  final List<MastodonSubscription>? mastodonSubscriptions;
   final List<RedditLocalVote>? redditLocalVotes;
   final List<SubscriptionGroup>? subscriptionGroups;
   final List<SubscriptionGroupMember>? subscriptionGroupMembers;
@@ -79,6 +83,8 @@ class SettingsData {
     this.redditSubscriptions,
     this.stockSubscriptions,
     this.threadsSubscriptions,
+    this.blueskySubscriptions,
+    this.mastodonSubscriptions,
     this.redditLocalVotes,
     this.subscriptionGroups,
     this.subscriptionGroupMembers,
@@ -104,6 +110,8 @@ class SettingsData {
       redditSubscriptions: _rows(json['redditSubscriptions'], RedditSubscription.fromMap),
       stockSubscriptions: _rows(json['stockSubscriptions'], StockSubscription.fromMap),
       threadsSubscriptions: _rows(json['threadsSubscriptions'], ThreadsSubscription.fromMap),
+      blueskySubscriptions: _rows(json['blueskySubscriptions'], BlueskySubscription.fromMap),
+      mastodonSubscriptions: _rows(json['mastodonSubscriptions'], MastodonSubscription.fromMap),
       redditLocalVotes: _rows(json['redditLocalVotes'], RedditLocalVote.fromMap),
       subscriptionGroups: _rows(json['subscriptionGroups'], SubscriptionGroup.fromMap),
       subscriptionGroupMembers: _rows(json['subscriptionGroupMembers'], SubscriptionGroupMember.fromMap),
@@ -130,6 +138,8 @@ class SettingsData {
       'redditSubscriptions': _maps(redditSubscriptions),
       'stockSubscriptions': _maps(stockSubscriptions),
       'threadsSubscriptions': _maps(threadsSubscriptions),
+      'blueskySubscriptions': _maps(blueskySubscriptions),
+      'mastodonSubscriptions': _maps(mastodonSubscriptions),
       'redditLocalVotes': _maps(redditLocalVotes),
       'subscriptionGroups': _maps(subscriptionGroups),
       'subscriptionGroupMembers': _maps(subscriptionGroupMembers),
@@ -168,6 +178,8 @@ Map<BackupCategory, int> backupCounts(SettingsData data) {
     BackupCategory.subreddits: data.redditSubscriptions?.length,
     BackupCategory.stocks: data.stockSubscriptions?.length,
     BackupCategory.threads: data.threadsSubscriptions?.length,
+    BackupCategory.bluesky: data.blueskySubscriptions?.length,
+    BackupCategory.mastodon: data.mastodonSubscriptions?.length,
     BackupCategory.groups: data.subscriptionGroups?.length,
     BackupCategory.groupMembers: _total([data.subscriptionGroupMembers, data.searchGroupMembers]),
     BackupCategory.savedPosts: data.tweets?.length,
@@ -205,6 +217,8 @@ Map<String, List<ToMappable>> backupTables(SettingsData data, {required bool inc
     tableRedditSubscription: data.redditSubscriptions,
     tableStockSubscription: data.stockSubscriptions,
     tableThreadsSubscription: data.threadsSubscriptions,
+    tableBlueskySubscription: data.blueskySubscriptions,
+    tableMastodonSubscription: data.mastodonSubscriptions,
     tableRedditLocalVote: data.redditLocalVotes,
     tableSubscriptionGroup: data.subscriptionGroups,
     tableSubscriptionGroupMember: data.subscriptionGroupMembers,

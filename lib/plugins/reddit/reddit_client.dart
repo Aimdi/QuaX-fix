@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:xta/plugins/reddit/reddit_html.dart';
 import 'package:xta/plugins/reddit/reddit_comments.dart';
+import 'package:xta/plugins/reddit/reddit_comments_json.dart';
 import 'package:xta/plugins/reddit/reddit_media_urls.dart';
 import 'package:xta/plugins/reddit/reddit_search_html.dart';
 import 'package:xta/utils/json.dart';
@@ -868,14 +869,47 @@ class RedditClient {
     return isOver18Gate(response.body) ? null : response.body;
   }
 
-  /// The comment thread of a post, scraped from the old site.
+  /// The comment thread of a post.
   ///
-  /// Returns the post's own text alongside, because a self post's body is not
-  /// always in the listing that led here.
-  Future<({List<RedditComment> comments, String? selfText, String? postUrl, List<String> postImages})> fetchComments(
+  /// Same credential choice as [fetchSubreddit]: OAuth JSON when a user token
+  /// or client id is available, old-site HTML scrape when the reader is
+  /// anonymous. Returns the post's own text and media alongside, because a self
+  /// post's body is not always in the listing that led here.
+  Future<({List<RedditComment> comments, String? selfText, String? postUrl, List<String> postImages})>
+      fetchComments(
     String permalink, {
     String? sort,
+    required String clientId,
+    String? userToken,
+    bool preferPublic = false,
   }) async {
+    final anonymous = preferPublic || (userToken == null && clientId.trim().isEmpty);
+    if (anonymous) {
+      return _commentsFromScrape(permalink, sort: sort);
+    }
+
+    // Thread UX should still work when OAuth is flaky — scrape already does.
+    try {
+      final token = userToken ?? await _authorize(clientId);
+      return await _commentsFromOauth(permalink, sort: sort, token: token);
+    } on RedditException {
+      return _commentsFromScrape(permalink, sort: sort);
+    }
+  }
+
+  Future<({List<RedditComment> comments, String? selfText, String? postUrl, List<String> postImages})>
+      _commentsFromOauth(String permalink, {String? sort, required String token}) async {
+    final query = {
+      'raw_json': '1',
+      if (sort != null && sort.isNotEmpty) 'sort': sort,
+    };
+    final uri = Uri.parse('$_apiBase${_commentsJsonPath(permalink)}').replace(queryParameters: query);
+    final decoded = _decodeList(await _read(uri, token));
+    return _threadFromJson(decoded);
+  }
+
+  Future<({List<RedditComment> comments, String? selfText, String? postUrl, List<String> postImages})>
+      _commentsFromScrape(String permalink, {String? sort}) async {
     final path = permalink.startsWith('/') ? permalink : '/$permalink';
     var uri = Uri.parse('$_publicFallbackBase$path');
     if (sort != null && sort.isNotEmpty) {
@@ -902,6 +936,32 @@ class RedditClient {
       postUrl: media.url,
       postImages: media.images,
     );
+  }
+
+  /// Reddit's comments endpoint is `[postListing, commentsListing]`.
+  ({List<RedditComment> comments, String? selfText, String? postUrl, List<String> postImages})
+      _threadFromJson(List<dynamic> decoded) {
+    final root = Json(decoded);
+    final postRaw = root[0]['data']['children'][0].raw;
+    final post = postRaw is Map ? RedditPost.fromChild(Map<String, dynamic>.from(postRaw)) : null;
+
+    return (
+      comments: commentsFromListing(root[1]),
+      selfText: post?.selfText,
+      postUrl: post?.url,
+      postImages: post?.galleryImages ?? const [],
+    );
+  }
+
+  static String _commentsJsonPath(String permalink) {
+    var path = permalink.split('?').first.trim();
+    if (!path.startsWith('/')) {
+      path = '/$path';
+    }
+    if (path.endsWith('/')) {
+      path = path.substring(0, path.length - 1);
+    }
+    return path.endsWith('.json') ? path : '$path.json';
   }
 
   static String _publicJsonPath(String base, String name, RedditSort sort) =>
@@ -993,6 +1053,18 @@ class RedditClient {
       // Fall through to the shared error below.
     }
     throw const RedditException(RedditErrorKind.badResponse, 'Response was not a JSON object');
+  }
+
+  List<dynamic> _decodeList(http.Response response) {
+    try {
+      final decoded = jsonDecode(response.body);
+      if (decoded is List) {
+        return decoded;
+      }
+    } catch (_) {
+      // Fall through to the shared error below.
+    }
+    throw const RedditException(RedditErrorKind.badResponse, 'Response was not a JSON array');
   }
 
   RedditException _errorFor(http.Response response, [Uri? uri]) {

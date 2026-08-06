@@ -119,8 +119,13 @@ class SubstackFeedStore extends Store<SubstackFeedSnapshot> {
   final SubstackPublicationsStore publications;
 
   var _offset = 0;
+  var _allPosts = const <SubstackPost>[];
+  var _filter = SubstackFeedFilter.all;
+  Set<String> _readIds = const {};
 
   SubstackFeedStore(this.client, this.publications) : super(const SubstackFeedSnapshot());
+
+  SubstackFeedFilter get filter => _filter;
 
   Future<void> refresh() async {
     _offset = 0;
@@ -132,9 +137,24 @@ class SubstackFeedStore extends Store<SubstackFeedSnapshot> {
     await execute(() => _fetchPage(replace: false));
   }
 
+  /// Applies a local inbox filter without refetching.
+  void setFilter(SubstackFeedFilter filter, Set<String> readIds) {
+    _filter = filter;
+    _readIds = readIds;
+    update(_snapshotFromCache(canLoadMore: state.canLoadMore, failedCount: state.failedCount));
+  }
+
+  void syncReadIds(Set<String> readIds) {
+    _readIds = readIds;
+    if (_filter == SubstackFeedFilter.unread) {
+      update(_snapshotFromCache(canLoadMore: state.canLoadMore, failedCount: state.failedCount));
+    }
+  }
+
   Future<SubstackFeedSnapshot> _fetchPage({required bool replace}) async {
     final pubs = publications.state;
     if (pubs.isEmpty) {
+      _allPosts = const [];
       return const SubstackFeedSnapshot();
     }
 
@@ -153,17 +173,63 @@ class SubstackFeedStore extends Store<SubstackFeedSnapshot> {
 
     _offset += substackFeedPageSize;
 
-    final merged = replace ? pagePosts : _mergePosts(state.posts, pagePosts);
+    final merged = replace ? pagePosts : _mergePosts(_allPosts, pagePosts);
     merged.sort((a, b) => (b.postDate ?? '').compareTo(a.postDate ?? ''));
+    _allPosts = merged;
 
-    return SubstackFeedSnapshot(
-      posts: merged,
+    return _snapshotFromCache(
       canLoadMore: canLoadMore,
       failedCount: replace ? failedCount : state.failedCount,
     );
   }
 
+  SubstackFeedSnapshot _snapshotFromCache({required bool canLoadMore, required int failedCount}) {
+    final visible = _allPosts.where((p) => postMatchesSubstackFilter(p, _filter, _readIds)).toList();
+    return SubstackFeedSnapshot(
+      posts: visible,
+      canLoadMore: canLoadMore,
+      failedCount: failedCount,
+    );
+  }
+
   List<SubstackPost> _mergePosts(List<SubstackPost> existing, List<SubstackPost> incoming) {
+    final seen = existing.map((e) => e.id).toSet();
+    return [...existing, ...incoming.where((e) => !seen.contains(e.id))];
+  }
+}
+
+/// Global public Notes discovery (not a personalized Following timeline).
+class SubstackNotesStore extends Store<SubstackNotesPage> {
+  final SubstackClient client;
+  final SubstackPublicationsStore publications;
+
+  var _notes = const <SubstackNote>[];
+  String? _cursor;
+
+  SubstackNotesStore(this.client, this.publications) : super(const SubstackNotesPage());
+
+  Future<void> refresh() async {
+    _notes = const [];
+    _cursor = null;
+    await execute(() => _fetch(replace: true));
+  }
+
+  Future<void> loadMore() async {
+    if (state.nextCursor == null || state.nextCursor!.isEmpty) return;
+    await execute(() => _fetch(replace: false));
+  }
+
+  Future<SubstackNotesPage> _fetch({required bool replace}) async {
+    final host = publications.state.firstOrNull?.baseUrl;
+    final hostName = host == null ? null : Uri.tryParse(host)?.host;
+    final page = await client.fetchReaderNotes(host: hostName, cursor: replace ? null : _cursor);
+    _cursor = page.nextCursor;
+    final merged = replace ? page.notes : _mergeNotes(_notes, page.notes);
+    _notes = merged;
+    return SubstackNotesPage(notes: merged, nextCursor: page.nextCursor);
+  }
+
+  List<SubstackNote> _mergeNotes(List<SubstackNote> existing, List<SubstackNote> incoming) {
     final seen = existing.map((e) => e.id).toSet();
     return [...existing, ...incoming.where((e) => !seen.contains(e.id))];
   }

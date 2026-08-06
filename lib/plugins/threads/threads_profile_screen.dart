@@ -6,7 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/threads/threads_api.dart';
+import 'package:xta/plugins/threads/threads_client.dart';
+import 'package:xta/plugins/threads/threads_direct_client.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
+import 'package:xta/plugins/threads/threads_settings.dart';
 import 'package:xta/plugins/threads/threads_store.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
 import 'package:xta/ui/errors.dart';
@@ -18,6 +21,9 @@ import 'package:xta/utils/urls.dart';
 /// preferred over anything this app could invent, and the generic lines are
 /// only for when it said nothing.
 String threadsApiErrorMessage(L10n l10n, Object error) {
+  if (error is ThreadsException) {
+    return threadsSettingsError(l10n, error);
+  }
   if (error is! ThreadsApiException) {
     return l10n.plugin_threads_error_unreachable;
   }
@@ -63,11 +69,17 @@ class _ThreadsProfileScreenState extends State<ThreadsProfileScreen> {
 
     final prefs = PrefService.of(context, listen: false);
     try {
-      final profile = await context.read<ThreadsApi>().profile(
-            prefs.get<String>(optionPluginThreadsApiBase) ?? kThreadsApiDefaultBase,
-            prefs.get<String>(optionPluginThreadsApiToken) ?? '',
-            widget.username,
-          );
+      final direct = context.read<ThreadsDirectClient>();
+      final ThreadsProfile profile;
+      if (direct.hasCookies) {
+        profile = await direct.fetchProfile(widget.username);
+      } else {
+        profile = await context.read<ThreadsApi>().profile(
+              prefs.get<String>(optionPluginThreadsApiBase) ?? kThreadsApiDefaultBase,
+              prefs.get<String>(optionPluginThreadsApiToken) ?? '',
+              widget.username,
+            );
+      }
       if (mounted) {
         setState(() {
           _profile = profile;

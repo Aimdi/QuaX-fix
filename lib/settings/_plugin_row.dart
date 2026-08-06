@@ -5,6 +5,7 @@ import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/home/home_model.dart';
 import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/plugin_brand.dart';
 import 'package:xta/plugins/plugin_storage.dart';
 
 /// A plugin on offer but not installed: what it does, and a button.
@@ -17,7 +18,7 @@ class AvailablePluginRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(plugin.icon),
+      leading: pluginBrandIcon(context, plugin),
       title: Text(plugin.title(context)),
       subtitle: Text(plugin.description(context)),
       trailing: FilledButton.tonal(
@@ -55,7 +56,7 @@ class InstalledPluginRow extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ListTile(
-          leading: Icon(plugin.icon),
+          leading: pluginBrandIcon(context, plugin),
           title: Text(plugin.title(context)),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

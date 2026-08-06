@@ -135,10 +135,14 @@ Future<SettingsData> collectBackup(BuildContext context, {required bool includeA
     userSubscriptions: subscriptions.whereType<UserSubscription>().toList(),
     substackSubscriptions: subscriptions.whereType<SubstackSubscription>().toList(),
     redditSubscriptions: subscriptions.whereType<RedditSubscription>().toList(),
-    // Not in `subscriptions`: these three tables are outside the four that
-    // model reads, so they are taken from the database directly.
+    // Not in `subscriptions`: these tables are outside the four that model
+    // reads, so they are taken from the database directly. The coverage test
+    // compares this document against the schema, which is what catches the
+    // next plugin whose table would otherwise be missed here.
     stockSubscriptions: await readStockSubscriptions(),
     threadsSubscriptions: await readThreadsSubscriptions(),
+    blueskySubscriptions: await readBlueskySubscriptions(),
+    mastodonSubscriptions: await readMastodonSubscriptions(),
     redditLocalVotes: await readRedditLocalVotes(),
     subscriptionGroups: groupModel.state,
     subscriptionGroupMembers: await groupModel.listGroupMembers(),

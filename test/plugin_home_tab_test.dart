@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pref/pref.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/plugin_category.dart';
 import 'package:xta/plugins/plugin_registry.dart';
 import 'package:xta/plugins/substack/substack_plugin.dart';
 
@@ -16,6 +17,12 @@ class _TablessPlugin extends XtaPlugin {
 
   @override
   IconData get icon => const IconData(0);
+
+  @override
+  PluginCategory get category => PluginCategory.reading;
+
+  @override
+  Color get brandColor => const Color(0xFF000000);
 
   @override
   String title(BuildContext context) => 'Tabless';

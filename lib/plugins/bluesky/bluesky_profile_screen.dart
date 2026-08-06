@@ -1,0 +1,231 @@
+import 'package:extended_image/extended_image.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/bluesky/bluesky_client.dart';
+import 'package:xta/plugins/bluesky/bluesky_models.dart';
+import 'package:xta/plugins/bluesky/bluesky_post_card.dart';
+import 'package:xta/plugins/bluesky/bluesky_store.dart';
+import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
+import 'package:xta/ui/errors.dart';
+
+/// What a failed Bluesky read should say.
+String blueskyErrorMessage(L10n l10n, Object error) {
+  if (error is! BlueskyException) {
+    return l10n.plugin_bluesky_error_network;
+  }
+  return switch (error.kind) {
+    BlueskyErrorKind.network => l10n.plugin_bluesky_error_network,
+    BlueskyErrorKind.notFound => l10n.plugin_bluesky_error_not_found,
+    BlueskyErrorKind.rateLimited => l10n.plugin_bluesky_error_rate_limited,
+    BlueskyErrorKind.badResponse => l10n.plugin_bluesky_error_response,
+  };
+}
+
+/// One Bluesky profile and a page of its posts, looked up on the public AppView.
+class BlueskyProfileScreen extends StatefulWidget {
+  final String actor;
+
+  const BlueskyProfileScreen({super.key, required this.actor});
+
+  @override
+  State<BlueskyProfileScreen> createState() => _BlueskyProfileScreenState();
+}
+
+class _BlueskyProfileScreenState extends State<BlueskyProfileScreen> {
+  BlueskyProfile? _profile;
+  List<BlueskyPost> _posts = const [];
+  Object? _error;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    final client = context.read<BlueskyClient>();
+    try {
+      final profile = await client.getProfile(widget.actor);
+      final feed = await client.getAuthorFeed(profile.did.isNotEmpty ? profile.did : profile.handle);
+      if (mounted) {
+        setState(() {
+          _profile = profile;
+          _posts = feed.posts;
+          _loading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e;
+          _loading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _toggleFollow(BlueskyProfile profile) async {
+    final accounts = context.read<BlueskyAccountsStore>();
+    final feed = context.read<BlueskyFeedStore>();
+
+    if (accounts.follows(profile.handle)) {
+      await accounts.remove(profile.handle);
+    } else {
+      await accounts.add(profile.toAccount());
+    }
+    if (mounted) {
+      await feed.refresh();
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final title = _profile?.handle ?? widget.actor;
+
+    return Scaffold(
+      appBar: AppBar(title: Text(title.startsWith('did:') ? title : '@$title')),
+      body: _body(context),
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    final l10n = L10n.of(context);
+
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final error = _error;
+    if (error != null) {
+      return Padding(
+        padding: const EdgeInsets.all(24),
+        child: FullPageErrorWidget(
+          error: error,
+          stackTrace: null,
+          prefix: blueskyErrorMessage(l10n, error),
+          onRetry: _load,
+        ),
+      );
+    }
+
+    final profile = _profile!;
+    final following = context.read<BlueskyAccountsStore>().follows(profile.handle);
+
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 24),
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: BlueskyProfileCard(
+            profile: profile,
+            following: following,
+            onFollowToggle: () => _toggleFollow(profile),
+          ),
+        ),
+        for (final post in _posts) BlueskyPostCard(key: ValueKey(post.uri), post: post, showSourceBadge: false),
+      ],
+    );
+  }
+}
+
+/// Face, name, bio, counts, and a local Follow / Unfollow control.
+class BlueskyProfileCard extends StatelessWidget {
+  final BlueskyProfile profile;
+  final bool following;
+  final VoidCallback? onFollowToggle;
+
+  const BlueskyProfileCard({
+    super.key,
+    required this.profile,
+    required this.following,
+    this.onFollowToggle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = L10n.of(context);
+    final numbers = NumberFormat.compact();
+    final avatar = profile.avatarUrl;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            ClipOval(
+              child: avatar == null
+                  ? FallbackAvatar(
+                      seed: profile.handle,
+                      displayName: profile.displayName,
+                      size: 64,
+                      accent: theme.colorScheme.primary)
+                  : ExtendedImage.network(avatar,
+                      width: 64,
+                      height: 64,
+                      fit: BoxFit.cover,
+                      cacheWidth: (64 * MediaQuery.devicePixelRatioOf(context)).ceil()),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(profile.displayName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700)),
+                  Text('@${profile.handle}',
+                      style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                ],
+              ),
+            ),
+          ],
+        ),
+        if (profile.description.trim().isNotEmpty) ...[
+          const SizedBox(height: 14),
+          Text(profile.description.trim(), style: theme.textTheme.bodyMedium),
+        ],
+        const SizedBox(height: 14),
+        Wrap(
+          spacing: 18,
+          runSpacing: 6,
+          children: [
+            _count(context, numbers.format(profile.followersCount), l10n.followers),
+            _count(context, numbers.format(profile.followsCount), l10n.following),
+            _count(context, numbers.format(profile.postsCount), l10n.tweets),
+          ],
+        ),
+        if (onFollowToggle != null) ...[
+          const SizedBox(height: 18),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FilledButton.tonalIcon(
+              onPressed: onFollowToggle,
+              icon: Icon(following ? Icons.person_remove_alt_1 : Icons.person_add_alt),
+              label: Text(following ? l10n.plugin_bluesky_unfollow : l10n.plugin_bluesky_follow),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _count(BuildContext context, String value, String label) {
+    final theme = Theme.of(context);
+
+    return Text.rich(TextSpan(children: [
+      TextSpan(text: value, style: const TextStyle(fontWeight: FontWeight.w700)),
+      TextSpan(text: ' $label', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
+    ]), style: theme.textTheme.bodyMedium);
+  }
+}

@@ -897,4 +897,111 @@ void main() {
       expect(post.previewImage, isNull);
     });
   });
+
+  group('fetchComments', () {
+    const permalink = '/r/dartlang/comments/abc123/dart_4_is_out/';
+    const threadHtml = '''
+<!doctype html><html><body>
+  <div id="siteTable">
+    <div class="thing" data-fullname="t3_abc123" data-url="https://dart.dev/blog"></div>
+  </div>
+  <div class="commentarea"><div class="sitetable nestedlisting">
+    <div class="thing id-t1_c1 comment" data-fullname="t1_c1" data-author="someone">
+      <div class="entry unvoted">
+        <p class="tagline"><span class="score unvoted">3 points</span>
+          <time datetime="2026-07-01T10:00:00+00:00"></time></p>
+        <form class="usertext"><div class="usertext-body"><div class="md"><p>Hello</p></div></div></form>
+      </div>
+      <div class="child"></div>
+    </div>
+  </div></div>
+</body></html>
+''';
+
+    test('a signed-in reader hits the authenticated host', () async {
+      final hosts = <String>[];
+      final client = RedditClient(httpClient: MockClient((request) async {
+        hosts.add(request.url.host);
+        expect(request.headers['Authorization'], 'Bearer user_tok');
+        return _json([
+          {
+            'kind': 'Listing',
+            'data': {
+              'children': [
+                {
+                  'kind': 't3',
+                  'data': {
+                    'id': 'abc123',
+                    'title': 'Dart 4 is out',
+                    'subreddit': 'dartlang',
+                    'permalink': permalink,
+                    'selftext': 'Body',
+                    'url': 'https://dart.dev/blog',
+                    'is_self': true,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            'kind': 'Listing',
+            'data': {
+              'children': [
+                {
+                  'kind': 't1',
+                  'data': {
+                    'id': 'c1',
+                    'author': 'someone',
+                    'body': 'Hello',
+                    'score': 3,
+                    'created_utc': 1769000000,
+                    'permalink': '${permalink}c1/',
+                    'replies': '',
+                  },
+                },
+              ],
+            },
+          },
+        ], 200);
+      }));
+
+      final result = await client.fetchComments(permalink, clientId: 'app', userToken: 'user_tok');
+      expect(hosts, ['oauth.reddit.com']);
+      expect(result.comments.single.id, 'c1');
+      expect(result.selfText, 'Body');
+    });
+
+    test('a refused OAuth read falls back to the old site', () async {
+      final hosts = <String>[];
+      final client = RedditClient(httpClient: MockClient((request) async {
+        hosts.add(request.url.host);
+        if (request.url.host == 'oauth.reddit.com') {
+          return _json({'error': 403}, 403);
+        }
+        return http.Response(threadHtml, 200, headers: {'content-type': 'text/html'});
+      }));
+
+      final result = await client.fetchComments(permalink, clientId: 'app', userToken: 'user_tok');
+      expect(hosts, ['oauth.reddit.com', 'old.reddit.com']);
+      expect(result.comments.single.body, 'Hello');
+    });
+
+    test('preferPublic scrapes even when a token is sitting there', () async {
+      final hosts = <String>[];
+      final client = RedditClient(httpClient: MockClient((request) async {
+        hosts.add(request.url.host);
+        expect(request.headers.containsKey('Authorization'), isFalse);
+        return http.Response(threadHtml, 200, headers: {'content-type': 'text/html'});
+      }));
+
+      final result = await client.fetchComments(
+        permalink,
+        clientId: 'app',
+        userToken: 'user_tok',
+        preferPublic: true,
+      );
+      expect(hosts, ['old.reddit.com']);
+      expect(result.comments, hasLength(1));
+    });
+  });
 }

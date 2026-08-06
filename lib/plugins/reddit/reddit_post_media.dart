@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_gallery.dart';
+import 'package:xta/plugins/reddit/reddit_media_urls.dart';
 import 'package:xta/plugins/reddit/reddit_media_frame.dart';
 import 'package:xta/tweet/_video.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
@@ -44,7 +45,7 @@ class RedditPostMedia extends StatelessWidget {
       return _gate(context, aspectRatio: ratio, child: _video(context, dash, ratio));
     }
 
-    final gallery = post.galleryImages;
+    final gallery = collapseRedditImageUrls(post.galleryImages);
     if (gallery.length > 1) {
       return _gate(
         context,

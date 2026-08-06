@@ -104,4 +104,10 @@ Future<List<StockSubscription>> readStockSubscriptions() =>
 Future<List<ThreadsSubscription>> readThreadsSubscriptions() =>
     _readRows(tableThreadsSubscription, ThreadsSubscription.fromMap);
 
+Future<List<BlueskySubscription>> readBlueskySubscriptions() =>
+    _readRows(tableBlueskySubscription, BlueskySubscription.fromMap);
+
+Future<List<MastodonSubscription>> readMastodonSubscriptions() =>
+    _readRows(tableMastodonSubscription, MastodonSubscription.fromMap);
+
 Future<List<RedditLocalVote>> readRedditLocalVotes() => _readRows(tableRedditLocalVote, RedditLocalVote.fromMap);

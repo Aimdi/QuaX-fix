@@ -45,6 +45,12 @@ SettingsData _full() {
     threadsSubscriptions: [
       ThreadsSubscription(id: 'reader', name: 'Reader', avatarUrl: null, createdAt: _createdAt, inFeed: true),
     ],
+    blueskySubscriptions: [
+      BlueskySubscription(id: 'reader.bsky.social', name: 'Reader', avatarUrl: null, createdAt: _createdAt, inFeed: true),
+    ],
+    mastodonSubscriptions: [
+      MastodonSubscription(id: 'reader@example.social', name: 'Reader', avatarUrl: null, createdAt: _createdAt, inFeed: true),
+    ],
     redditLocalVotes: [RedditLocalVote(id: 'abc123')],
     subscriptionGroups: [
       SubscriptionGroup(id: 'g1', name: 'Feeds', icon: _icon, color: null, numberOfMembers: 1, createdAt: _createdAt),
@@ -97,6 +103,8 @@ void main() {
       expect(data.redditSubscriptions?.single.name, 'dartlang');
       expect(data.stockSubscriptions?.single.symbol, 'AAPL');
       expect(data.threadsSubscriptions?.single.id, 'reader');
+      expect(data.blueskySubscriptions?.single.id, 'reader.bsky.social');
+      expect(data.mastodonSubscriptions?.single.id, 'reader@example.social');
       expect(data.redditLocalVotes?.single.id, 'abc123');
       expect(data.subscriptionGroups?.single.name, 'Feeds');
       expect(data.subscriptionGroupMembers?.single.profile, '1');
@@ -211,6 +219,8 @@ const _expectedTables = [
   tableRedditSubscription,
   tableStockSubscription,
   tableThreadsSubscription,
+  tableBlueskySubscription,
+  tableMastodonSubscription,
   tableRedditLocalVote,
   tableSubscriptionGroup,
   tableSubscriptionGroupMember,

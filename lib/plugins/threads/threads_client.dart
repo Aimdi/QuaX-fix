@@ -2,17 +2,15 @@ import 'dart:convert';
 
 import 'package:html/parser.dart' as html;
 import 'package:http/http.dart' as http;
-import 'package:xta/constants.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 import 'package:xta/utils/json.dart';
 
 /// Why a Threads read could not be served, in the terms the screen explains it.
 enum ThreadsErrorKind {
-  /// No RSSHub instance has been configured. This plugin has no default: see
-  /// [optionPluginThreadsInstance].
+  /// No RSSHub instance, direct session, or guest path is available.
   notConfigured,
 
-  /// The instance did not answer, or did not answer with a feed.
+  /// The instance / Meta host did not answer, or did not answer with a feed.
   unreachable,
 
   /// The instance answered, but not for this account — a wrong handle, or one
@@ -22,6 +20,12 @@ enum ThreadsErrorKind {
   /// The instance is refusing for now. Meta rate-limits this route hard, which
   /// is most of why a shared instance is a bad idea.
   throttled,
+
+  /// Cookies or Bearer were rejected (wrong / expired).
+  unauthorized,
+
+  /// Meta parked the session (`login_required` / logout_reason).
+  sessionSuspended,
 }
 
 class ThreadsException implements Exception {

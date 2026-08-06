@@ -6,6 +6,7 @@ import 'package:xta/database/repository.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/home/home_screen.dart';
 import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/plugin_category.dart';
 import 'package:xta/plugins/substack/substack_screen.dart';
 import 'package:xta/plugins/substack/substack_store.dart';
 
@@ -22,7 +23,13 @@ class SubstackPlugin extends XtaPlugin {
   String? get homeTabPrefKey => optionPluginSubstackShowTab;
 
   @override
-  IconData get icon => Icons.newspaper_outlined;
+  IconData get icon => Icons.newspaper;
+
+  @override
+  PluginCategory get category => PluginCategory.reading;
+
+  @override
+  Color get brandColor => const Color(0xFFFF6719);
 
   @override
   String title(BuildContext context) => L10n.of(context).plugin_substack_title;

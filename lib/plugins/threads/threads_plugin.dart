@@ -6,6 +6,7 @@ import 'package:xta/database/repository.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/home/home_screen.dart';
 import 'package:xta/plugins/plugin.dart';
+import 'package:xta/plugins/plugin_category.dart';
 import 'package:xta/plugins/threads/threads_screen.dart';
 import 'package:xta/plugins/threads/threads_settings.dart';
 import 'package:xta/plugins/threads/threads_store.dart';
@@ -24,6 +25,12 @@ class ThreadsPlugin extends XtaPlugin {
 
   @override
   IconData get icon => Icons.alternate_email;
+
+  @override
+  PluginCategory get category => PluginCategory.reading;
+
+  @override
+  Color get brandColor => const Color(0xFF101010);
 
   @override
   String title(BuildContext context) => L10n.of(context).plugin_threads_title;
@@ -57,6 +64,9 @@ class ThreadsPlugin extends XtaPlugin {
     await prefs.set(optionPluginThreadsInstance, '');
     await prefs.set(optionPluginThreadsApiBase, kThreadsApiDefaultBase);
     await prefs.set(optionPluginThreadsApiToken, '');
+    await prefs.set(optionPluginThreadsDirectCookies, '');
+    await prefs.set(optionPluginThreadsDirectBearer, '');
+    await prefs.set(optionPluginThreadsDirectDeviceId, '');
   }
 
   @override

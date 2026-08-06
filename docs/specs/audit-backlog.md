@@ -106,6 +106,8 @@ not looked. Re-grep before trusting the rest of this file for the same reason.
 ## Considered and rejected
 
 Anything that writes to X. Any telemetry, including opt-in aggregated
-endpoint-failure reports. Scraper-based plugins (Instagram, TikTok, Threads).
+endpoint-failure reports. Scraper-based plugins (Instagram, TikTok). Threads now
+has an optional direct session mode (see `threads-direct.md`); Instagram/TikTok
+remain deferred.
 `placeInterleaved`'s bucket allocation, which looks like a wasted `List.generate`
 but is required by its contract.

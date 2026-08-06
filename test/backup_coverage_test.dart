@@ -60,6 +60,8 @@ void main() {
         redditSubscriptions: const [],
         stockSubscriptions: const [],
         threadsSubscriptions: const [],
+        blueskySubscriptions: const [],
+        mastodonSubscriptions: const [],
         redditLocalVotes: const [],
         subscriptionGroups: const [],
         subscriptionGroupMembers: const [],
