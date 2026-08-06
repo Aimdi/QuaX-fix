@@ -546,12 +546,14 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       );
     }
 
-    // Only create the tweet content if the tweet contains text
+    // Only create the tweet content if the tweet contains text. X often omits
+    // display_text_range on reshaped payloads — treat null as "has text".
     Widget content = Container();
 
-    if (tweet.displayTextRange![1] != 0) {
+    final textEnd = tweet.displayTextRange?.elementAtOrNull(1);
+    if (textEnd == null || textEnd != 0) {
       content = DefaultTextStyle.merge(
-          style: theme.textTheme.bodyLarge!,
+          style: theme.textTheme.bodyLarge ?? theme.textTheme.bodyMedium,
           child: Container(
           // Fill the width so both RTL and LTR text are displayed correctly
           width: double.infinity,
