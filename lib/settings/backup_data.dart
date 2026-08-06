@@ -9,6 +9,11 @@ import 'package:xta/settings/backup_rows.dart';
 /// `feed_group_cursor` are caches of what X already served and are dropped
 /// after a week anyway, and `post_notification` was removed from the schema in
 /// migration 30, so nothing has rows there to save.
+///
+/// Everything else is here. Followed stocks, followed Threads accounts and
+/// device-local Reddit upvotes were missed until now because none of them is
+/// one of the four tables `SubscriptionsModel` reads — the upvotes especially,
+/// since Reddit is never told about them and this file is their only copy.
 
 /// Raised whenever an older build could misread a newer file. A reader that
 /// meets a higher number refuses the file instead of applying the part of it
@@ -27,6 +32,8 @@ enum BackupCategory {
   subscriptions,
   substack,
   subreddits,
+  stocks,
+  threads,
   groups,
   groupMembers,
   savedPosts,
@@ -34,6 +41,7 @@ enum BackupCategory {
   likedPosts,
   filters,
   readPositions,
+  upvotes,
   accounts,
 }
 
@@ -46,6 +54,9 @@ class SettingsData {
   final List<UserSubscription>? userSubscriptions;
   final List<SubstackSubscription>? substackSubscriptions;
   final List<RedditSubscription>? redditSubscriptions;
+  final List<StockSubscription>? stockSubscriptions;
+  final List<ThreadsSubscription>? threadsSubscriptions;
+  final List<RedditLocalVote>? redditLocalVotes;
   final List<SubscriptionGroup>? subscriptionGroups;
   final List<SubscriptionGroupMember>? subscriptionGroupMembers;
   final List<SearchGroupMember>? searchGroupMembers;
@@ -66,6 +77,9 @@ class SettingsData {
     this.userSubscriptions,
     this.substackSubscriptions,
     this.redditSubscriptions,
+    this.stockSubscriptions,
+    this.threadsSubscriptions,
+    this.redditLocalVotes,
     this.subscriptionGroups,
     this.subscriptionGroupMembers,
     this.searchGroupMembers,
@@ -88,6 +102,9 @@ class SettingsData {
       userSubscriptions: _rows(json['subscriptions'], UserSubscription.fromMap),
       substackSubscriptions: _rows(json['substackSubscriptions'], SubstackSubscription.fromMap),
       redditSubscriptions: _rows(json['redditSubscriptions'], RedditSubscription.fromMap),
+      stockSubscriptions: _rows(json['stockSubscriptions'], StockSubscription.fromMap),
+      threadsSubscriptions: _rows(json['threadsSubscriptions'], ThreadsSubscription.fromMap),
+      redditLocalVotes: _rows(json['redditLocalVotes'], RedditLocalVote.fromMap),
       subscriptionGroups: _rows(json['subscriptionGroups'], SubscriptionGroup.fromMap),
       subscriptionGroupMembers: _rows(json['subscriptionGroupMembers'], SubscriptionGroupMember.fromMap),
       searchGroupMembers: _rows(json['searchGroupMembers'], SearchGroupMember.fromMap),
@@ -111,6 +128,9 @@ class SettingsData {
       'subscriptions': _maps(userSubscriptions),
       'substackSubscriptions': _maps(substackSubscriptions),
       'redditSubscriptions': _maps(redditSubscriptions),
+      'stockSubscriptions': _maps(stockSubscriptions),
+      'threadsSubscriptions': _maps(threadsSubscriptions),
+      'redditLocalVotes': _maps(redditLocalVotes),
       'subscriptionGroups': _maps(subscriptionGroups),
       'subscriptionGroupMembers': _maps(subscriptionGroupMembers),
       'searchGroupMembers': _maps(searchGroupMembers),
@@ -146,6 +166,8 @@ Map<BackupCategory, int> backupCounts(SettingsData data) {
     BackupCategory.subscriptions: _total([data.userSubscriptions, data.searchSubscriptions]),
     BackupCategory.substack: data.substackSubscriptions?.length,
     BackupCategory.subreddits: data.redditSubscriptions?.length,
+    BackupCategory.stocks: data.stockSubscriptions?.length,
+    BackupCategory.threads: data.threadsSubscriptions?.length,
     BackupCategory.groups: data.subscriptionGroups?.length,
     BackupCategory.groupMembers: _total([data.subscriptionGroupMembers, data.searchGroupMembers]),
     BackupCategory.savedPosts: data.tweets?.length,
@@ -153,6 +175,7 @@ Map<BackupCategory, int> backupCounts(SettingsData data) {
     BackupCategory.likedPosts: data.likedTweets?.length,
     BackupCategory.filters: _total([data.retweetFilters, data.replyFilters]),
     BackupCategory.readPositions: data.feedReadPositions?.length,
+    BackupCategory.upvotes: data.redditLocalVotes?.length,
     BackupCategory.accounts: data.accounts?.length,
   };
 
@@ -180,6 +203,9 @@ Map<String, List<ToMappable>> backupTables(SettingsData data, {required bool inc
     tableSubscription: data.userSubscriptions,
     tableSubstackSubscription: data.substackSubscriptions,
     tableRedditSubscription: data.redditSubscriptions,
+    tableStockSubscription: data.stockSubscriptions,
+    tableThreadsSubscription: data.threadsSubscriptions,
+    tableRedditLocalVote: data.redditLocalVotes,
     tableSubscriptionGroup: data.subscriptionGroups,
     tableSubscriptionGroupMember: data.subscriptionGroupMembers,
     tableSearchSubscriptionGroupMember: data.searchGroupMembers,

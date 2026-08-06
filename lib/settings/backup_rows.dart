@@ -64,6 +64,21 @@ class FeedReadPositionRow with ToMappable {
   }
 }
 
+/// An upvote the reader gave a Reddit post, which only ever existed here.
+///
+/// Reddit is never told, so this table is the only copy: a restore that skips
+/// it is the one kind of loss no re-sync can undo.
+class RedditLocalVote with ToMappable {
+  final String id;
+
+  RedditLocalVote({required this.id});
+
+  factory RedditLocalVote.fromMap(Map<String, Object?> map) => RedditLocalVote(id: (map['id'] as String?) ?? '');
+
+  @override
+  Map<String, dynamic> toMap() => {'id': id};
+}
+
 Future<List<T>> _readRows<T>(String table, T Function(Map<String, Object?>) fromMap) async {
   final database = await Repository.readOnly();
 
@@ -79,3 +94,14 @@ Future<List<SearchGroupMember>> readSearchGroupMembers() =>
 
 Future<List<FeedReadPositionRow>> readFeedReadPositions() =>
     _readRows(tableFeedReadPosition, FeedReadPositionRow.fromMap);
+
+/// Followed stocks and Threads accounts live in their own tables, outside the
+/// four `SubscriptionsModel` reads, so the export never saw them. They are read
+/// straight from the database here for the same reason the rows above are.
+Future<List<StockSubscription>> readStockSubscriptions() =>
+    _readRows(tableStockSubscription, StockSubscription.fromMap);
+
+Future<List<ThreadsSubscription>> readThreadsSubscriptions() =>
+    _readRows(tableThreadsSubscription, ThreadsSubscription.fromMap);
+
+Future<List<RedditLocalVote>> readRedditLocalVotes() => _readRows(tableRedditLocalVote, RedditLocalVote.fromMap);

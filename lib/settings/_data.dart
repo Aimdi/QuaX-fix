@@ -135,6 +135,11 @@ Future<SettingsData> collectBackup(BuildContext context, {required bool includeA
     userSubscriptions: subscriptions.whereType<UserSubscription>().toList(),
     substackSubscriptions: subscriptions.whereType<SubstackSubscription>().toList(),
     redditSubscriptions: subscriptions.whereType<RedditSubscription>().toList(),
+    // Not in `subscriptions`: these three tables are outside the four that
+    // model reads, so they are taken from the database directly.
+    stockSubscriptions: await readStockSubscriptions(),
+    threadsSubscriptions: await readThreadsSubscriptions(),
+    redditLocalVotes: await readRedditLocalVotes(),
     subscriptionGroups: groupModel.state,
     subscriptionGroupMembers: await groupModel.listGroupMembers(),
     searchGroupMembers: await readSearchGroupMembers(),

@@ -113,6 +113,8 @@ String _label(BuildContext context, BackupCategory category) => switch (category
   BackupCategory.subscriptions => L10n.of(context).subscriptions,
   BackupCategory.substack => L10n.of(context).plugin_substack_title,
   BackupCategory.subreddits => L10n.of(context).plugin_reddit_search_subreddits,
+  BackupCategory.stocks => L10n.of(context).plugin_stocks_title,
+  BackupCategory.threads => L10n.of(context).plugin_threads_title,
   BackupCategory.groups => L10n.of(context).groups,
   BackupCategory.groupMembers => L10n.of(context).group_members,
   BackupCategory.savedPosts => L10n.of(context).saved,
@@ -120,5 +122,6 @@ String _label(BuildContext context, BackupCategory category) => switch (category
   BackupCategory.likedPosts => L10n.of(context).favorites,
   BackupCategory.filters => L10n.of(context).filters,
   BackupCategory.readPositions => L10n.of(context).reading_positions,
+  BackupCategory.upvotes => L10n.of(context).plugin_reddit_upvotes,
   BackupCategory.accounts => L10n.of(context).account,
 };

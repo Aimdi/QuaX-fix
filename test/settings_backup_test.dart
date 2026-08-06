@@ -41,6 +41,11 @@ SettingsData _full() {
       ),
     ],
     redditSubscriptions: [RedditSubscription(id: 'dartlang', name: 'dartlang', createdAt: _createdAt, inFeed: true)],
+    stockSubscriptions: [StockSubscription(id: 'AAPL', symbol: 'AAPL', createdAt: _createdAt, inFeed: true)],
+    threadsSubscriptions: [
+      ThreadsSubscription(id: 'reader', name: 'Reader', avatarUrl: null, createdAt: _createdAt, inFeed: true),
+    ],
+    redditLocalVotes: [RedditLocalVote(id: 'abc123')],
     subscriptionGroups: [
       SubscriptionGroup(id: 'g1', name: 'Feeds', icon: _icon, color: null, numberOfMembers: 1, createdAt: _createdAt),
     ],
@@ -90,6 +95,9 @@ void main() {
       expect(data.userSubscriptions?.single.screenName, 'reader');
       expect(data.substackSubscriptions?.single.baseUrl, 'https://astral.substack.com');
       expect(data.redditSubscriptions?.single.name, 'dartlang');
+      expect(data.stockSubscriptions?.single.symbol, 'AAPL');
+      expect(data.threadsSubscriptions?.single.id, 'reader');
+      expect(data.redditLocalVotes?.single.id, 'abc123');
       expect(data.subscriptionGroups?.single.name, 'Feeds');
       expect(data.subscriptionGroupMembers?.single.profile, '1');
       expect(data.searchGroupMembers?.single.search, 'dart');
@@ -201,6 +209,9 @@ const _expectedTables = [
   tableSubscription,
   tableSubstackSubscription,
   tableRedditSubscription,
+  tableStockSubscription,
+  tableThreadsSubscription,
+  tableRedditLocalVote,
   tableSubscriptionGroup,
   tableSubscriptionGroupMember,
   tableSearchSubscriptionGroupMember,
