@@ -267,7 +267,7 @@ class _StatusScreenState extends State<_StatusScreen> {
         providers: [
           ChangeNotifierProvider<TweetContextState>(
               create: (context) =>
-                  TweetContextState(PrefService.of(context, listen: false).get(optionTweetsHideSensitive))),
+                  TweetContextState.fromPrefs(PrefService.of(context, listen: false))),
           // Long-pressing any translate button translates the whole conversation
           ChangeNotifierProvider<TranslationBroadcast>(create: (_) => TranslationBroadcast()),
           ChangeNotifierProvider<ZenRepliesState>(create: (_) => ZenRepliesState()),
@@ -455,21 +455,43 @@ class _StatusScreenState extends State<_StatusScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final nodes = buildThreadTree(items, widget.id);
+    final display = buildCappedThreadList(buildThreadTree(items, widget.id));
     return ListView.builder(
       controller: _scrollController,
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-      itemCount: nodes.length + 1,
+      itemCount: display.length + 1,
       itemBuilder: (context, index) {
-        if (index == nodes.length) {
+        if (index == display.length) {
           return _buildThreadFooter(context, state, fetchNextPage);
         }
-        final node = nodes[index];
+        final item = display[index];
+        if (item is ThreadContinueMarker) {
+          return ThreadContinueRow(
+            indentDepth: item.indentDepth,
+            onTap: () => _openContinueThread(context, item.target),
+          );
+        }
+        final node = (item as ThreadDisplayNode).node;
         return ThreadIndent(
-          depth: node.depth,
+          depth: item.visualDepth,
+          connectTop: item.connectTop,
+          connectBottom: item.connectBottom,
           child: _conversationTile(context, node.chain, index),
         );
       },
+    );
+  }
+
+  void _openContinueThread(BuildContext context, ThreadNode target) {
+    final tweet = target.chain.tweets.isEmpty ? null : target.chain.tweets.first;
+    final id = tweet?.idStr;
+    if (id == null) {
+      return;
+    }
+    Navigator.pushNamed(
+      context,
+      routeStatus,
+      arguments: StatusScreenArguments(id: id, username: tweet!.user?.screenName),
     );
   }
 

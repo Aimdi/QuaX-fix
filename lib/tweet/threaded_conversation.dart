@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xta/client/client.dart';
+import 'package:xta/generated/l10n.dart';
+import 'package:xta/tweet/thread_rail.dart';
 
 /// A conversation chain placed at its depth in the reply tree.
 class ThreadNode {
@@ -7,6 +9,31 @@ class ThreadNode {
   final int depth;
 
   const ThreadNode(this.chain, this.depth);
+}
+
+/// One row in a capped status-thread list.
+sealed class ThreadDisplayItem {}
+
+class ThreadDisplayNode extends ThreadDisplayItem {
+  final ThreadNode node;
+  final int visualDepth;
+  final bool connectTop;
+  final bool connectBottom;
+
+  ThreadDisplayNode({
+    required this.node,
+    required this.visualDepth,
+    this.connectTop = false,
+    this.connectBottom = false,
+  });
+}
+
+/// Points at the first reply hidden by the visual depth cap.
+class ThreadContinueMarker extends ThreadDisplayItem {
+  final ThreadNode target;
+  final int indentDepth;
+
+  ThreadContinueMarker(this.target, {required this.indentDepth});
 }
 
 /// Orders the loaded conversation [chains] into a Reddit-style reply tree.
@@ -100,34 +127,139 @@ List<ThreadNode> buildThreadTree(List<TweetChain> chains, String focalId) {
   return out;
 }
 
-/// Wraps a reply [child] with left indentation and a vertical connector line
-/// per its depth, so nested replies read as a thread. Depth 0 (the opened
-/// tweet) is returned unchanged; deeper levels are capped so long chains don't
-/// run off-screen.
+/// Index after the subtree rooted at [start] in a pre-order [nodes] list.
+int skipThreadSubtree(List<ThreadNode> nodes, int start) {
+  if (start < 0 || start >= nodes.length) {
+    return start;
+  }
+  final rootDepth = nodes[start].depth;
+  var i = start + 1;
+  while (i < nodes.length && nodes[i].depth > rootDepth) {
+    i++;
+  }
+  return i;
+}
+
+/// Flattens [nodes] for display, capping visual depth at [maxDepth] and
+/// inserting [ThreadContinueMarker] rows for deeper branches.
+List<ThreadDisplayItem> buildCappedThreadList(
+  List<ThreadNode> nodes, {
+  int maxDepth = kThreadMaxVisualDepth,
+}) {
+  final raw = <ThreadDisplayItem>[];
+  var i = 0;
+  while (i < nodes.length) {
+    final node = nodes[i];
+    if (node.depth > maxDepth) {
+      i++;
+      continue;
+    }
+    raw.add(ThreadDisplayNode(node: node, visualDepth: node.depth));
+    if (i + 1 < nodes.length && nodes[i + 1].depth > maxDepth) {
+      raw.add(ThreadContinueMarker(nodes[i + 1], indentDepth: maxDepth));
+      i = skipThreadSubtree(nodes, i + 1);
+      continue;
+    }
+    i++;
+  }
+  return _withThreadConnectors(raw);
+}
+
+List<ThreadDisplayItem> _withThreadConnectors(List<ThreadDisplayItem> items) {
+  final out = <ThreadDisplayItem>[];
+  for (var i = 0; i < items.length; i++) {
+    final item = items[i];
+    if (item is! ThreadDisplayNode) {
+      out.add(item);
+      continue;
+    }
+    final connectTop = item.visualDepth > 0 && i > 0 && items[i - 1] is ThreadDisplayNode;
+    final connectBottom = _hasThreadChildBelow(item, i, items);
+    out.add(ThreadDisplayNode(
+      node: item.node,
+      visualDepth: item.visualDepth,
+      connectTop: connectTop,
+      connectBottom: connectBottom,
+    ));
+  }
+  return out;
+}
+
+bool _hasThreadChildBelow(ThreadDisplayNode node, int index, List<ThreadDisplayItem> items) {
+  if (index + 1 >= items.length) {
+    return false;
+  }
+  final next = items[index + 1];
+  if (next is ThreadContinueMarker) {
+    return node.node.depth == next.indentDepth;
+  }
+  if (next is ThreadDisplayNode) {
+    return next.node.depth > node.node.depth;
+  }
+  return false;
+}
+
+/// Wraps a reply with avatar-column rails for its [depth] on the status screen.
 class ThreadIndent extends StatelessWidget {
   final int depth;
+  final bool connectTop;
+  final bool connectBottom;
   final Widget child;
 
-  const ThreadIndent({super.key, required this.depth, required this.child});
-
-  static const _maxDepth = 6;
-  static const _indentPerLevel = 10.0;
+  const ThreadIndent({
+    super.key,
+    required this.depth,
+    required this.child,
+    this.connectTop = false,
+    this.connectBottom = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    if (depth <= 0) {
+    if (depth <= 0 && !connectTop && !connectBottom) {
       return child;
     }
-    final level = depth.clamp(1, _maxDepth);
-    final lineColor = Theme.of(context).colorScheme.primary.withAlpha(90);
     return Padding(
-      padding: EdgeInsets.only(left: _indentPerLevel * level),
-      child: Container(
-        padding: const EdgeInsets.only(left: 6),
-        decoration: BoxDecoration(
-          border: Border(left: BorderSide(color: lineColor, width: 2)),
+      padding: EdgeInsets.only(left: depth * kThreadLevelWidth),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          ThreadRailLines(connectTop: connectTop, connectBottom: connectBottom),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+/// Tappable row that opens a reply branch trimmed by the depth cap.
+class ThreadContinueRow extends StatelessWidget {
+  final int indentDepth;
+  final VoidCallback onTap;
+
+  const ThreadContinueRow({super.key, required this.indentDepth, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.primary;
+    final style = theme.textTheme.labelLarge?.copyWith(color: color);
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: indentDepth * kThreadLevelWidth + kThreadRailLeft,
+          top: 8,
+          bottom: 8,
+          right: 16,
         ),
-        child: child,
+        child: Row(
+          children: [
+            Icon(Icons.subdirectory_arrow_right, size: 18, color: color),
+            const SizedBox(width: 8),
+            Text(L10n.of(context).continue_thread, style: style),
+          ],
+        ),
       ),
     );
   }

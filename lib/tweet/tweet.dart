@@ -16,6 +16,7 @@ import 'package:xta/status.dart';
 import 'package:xta/tweet/_ExpandableTweetText.dart';
 import 'package:xta/tweet/_card.dart';
 import 'package:xta/tweet/_media.dart';
+import 'package:xta/tweet/thread_rail.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/saved/liked_tweet_model.dart';
 import 'package:xta/tweet/article_link_card.dart';
@@ -852,53 +853,14 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
   Widget _buildThreadBody(ThemeData theme, Widget avatar, Widget header, List<Widget> bodyChildren,
       {required bool indentBody, required VoidCallback onTapProfile}) {
-    const railLeft = 16.0;
-    const topGap = 10.0;
-    const avatarSize = 48.0;
-    const lineWidth = 2.0;
-    const lineX = railLeft + avatarSize / 2 - lineWidth / 2;
-    const avatarCenterY = topGap + avatarSize / 2;
-    const bodyIndent = railLeft + avatarSize;
-    final lineColor = theme.colorScheme.outlineVariant;
-    Widget lineSeg() => Container(width: lineWidth, color: lineColor);
-
-    return Stack(
-      children: [
-        if (widget.threadConnectTop)
-          Positioned(left: lineX, top: 0, height: avatarCenterY, child: lineSeg()),
-        if (widget.threadConnectBottom)
-          Positioned(left: lineX, top: avatarCenterY, bottom: 0, child: lineSeg()),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(width: railLeft),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: topGap),
-                    SizedBox(
-                      width: avatarSize,
-                      height: avatarSize,
-                      child: GestureDetector(
-                          behavior: HitTestBehavior.opaque, onTap: onTapProfile, child: avatar),
-                    ),
-                  ],
-                ),
-                Expanded(child: header),
-              ],
-            ),
-            if (indentBody)
-              Padding(
-                padding: const EdgeInsets.only(left: bodyIndent),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: bodyChildren),
-              ),
-            if (!indentBody) ...bodyChildren,
-          ],
-        ),
-      ],
+    return ThreadRailBody(
+      connectTop: widget.threadConnectTop,
+      connectBottom: widget.threadConnectBottom,
+      indentBody: indentBody,
+      avatar: avatar,
+      header: header,
+      bodyChildren: bodyChildren,
+      onTapProfile: onTapProfile,
     );
   }
 }
