@@ -112,7 +112,9 @@ class SubscriptionsModel extends Store<List<Subscription>> {
 
         state.removeWhere((e) => e.id == user.id);
       } else {
-        database.insert(tableSearchSubscription, {
+        // Awaited so the reload below cannot read the table first and show the
+        // search unfollowed right after the reader followed it.
+        await database.insert(tableSearchSubscription, {
           'id': user.id,
         });
       }
@@ -134,7 +136,9 @@ class SubscriptionsModel extends Store<List<Subscription>> {
 
         state.removeWhere((e) => e.id == user.id);
       } else {
-        database.insert(tableSubscription, {
+        // Awaited for the same reason as the search variant: the reload reads
+        // this table, and losing the race showed the follow undone.
+        await database.insert(tableSubscription, {
           'id': user.id,
           'screen_name': user.screenName,
           'name': user.name,
@@ -197,8 +201,8 @@ class SubscriptionsModel extends Store<List<Subscription>> {
   Future<void> toggleInFeed(Subscription user, bool wasInFeed) async {
     var database = await Repository.writable();
     await execute(() async {
-      database.update(tableSubscription, {
-        'in_Feed': wasInFeed ? 0 : 1
+      await database.update(tableSubscription, {
+        'in_feed': wasInFeed ? 0 : 1
       }, where: 'id = ?', whereArgs: [user.id]);
 
       await reloadSubscriptions();
