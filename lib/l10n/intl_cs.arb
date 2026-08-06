@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Přestat sledovat",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Pokročilé: vložit refresh token",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Soukromý feed sledování Pixiv přes refresh token — bez publikování",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "Ve feedu sledování zatím nic není",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Refresh token Pixiv byl odmítnut",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Nejprve vložte refresh token Pixiv v nastavení",
+  "plugin_pixiv_not_configured": "Přihlaste se přes Pixiv a uvidíte feed sledování",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Otevřít na Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Dlouhý token z OAuth přihlášení k Pixiv",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Tento soukromý plugin čte váš feed sledování na Pixiv. Vložte refresh token získaný mimo aplikaci. Odtud se na Pixiv nic nepublikuje, nepřidává do záložek ani nesleduje.",
+  "plugin_pixiv_settings_intro": "Tento soukromý plugin čte váš feed sledování na Pixiv. Klepněte na Přihlásit se a přihlaste se v prohlížeči, nebo vložte refresh token níže. Odtud se na Pixiv nic nepublikuje, nepřidává do záložek ani nesleduje.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Zobrazit díla R-18",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Ve výchozím stavu vypnuto. Když je vypnuto, omezená díla se ve feedech skrývají.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Přihlásit se přes Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Nepodařilo se přihlásit k Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Odhlásit se",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Přihlášen jako {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Otestovat připojení",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Přihlášeni jako {name}",

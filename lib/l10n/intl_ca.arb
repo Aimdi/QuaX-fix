@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Deixa de seguir",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Avançat: enganxa el testimoni d’actualització",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Fil privat de seguiments de Pixiv amb un testimoni d’actualització — sense publicar",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "Encara no hi ha res al fil de seguiments",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "S’ha rebutjat el testimoni d’actualització de Pixiv",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Enganxeu primer un testimoni d’actualització de Pixiv a la configuració",
+  "plugin_pixiv_not_configured": "Inicia sessió amb Pixiv per veure el teu fil de seguiments",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Obre a Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Testimoni llarg d’un inici de sessió OAuth a Pixiv",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Aquest connector privat llegeix el fil de seguiments de Pixiv. Enganxeu un testimoni d’actualització obtingut fora de l’aplicació. Des d’aquí no es publica, no es marca ni es segueix res a Pixiv.",
+  "plugin_pixiv_settings_intro": "Aquest connector privat llegeix el fil de seguiments de Pixiv. Toca Inicia sessió per entrar al teu compte al navegador, o enganxa un testimoni d’actualització a sota. Des d’aquí no es publica, no es marca ni es segueix res a Pixiv.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Mostra obres R-18",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Desactivat per defecte. Quan està desactivat, les obres restringides s’amaguen dels fils.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Inicia sessió amb Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "No s’ha pogut iniciar sessió a Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Tanca sessió",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Sessió iniciada com a {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Prova la connexió",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Sessió iniciada com a {name}",

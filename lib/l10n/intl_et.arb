@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Lõpeta jälgimine",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Täpsem: kleebi värskendustoken",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Privaatne Pixivi jälgimisvoog värskendustokeniga — ilma postitamata",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "Jälgimisvoos pole veel midagi",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Sinu Pixivi värskendustoken lükati tagasi",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Kleebi esmalt Pixivi värskendustoken seadistustesse",
+  "plugin_pixiv_not_configured": "Logi Pixiviga sisse, et näha jälgimisvoogu",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Ava Pixivis",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Pikk token Pixivi OAuth sisselogimisest",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "See privaatne plugin loeb sinu Pixivi jälgimisvoogu. Kleebi rakendusest väljaspool saadud värskendustoken. Siit ei postitata, ei märgita ega jälgita midagi Pixivis.",
+  "plugin_pixiv_settings_intro": "See privaatne plugin loeb sinu Pixivi jälgimisvoogu. Puuduta Sisselogimist, et brauseris kontoga sisse logida, või kleebi allpool värskendustoken. Siit ei postitata, ei märgita ega jälgita midagi Pixivis.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Näita R-18 teoseid",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Vaikimisi väljas. Kui väljas, peidetakse piiratud teosed voogudest.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Logi Pixiviga sisse",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Pixivisse sisselogimine ebaõnnestus",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Logi välja",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Sisse logitud kasutajana {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Testi ühendust",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Sisse logitud kui {name}",

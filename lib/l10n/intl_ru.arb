@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Отписаться",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Дополнительно: вставить refresh-токен",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Частная лента подписок Pixiv через refresh-токен — без публикаций",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "В ленте подписок пока ничего нет",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Refresh-токен Pixiv отклонён",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Сначала вставьте refresh-токен Pixiv в настройках",
+  "plugin_pixiv_not_configured": "Войдите через Pixiv, чтобы увидеть ленту подписок",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Открыть на Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Длинный токен из OAuth-входа в Pixiv",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Этот частный плагин читает ленту ваших подписок на Pixiv. Вставьте refresh-токен, полученный вне приложения. Отсюда ничего не публикуется, не добавляется в закладки и не подписывается на Pixiv.",
+  "plugin_pixiv_settings_intro": "Этот частный плагин читает ленту ваших подписок на Pixiv. Нажмите «Войти», чтобы авторизоваться в браузере, или вставьте refresh-токен ниже. Отсюда ничего не публикуется, не добавляется в закладки и не подписывается.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Показывать работы R-18",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "По умолчанию выключено. Когда выключено, ограниченные работы скрываются из лент.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Войти через Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Не удалось войти в Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Выйти",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Вы вошли как {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Проверить соединение",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Вход выполнен как {name}",

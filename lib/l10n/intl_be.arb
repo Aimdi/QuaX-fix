@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Адпісацца",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Дадаткова: уставіць refresh-токен",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Прыватная стужка падпісак Pixiv праз refresh-токен — без публікацый",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "У стужцы падпісак пакуль нічога няма",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Refresh-токен Pixiv адхілены",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Спачатку ўстаўце refresh-токен Pixiv у наладах",
+  "plugin_pixiv_not_configured": "Увайдзіце праз Pixiv, каб убачыць стужку падпісак",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Адкрыць на Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Доўгі токен з OAuth-уваходу ў Pixiv",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Гэты прыватны плагін чытае стужку вашых падпісак на Pixiv. Устаўце refresh-токен, атрыманы па-за праграмай (Pixiv больш не прымае пароль у app API). Адсюль нічога не публікуецца, не дадаецца ў закладкі і не падпісваецца.",
+  "plugin_pixiv_settings_intro": "Гэты прыватны плагін чытае стужку вашых падпісак на Pixiv. Націсніце «Увайсці», каб увайсці ў браўзеры, або ўстаўце refresh-токен ніжэй. Адсюль нічога не публікуецца, не дадаецца ў закладкі і не падпісваецца.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Паказваць працы R-18",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Па змаўчанні выключана. Калі выключана, абмежаваныя працы хаваюцца са стужак.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Увайсці праз Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Не ўдалося ўвайсці ў Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Выйсці",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Увайшлі як {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Праверыць злучэнне",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Увайшлі як {name}",

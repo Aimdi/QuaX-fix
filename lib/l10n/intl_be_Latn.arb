@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Adpisacca",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Dadatkova: ustaŭic refresh-token",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Pryvatnaja stuzka padpisak Pixiv praz refresh-token — biez publikacyj",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "U stuzcy padpisak pakul nicoho niama",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Refresh-token Pixiv adchileny",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Spachatku ustauce refresh-token Pixiv u naladach",
+  "plugin_pixiv_not_configured": "Uvaidzicie praz Pixiv, kab ubačyć stužku padpisak",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Adkryc na Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Douhi token z OAuth-uvachodu u Pixiv",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Hety pryvatny plahin cytae stuzku vasych padpisak na Pixiv. Ustaucie refresh-token, atrymany pa-za prahramaj. Adsjul nicoho nie publikujecca.",
+  "plugin_pixiv_settings_intro": "Hety pryvatny plahin cytae stužku vašych padpisak na Pixiv. Nacisnicie «Uvajsci», kab uvajsci ŭ brauzery, abo ustawcie refresh-token nižej. Adsjul ničoha nie publikujecca.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Pakazvac pracy R-18",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Pa zmaucanni vykliucana. Kali vykliucana, abmezavanyja pracy chavajucca.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Uvajsci praz Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Ne ŭdalosia uvajsci ŭ Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Vyjsci",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Uvajšli jak {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Pravieryc zlucenne",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Uvajsli jak {name}",

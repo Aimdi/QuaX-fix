@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "取消追蹤",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "進階：貼上重新整理權杖",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "透過重新整理權杖閱讀 Pixiv 追蹤動態的私有外掛 — 不發文",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "追蹤動態裡還沒有內容",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "你的 Pixiv 重新整理權杖被拒絕",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "請先在設定中貼上 Pixiv 重新整理權杖",
+  "plugin_pixiv_not_configured": "使用 Pixiv 登入以查看追蹤動態",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "在 Pixiv 開啟",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "來自 Pixiv OAuth 登入的長權杖",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "此私有外掛讀取你的 Pixiv 追蹤動態。貼上在應用程式外取得的重新整理權杖。不會從這裡對 Pixiv 發文、收藏或追蹤。",
+  "plugin_pixiv_settings_intro": "此私有外掛讀取你的 Pixiv 追蹤動態。點按登入在瀏覽器中使用 Pixiv 帳號登入，或在下方貼上重新整理權杖。不會從這裡對 Pixiv 發文、收藏或追蹤。",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "顯示 R-18 作品",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "預設關閉。關閉時，受限作品會從動態中隱藏。",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "使用 Pixiv 登入",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "無法登入 Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "登出",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "已登入為 {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "測試連線",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "已以 {name} 身分登入",

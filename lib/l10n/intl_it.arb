@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Smetti di seguire",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Avanzate: incolla refresh token",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Feed privato dei seguiti Pixiv tramite refresh token — senza pubblicare",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "Niente ancora nel feed dei seguiti",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Il refresh token di Pixiv è stato rifiutato",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Incolla prima un refresh token di Pixiv nelle impostazioni",
+  "plugin_pixiv_not_configured": "Accedi con Pixiv per vedere il feed dei tuoi seguiti",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Apri su Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Token lungo da un accesso OAuth a Pixiv",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Questo plugin privato legge il feed dei tuoi seguiti su Pixiv. Incolla un refresh token ottenuto fuori dall’app. Da qui non si pubblica, non si aggiunge ai preferiti né si segue su Pixiv.",
+  "plugin_pixiv_settings_intro": "Questo plugin privato legge il feed dei tuoi seguiti su Pixiv. Tocca Accedi per entrare con il tuo account nel browser, oppure incolla un refresh token sotto. Da qui non si pubblica, non si aggiunge ai preferiti né si segue su Pixiv.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Mostra opere R-18",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Disattivato per impostazione predefinita. Se disattivato, le opere limitate sono nascoste dai feed.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Accedi con Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Impossibile accedere a Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Esci",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Accesso effettuato come {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Prova connessione",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Accesso effettuato come {name}",

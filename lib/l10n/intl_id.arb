@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Berhenti mengikuti",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Lanjutan: tempel refresh token",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Feed mengikuti Pixiv privat lewat refresh token — tanpa memposting",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "Belum ada apa pun di feed mengikuti",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Refresh token Pixiv Anda ditolak",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Tempel refresh token Pixiv di pengaturan terlebih dahulu",
+  "plugin_pixiv_not_configured": "Masuk dengan Pixiv untuk melihat feed mengikuti Anda",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Buka di Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Token panjang dari login OAuth Pixiv",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Plugin privat ini membaca feed mengikuti Pixiv Anda. Tempel refresh token yang didapat di luar aplikasi. Dari sini tidak ada yang diposting, dibookmark, atau diikuti di Pixiv.",
+  "plugin_pixiv_settings_intro": "Plugin privat ini membaca feed mengikuti Pixiv Anda. Ketuk Masuk untuk masuk dengan akun Anda di browser, atau tempel refresh token di bawah. Dari sini tidak ada yang diposting, dibookmark, atau diikuti di Pixiv.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Tampilkan karya R-18",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Nonaktif secara bawaan. Saat nonaktif, karya terbatas disembunyikan dari feed.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Masuk dengan Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Tidak dapat masuk ke Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Keluar",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Masuk sebagai {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Uji koneksi",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Masuk sebagai {name}",

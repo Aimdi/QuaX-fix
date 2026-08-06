@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Slutt å følge",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Avansert: lim inn oppfriskningstoken",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Privat Pixiv-følgefeed via oppfriskningstoken — uten å poste",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "Ingenting i følgefeeden ennå",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Pixiv-oppfriskningstokenet ble avvist",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Lim inn et Pixiv-oppfriskningstoken i innstillingene først",
+  "plugin_pixiv_not_configured": "Logg inn med Pixiv for å se følgefeeden din",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Åpne på Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Langt token fra en Pixiv-OAuth-innlogging",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Denne private programtillegget leser følgefeeden din på Pixiv. Lim inn et oppfriskningstoken hentet utenfor appen. Herfra postes, bokmerkes eller følges ingenting på Pixiv.",
+  "plugin_pixiv_settings_intro": "Denne private programtillegget leser følgefeeden din på Pixiv. Trykk Logg inn for å logge inn i nettleseren, eller lim inn et oppfriskningstoken nedenfor. Herfra postes, bokmerkes eller følges ingenting på Pixiv.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Vis R-18-verk",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Av som standard. Når av, skjules begrensede verk fra feeder.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Logg inn med Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Kunne ikke logge inn på Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Logg ut",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Innlogget som {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Test tilkobling",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Innlogget som {name}",

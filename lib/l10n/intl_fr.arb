@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Ne plus suivre",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Avancé : coller le jeton d’actualisation",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Fil privé des abonnements Pixiv via un jeton d’actualisation — sans publication",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "Rien dans le fil des abonnements pour l’instant",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Votre jeton d’actualisation Pixiv a été refusé",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Collez d’abord un jeton d’actualisation Pixiv dans les réglages",
+  "plugin_pixiv_not_configured": "Connectez-vous avec Pixiv pour voir votre fil d’abonnements",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Ouvrir sur Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Long jeton issu d’une connexion OAuth Pixiv",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Ce greffon privé lit votre fil d’abonnements Pixiv. Collez un jeton d’actualisation obtenu hors de l’appli. Rien n’est publié, mis en favori ni suivi sur Pixiv depuis ici.",
+  "plugin_pixiv_settings_intro": "Ce greffon privé lit votre fil d’abonnements Pixiv. Appuyez sur Connexion pour vous connecter dans le navigateur, ou collez un jeton d’actualisation ci-dessous. Rien n’est publié, mis en favori ni suivi sur Pixiv depuis ici.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Afficher les œuvres R-18",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Désactivé par défaut. Quand c’est désactivé, les œuvres restreintes sont masquées des fils.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Se connecter avec Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Impossible de se connecter à Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Se déconnecter",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Connecté en tant que {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Tester la connexion",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Connecté en tant que {name}",

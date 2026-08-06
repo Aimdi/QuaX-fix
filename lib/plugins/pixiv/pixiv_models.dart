@@ -53,6 +53,8 @@ class PixivAuthUser {
   final String account;
 
   const PixivAuthUser({required this.id, required this.name, required this.account});
+
+  String get displayName => name.isEmpty ? account : name;
 }
 
 /// A Pixiv user profile from `/v1/user/detail`.
