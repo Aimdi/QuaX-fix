@@ -120,6 +120,8 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   // so the "You're caught up" divider never moves mid-session.
   FeedReadPosition? _lastSeen;
   bool _readPositionLoadStarted = false;
+  bool _readPositionReady = false;
+  List<TweetChain>? _pendingFirstPage;
   bool _caughtUpRestoreEvaluated = false;
   bool _userHasScrolled = false;
   String? _lastRecordedChainId;
@@ -314,8 +316,20 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     }
     _readPositionLoadStarted = true;
     readFeedReadPosition(feedReadPositionKey(widget.group.id)).then((position) {
-      if (mounted && position != null) {
-        setState(() => _lastSeen = position);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _lastSeen = position;
+        _readPositionReady = true;
+      });
+      // First page may have arrived while the DB read was in flight, or the
+      // controller may still hold items from a cached session.
+      final pending = _pendingFirstPage;
+      _pendingFirstPage = null;
+      final items = pending ?? _feedController.items;
+      if (items != null && items.isNotEmpty) {
+        _onFirstPageLoaded(items);
       }
     });
   }
@@ -734,7 +748,11 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
       // Catch-up mode neither restores to the divider (the page it is about to
       // show *is* the new posts) nor records anything here.
       if (_tracksReadPosition && !_catchUpEnabled) {
-        _onFirstPageLoaded(threads);
+        if (_readPositionReady) {
+          _onFirstPageLoaded(threads);
+        } else {
+          _pendingFirstPage = threads;
+        }
       }
     }
 
