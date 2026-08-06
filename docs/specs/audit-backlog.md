@@ -93,14 +93,15 @@ decision rather than a patch.
 
 ## Not done — UX
 
-The explanation of why accounts are needed still only appears after the reader
-has committed to logging in. A rate limit and broken auth are visually
-indistinguishable.
+Nothing at the moment. The first-run dialog now explains up front why accounts
+help and what signing in does and does not allow, so the "explanation only
+after committing to log in" complaint no longer applies.
 
-Two entries here were wrong and have been dropped rather than fixed: the drawer
-is reachable (`_account_avatar.dart:54` calls `openDrawer`), and the audit that
-called it dead had simply missed the call site. Re-grep before trusting the rest
-of this file for the same reason.
+Three entries here were wrong and have been dropped rather than fixed: the
+drawer is reachable (`_account_avatar.dart:54` calls `openDrawer`); a rate
+limit and broken auth render as distinct widgets (`ui/errors.dart` maps each
+exception to its own screen); and the audits that claimed otherwise had simply
+not looked. Re-grep before trusting the rest of this file for the same reason.
 
 ## Considered and rejected
 
