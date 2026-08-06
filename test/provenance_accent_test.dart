@@ -21,6 +21,26 @@ void main() {
       );
     });
 
+    testWidgets('provenanceAccent lays out in unbounded height without crashing', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) => ListView(
+              children: [
+                provenanceAccent(
+                  context: context,
+                  color: Colors.red,
+                  child: const SizedBox(height: 80, child: Text('interleaved card')),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('interleaved card'), findsOneWidget);
+    });
+
     testWidgets('lightens near-black Threads brand on dark theme', (tester) async {
       late Color threadsColor;
       await tester.pumpWidget(

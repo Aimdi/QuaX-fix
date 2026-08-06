@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "フォロー解除",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "詳細: リフレッシュトークンを貼り付け",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "リフレッシュトークンで Pixiv フォローフィードを読む（非公開プラグイン）— 投稿なし",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "フォローフィードにまだ何もありません",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Pixiv のリフレッシュトークンが拒否されました",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "先に設定で Pixiv のリフレッシュトークンを貼り付けてください",
+  "plugin_pixiv_not_configured": "Pixiv にサインインしてフォローフィードを表示",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Pixiv で開く",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Pixiv の OAuth ログインで得た長いトークン",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "この非公開プラグインは Pixiv のフォローフィードを読みます。アプリ外で取得したリフレッシュトークンを貼り付けてください。ここから Pixiv への投稿・ブックマーク・フォローは行いません。",
+  "plugin_pixiv_settings_intro": "この非公開プラグインは Pixiv のフォローフィードを読みます。サインインをタップしてブラウザで Pixiv アカウントにログインするか、下にリフレッシュトークンを貼り付けてください。ここから Pixiv への投稿・ブックマーク・フォローは行いません。",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "R-18 作品を表示",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "既定ではオフ。オフのとき、制限付き作品はフィードから隠されます。",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Pixiv でサインイン",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Pixiv にサインインできませんでした",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "サインアウト",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "{name} としてサインイン中",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "接続をテスト",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "{name} としてサインインしました",

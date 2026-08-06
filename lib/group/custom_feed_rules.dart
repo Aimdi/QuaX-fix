@@ -87,8 +87,14 @@ bool textMatchesMutedTerm(String text, String term) {
     return haystack.contains(lowered);
   }
 
-  return RegExp('(?<![\\p{L}\\p{N}])${RegExp.escape(lowered)}(?![\\p{L}\\p{N}])', unicode: true)
-      .hasMatch(haystack);
+  try {
+    return RegExp('(?<![\\p{L}\\p{N}])${RegExp.escape(lowered)}(?![\\p{L}\\p{N}])', unicode: true)
+        .hasMatch(haystack);
+  } catch (_) {
+    // Some runtimes choke on unicode lookbehind; fail open to substring match
+    // rather than blowing up the whole feed page.
+    return haystack.contains(lowered);
+  }
 }
 
 /// The text of a chain that keyword muting looks at: every post in the thread,

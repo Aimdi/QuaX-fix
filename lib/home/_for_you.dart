@@ -102,13 +102,12 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
         _lastSeen = position;
         _readPositionReady = true;
       });
-      // First page may have arrived while the DB read was in flight, or the
-      // controller may still hold items from a prior tab visit.
+      // Only a fresh first page waiting in [_pendingFirstPage] — never the
+      // prior tab's cached items, which would lock caught-up restore wrong.
       final pending = _pendingFirstPage;
       _pendingFirstPage = null;
-      final items = pending ?? widget.feed.items;
-      if (items != null && items.isNotEmpty) {
-        _onFirstPageLoaded(items);
+      if (pending != null && pending.isNotEmpty) {
+        _onFirstPageLoaded(pending);
       }
     });
   }

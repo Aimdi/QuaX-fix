@@ -955,6 +955,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Unfollow",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Advanced: paste refresh token",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Private Pixiv following feed via a refresh token — no posting",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "Nothing in your following feed yet",
@@ -969,7 +971,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Your Pixiv refresh token was rejected",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Paste a Pixiv refresh token in settings first",
+  "plugin_pixiv_not_configured": "Sign in with Pixiv to see your following feed",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Open on Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -985,12 +987,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Long token from a Pixiv OAuth login",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "This private plugin reads your Pixiv following feed. Paste a refresh token obtained outside the app (Pixiv no longer accepts password login on the app API). Nothing is posted, bookmarked, or followed on Pixiv from here.",
+  "plugin_pixiv_settings_intro": "This private plugin reads your Pixiv following feed. Tap Sign in to log in with your Pixiv account in the browser, or paste a refresh token below. Nothing is posted, bookmarked, or followed on Pixiv from here.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Show R-18 works",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Off by default. When off, restricted works are hidden from feeds.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Sign in with Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Could not sign in to Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Sign out",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Signed in as {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Test connection",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Signed in as {name}",

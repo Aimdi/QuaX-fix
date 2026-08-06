@@ -21,6 +21,8 @@ class PixivScreen extends StatefulWidget {
 }
 
 class _PixivScreenState extends State<PixivScreen> {
+  bool _signingIn = false;
+
   @override
   void initState() {
     super.initState();
@@ -76,7 +78,35 @@ class _PixivScreenState extends State<PixivScreen> {
           ? Center(
               child: Padding(
                 padding: const EdgeInsets.all(32),
-                child: Text(l10n.plugin_pixiv_not_configured, textAlign: TextAlign.center),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(l10n.plugin_pixiv_not_configured, textAlign: TextAlign.center),
+                    const SizedBox(height: 20),
+                    FilledButton(
+                      onPressed: _signingIn
+                          ? null
+                          : () async {
+                              setState(() => _signingIn = true);
+                              try {
+                                final feed = context.read<PixivFeedStore>();
+                                await runPixivSignIn(context);
+                                if (mounted) {
+                                  setState(() {});
+                                  await feed.refresh();
+                                }
+                              } finally {
+                                if (mounted) {
+                                  setState(() => _signingIn = false);
+                                }
+                              }
+                            },
+                      child: _signingIn
+                          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                          : Text(l10n.plugin_pixiv_sign_in),
+                    ),
+                  ],
+                ),
               ),
             )
           : ScopedBuilder<PixivFeedStore, List<PixivIllust>>.transition(

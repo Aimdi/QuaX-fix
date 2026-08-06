@@ -47,7 +47,10 @@ class _BoostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boost = chain.tweets.first;
+    final boost = chain.tweets.firstOrNull;
+    if (boost == null) {
+      return const SizedBox.shrink();
+    }
     final boosted = boost.retweetedStatusWithCard;
     final booster = boost.user;
     final theme = Theme.of(context);

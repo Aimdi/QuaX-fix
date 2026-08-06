@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Dejar de seguir",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Avanzado: pegar token de actualización",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Feed privado de seguidos de Pixiv con un token de actualización — sin publicar",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "Aún no hay nada en el feed de seguidos",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Se rechazó tu token de actualización de Pixiv",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Pega primero un token de actualización de Pixiv en ajustes",
+  "plugin_pixiv_not_configured": "Inicia sesión con Pixiv para ver tu feed de seguidos",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Abrir en Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Token largo de un inicio de sesión OAuth en Pixiv",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Este complemento privado lee tu feed de seguidos de Pixiv. Pega un token de actualización obtenido fuera de la app. Desde aquí no se publica, marca ni sigue nada en Pixiv.",
+  "plugin_pixiv_settings_intro": "Este complemento privado lee tu feed de seguidos de Pixiv. Toca Iniciar sesión para entrar con tu cuenta en el navegador, o pega un token de actualización abajo. Desde aquí no se publica, marca ni sigue nada en Pixiv.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Mostrar obras R-18",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Desactivado por defecto. Si está desactivado, las obras restringidas se ocultan de los feeds.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Iniciar sesión con Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "No se pudo iniciar sesión en Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Cerrar sesión",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Sesión iniciada como {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Probar conexión",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Sesión iniciada como {name}",

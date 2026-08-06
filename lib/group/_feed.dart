@@ -326,13 +326,13 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
         _lastSeen = position;
         _readPositionReady = true;
       });
-      // First page may have arrived while the DB read was in flight, or the
-      // controller may still hold items from a cached session.
+      // Only the fresh first page waiting in [_pendingFirstPage] — never the
+      // session-cached controller items, which can be yesterday's load and
+      // would lock caught-up restore onto the wrong boundary.
       final pending = _pendingFirstPage;
       _pendingFirstPage = null;
-      final items = pending ?? _feedController.items;
-      if (items != null && items.isNotEmpty) {
-        _onFirstPageLoaded(items);
+      if (pending != null && pending.isNotEmpty) {
+        _onFirstPageLoaded(pending);
       }
     });
   }
@@ -744,7 +744,9 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     threads = capChainsPerAuthor(threads, caps);
 
     if (!mounted) {
-      return (chains: <TweetChain>[], nextCursor: null);
+      // Keep what we fetched — an empty page with a null cursor would make
+      // pagination think the feed is finished.
+      return (chains: threads, nextCursor: nextCursor);
     }
 
     final prefs = PrefService.of(context, listen: false);
@@ -756,7 +758,9 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     );
     threads = languageOutcome.chains;
     if (mounted) {
-      _foldReasons = languageOutcome.foldReasons;
+      setState(() {
+        _foldReasons = {..._foldReasons, ...languageOutcome.foldReasons};
+      });
     }
 
     if (prefs.get(optionZenMode) == true) {

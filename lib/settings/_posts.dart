@@ -16,28 +16,59 @@ class SettingsPostsFragment extends StatefulWidget {
 class _SettingsPostsFragmentState extends State<SettingsPostsFragment> {
   ({int replies, int retweets})? _overrides;
   late final TextEditingController _languageController;
+  late final FocusNode _languageFocus;
   LanguageFilterAction _languageAction = LanguageFilterAction.off;
+
+  bool get _languageFilterActive => parseFeedLanguages(_languageController.text).isNotEmpty;
 
   @override
   void initState() {
     super.initState();
     final prefs = PrefService.of(context, listen: false);
     _languageController = TextEditingController(text: prefs.get(optionFeedLanguages) as String? ?? '');
+    _languageFocus = FocusNode()..addListener(_onLanguageFocusChange);
     _languageAction = parseLanguageFilterAction(prefs.get(optionFeedLanguageAction) as String?);
     _loadOverrides();
   }
 
   @override
   void dispose() {
+    _languageFocus.dispose();
     _languageController.dispose();
     super.dispose();
   }
 
-  Future<void> _saveLanguages(String value) async {
-    await PrefService.of(context, listen: false).set(optionFeedLanguages, value.trim());
+  void _onLanguageFocusChange() {
+    if (!_languageFocus.hasFocus && mounted) {
+      _commitLanguages();
+    }
+  }
+
+  Future<void> _commitLanguages() async {
+    if (!mounted) {
+      return;
+    }
+    final trimmed = _languageController.text.trim();
+    if (_languageController.text != trimmed) {
+      _languageController.text = trimmed;
+      _languageController.selection = TextSelection.collapsed(offset: trimmed.length);
+    }
+
+    final prefs = PrefService.of(context, listen: false);
+    await prefs.set(optionFeedLanguages, trimmed);
+
+    if (trimmed.isEmpty && _languageAction != LanguageFilterAction.off) {
+      setState(() => _languageAction = LanguageFilterAction.off);
+      await prefs.set(optionFeedLanguageAction, LanguageFilterAction.off.stored);
+    } else if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _saveLanguageAction(LanguageFilterAction action) async {
+    if (!_languageFilterActive && action != LanguageFilterAction.off) {
+      return;
+    }
     setState(() => _languageAction = action);
     await PrefService.of(context, listen: false).set(optionFeedLanguageAction, action.stored);
   }
@@ -94,6 +125,10 @@ class _SettingsPostsFragmentState extends State<SettingsPostsFragment> {
             title: Text(L10n.of(context).hide_sensitive_tweets),
             subtitle: Text(L10n.of(context).whether_to_hide_tweets_marked_as_sensitive),
             pref: optionTweetsHideSensitive,
+          ),
+          PrefSwitch(
+            title: Text(L10n.of(context).sensitive_media_always_show),
+            pref: optionAlwaysShowSensitiveMedia,
           ),
           PrefSwitch(
             title: Text(L10n.of(context).always_show_full_tweet_contents),
@@ -176,12 +211,14 @@ class _SettingsPostsFragmentState extends State<SettingsPostsFragment> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
               controller: _languageController,
+              focusNode: _languageFocus,
               decoration: InputDecoration(
                 labelText: L10n.of(context).language_filter_languages,
                 border: const OutlineInputBorder(),
                 isDense: true,
               ),
-              onChanged: _saveLanguages,
+              onEditingComplete: _commitLanguages,
+              onSubmitted: (_) => _commitLanguages(),
             ),
           ),
           Padding(
@@ -189,8 +226,16 @@ class _SettingsPostsFragmentState extends State<SettingsPostsFragment> {
             child: SegmentedButton<LanguageFilterAction>(
               segments: [
                 ButtonSegment(value: LanguageFilterAction.off, label: Text(L10n.of(context).language_filter_off)),
-                ButtonSegment(value: LanguageFilterAction.hide, label: Text(L10n.of(context).language_filter_hide)),
-                ButtonSegment(value: LanguageFilterAction.fold, label: Text(L10n.of(context).language_filter_fold)),
+                ButtonSegment(
+                  value: LanguageFilterAction.hide,
+                  enabled: _languageFilterActive,
+                  label: Text(L10n.of(context).language_filter_hide),
+                ),
+                ButtonSegment(
+                  value: LanguageFilterAction.fold,
+                  enabled: _languageFilterActive,
+                  label: Text(L10n.of(context).language_filter_fold),
+                ),
               ],
               selected: {_languageAction},
               onSelectionChanged: (value) => _saveLanguageAction(value.first),

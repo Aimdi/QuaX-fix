@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Entfolgen",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Erweitert: Refresh-Token einfügen",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Privater Pixiv-Following-Feed per Refresh-Token — ohne zu posten",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "Noch nichts im Following-Feed",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Dein Pixiv-Refresh-Token wurde abgelehnt",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Zuerst einen Pixiv-Refresh-Token in den Einstellungen einfügen",
+  "plugin_pixiv_not_configured": "Mit Pixiv anmelden, um deinen Following-Feed zu sehen",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Auf Pixiv öffnen",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Langes Token aus einer Pixiv-OAuth-Anmeldung",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Dieses private Plugin liest deinen Pixiv-Following-Feed. Füge ein Refresh-Token ein, das außerhalb der App geholt wurde. Von hier aus wird auf Pixiv nichts gepostet, favorisiert oder gefolgt.",
+  "plugin_pixiv_settings_intro": "Dieses private Plugin liest deinen Pixiv-Following-Feed. Tippe auf Anmelden, um dich im Browser anzumelden, oder füge unten ein Refresh-Token ein. Von hier aus wird auf Pixiv nichts gepostet, favorisiert oder gefolgt.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "R-18-Werke anzeigen",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Standardmäßig aus. Wenn aus, werden eingeschränkte Werke in Feeds ausgeblendet.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Mit Pixiv anmelden",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Anmeldung bei Pixiv fehlgeschlagen",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Abmelden",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Angemeldet als {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Verbindung testen",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Angemeldet als {name}",

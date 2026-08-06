@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "إلغاء المتابعة",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "متقدم: الصق رمز التحديث",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "خلاصة متابعة Pixiv الخاصة عبر رمز تحديث — دون نشر",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "لا شيء في خلاصة المتابعة بعد",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "رُفض رمز تحديث Pixiv",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "الصق رمز تحديث Pixiv في الإعدادات أولًا",
+  "plugin_pixiv_not_configured": "سجّل الدخول عبر Pixiv لعرض خلاصة متابعتك",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "فتح على Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "رمز طويل من تسجيل دخول OAuth إلى Pixiv",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "هذه الإضافة الخاصة تقرأ خلاصة متابعتك على Pixiv. الصق رمز تحديث حصلت عليه خارج التطبيق (لم يعد Pixiv يقبل كلمة المرور على واجهة التطبيق). لا يُنشر شيء ولا يُضاف إلى المفضّلة ولا تُتابع حسابات من هنا.",
+  "plugin_pixiv_settings_intro": "هذه الإضافة الخاصة تقرأ خلاصة متابعتك على Pixiv. اضغط تسجيل الدخول لتسجيل الدخول إلى حسابك في المتصفح، أو الصق رمز تحديث أدناه. لا يُنشر شيء ولا يُضاف إلى المفضّلة ولا تُتابع حسابات من هنا.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "إظهار أعمال R-18",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "إيقاف افتراضيًا. عند الإيقاف تُخفى الأعمال المقيّدة من الخلاصات.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "تسجيل الدخول عبر Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "تعذّر تسجيل الدخول إلى Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "تسجيل الخروج",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "تم تسجيل الدخول باسم {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "اختبار الاتصال",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "تم تسجيل الدخول باسم {name}",

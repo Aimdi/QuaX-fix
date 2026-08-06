@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Malsekvi",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Altnivela: alglui refreshan ĵetonon",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Privata Pixiv-sekva fluo per refresha ĵetono — sen afiipubliki",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "Ankoraŭ nenio en la sekva fluo",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Via Pixiv-refresha ĵetono estis rifuzita",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Unue algluu Pixiv-refreshan ĵetonon en agordoj",
+  "plugin_pixiv_not_configured": "Ensalutu per Pixiv por vidi vian sekvan fluon",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Malfermi ĉe Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Longa ĵetono el Pixiv-OAuth-ensaluto",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Ĉi tiu privata kromaĵo legas vian Pixiv-sekvan fluon. Algluu refreshan ĵetonon akiritan ekster la apo. De ĉi tie oni nek afiŝas, nek legosignas, nek sekvas ĉe Pixiv.",
+  "plugin_pixiv_settings_intro": "Ĉi tiu privata kromaĵo legas vian Pixiv-sekvan fluon. Frapetu Ensaluti por ensaluti en la retumilo, aŭ algluu refreshan ĵetonon sube. De ĉi tie oni nek afiŝas, nek legosignas, nek sekvas ĉe Pixiv.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Montri R-18 verkojn",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Defaŭlte malŝaltita. Kiam malŝaltita, limigitaj verkoj kaŝiĝas el fluoj.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Ensaluti per Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Ensaluto al Pixiv malsukcesis",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Elsaluti",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Ensalutita kiel {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Testi konekton",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Ensalutinta kiel {name}",

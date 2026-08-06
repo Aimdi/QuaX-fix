@@ -3,7 +3,12 @@ import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/pixiv/pixiv_auth.dart';
 import 'package:xta/plugins/pixiv/pixiv_client.dart';
+import 'package:xta/plugins/pixiv/pixiv_login_webview.dart';
+import 'package:xta/plugins/pixiv/pixiv_models.dart';
+import 'package:xta/plugins/pixiv/pixiv_store.dart';
+import 'package:xta/ui/errors.dart';
 
 String pixivErrorMessage(L10n l10n, Object error) {
   if (error is! PixivException) {
@@ -19,6 +24,37 @@ String pixivErrorMessage(L10n l10n, Object error) {
   };
 }
 
+/// Opens the Pixiv login webview and stores tokens on success.
+///
+/// Returns the signed-in user, or null when cancelled or failed.
+Future<PixivAuthUser?> runPixivSignIn(BuildContext context) async {
+  final pkce = PixivAuth.generatePkce();
+  final code = await Navigator.push<String>(
+    context,
+    MaterialPageRoute(builder: (_) => PixivLoginWebview(codeChallenge: pkce.challenge)),
+  );
+  if (code == null || !context.mounted) {
+    return null;
+  }
+
+  try {
+    final tokens = await PixivAuth().exchangeCode(code: code, codeVerifier: pkce.verifier);
+    if (!context.mounted) {
+      return null;
+    }
+    final user = await context.read<PixivClient>().applyLoginTokens(tokens);
+    if (context.mounted) {
+      showSnackBar(context, icon: '✅', message: L10n.of(context).plugin_pixiv_signed_in(user.displayName));
+    }
+    return user;
+  } on PixivException catch (_) {
+    if (context.mounted) {
+      showSnackBar(context, icon: '🔒', message: L10n.of(context).plugin_pixiv_sign_in_failed);
+    }
+    return null;
+  }
+}
+
 /// Refresh token and content filters for the private Pixiv plugin.
 class PixivSettingsScreen extends StatefulWidget {
   const PixivSettingsScreen({super.key});
@@ -31,7 +67,9 @@ class _PixivSettingsScreenState extends State<PixivSettingsScreen> {
   late final TextEditingController _token;
   bool _hidden = true;
   bool _testing = false;
+  bool _signingIn = false;
   late bool _showR18;
+  String? _signedInName;
 
   @override
   void initState() {
@@ -39,6 +77,23 @@ class _PixivSettingsScreenState extends State<PixivSettingsScreen> {
     final prefs = PrefService.of(context, listen: false);
     _token = TextEditingController(text: prefs.get<String>(optionPluginPixivRefreshToken) ?? '');
     _showR18 = prefs.get<bool>(optionPluginPixivShowR18) == true;
+    _loadSignedInName();
+  }
+
+  Future<void> _loadSignedInName() async {
+    final prefs = PrefService.of(context, listen: false);
+    if ((prefs.get<String>(optionPluginPixivRefreshToken) ?? '').trim().isEmpty) {
+      return;
+    }
+    try {
+      final user = await context.read<PixivClient>().verify();
+      if (mounted) {
+        setState(() => _signedInName = user.displayName);
+        _token.text = prefs.get<String>(optionPluginPixivRefreshToken) ?? '';
+      }
+    } catch (_) {
+      // Leave name blank; test connection will surface errors.
+    }
   }
 
   @override
@@ -47,12 +102,44 @@ class _PixivSettingsScreenState extends State<PixivSettingsScreen> {
     super.dispose();
   }
 
+  bool get _signedIn => (PrefService.of(context, listen: false).get<String>(optionPluginPixivRefreshToken) ?? '')
+      .trim()
+      .isNotEmpty;
+
   Future<void> _saveToken() async {
     final prefs = PrefService.of(context, listen: false);
     await prefs.set(optionPluginPixivRefreshToken, _token.text.trim());
-    // Force a fresh access token on the next call.
     await prefs.set(optionPluginPixivAccessToken, '');
     await prefs.set(optionPluginPixivAccessExpiresAt, '');
+  }
+
+  Future<void> _signIn() async {
+    setState(() => _signingIn = true);
+    try {
+      final user = await runPixivSignIn(context);
+      if (mounted) {
+        final prefs = PrefService.of(context, listen: false);
+        setState(() {
+          _signedInName = user?.displayName;
+          _token.text = prefs.get<String>(optionPluginPixivRefreshToken) ?? '';
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _signingIn = false);
+      }
+    }
+  }
+
+  Future<void> _signOut() async {
+    await context.read<PixivClient>().signOut();
+    if (mounted) {
+      context.read<PixivFeedStore>().update(const []);
+      setState(() {
+        _signedInName = null;
+        _token.text = '';
+      });
+    }
   }
 
   Future<void> _test() async {
@@ -65,7 +152,10 @@ class _PixivSettingsScreenState extends State<PixivSettingsScreen> {
     String message;
     try {
       final user = await client.verify();
-      message = l10n.plugin_pixiv_test_ok(user.name.isEmpty ? user.account : user.name);
+      message = l10n.plugin_pixiv_signed_in(user.displayName);
+      if (mounted) {
+        setState(() => _signedInName = user.displayName);
+      }
     } catch (e) {
       message = pixivErrorMessage(l10n, e);
     }
@@ -88,8 +178,28 @@ class _PixivSettingsScreenState extends State<PixivSettingsScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           Text(l10n.plugin_pixiv_settings_intro, style: theme.textTheme.bodyMedium),
-          const SizedBox(height: 16),
-          Text(l10n.plugin_pixiv_refresh_token, style: theme.textTheme.titleSmall),
+          const SizedBox(height: 20),
+          if (_signedIn && _signedInName != null && _signedInName!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Text(l10n.plugin_pixiv_signed_in(_signedInName!), style: theme.textTheme.titleSmall),
+            ),
+          Row(
+            children: [
+              FilledButton(
+                onPressed: _signingIn || _signedIn ? null : _signIn,
+                child: _signingIn
+                    ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                    : Text(l10n.plugin_pixiv_sign_in),
+              ),
+              if (_signedIn) ...[
+                const SizedBox(width: 12),
+                TextButton(onPressed: _signOut, child: Text(l10n.plugin_pixiv_sign_out)),
+              ],
+            ],
+          ),
+          const SizedBox(height: 28),
+          Text(l10n.plugin_pixiv_advanced_token, style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),
           TextField(
             controller: _token,

@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "取消关注",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "高级：粘贴刷新令牌",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "通过刷新令牌阅读 Pixiv 关注动态的私有插件 — 不发帖",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "关注动态里还没有内容",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "你的 Pixiv 刷新令牌被拒绝",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "请先在设置中粘贴 Pixiv 刷新令牌",
+  "plugin_pixiv_not_configured": "使用 Pixiv 登录以查看关注动态",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "在 Pixiv 打开",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "来自 Pixiv OAuth 登录的长令牌",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "此私有插件读取你的 Pixiv 关注动态。粘贴在应用外获取的刷新令牌。不会从这里向 Pixiv 发帖、收藏或关注。",
+  "plugin_pixiv_settings_intro": "此私有插件读取你的 Pixiv 关注动态。点击登录在浏览器中使用 Pixiv 账号登录，或在下方粘贴刷新令牌。不会从这里向 Pixiv 发帖、收藏或关注。",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "显示 R-18 作品",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "默认关闭。关闭时，受限作品会从动态中隐藏。",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "使用 Pixiv 登录",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "无法登录 Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "退出登录",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "已登录为 {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "测试连接",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "已以 {name} 身份登录",

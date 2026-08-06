@@ -949,6 +949,8 @@
   "@plugin_mastodon_title": {},
   "plugin_mastodon_unfollow": "Przestań obserwować",
   "@plugin_mastodon_unfollow": {},
+  "plugin_pixiv_advanced_token": "Zaawansowane: wklej refresh token",
+  "@plugin_pixiv_advanced_token": {},
   "plugin_pixiv_description": "Prywatny feed obserwowanych Pixiv przez refresh token — bez publikowania",
   "@plugin_pixiv_description": {},
   "plugin_pixiv_empty": "W feedzie obserwowanych nic jeszcze nie ma",
@@ -963,7 +965,7 @@
   "@plugin_pixiv_error_response": {},
   "plugin_pixiv_error_unauthorized": "Twój refresh token Pixiv został odrzucony",
   "@plugin_pixiv_error_unauthorized": {},
-  "plugin_pixiv_not_configured": "Najpierw wklej refresh token Pixiv w ustawieniach",
+  "plugin_pixiv_not_configured": "Zaloguj się przez Pixiv, aby zobaczyć feed obserwowanych",
   "@plugin_pixiv_not_configured": {},
   "plugin_pixiv_open_on_pixiv": "Otwórz na Pixiv",
   "@plugin_pixiv_open_on_pixiv": {},
@@ -979,12 +981,26 @@
   "@plugin_pixiv_refresh_token": {},
   "plugin_pixiv_refresh_token_hint": "Długi token z logowania OAuth do Pixiv",
   "@plugin_pixiv_refresh_token_hint": {},
-  "plugin_pixiv_settings_intro": "Ta prywatna wtyczka czyta feed obserwowanych na Pixiv. Wklej refresh token uzyskany poza aplikacją. Stąd nic nie jest publikowane, dodawane do zakładek ani obserwowane na Pixiv.",
+  "plugin_pixiv_settings_intro": "Ta prywatna wtyczka czyta feed obserwowanych na Pixiv. Stuknij Zaloguj się, aby zalogować się w przeglądarce, albo wklej refresh token poniżej. Stąd nic nie jest publikowane, dodawane do zakładek ani obserwowane na Pixiv.",
   "@plugin_pixiv_settings_intro": {},
   "plugin_pixiv_show_r18": "Pokazuj prace R-18",
   "@plugin_pixiv_show_r18": {},
   "plugin_pixiv_show_r18_description": "Domyślnie wyłączone. Gdy wyłączone, ograniczone prace są ukrywane w feedach.",
   "@plugin_pixiv_show_r18_description": {},
+  "plugin_pixiv_sign_in": "Zaloguj się przez Pixiv",
+  "@plugin_pixiv_sign_in": {},
+  "plugin_pixiv_sign_in_failed": "Nie udało się zalogować do Pixiv",
+  "@plugin_pixiv_sign_in_failed": {},
+  "plugin_pixiv_sign_out": "Wyloguj się",
+  "@plugin_pixiv_sign_out": {},
+  "plugin_pixiv_signed_in": "Zalogowano jako {name}",
+  "@plugin_pixiv_signed_in": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_pixiv_test": "Przetestuj połączenie",
   "@plugin_pixiv_test": {},
   "plugin_pixiv_test_ok": "Zalogowano jako {name}",

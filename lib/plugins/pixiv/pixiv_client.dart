@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:pref/pref.dart';
 import 'package:xta/constants.dart';
+import 'package:xta/plugins/pixiv/pixiv_auth.dart';
 import 'package:xta/plugins/pixiv/pixiv_models.dart';
 import 'package:xta/utils/json.dart';
 
@@ -43,12 +44,7 @@ class PixivClient {
   PixivClient(this.prefs, {http.Client? httpClient}) : httpClient = httpClient ?? http.Client();
 
   static const _timeout = Duration(seconds: 25);
-  static const _authUrl = 'https://oauth.secure.pixiv.net/auth/token';
   static const _apiBase = 'https://app-api.pixiv.net';
-
-  /// Public client id/secret of the official Android app (widely documented).
-  static const _clientId = 'MOBrBDS8blbauoSck0ZfDbtuzpyT';
-  static const _clientSecret = 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj';
   static const _userAgent = 'PixivAndroidApp/5.0.234 (Android 11; Pixel 5)';
 
   String get _refreshToken => (prefs.get<String>(optionPluginPixivRefreshToken) ?? '').trim();
@@ -100,22 +96,22 @@ class PixivClient {
     }
 
     final response = await _send(() => httpClient.post(
-          Uri.parse(_authUrl),
+          Uri.parse(PixivAuth.authTokenUrl),
           headers: {
             ..._baseHeaders,
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: {
-            'client_id': _clientId,
-            'client_secret': _clientSecret,
+            'client_id': PixivAuth.clientId,
+            'client_secret': PixivAuth.clientSecret,
             'grant_type': 'refresh_token',
             'include_policy': 'true',
             'refresh_token': _refreshToken,
           },
         ));
 
-    _throwForStatus(response, Uri.parse(_authUrl));
-    final json = Json(_decode(response, Uri.parse(_authUrl)));
+    _throwForStatus(response, Uri.parse(PixivAuth.authTokenUrl));
+    final json = Json(_decode(response, Uri.parse(PixivAuth.authTokenUrl)));
     final access = json['access_token'].string;
     final refresh = json['refresh_token'].string;
     final expiresIn = json['expires_in'].integer ?? 3600;
@@ -155,6 +151,23 @@ class PixivClient {
   /// Confirms the refresh token still works.
   Future<PixivAuthUser> verify() => refreshAccessToken();
 
+  /// Persists tokens from browser OAuth and returns the signed-in user.
+  Future<PixivAuthUser> applyLoginTokens(PixivLoginTokens tokens) async {
+    await prefs.set(optionPluginPixivAccessToken, tokens.accessToken);
+    await prefs.set(optionPluginPixivRefreshToken, tokens.refreshToken);
+    await prefs.set(
+      optionPluginPixivAccessExpiresAt,
+      DateTime.now().add(Duration(seconds: tokens.expiresIn - 60)).toIso8601String(),
+    );
+    return tokens.user;
+  }
+
+  Future<void> signOut() async {
+    await prefs.set(optionPluginPixivRefreshToken, '');
+    await prefs.set(optionPluginPixivAccessToken, '');
+    await prefs.set(optionPluginPixivAccessExpiresAt, '');
+  }
+
   Future<Object?> _apiGet(String path, [Map<String, String>? query]) async {
     final token = await _accessToken();
     final uri = Uri.parse('$_apiBase$path').replace(queryParameters: query);
@@ -185,6 +198,18 @@ class PixivClient {
           ..._baseHeaders,
           'Authorization': 'Bearer $token',
         }));
+
+    if (response.statusCode == 401) {
+      await refreshAccessToken();
+      final retryToken = (prefs.get<String>(optionPluginPixivAccessToken) ?? '').trim();
+      final retry = await _send(() => httpClient.get(uri, headers: {
+            ..._baseHeaders,
+            'Authorization': 'Bearer $retryToken',
+          }));
+      _throwForStatus(retry, uri);
+      return _decode(retry, uri);
+    }
+
     _throwForStatus(response, uri);
     return _decode(response, uri);
   }
