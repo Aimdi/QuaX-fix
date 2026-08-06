@@ -126,9 +126,8 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
           name: ${{ steps.tag.outputs.tag }}
-          # Prefer the tagged commit when the tag already exists (normal path).
-          # Fall back to this workflow's SHA for a brand-new tag.
-          target_commitish: ${{ steps.tag.outputs.tag }}
+          # Checkout pinned the job to the tag, so github.sha is the tagged commit.
+          target_commitish: ${{ github.sha }}
           # release.yml ships these notes; without them a dispatched release
           # publishes with an empty body and no install instructions.
           body_path: release-notes.md
