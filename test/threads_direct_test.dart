@@ -216,7 +216,6 @@ void main() {
       expect(posts.first.text, 'from ssr');
     });
 
-<<<<<<< HEAD
     test('profile parse keeps only the root of each thread_items list', () {
       final blob = jsonEncode({
         'thread_items': [
@@ -236,7 +235,13 @@ void main() {
               'user': {'username': 'other', 'full_name': 'O'},
             },
           },
-=======
+        ],
+      });
+      final html = '<html><script type="application/json" data-sjs>$blob</script></html>';
+      final posts = parseThreadsSsrHtml(html, 'zuck');
+      expect(posts.map((p) => p.text), ['root']);
+    });
+
     test('keeps reposts when matching the reposter handle', () {
       final blob = jsonEncode({
         'require': [
@@ -270,13 +275,15 @@ void main() {
               },
             ],
           ],
->>>>>>> origin/cursor/threads-show-reposts-bfa2
         ],
       });
       final html = '<html><script type="application/json" data-sjs>$blob</script></html>';
       final posts = parseThreadsSsrHtml(html, 'zuck');
-<<<<<<< HEAD
-      expect(posts.map((p) => p.text), ['root']);
+      expect(posts, hasLength(1));
+      expect(posts.first.isRepost, isTrue);
+      expect(posts.first.handle, 'meta');
+      expect(posts.first.repostedByHandle, 'zuck');
+      expect(posts.first.text, 'from someone else');
     });
   });
 
@@ -305,13 +312,6 @@ void main() {
       final html = '<html><script type="application/json" data-sjs>$blob</script></html>';
       final posts = parseThreadsSsrThread(html);
       expect(posts.map((p) => p.text), ['root', 'reply']);
-=======
-      expect(posts, hasLength(1));
-      expect(posts.first.isRepost, isTrue);
-      expect(posts.first.handle, 'meta');
-      expect(posts.first.repostedByHandle, 'zuck');
-      expect(posts.first.text, 'from someone else');
->>>>>>> origin/cursor/threads-show-reposts-bfa2
     });
   });
 

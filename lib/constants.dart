@@ -168,12 +168,16 @@ const pluginIdThreads = 'threads';
 const optionPluginThreadsEnabled = 'plugin.threads.enabled';
 const optionPluginThreadsShowTab = 'plugin.threads.show_tab';
 const optionPluginThreadsInstance = 'plugin.threads.instance';
+const optionPluginThreadsLikedPosts = 'plugin.threads.liked_posts';
 
 /// Whether followed Threads accounts also appear in Following and For you.
 const optionPluginThreadsInHomeFeed = 'plugin.threads.in_home_feed';
 
 /// How many posts one account contributes to the merged feed.
 const threadsPostsPerAccount = 20;
+
+/// How many full liked-post snapshots are kept for the local Liked tab.
+const threadsLikedPostsCap = 400;
 
 /// Optional Xy server for richer profile lookups. Public Threads pages already
 /// expose name / bio / avatar via OG tags; Xy is an upgrade, not a requirement.

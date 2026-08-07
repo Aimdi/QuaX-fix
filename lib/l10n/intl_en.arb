@@ -1293,6 +1293,7 @@
       }
     }
   },
+  "plugin_threads_empty_cta": "Follow someone to start reading",
   "plugin_threads_error_no_feed": "Could not read that Threads account",
   "@plugin_threads_error_no_feed": {},
   "plugin_threads_error_no_route": "That instance has no Threads route",
@@ -1305,6 +1306,7 @@
   "@plugin_threads_error_unauthorized": {},
   "plugin_threads_error_unreachable": "Could not reach Threads",
   "@plugin_threads_error_unreachable": {},
+  "plugin_threads_home": "Home",
   "plugin_threads_in_home_feed": "Show in the home timeline",
   "@plugin_threads_in_home_feed": {},
   "plugin_threads_in_home_feed_description": "Mixes posts from the Threads accounts you follow into Following and For you",
@@ -1315,9 +1317,11 @@
   "@plugin_threads_instance_hint": {},
   "plugin_threads_invalid_handle": "That is not a Threads username",
   "@plugin_threads_invalid_handle": {},
+  "plugin_threads_liked": "Liked",
+  "plugin_threads_liked_empty": "No liked posts yet — hearts stay on this device",
   "plugin_threads_lookup": "Look up a profile",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "No accounts yet",
+  "plugin_threads_no_accounts": "No Threads accounts yet",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Nothing to read yet",
   "@plugin_threads_no_posts": {},
@@ -1341,6 +1345,7 @@
   "@plugin_threads_test_ok": {},
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
+  "plugin_threads_unfollow": "Unfollow",
   "plugin_uninstall": "Uninstall",
   "@plugin_uninstall": {},
   "plugin_uninstall_confirm": "Remove {name}?",
@@ -1803,5 +1808,10 @@
   "zen_mode_page_cap": "Zen feed length",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "How many pages a feed loads in zen mode before pausing.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

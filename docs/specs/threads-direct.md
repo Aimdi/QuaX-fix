@@ -27,6 +27,8 @@ Settings lead with public reading + Accounts. Optional sections follow:
 
 No in-app password / Bloks login. No follow, repost, or compose on Meta.
 Likes on cards are **local only** (device SQLite) — never sent to Threads.
+The local Liked library and tab polish are specified in
+`docs/specs/threads-polish.md`.
 
 ## Card UI
 
