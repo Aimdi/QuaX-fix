@@ -4,24 +4,29 @@ A read-only fork of [QuaX](https://github.com/Teskann/QuaX). Same idea — read 
 without posting, keep what you follow on your own device — with the plugins and
 fixes below on top. Nothing here adds compose, reply, quote, or like-on-X.
 
-### Threads posts from Accounts
+### Spare accounts for rate limits only
 
-**Followed Threads Accounts show posts again.** Guest mode was scraping HTML
-that Meta often leaves empty; it now loads the public GraphQL profile threads
-query (with HTML as a fallback). If you paste cookies and a Bearer token,
-Accounts still load first — a dead session no longer parks the whole tab for
-half an hour, and cookie failures fall back to that same public path. Bearer
-home/For You uses the current Instagram timeline parameters when you have no
-local Accounts added.
+**Turn off login accounts you only keep for higher limits.** Settings → Accounts
+(or the manage-accounts icon on Following / For you) has an “Include in For you”
+switch. Off keeps the account in the fetch rotation for profiles, search, and
+Following chunks, but drops it from the merged For you HomeTimeline. Following
+still uses your local subscriptions.
 
-Add people under the Threads tab (local Accounts). Login alone does not create
-that list.
+### Fediverse cards
 
-### Comments and quotes
+**Mastodon posts look like the rest of the timeline.** Larger layout, reply /
+boost / favourite counts, and article link previews from Mastodon’s PreviewCard.
+Still read-only — taps open the status in the browser.
 
-**Conversation and quote screens work again.** X had rotated the GraphQL query
-ids for TweetDetail and SearchTimeline. This build ships the new ids, and
-`endpoints.json` on main repairs older installs on the next cold start.
+### Threads without login
+
+**Add Accounts and read public posts — no cookies required.** Guest mode reads
+the same public GraphQL the website uses when you’re logged out (and profiles
+from the public page). Cookies, Bearer, RSSHub and Xy stay optional.
+
+**Engagement on Threads cards:** reply and repost counts when Meta sends them,
+plus a **local** like heart (device-only, never sent to Threads). Link/article
+previews show when Meta attaches them.
 
 ---
 
