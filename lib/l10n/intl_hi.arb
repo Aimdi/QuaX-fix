@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "बंद करें",
   "@close": {},
+  "collapse_boosts": "रीपोस्ट की लड़ी को समूह में रखें",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "लगातार आने वाली रीपोस्ट एक पंक्ति बन जाती हैं जिसे आप खोल सकते हैं, टाइमलाइन भरने के बजाय.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "संक्षिप्त करें",
   "@collapse_reposts": {},
   "colour_blue": "नीला",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "डिफ़ॉल्ट रूप से बंद: चालू होने पर हर सिंगल टैप दूसरे टैप का इंतज़ार करता है, इसलिए पोस्ट खुलने में थोड़ी देर लगती है।",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "इसे फ़ॉलो नहीं किया जा सका",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "X पर खोजें, या कोई सबरेडिट, Threads या Bluesky हैंडल, फ़ेडिवर्स पता, या न्यूज़लेटर लिखें",
+  "@group_add_member_hint": {},
   "group_combine_clear": "हटाएँ",
   "@group_combine_clear": {},
   "group_combine_hint": "किसी समूह को इसके साथ पढ़ने के लिए दबाकर रखें",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "खाते",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{1 और खाता पढ़ना बाकी — ताज़ा करने के लिए खींचें} other{{count} और खाते पढ़ने बाकी — ताज़ा करने के लिए खींचें}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "खाता जोड़ें",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "सार्वजनिक AppView से Bluesky खाते पढ़ें — Bluesky में लॉग इन किए बिना",

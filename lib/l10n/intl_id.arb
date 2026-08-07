@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Tutup",
   "@close": {},
+  "collapse_boosts": "Kelompokkan rentetan repost",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Deretan repost berurutan menjadi satu baris yang bisa kamu bentangkan, alih-alih memenuhi lini masa.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Ciutkan",
   "@collapse_reposts": {},
   "colour_blue": "Biru",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Nonaktif secara bawaan: setiap ketukan tunggal menunggu kemungkinan ketukan kedua, sehingga membuka pos terasa sedikit lebih lambat.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Tidak bisa mengikuti itu",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Cari di X, atau ketik subreddit, nama Threads atau Bluesky, alamat Fediverse, atau buletin",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Bersihkan",
   "@group_combine_clear": {},
   "group_combine_hint": "Tahan grup untuk membacanya bersama grup ini",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Akun",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, other{Masih ada {count} akun yang belum dibaca — tarik untuk menyegarkan}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Tambah akun",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Baca akun Bluesky lewat AppView publik — tanpa masuk ke Bluesky",

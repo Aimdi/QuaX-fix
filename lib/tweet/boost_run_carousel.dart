@@ -6,6 +6,7 @@ import 'package:xta/status.dart';
 import 'package:xta/tweet/conversation.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/user.dart';
+import 'package:xta/utils/rich_text.dart';
 
 /// A horizontal row of compact boost cards for consecutive retweets.
 ///
@@ -93,7 +94,7 @@ class _BoostCard extends StatelessWidget {
     final boosted = boost.retweetedStatusWithCard;
     final booster = boost.user;
     final theme = Theme.of(context);
-    final preview = _textPeek(boosted?.fullText ?? boosted?.text);
+    final preview = boostPreviewText(boosted?.fullText ?? boosted?.text);
 
     return Material(
       color: theme.colorScheme.surfaceContainerHighest,
@@ -144,11 +145,17 @@ class _BoostCard extends StatelessWidget {
     );
   }
 
-  static String _textPeek(String? text) {
-    final trimmed = text?.replaceAll('\n', ' ').trim() ?? '';
-    if (trimmed.length <= 80) {
-      return trimmed;
-    }
-    return '${trimmed.substring(0, 77)}…';
+}
+
+/// The first line or so of a post, as text rather than as X sent it.
+///
+/// X escapes `<`, `>` and `&` in the text it returns, and this card showed them
+/// raw: a post reading `>,,<` arrived as `&gt;,,&lt;`. Every other renderer
+/// unescapes; this one had been written without.
+String boostPreviewText(String? text) {
+  final trimmed = unescapeHtml(text ?? '').replaceAll('\n', ' ').trim();
+  if (trimmed.length <= 80) {
+    return trimmed;
   }
+  return '${trimmed.substring(0, 77)}…';
 }

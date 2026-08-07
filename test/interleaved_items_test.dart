@@ -93,4 +93,22 @@ void main() {
       expect(buckets.single, hasLength(1));
     });
   });
+
+  group('onlyInterleavedToShow', () {
+    test('a group of nothing but plugin members shows only those posts', () {
+      expect(onlyInterleavedToShow(chains: const [], items: [_item(_at(5))]), isTrue);
+    });
+
+    test('one X post is enough to use the paged list', () {
+      expect(onlyInterleavedToShow(chains: [_chainAt('a', [_at(1)])], items: [_item(_at(5))]), isFalse);
+    });
+
+    test('an empty feed is not a plugin-only one', () {
+      expect(onlyInterleavedToShow(chains: const [], items: const []), isFalse);
+    });
+
+    test('the first page still loading is neither', () {
+      expect(onlyInterleavedToShow(chains: null, items: [_item(_at(5))]), isFalse);
+    });
+  });
 }

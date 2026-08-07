@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Tanca",
   "@close": {},
+  "collapse_boosts": "Agrupa les ratxes de republicacions",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Una tirallonga de republicacions seguides es converteix en una fila que pots desplegar, en lloc d’omplir la línia de temps.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Redueix",
   "@collapse_reposts": {},
   "colour_blue": "Blau",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Desactivat per defecte: cada toc simple espera per si en ve un segon, així que obrir una publicació triga una mica més.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "No s’ha pogut seguir",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Cerca a X, o escriu un subreddit, un compte de Threads o Bluesky, una adreça del Fedivers o un butlletí",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Neteja",
   "@group_combine_clear": {},
   "group_combine_hint": "Mantén premut un grup per llegir-lo amb aquest",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Comptes",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Encara queda 1 compte per llegir — estira per actualitzar} other{Encara queden {count} comptes per llegir — estira per actualitzar}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Afegeix un compte",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Llegeix comptes de Bluesky amb l’AppView públic — sense iniciar sessió a Bluesky",

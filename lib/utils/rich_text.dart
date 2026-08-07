@@ -40,6 +40,11 @@ class RichTextPart {
 final _mentionOrHashtag = RegExp(r'(#|(?<=\W|^)@)\w+');
 final _unescape = HtmlUnescape();
 
+/// Text as it reads, not as X sends it: `&gt;`, `&lt;` and `&amp;` come back
+/// escaped in every post body, and anything showing that body raw shows the
+/// entities instead of the characters.
+String unescapeHtml(String text) => _unescape.convert(text);
+
 /// The recognizers behind each parts list, attached to the list itself so
 /// disposal needs no separate bookkeeping and a list nobody keeps can simply
 /// be collected.

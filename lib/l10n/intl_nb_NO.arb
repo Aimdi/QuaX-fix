@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Lukk",
   "@close": {},
+  "collapse_boosts": "Slå sammen rekker med reposter",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "En rekke reposter etter hverandre blir én rad du kan utvide, i stedet for å fylle tidslinjen.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Skjul",
   "@collapse_reposts": {},
   "colour_blue": "Blå",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Av som standard: hvert enkelttrykk venter på et mulig andre trykk, så det tar litt lengre tid å åpne et innlegg.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Kunne ikke følge dette",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Søk på X, eller skriv inn en subreddit, et Threads- eller Bluesky-navn, en Fedivers-adresse eller et nyhetsbrev",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Fjern",
   "@group_combine_clear": {},
   "group_combine_hint": "Hold inne en gruppe for å lese den sammen med denne",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Kontoer",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{1 konto gjenstår å lese — dra for å oppdatere} other{{count} kontoer gjenstår å lese — dra for å oppdatere}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Legg til konto",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Les Bluesky-kontoer via den offentlige AppView — uten Bluesky-innlogging",

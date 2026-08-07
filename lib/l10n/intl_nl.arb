@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Sluiten",
   "@close": {},
+  "collapse_boosts": "Reeksen reposts samenvoegen",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Een reeks opeenvolgende reposts wordt één rij die je kunt uitklappen, in plaats van de tijdlijn te vullen.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Inklappen",
   "@collapse_reposts": {},
   "colour_blue": "Blauw",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Standaard uit: elke enkele tik wacht af of er een tweede volgt, waardoor een bericht openen iets trager aanvoelt.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Kon dit niet volgen",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Zoek op X, of typ een subreddit, een Threads- of Bluesky-naam, een Fediverse-adres of een nieuwsbrief",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Wissen",
   "@group_combine_clear": {},
   "group_combine_hint": "Houd een groep ingedrukt om die samen met deze te lezen",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Accounts",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Nog 1 account te lezen — trek om te vernieuwen} other{Nog {count} accounts te lezen — trek om te vernieuwen}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Account toevoegen",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Lees Bluesky-accounts via de openbare AppView — zonder Bluesky-login",

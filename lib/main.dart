@@ -442,6 +442,7 @@ Future<void> main() async {
       optionGlobalIncludeReplies: true,
       optionGlobalIncludeRetweets: true,
       optionThreadedReplies: true,
+      optionFeedCollapseBoosts: true,
       optionMediaGridLayout: mediaGridLayoutMasonry,
       // Off by default in this fork. It checks this repository, not upstream,
       // and this repository publishes a build whenever something is fixed — so

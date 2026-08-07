@@ -224,7 +224,10 @@ class ThreadIndent extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          ThreadRailLines(connectTop: connectTop, connectBottom: connectBottom),
+          // Positioned for the same reason as the feed's thread rail: left
+          // unpositioned it is the only thing sizing the Stack, and in a list
+          // that means infinitely tall.
+          Positioned.fill(child: ThreadRailLines(connectTop: connectTop, connectBottom: connectBottom)),
           child,
         ],
       ),

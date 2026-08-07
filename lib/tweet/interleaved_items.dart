@@ -58,3 +58,17 @@ List<List<InterleavedItem>> placeInterleaved(List<TweetChain> chains, List<Inter
 
   return buckets;
 }
+
+/// Whether a feed has nothing from X to show but does have posts from a plugin.
+///
+/// A group of nothing but subreddits, publications or accounts on another
+/// network is exactly this: X answers with no chains at all, and everything the
+/// reader came for arrived from somewhere else. The list needs to know, because
+/// the pagination package fills its "nothing found" slot with a sliver one
+/// screen tall that does not scroll — fine for a line of text, wrong for a
+/// timeline.
+///
+/// [chains] is null while the first page is still loading, which is neither
+/// case.
+bool onlyInterleavedToShow({required List<TweetChain>? chains, required List<InterleavedItem> items}) =>
+    chains != null && chains.isEmpty && items.isNotEmpty;

@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Kapat",
   "@close": {},
+  "collapse_boosts": "Art arda gelen repostları grupla",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Peş peşe gelen repostlar, zaman tünelini doldurmak yerine genişletebileceğin tek bir satır olur.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Daralt",
   "@collapse_reposts": {},
   "colour_blue": "Mavi",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Varsayılan olarak kapalı: açıkken her tek dokunuş ikinci bir dokunuşu bekler, bu yüzden gönderi açmak biraz yavaşlar.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Bu takip edilemedi",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "X’te arayın ya da bir subreddit, Threads veya Bluesky kullanıcı adı, Fediverse adresi veya bülten yazın",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Temizle",
   "@group_combine_clear": {},
   "group_combine_hint": "Bir grubu bununla birlikte okumak için basılı tutun",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Hesaplar",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, other{Okunacak {count} hesap daha var — yenilemek için çek}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Hesap ekle",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Bluesky hesaplarını genel AppView üzerinden oku — Bluesky’ye giriş yok",

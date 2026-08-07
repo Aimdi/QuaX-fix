@@ -247,6 +247,15 @@ const blueskyLikedPostsCap = 400;
 /// How many posts one account contributes to the merged Bluesky feed.
 const blueskyPostsPerAccount = 20;
 
+/// How many followed accounts one Bluesky timeline load reads.
+///
+/// There is no "your following feed" to ask the public AppView for, so a
+/// timeline is one author-feed request per account. That was fine while a
+/// reader added accounts by hand and ruinous the moment they imported somebody
+/// else's following list: several hundred requests per refresh, rate limited
+/// into an empty tab. The newest follows are read and the rest wait their turn.
+const blueskyMaxAccountsPerLoad = 30;
+
 /// Mastodon / Fediverse, read through a home instance's public REST API.
 ///
 /// No login: public account lookup and statuses only. The home instance is
@@ -261,6 +270,10 @@ const optionPluginMastodonInstances = 'plugin.mastodon.instances';
 
 /// How many statuses one account contributes to the merged Mastodon feed.
 const mastodonPostsPerAccount = 20;
+
+/// The same cap for the Fediverse, and for the same reason: one request per
+/// followed account, against instances that are somebody's hobby server.
+const mastodonMaxAccountsPerLoad = 30;
 
 /// Pixiv — private reading plugin. Refresh-token auth; no write actions.
 const pluginIdPixiv = 'pixiv';
@@ -448,6 +461,12 @@ const optionGlobalIncludeReplies = 'feed.global_include_replies';
 const optionGlobalIncludeRetweets = 'feed.global_include_retweets';
 // Show replies under an opened post as a nested, indented tree.
 const optionThreadedReplies = 'tweets.threaded_replies';
+
+/// Whether a run of consecutive reposts collapses into one row. On by default,
+/// which is how the timeline has always behaved; off puts every repost back in
+/// the timeline as an ordinary post, so the row need not be expanded run after
+/// run for a reader who never wanted it grouped.
+const optionFeedCollapseBoosts = 'feed.collapse_boosts';
 const optionMediaGridLayout = 'media.grid_layout';
 
 const mediaGridLayoutMasonry = 'masonry';

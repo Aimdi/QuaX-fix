@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/client/client.dart';
+import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/group/feed_refresh_controller.dart';
 import 'package:xta/tweet/boost_run_carousel.dart';
@@ -338,6 +340,12 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
   }
 
   Widget _buildChainAt(BuildContext context, List<TweetChain> loaded, int index) {
+    // A reader who wants their reposts as posts should not have to expand every
+    // run of them, one at a time, for the rest of the feed.
+    if (PrefService.of(context, listen: false).get<bool>(optionFeedCollapseBoosts) == false) {
+      return _buildChain(context, loaded[index]);
+    }
+
     final runLength = boostRunLengthAt(loaded, index);
     if (runLength > 0) {
       return BoostRunCarousel(chains: loaded.sublist(index, index + runLength), username: widget.username);
@@ -444,16 +452,25 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
   // A group can hold nothing but subreddits or publications, and a catch-up
   // feed with nothing new holds no chains at all. Neither is "no posts", so the
   // empty message is the last resort rather than the first.
-  Widget _buildEmpty(BuildContext context, List<InterleavedItem> items, Widget? endCard) {
-    if (items.isEmpty && endCard == null) {
-      return Center(child: Text(widget.emptyMessage));
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (final item in items) item.build(context),
-        if (endCard != null) endCard,
-      ],
+  Widget _buildEmpty(BuildContext context, Widget? endCard) =>
+      endCard ?? Center(child: Text(widget.emptyMessage));
+
+  /// The list a feed shows when every post in it came from a plugin.
+  ///
+  /// These used to ride in the paged list's "nothing found" slot, which the
+  /// pagination package fills with a `SliverFillRemaining` — one screen tall,
+  /// and not a scrollable one. A group of nothing but subreddits showed its
+  /// first post or two and then a wall of empty space, with the rest of the
+  /// timeline laid out past the bottom edge and unreachable. An ordinary list
+  /// scrolls, and being the outermost scrollable keeps pull-to-refresh working.
+  Widget _interleavedOnlyList(BuildContext context, List<InterleavedItem> items, Widget? endCard) {
+    return ListView.builder(
+      padding: EdgeInsets.only(top: 4, bottom: MediaQuery.paddingOf(context).bottom),
+      // A single post is shorter than the screen, and pull-to-refresh has to
+      // reach it anyway.
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: items.length + (endCard == null ? 0 : 1),
+      itemBuilder: (context, index) => index < items.length ? items[index].build(context) : endCard!,
     );
   }
 
@@ -516,6 +533,9 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
         final loaded = state.items ?? const <TweetChain>[];
         final (boundary, buckets) = _placementFor(loaded);
         final endCard = _buildEndCard(loaded);
+        if (onlyInterleavedToShow(chains: state.items, items: widget.interleaved)) {
+          return _interleavedOnlyList(context, buckets.last, endCard);
+        }
         return PagedListView<int, TweetChain>(
           // paddingOf, not of(): the whole-list builder must not take a
           // dependency on every MediaQuery change (keyboard, text scale).
@@ -565,7 +585,7 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
               prefix: widget.newPageErrorPrefix,
               onRetry: fetchNextPage,
             ),
-            noItemsFoundIndicatorBuilder: (context) => _buildEmpty(context, buckets.last, endCard),
+            noItemsFoundIndicatorBuilder: (context) => _buildEmpty(context, endCard),
             noMoreItemsIndicatorBuilder: (context) => endCard ?? const SizedBox.shrink(),
           ),
         );

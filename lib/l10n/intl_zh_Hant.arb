@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "關閉",
   "@close": {},
+  "collapse_boosts": "合併連續的轉發",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "連續的轉發會合併成一列，可以展開查看，而不會佔滿時間軸。",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "收起",
   "@collapse_reposts": {},
   "colour_blue": "藍色",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "預設關閉：開啟後每次單擊都要等待是否還有第二次，開啟貼文會稍慢一些。",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "無法追蹤",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "在 X 上搜尋，或輸入版塊、Threads 或 Bluesky 使用者名稱、聯邦宇宙位址，或一份電子報",
+  "@group_add_member_hint": {},
   "group_combine_clear": "清除",
   "@group_combine_clear": {},
   "group_combine_hint": "長按群組即可與目前群組一起閱讀",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "帳號",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, other{還有 {count} 個帳號未讀 — 下拉重新整理}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "新增帳號",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "透過公開 AppView 閱讀 Bluesky 帳號 — 無需登入 Bluesky",

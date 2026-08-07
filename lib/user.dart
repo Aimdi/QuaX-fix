@@ -9,6 +9,7 @@ import 'package:xta/generated/l10n.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/profile/profile.dart';
 import 'package:xta/subscriptions/group_membership_sheet.dart';
+import 'package:xta/subscriptions/subscription_unfollow.dart';
 import 'package:xta/subscriptions/users_model.dart';
 import 'package:xta/ui/x_look_theme.dart';
 import 'package:provider/provider.dart';
@@ -163,7 +164,10 @@ class FollowButton extends StatelessWidget {
               value: 'add_to_group',
               child: Text(L10n.of(context).add_to_group),
             ),
-            if (followed)
+            // Only X accounts: whether a plugin's posts join the home timeline
+            // is that plugin's own setting, so offering it here would be a
+            // switch that flips nothing.
+            if (followed && user is UserSubscription)
               PopupMenuItem(
                 value: 'toggle_in_main_feed',
                 child: Text(inFeed ? L10n.of(context).hide_from_main_feed : L10n.of(context).show_in_main_feed),
@@ -179,7 +183,14 @@ class FollowButton extends StatelessWidget {
                 }
                 break;
               case 'toggle_subscribe':
-                await model.toggleSubscribe(user, followed);
+                // A plugin's own store has to do its own removals, or its tab
+                // would go on listing what was just unfollowed. Unsubscribing
+                // one of those used to do nothing at all.
+                if (!followed || !await unfollowSubscription(context, user)) {
+                  await model.toggleSubscribe(user, followed);
+                  break;
+                }
+                await model.reloadSubscriptions();
                 break;
               case 'toggle_in_main_feed':
                 await model.toggleInFeed(user, inFeed);

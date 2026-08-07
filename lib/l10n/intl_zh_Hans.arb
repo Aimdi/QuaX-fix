@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "关闭",
   "@close": {},
+  "collapse_boosts": "合并连续的转帖",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "连续的转帖会合并成一行，可以展开查看，而不会占满时间线。",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "收起",
   "@collapse_reposts": {},
   "colour_blue": "蓝色",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "默认关闭：开启后每次单击都要等待是否还有第二次，打开帖子会略慢一些。",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "无法关注",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "在 X 上搜索，或输入版块、Threads 或 Bluesky 用户名、联邦宇宙地址，或一份订阅通讯",
+  "@group_add_member_hint": {},
   "group_combine_clear": "清除",
   "@group_combine_clear": {},
   "group_combine_hint": "长按分组即可与当前分组一起阅读",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "账号",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, other{还有 {count} 个账号未读 — 下拉刷新}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "添加账号",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "通过公共 AppView 阅读 Bluesky 账号 — 无需登录 Bluesky",

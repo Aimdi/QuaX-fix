@@ -42,7 +42,7 @@ class SubscriptionsModel extends Store<List<Subscription>> {
       String orderByField = prefs.get(optionSubscriptionOrderByField);
 
       // Independent tables, read together. Followed Substack publications,
-      // subreddits, Threads and Bluesky accounts are subscriptions too, so they
+      // subreddits, Threads, Bluesky and Fediverse accounts are subscriptions too, so they
       // appear in this list and can be picked as group members like anyone else
       // — which is the whole reason they live in tables rather than in a preference.
       final rows = await Future.wait([
@@ -52,6 +52,7 @@ class SubscriptionsModel extends Store<List<Subscription>> {
         database.query(tableRedditSubscription),
         database.query(tableThreadsSubscription),
         database.query(tableBlueskySubscription),
+        database.query(tableMastodonSubscription),
       ]);
       List<Subscription> users = rows[0].map((e) => UserSubscription.fromMap(e)).toList();
       List<Subscription> searches = rows[1].map((e) => SearchSubscription.fromMap(e)).toList();
@@ -59,8 +60,17 @@ class SubscriptionsModel extends Store<List<Subscription>> {
       List<Subscription> subreddits = rows[3].map((e) => RedditSubscription.fromMap(e)).toList();
       List<Subscription> threads = rows[4].map((e) => ThreadsSubscription.fromMap(e)).toList();
       List<Subscription> bluesky = rows[5].map((e) => BlueskySubscription.fromMap(e)).toList();
+      List<Subscription> mastodon = rows[6].map((e) => MastodonSubscription.fromMap(e)).toList();
 
-      List<Subscription> lst = [...users, ...searches, ...publications, ...subreddits, ...threads, ...bluesky];
+      List<Subscription> lst = [
+        ...users,
+        ...searches,
+        ...publications,
+        ...subreddits,
+        ...threads,
+        ...bluesky,
+        ...mastodon,
+      ];
       if (orderCustom.isEmpty) {
         return lst.sorted((a, b) {
           var one = orderByAscending ? a : b;

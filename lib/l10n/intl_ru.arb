@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Закрыть",
   "@close": {},
+  "collapse_boosts": "Объединять серии репостов",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Несколько репостов подряд превращаются в одну строку, которую можно развернуть, вместо того чтобы заполнять ленту.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Свернуть",
   "@collapse_reposts": {},
   "colour_blue": "Синий",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "По умолчанию выключено: каждое одиночное нажатие ждёт возможного второго, поэтому пост открывается чуть медленнее.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Не удалось подписаться",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Ищите в X или введите сабреддит, имя в Threads либо Bluesky, адрес в Федиверсе или рассылку",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Сбросить",
   "@group_combine_clear": {},
   "group_combine_hint": "Удерживайте группу, чтобы читать её вместе с этой",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Аккаунты",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Осталось прочитать ещё 1 аккаунт — потяните, чтобы обновить} few{Осталось прочитать ещё {count} аккаунта — потяните, чтобы обновить} many{Осталось прочитать ещё {count} аккаунтов — потяните, чтобы обновить} other{Осталось прочитать ещё {count} аккаунта — потяните, чтобы обновить}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Добавить аккаунт",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Читайте аккаунты Bluesky через публичный AppView — без входа в Bluesky",

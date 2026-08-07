@@ -10,14 +10,12 @@ import 'package:xta/group/deck_groups.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/group/group_tree.dart';
 import 'package:xta/group/subscription_pack.dart';
-import 'package:xta/plugins/bluesky/bluesky_butterfly_icon.dart';
-import 'package:xta/plugins/reddit/reddit_avatar.dart';
 import 'package:xta/subscriptions/_group_add_member.dart';
 import 'package:xta/subscriptions/group_identity.dart';
+import 'package:xta/subscriptions/subscription_look.dart';
 import 'package:xta/subscriptions/widgets/group_color_picker.dart';
 import 'package:xta/subscriptions/group_mark_style.dart';
 import 'package:xta/subscriptions/users_model.dart';
-import 'package:xta/user.dart';
 import 'package:provider/provider.dart';
 
 Future openSubscriptionGroupDialog(BuildContext context, String? id, String name, String icon) {
@@ -54,32 +52,6 @@ ButtonStyle _discreetActionStyle(BuildContext context) => TextButton.styleFrom(
       textStyle: Theme.of(context).textTheme.bodySmall,
       visualDensity: VisualDensity.compact,
     );
-
-/// What a group member is, under its name.
-///
-/// A subreddit and a publication are subscriptions like any other and belong in
-/// this list, but neither has an `@handle` — labelling them with one made a
-/// subreddit read as an X account that had lost its avatar.
-String _memberSubtitle(Subscription subscription) => switch (subscription) {
-      SearchSubscription() => L10n.current.search_term,
-      RedditSubscription(:final name) => 'r/$name',
-      SubstackSubscription(:final baseUrl) => Uri.tryParse(baseUrl)?.host ?? baseUrl,
-      BlueskySubscription(:final screenName) => '@$screenName',
-      _ => '@${subscription.screenName}',
-    };
-
-Widget _memberAvatar(Subscription subscription) => switch (subscription) {
-      SearchSubscription() => const SizedBox(width: 48, child: Icon(Icons.search)),
-      RedditSubscription(:final name) => RedditAvatar(name: 'r/$name', size: 40),
-      BlueskySubscription() => Stack(
-          alignment: Alignment.bottomRight,
-          children: [
-            UserAvatar(uri: subscription.profileImageUrlHttps),
-            const BlueskyButterflyIcon(size: 12),
-          ],
-        ),
-      _ => UserAvatar(uri: subscription.profileImageUrlHttps),
-    };
 
 class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -578,9 +550,9 @@ class _SubscriptionGroupEditDialogState extends State<SubscriptionGroupEditDialo
 
                     return CheckboxListTile(
                       dense: true,
-                      secondary: _memberAvatar(subscription),
+                      secondary: subscriptionAvatar(subscription),
                       title: Text(subscription.name),
-                      subtitle: Text(_memberSubtitle(subscription)),
+                      subtitle: Text(subscriptionSubtitle(subscription)),
                       selected: members.contains(subscription.id),
                       value: members.contains(subscription.id),
                       onChanged: (v) => setState(() {

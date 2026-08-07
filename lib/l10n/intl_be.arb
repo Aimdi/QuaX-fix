@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Закрыць",
   "@close": {},
+  "collapse_boosts": "Групаваць серыі рэпостаў",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Некалькі рэпостаў запар становяцца адным радком, які можна разгарнуць, замест таго каб запоўніць стужку.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Згарнуць",
   "@collapse_reposts": {},
   "colour_blue": "Сіні",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Выключана па змаўчанні: кожны адзінарны дотык чакае магчымага другога, таму пост адкрываецца крыху пазней.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Не ўдалося падпісацца",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Шукайце ў X або ўвядзіце сабрэдыт, імя ў Threads ці Bluesky, адрас у Федзіверсуме або рассылку",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Скінуць",
   "@group_combine_clear": {},
   "group_combine_hint": "Утрымлівайце групу, каб чытаць яе разам з гэтай",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Акаўнты",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Засталося прачытаць яшчэ 1 рахунак — пацягні, каб абнавіць} few{Засталося прачытаць яшчэ {count} рахункі — пацягні, каб абнавіць} many{Засталося прачытаць яшчэ {count} рахункаў — пацягні, каб абнавіць} other{Засталося прачытаць яшчэ {count} рахунку — пацягні, каб абнавіць}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Дадаць уліковы запіс",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Чытайце ўліковыя запісы Bluesky праз публічны AppView — без уваходу ў Bluesky",

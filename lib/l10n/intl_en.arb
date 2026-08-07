@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Close",
   "@close": {},
+  "collapse_boosts": "Group runs of reposts",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "A stretch of consecutive reposts becomes one row you can expand, instead of filling the timeline.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Collapse",
   "@collapse_reposts": {},
   "colour_blue": "Blue",
@@ -495,6 +499,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Off by default: with it on, every single tap waits to see whether a second one follows, so opening a post feels a little slower.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Could not follow that",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Search X, or type a subreddit, a Threads or Bluesky handle, a Fediverse address, or a newsletter",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Clear",
   "@group_combine_clear": {},
   "group_combine_hint": "Hold a group to read it alongside this one",
@@ -761,6 +769,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Accounts",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{1 more account still to read — pull to refresh} other{{count} more accounts still to read — pull to refresh}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Add account",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Read Bluesky accounts through the public AppView — no Bluesky login",

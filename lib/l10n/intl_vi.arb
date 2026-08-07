@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Đóng",
   "@close": {},
+  "collapse_boosts": "Gộp các chuỗi đăng lại",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Một loạt bài đăng lại liên tiếp gộp thành một hàng bạn có thể mở rộng, thay vì lấp kín dòng thời gian.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Thu gọn",
   "@collapse_reposts": {},
   "colour_blue": "Xanh dương",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Mặc định tắt: khi bật, mỗi lần chạm đơn sẽ chờ xem có lần chạm thứ hai không, nên mở bài viết chậm hơn một chút.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Không theo dõi được",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Tìm trên X, hoặc nhập một subreddit, tên Threads hay Bluesky, địa chỉ Fediverse, hoặc một bản tin",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Xóa",
   "@group_combine_clear": {},
   "group_combine_hint": "Giữ một nhóm để đọc cùng với nhóm này",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Tài khoản",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, other{Còn {count} tài khoản chưa đọc — kéo để làm mới}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Thêm tài khoản",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Đọc tài khoản Bluesky qua AppView công khai — không cần đăng nhập Bluesky",

@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Sulge",
   "@close": {},
+  "collapse_boosts": "Rühmita järjestikused jagamised",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Järjest tulevad jagamised koondatakse üheks reaks, mille saad laiendada, selle asemel et need ajajoone täidaksid.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Ahenda",
   "@collapse_reposts": {},
   "colour_blue": "Sinine",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Vaikimisi väljas: iga üksik puudutus ootab, kas järgneb teine, nii et postituse avamine on veidi aeglasem.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Jälgimine ebaõnnestus",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Otsi X-ist või sisesta subreddit, Threadsi või Bluesky nimi, Fediversumi aadress või uudiskiri",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Tühjenda",
   "@group_combine_clear": {},
   "group_combine_hint": "Hoia rühma all, et lugeda seda koos selle rühmaga",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Kontod",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Veel 1 konto lugemata — tõmba värskendamiseks} other{Veel {count} kontot lugemata — tõmba värskendamiseks}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Lisa konto",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Loe Bluesky kontosid avaliku AppView kaudu — ilma Blueskysse sisse logimata",

@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Закрити",
   "@close": {},
+  "collapse_boosts": "Групувати серії репостів",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Кілька репостів поспіль стають одним рядком, який можна розгорнути, замість того щоб заповнювати стрічку.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Згорнути",
   "@collapse_reposts": {},
   "colour_blue": "Синій",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Типово вимкнено: кожен одиночний дотик очікує можливого другого, тож допис відкривається трохи повільніше.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Не вдалося підписатися",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Шукайте в X або введіть сабредит, ім’я у Threads чи Bluesky, адресу у Федиверсі або розсилку",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Скинути",
   "@group_combine_clear": {},
   "group_combine_hint": "Утримуйте групу, щоб читати її разом із цією",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Облікові записи",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Лишився ще 1 обліковий запис — потягни, щоб оновити} few{Лишилося ще {count} облікові записи — потягни, щоб оновити} many{Лишилося ще {count} облікових записів — потягни, щоб оновити} other{Лишилося ще {count} облікового запису — потягни, щоб оновити}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Додати обліковий запис",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Читайте облікові записи Bluesky через публічний AppView — без входу в Bluesky",

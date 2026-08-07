@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Cerrar",
   "@close": {},
+  "collapse_boosts": "Agrupar rachas de republicaciones",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Una serie de republicaciones seguidas se convierte en una fila que puedes desplegar, en lugar de llenar la cronología.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Contraer",
   "@collapse_reposts": {},
   "colour_blue": "Azul",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Desactivado por defecto: cada toque simple espera por si llega un segundo, así que abrir una publicación tarda un poco más.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "No se pudo seguir",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Busca en X, o escribe un subreddit, un usuario de Threads o Bluesky, una dirección del Fediverso o un boletín",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Quitar",
   "@group_combine_clear": {},
   "group_combine_hint": "Mantén pulsado un grupo para leerlo junto a este",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Cuentas",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Queda 1 cuenta por leer: desliza para actualizar} other{Quedan {count} cuentas por leer: desliza para actualizar}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Añadir cuenta",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Lee cuentas de Bluesky con la AppView pública — sin iniciar sesión en Bluesky",

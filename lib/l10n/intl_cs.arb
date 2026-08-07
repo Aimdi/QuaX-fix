@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Zavřít",
   "@close": {},
+  "collapse_boosts": "Seskupovat série repostů",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Několik repostů za sebou se sloučí do jednoho řádku, který lze rozbalit, místo aby zaplnily časovou osu.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Sbalit",
   "@collapse_reposts": {},
   "colour_blue": "Modrá",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Ve výchozím stavu vypnuto: každé jednoduché klepnutí čeká, zda nepřijde druhé, takže otevření příspěvku chvíli trvá.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Nepodařilo se to sledovat",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Hledejte na X, nebo zadejte subreddit, jméno na Threads či Bluesky, adresu ve Fediverse nebo newsletter",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Zrušit",
   "@group_combine_clear": {},
   "group_combine_hint": "Podržte skupinu, abyste ji četli spolu s touto",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Účty",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Zbývá načíst ještě 1 účet — přetažením obnovíš} few{Zbývá načíst ještě {count} účty — přetažením obnovíš} many{Zbývá načíst ještě {count} účtu — přetažením obnovíš} other{Zbývá načíst ještě {count} účtů — přetažením obnovíš}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Přidat účet",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Čtěte účty Bluesky přes veřejné AppView — bez přihlášení k Bluesky",

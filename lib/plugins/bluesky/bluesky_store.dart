@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/database/entities.dart';
 import 'package:xta/database/repository.dart';
-import 'package:xta/group/future_pool.dart';
+import 'package:xta/plugins/account_posts.dart';
 import 'package:xta/plugins/bluesky/bluesky_client.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 
@@ -106,42 +106,35 @@ class BlueskyFeedStore extends Store<List<BlueskyPost>> {
 
   BlueskyFeedStore(this.client, this.accounts) : super(const []);
 
-  /// Reads every account and merges them.
-  ///
-  /// One account failing does not empty the timeline — a renamed handle, or a
-  /// temporary AppView error, would otherwise take every other account's posts
-  /// down with it. The error only surfaces when nothing at all could be read.
-  Future<void> refresh() async {
-    await execute(() async {
-      final actors = accounts.state.map((e) => e.actor).toList(growable: false);
-      return postsFor(actors);
-    });
+  /// Reads the followed accounts and merges them.
+  Future<void> refresh({bool force = false}) async {
+    await execute(() => postsFor(accounts.state.map((e) => e.actor).toList(growable: false), forceRefresh: force));
   }
 
   /// Posts for [actors], newest first — used by the Bluesky tab and by group
   /// feeds that mix Bluesky members in beside X.
-  Future<List<BlueskyPost>> postsFor(List<String> actors) async {
-    if (actors.isEmpty) {
-      return const [];
-    }
+  ///
+  /// There is no following feed on the public AppView, so this is one request
+  /// per account. Bounded per call: importing somebody's following list used to
+  /// mean several hundred requests on every refresh, which the AppView rate
+  /// limits into an empty tab — the very thing the import was for.
+  Future<List<BlueskyPost>> postsFor(List<String> actors, {bool forceRefresh = false}) => _posts.merge(
+    actors,
+    (actor) async {
+      final page = await client.getAuthorFeed(actor, limit: blueskyPostsPerAccount);
+      return page.posts;
+    },
+    forceRefresh: forceRefresh,
+    maxFetches: blueskyMaxAccountsPerLoad,
+  );
 
-    Object? lastError;
-    final batches = await mapWithConcurrency(actors, 3, (actor) async {
-      try {
-        final page = await client.getAuthorFeed(actor, limit: blueskyPostsPerAccount);
-        return page.posts;
-      } catch (e) {
-        lastError = e;
-        return const <BlueskyPost>[];
-      }
-    });
+  /// How many followed accounts have still to be read, so the tab can say that
+  /// a big import is filling in rather than looking finished and short.
+  int pending(List<String> actors) => _posts.pendingCount(actors);
 
-    final posts = batches.expand((e) => e.take(blueskyPostsPerAccount)).toList();
-    if (posts.isEmpty && lastError != null) {
-      throw lastError!;
-    }
-
-    posts.sort((a, b) => (b.publishedAt ?? DateTime(0)).compareTo(a.publishedAt ?? DateTime(0)));
-    return posts;
-  }
+  final _posts = AccountPostCache<BlueskyPost>(
+    dateOf: (post) => post.publishedAt,
+    perAccount: blueskyPostsPerAccount,
+    concurrency: 3,
+  );
 }

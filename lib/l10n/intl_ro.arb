@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Închide",
   "@close": {},
+  "collapse_boosts": "Grupează seriile de repostări",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Un șir de repostări consecutive devine un rând pe care îl poți extinde, în loc să umple cronologia.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Restrânge",
   "@collapse_reposts": {},
   "colour_blue": "Albastru",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Dezactivat implicit: fiecare atingere simplă așteaptă o eventuală a doua, așa că deschiderea unei postări durează puțin mai mult.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Nu a putut fi urmărit",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Caută pe X sau scrie un subreddit, un nume de pe Threads ori Bluesky, o adresă din Fedivers sau un buletin informativ",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Șterge",
   "@group_combine_clear": {},
   "group_combine_hint": "Țineți apăsat un grup pentru a-l citi împreună cu acesta",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Conturi",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{A mai rămas 1 cont de citit — trage pentru a reîmprospăta} few{Au mai rămas {count} conturi de citit — trage pentru a reîmprospăta} other{Au mai rămas {count} de conturi de citit — trage pentru a reîmprospăta}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Adaugă cont",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Citește conturi Bluesky prin AppView public — fără autentificare pe Bluesky",

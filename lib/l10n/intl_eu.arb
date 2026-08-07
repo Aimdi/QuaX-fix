@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Itxi",
   "@close": {},
+  "collapse_boosts": "Elkartu birargitalpen sortak",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Segidako birargitalpenak errenkada bakar bihurtzen dira, zabal dezakezuna, denbora-lerroa bete ordez.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Tolestu",
   "@collapse_reposts": {},
   "colour_blue": "Urdina",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Lehenetsita itzalita: sakatze bakoitzak bigarren bat datorren zain egoten da, beraz argitalpen bat irekitzea pixka bat motelagoa da.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Ezin izan da jarraitu",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Bilatu X-en, edo idatzi subreddit bat, Threads edo Bluesky izen bat, Fedibertsoko helbide bat edo buletin bat",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Garbitu",
   "@group_combine_clear": {},
   "group_combine_hint": "Eutsi talde bati hau honekin batera irakurtzeko",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Kontuak",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Kontu 1 irakurtzeke — tira eguneratzeko} other{{count} kontu irakurtzeke — tira eguneratzeko}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Gehitu kontua",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Irakurri Bluesky kontuak AppView publikoaren bidez — Blueskyn saioa hasi gabe",

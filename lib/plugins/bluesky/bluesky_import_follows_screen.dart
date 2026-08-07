@@ -22,6 +22,7 @@ class _BlueskyImportFollowsScreenState extends State<BlueskyImportFollowsScreen>
   final _actor = TextEditingController();
   StreamController<int>? _progress;
   var _running = false;
+  String? _inputError;
 
   @override
   void dispose() {
@@ -35,12 +36,19 @@ class _BlueskyImportFollowsScreenState extends State<BlueskyImportFollowsScreen>
       return;
     }
 
+    // A handle that cannot be read used to return here in silence: no message,
+    // no spinner, nothing at all, however many times the button was pressed.
+    // The `@` prefix on the field invites a bare name, and a bare name is
+    // exactly what this rejects — so the commonest input did the least. The
+    // list-import screen beside this one has always said so.
     final actor = normaliseBlueskyHandle(_actor.text);
     if (actor == null) {
+      setState(() => _inputError = L10n.of(context).plugin_bluesky_invalid_handle);
       return;
     }
 
     setState(() {
+      _inputError = null;
       _running = true;
       _progress = StreamController();
     });
@@ -107,7 +115,15 @@ class _BlueskyImportFollowsScreenState extends State<BlueskyImportFollowsScreen>
                 labelText: l10n.plugin_bluesky_add,
                 hintText: l10n.plugin_bluesky_handle_hint,
                 prefixText: '@',
+                errorText: _inputError,
               ),
+              // Clears the complaint as soon as the reader acts on it, rather
+              // than leaving it under a field they have already corrected.
+              onChanged: (_) {
+                if (_inputError != null) {
+                  setState(() => _inputError = null);
+                }
+              },
               autocorrect: false,
               onSubmitted: (_) => _import(),
             ),

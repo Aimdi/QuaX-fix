@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "اغلاق",
   "@close": {},
+  "collapse_boosts": "تجميع سلاسل إعادة النشر",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "تتحول سلسلة من إعادات النشر المتتالية إلى صف واحد يمكنك توسيعه، بدل أن تملأ الخط الزمني.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "طي",
   "@collapse_reposts": {},
   "colour_blue": "أزرق",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "مطفأ افتراضيًا: عند تفعيله تنتظر كل نقرة مفردة لمعرفة ما إذا كانت ستتبعها ثانية، فيصبح فتح المنشور أبطأ قليلًا.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "تعذّرت المتابعة",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "ابحث في X، أو اكتب اسم سبريديت، أو معرّف Threads أو Bluesky، أو عنوانًا في الفدرالية، أو نشرة بريدية",
+  "@group_add_member_hint": {},
   "group_combine_clear": "مسح",
   "@group_combine_clear": {},
   "group_combine_hint": "اضغط مطولًا على مجموعة لقراءتها مع هذه المجموعة",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "الحسابات",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{بقي حساب واحد للقراءة — اسحب للتحديث} two{بقي حسابان للقراءة — اسحب للتحديث} few{بقيت {count} حسابات للقراءة — اسحب للتحديث} many{بقي {count} حسابًا للقراءة — اسحب للتحديث} other{بقي {count} حساب للقراءة — اسحب للتحديث}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "إضافة حساب",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "اقرأ حسابات Bluesky عبر واجهة AppView العامة — دون تسجيل الدخول إلى Bluesky",

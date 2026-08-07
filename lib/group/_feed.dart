@@ -23,6 +23,7 @@ import 'package:xta/profile/media_grid/media_grid.dart';
 import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:logging/logging.dart';
 import 'package:xta/plugins/bluesky/bluesky_interleaved.dart';
+import 'package:xta/plugins/mastodon/mastodon_interleaved.dart';
 import 'package:xta/plugins/reddit/reddit_interleaved.dart';
 import 'package:xta/plugins/threads/threads_interleaved.dart';
 import 'package:xta/plugins/substack/substack_client.dart';
@@ -90,6 +91,9 @@ class SubscriptionGroupFeed extends StatefulWidget {
   /// Bluesky accounts in this group — fetched beside X, never inside an X search.
   final List<BlueskySubscription> blueskyAccounts;
 
+  /// Fediverse accounts in this group, for the same reason again.
+  final List<MastodonSubscription> mastodonAccounts;
+
   const SubscriptionGroupFeed({
     super.key,
     required this.group,
@@ -104,6 +108,7 @@ class SubscriptionGroupFeed extends StatefulWidget {
     this.subreddits = const [],
     this.threadsAccounts = const [],
     this.blueskyAccounts = const [],
+    this.mastodonAccounts = const [],
   });
 
   @override
@@ -164,13 +169,16 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   /// Bluesky posts for this group's Bluesky accounts, newest first.
   List<InterleavedItem> _blueskyItems = const [];
 
+  /// The same, for this group's Fediverse accounts.
+  List<InterleavedItem> _mastodonItems = const [];
+
   /// The sources merged, rebuilt only when one of them arrives. Built in
   /// `build` it was a fresh list every frame, so nothing downstream could tell
   /// by identity that the interleave had not changed.
   List<InterleavedItem> _interleaved = const [];
 
   void _mergeInterleaved() =>
-      _interleaved = [..._substackItems, ..._redditItems, ..._threadsItems, ..._blueskyItems];
+      _interleaved = [..._substackItems, ..._redditItems, ..._threadsItems, ..._blueskyItems, ..._mastodonItems];
 
   Future<void> _loadThreadsPosts() async {
     if (widget.mediaOnly) {
@@ -205,6 +213,21 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     if (mounted) {
       setState(() {
         _blueskyItems = items;
+        _mergeInterleaved();
+      });
+    }
+  }
+
+  Future<void> _loadMastodonPosts() async {
+    if (widget.mediaOnly) {
+      return;
+    }
+
+    final accts = widget.mastodonAccounts.map((e) => e.id).toList(growable: false);
+    final items = await loadMastodonInterleaved(context, accts);
+    if (mounted) {
+      setState(() {
+        _mastodonItems = items;
         _mergeInterleaved();
       });
     }
@@ -353,6 +376,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     _loadRedditPosts();
     _loadThreadsPosts();
     _loadBlueskyPosts();
+    _loadMastodonPosts();
   }
 
   Future<void> _loadPreview() async {
@@ -567,6 +591,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     }
     if (!listEquals(oldWidget.blueskyAccounts, widget.blueskyAccounts)) {
       _loadBlueskyPosts();
+    _loadMastodonPosts();
     }
 
     if (oldWidget.includeReplies != widget.includeReplies ||
@@ -982,6 +1007,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
               unawaited(_loadRedditPosts(force: true));
               unawaited(_loadThreadsPosts());
               unawaited(_loadBlueskyPosts());
+              unawaited(_loadMastodonPosts());
               // Only this group's rows. The wipe used to take the whole table
               // with it, so pulling to refresh one feed made every other feed
               // refetch its first page from the network next time it opened.

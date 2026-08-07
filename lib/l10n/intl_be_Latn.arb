@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Začynić",
   "@close": {},
+  "collapse_boosts": "Hrupavać sieryi repostaŭ",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Niekalki repostaŭ zapar stanoviacca adnym radkom, jaki možna razharnuć, zamiest taho kab zapoŭnić stužku.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Zgarnuć",
   "@collapse_reposts": {},
   "colour_blue": "Sini",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Vyklučana pa zmaŭčanni: kožny adzinarny dotyk čakaje mahčymaha druhoha, tamu post adkryvajecca krychu paźniej.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Nie ŭdałosia padpisacca",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Šukajcie ŭ X abo ŭviadzicie sabredyt, imia ŭ Threads ci Bluesky, adras u Fedzivjersumie abo rassyłku",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Skinuć",
   "@group_combine_clear": {},
   "group_combine_hint": "Utrymlivajcie hrupu, kab čytać jaje razam z hetaj",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Akaŭnty",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Zastałosia pračytać jašče 1 rachunak — paciahni, kab abnavić} few{Zastałosia pračytać jašče {count} rachunki — paciahni, kab abnavić} many{Zastałosia pračytać jašče {count} rachunkaŭ — paciahni, kab abnavić} other{Zastałosia pračytać jašče {count} rachunku — paciahni, kab abnavić}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Dadac ulikovy zapis",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Cytajcie ulikovyja zapisy Bluesky praz publichny AppView — biez uvachodu u Bluesky",

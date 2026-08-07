@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Zamknij",
   "@close": {},
+  "collapse_boosts": "Grupuj serie podań dalej",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Ciąg następujących po sobie podań dalej staje się jednym wierszem do rozwinięcia, zamiast wypełniać oś czasu.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Zwiń",
   "@collapse_reposts": {},
   "colour_blue": "Niebieski",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Domyślnie wyłączone: każde pojedyncze dotknięcie czeka na ewentualne drugie, więc otwieranie wpisu trwa nieco dłużej.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Nie udało się zaobserwować",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Szukaj na X albo wpisz subreddit, nazwę na Threads lub Bluesky, adres w fediwersum czy newsletter",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Wyczyść",
   "@group_combine_clear": {},
   "group_combine_hint": "Przytrzymaj grupę, aby czytać ją razem z tą",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Konta",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Został jeszcze 1 profil do wczytania — pociągnij, aby odświeżyć} few{Zostały jeszcze {count} profile do wczytania — pociągnij, aby odświeżyć} many{Zostało jeszcze {count} profili do wczytania — pociągnij, aby odświeżyć} other{Zostało jeszcze {count} profilu do wczytania — pociągnij, aby odświeżyć}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Dodaj konto",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Czytaj konta Bluesky przez publiczny AppView — bez logowania do Bluesky",

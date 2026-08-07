@@ -178,6 +178,11 @@ class _SettingsPostsFragmentState extends State<SettingsPostsFragment> {
             pref: optionThreadedReplies,
           ),
           PrefSwitch(
+            title: Text(L10n.of(context).collapse_boosts),
+            subtitle: Text(L10n.of(context).collapse_boosts_description),
+            pref: optionFeedCollapseBoosts,
+          ),
+          PrefSwitch(
             title: Text(L10n.of(context).zen_mode),
             subtitle: Text(L10n.of(context).zen_mode_description),
             pref: optionZenMode,

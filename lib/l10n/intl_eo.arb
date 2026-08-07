@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Fermi",
   "@close": {},
+  "collapse_boosts": "Grupigi seriojn de reafiŝoj",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Sinsekvaj reafiŝoj fariĝas unu vico, kiun vi povas malfaldi, anstataŭ plenigi la tempolinion.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Faldi",
   "@collapse_reposts": {},
   "colour_blue": "Blua",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Defaŭlte malŝaltita: ĉiu unuopa frapeto atendas ĉu dua sekvos, do malfermi afiŝon iĝas iom pli malrapida.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Ne eblis aboni tion",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Serĉu en X, aŭ tajpu subredditon, Threads- aŭ Bluesky-nomon, Fediverse-adreson aŭ bultenon",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Vakigi",
   "@group_combine_clear": {},
   "group_combine_hint": "Tenu grupon por legi ĝin kune kun ĉi tiu",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Kontoj",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Ankoraŭ 1 konto legenda — tiru por refreŝigi} other{Ankoraŭ {count} kontoj legendaj — tiru por refreŝigi}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Aldoni konton",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Legu Bluesky-kontojn per la publika AppView — sen ensaluti al Bluesky",

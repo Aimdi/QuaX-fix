@@ -162,13 +162,14 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
         final filteredUsers = group.id == '-1' ? group.subscriptions.where((elm) => elm.inFeed) : group.subscriptions;
         final members = filteredUsers.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).toList();
 
-        // Publications, subreddits, Threads and Bluesky accounts are members of
+        // Publications, subreddits and accounts on other networks are members of
         // the group but they are not searched on X: each has its own source, and
         // leaving one in a search query puts a dangling `OR` in it.
         final publications = members.whereType<SubstackSubscription>().toList(growable: false);
         final subreddits = members.whereType<RedditSubscription>().toList(growable: false);
         final threadsAccounts = members.whereType<ThreadsSubscription>().toList(growable: false);
         final blueskyAccounts = members.whereType<BlueskySubscription>().toList(growable: false);
+        final mastodonAccounts = members.whereType<MastodonSubscription>().toList(growable: false);
         // Named rather than subtracted: what X can search for is a closed set,
         // so the next plugin whose members join a group cannot silently end up
         // in a search query by not being on a list of exclusions.
@@ -186,6 +187,7 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
           subreddits: subreddits,
           threadsAccounts: threadsAccounts,
           blueskyAccounts: blueskyAccounts,
+          mastodonAccounts: mastodonAccounts,
           includeReplies: includeReplies,
           includeRetweets: includeRetweets,
           mediaOnly: widget.mediaOnly,

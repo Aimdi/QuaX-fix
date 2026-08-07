@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/database/entities.dart';
 import 'package:xta/database/repository.dart';
-import 'package:xta/group/future_pool.dart';
+import 'package:xta/plugins/account_posts.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
 import 'package:xta/plugins/threads/threads_direct_client.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
@@ -134,7 +134,7 @@ class ThreadsFeedStore extends Store<List<ThreadsPost>> {
     }
 
     _forgetOnCredentialChange();
-    return _mergeAccounts(handles, _fetcher(), forceRefresh: forceRefresh);
+    return _posts.merge(handles, _fetcher(), forceRefresh: forceRefresh);
   }
 
   /// Which route answers, given what the reader has configured.
@@ -163,8 +163,16 @@ class ThreadsFeedStore extends Store<List<ThreadsPost>> {
     return direct.fetchGuestAccount;
   }
 
-  /// What each handle last returned, and when.
-  final Map<String, ({DateTime at, List<ThreadsPost> posts})> _cache = {};
+  /// What each handle last returned, and when. Meta bans accounts that behave
+  /// like scripts, and the surest way to look like one is to ask for the same
+  /// thing over and over — so one handle is read at a time, and not twice.
+  final _posts = AccountPostCache<ThreadsPost>(
+    dateOf: (post) => post.publishedAt,
+    perAccount: threadsPostsPerAccount,
+    concurrency: 2,
+    ttl: kThreadsCacheTtl,
+  );
+
   String? _credentials;
 
   /// A change of session, or of RSSHub instance, means a different Threads is
@@ -179,48 +187,8 @@ class ThreadsFeedStore extends Store<List<ThreadsPost>> {
 
     if (_credentials != current) {
       _credentials = current;
-      _cache.clear();
+      _posts.clear();
     }
   }
 
-  List<ThreadsPost>? _fresh(String handle) {
-    final entry = _cache[handle];
-    if (entry == null || DateTime.now().difference(entry.at) > kThreadsCacheTtl) {
-      return null;
-    }
-
-    return entry.posts;
-  }
-
-  Future<List<ThreadsPost>> _mergeAccounts(
-    List<String> handles,
-    Future<List<ThreadsPost>> Function(String handle) fetch, {
-    bool forceRefresh = false,
-  }) async {
-    Object? lastError;
-    final batches = await mapWithConcurrency(handles, 2, (handle) async {
-      if (!forceRefresh) {
-        if (_fresh(handle) case final cached?) {
-          return cached;
-        }
-      }
-
-      try {
-        final posts = await fetch(handle);
-        _cache[handle] = (at: DateTime.now(), posts: posts);
-        return posts;
-      } catch (e) {
-        lastError = e;
-        return const <ThreadsPost>[];
-      }
-    });
-
-    final posts = batches.expand((e) => e.take(threadsPostsPerAccount)).toList();
-    if (posts.isEmpty && lastError != null) {
-      throw lastError!;
-    }
-
-    posts.sort((a, b) => (b.publishedAt ?? DateTime(0)).compareTo(a.publishedAt ?? DateTime(0)));
-    return posts;
-  }
 }

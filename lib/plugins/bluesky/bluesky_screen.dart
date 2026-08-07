@@ -277,11 +277,57 @@ class _HomePane extends StatelessWidget {
 
     return RefreshIndicator(
       onRefresh: onRefresh,
-      child: ListView.builder(
-        controller: scrollController,
-        itemCount: posts.length,
-        itemBuilder: (context, index) =>
-            BlueskyPostCard(key: ValueKey(posts[index].uri), post: posts[index], showSourceBadge: false),
+      child: ScopedBuilder<BlueskyAccountsStore, List<BlueskyAccount>>(
+        store: context.read<BlueskyAccountsStore>(),
+        onState: (context, accounts) {
+          final pending = context.read<BlueskyFeedStore>().pending(
+            accounts.map((e) => e.actor).toList(growable: false),
+          );
+
+          return ListView.builder(
+            controller: scrollController,
+            // A note at the top when a load could not reach every account:
+            // otherwise a freshly imported following list looks like a short
+            // feed rather than one still filling in.
+            itemCount: posts.length + (pending > 0 ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (pending > 0 && index == 0) {
+                return _PendingAccountsNote(pending: pending);
+              }
+              final post = posts[index - (pending > 0 ? 1 : 0)];
+              return BlueskyPostCard(key: ValueKey(post.uri), post: post, showSourceBadge: false);
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Says that more followed accounts are still to be read, and that pulling to
+/// refresh reads the next batch of them.
+class _PendingAccountsNote extends StatelessWidget {
+  final int pending;
+
+  const _PendingAccountsNote({required this.pending});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      child: Row(
+        children: [
+          Icon(Icons.hourglass_bottom, size: 16, color: theme.hintColor),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              L10n.of(context).plugin_bluesky_accounts_pending(pending),
+              style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "閉じる",
   "@close": {},
+  "collapse_boosts": "連続したリポストをまとめる",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "連続するリポストを、タイムラインを埋め尽くす代わりに、展開できる 1 行にまとめます。",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "折りたたむ",
   "@collapse_reposts": {},
   "colour_blue": "ブルー",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "既定ではオフです。オンにすると、シングルタップのたびに二度目を待つため、投稿を開く動作がわずかに遅く感じられます。",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "フォローできませんでした",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "X を検索するか、サブレディット、Threads や Bluesky のハンドル、Fediverse のアドレス、ニュースレターを入力してください",
+  "@group_add_member_hint": {},
   "group_combine_clear": "解除",
   "@group_combine_clear": {},
   "group_combine_hint": "グループを長押しすると、このグループと一緒に読めます",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "アカウント",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, other{未読のアカウントがあと {count} 件 — 引っ張って更新}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "アカウントを追加",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "公開 AppView 経由で Bluesky アカウントを読む — Bluesky へのログインは不要",

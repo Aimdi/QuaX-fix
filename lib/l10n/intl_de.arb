@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "Schließen",
   "@close": {},
+  "collapse_boosts": "Repost-Serien zusammenfassen",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "Mehrere Reposts hintereinander werden zu einer Zeile, die du ausklappen kannst, statt die Timeline zu füllen.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "Einklappen",
   "@collapse_reposts": {},
   "colour_blue": "Blau",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "Standardmäßig aus: Jeder einzelne Tipp wartet dann kurz auf einen zweiten, wodurch das Öffnen eines Beitrags etwas träger wird.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "Konnte nicht abonniert werden",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "Auf X suchen oder ein Subreddit, einen Threads- oder Bluesky-Namen, eine Fediverse-Adresse oder einen Newsletter eingeben",
+  "@group_add_member_hint": {},
   "group_combine_clear": "Aufheben",
   "@group_combine_clear": {},
   "group_combine_hint": "Halte eine Gruppe gedrückt, um sie zusammen mit dieser zu lesen",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "Konten",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, one{Noch 1 Konto ungelesen — zum Aktualisieren ziehen} other{Noch {count} Konten ungelesen — zum Aktualisieren ziehen}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "Konto hinzufügen",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Bluesky-Konten über die öffentliche AppView lesen — ohne Bluesky-Anmeldung",

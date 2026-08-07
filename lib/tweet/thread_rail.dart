@@ -65,7 +65,13 @@ class ThreadRailBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        ThreadRailLines(connectTop: connectTop, connectBottom: connectBottom),
+        // Positioned, so the rail takes the height the content ends up with
+        // rather than deciding it. A Stack whose children are all positioned
+        // sizes itself to the biggest its constraints allow, and in a list
+        // that is infinity: the whole tile became infinitely tall, and every
+        // post after it in the timeline was laid out off the bottom of the
+        // world. A thread in the feed emptied the feed under it.
+        Positioned.fill(child: ThreadRailLines(connectTop: connectTop, connectBottom: connectBottom)),
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

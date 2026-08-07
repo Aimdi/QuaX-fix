@@ -167,6 +167,10 @@
   "@clip_note_search_hint": {},
   "close": "닫기",
   "@close": {},
+  "collapse_boosts": "연속된 리포스트 묶기",
+  "@collapse_boosts": {},
+  "collapse_boosts_description": "연달아 오는 리포스트를 타임라인을 채우는 대신 펼칠 수 있는 한 줄로 묶습니다.",
+  "@collapse_boosts_description": {},
   "collapse_reposts": "접기",
   "@collapse_reposts": {},
   "colour_blue": "파랑",
@@ -489,6 +493,10 @@
   "@gesture_double_tap_like": {},
   "gesture_double_tap_like_description": "기본값은 꺼짐입니다. 켜면 한 번 누를 때마다 두 번째 입력을 기다리므로 게시물을 여는 속도가 조금 느려집니다.",
   "@gesture_double_tap_like_description": {},
+  "group_add_member_failed": "팔로우하지 못했습니다",
+  "@group_add_member_failed": {},
+  "group_add_member_hint": "X에서 검색하거나 서브레딧, Threads·Bluesky 핸들, 페디버스 주소, 뉴스레터를 입력하세요",
+  "@group_add_member_hint": {},
   "group_combine_clear": "지우기",
   "@group_combine_clear": {},
   "group_combine_hint": "그룹을 길게 눌러 이 그룹과 함께 보기",
@@ -755,6 +763,14 @@
   "@plugin_available": {},
   "plugin_bluesky_accounts": "계정",
   "@plugin_bluesky_accounts": {},
+  "plugin_bluesky_accounts_pending": "{count, plural, other{아직 읽지 않은 계정 {count}개 — 당겨서 새로 고침}}",
+  "@plugin_bluesky_accounts_pending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "plugin_bluesky_add": "계정 추가",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "공개 AppView로 Bluesky 계정을 읽습니다 — Bluesky 로그인 없음",
