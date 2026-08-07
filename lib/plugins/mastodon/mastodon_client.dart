@@ -205,14 +205,16 @@ class MastodonClient {
     );
   }
 
-  /// Resolve a remote status URL on [instance] via search, then load its context.
+  /// Locate [seed] on [instance] and load its public reply context.
   ///
-  /// Status ids are instance-local, so a card from one origin cannot be opened
-  /// on another with the raw id — the public URL is what every candidate knows.
+  /// Unauthenticated `/api/v2/search?resolve=true` is refused on most instances
+  /// (401). Origin hosts often still serve `/statuses/:id` and `/context` for
+  /// the snowflake in the public URL; other hosts can rediscover a federated
+  /// copy by looking up the author and matching [MastodonPost.url] in their
+  /// recent statuses — then `/context` uses that host's local id.
   Future<MastodonThread> fetchThread(String instance, MastodonPost seed) async {
     final home = _homeDomain(instance);
-    final resolved = await _resolveStatus(instance, seed.url);
-    final status = resolved ?? await getStatus(instance, seed.id);
+    final status = await _locateStatus(instance, seed);
     final context = await getContext(instance, status.id);
     return MastodonThread(
       status: status,
@@ -226,18 +228,97 @@ class MastodonClient {
   Future<MastodonThread> fetchThreadAnywhere(List<String> instances, MastodonPost seed) =>
       firstInstanceThat(instances, (instance) => fetchThread(instance, seed));
 
-  Future<MastodonPost?> _resolveStatus(String instance, String url) async {
+  Future<MastodonPost> _locateStatus(String instance, MastodonPost seed) async {
+    final fromDirect = await _statusByKnownIds(instance, seed);
+    if (fromDirect != null) {
+      return fromDirect;
+    }
+
+    final fromSearch = await _resolveStatusSoft(instance, seed.url);
+    if (fromSearch != null) {
+      return fromSearch;
+    }
+
+    final fromAccount = await _findStatusInAccount(instance, seed);
+    if (fromAccount != null) {
+      return fromAccount;
+    }
+
+    throw MastodonException(MastodonErrorKind.notFound, 'status not on $instance: ${seed.url}');
+  }
+
+  /// Try [GET /statuses/:id] with the URL snowflake and the card's local id.
+  Future<MastodonPost?> _statusByKnownIds(String instance, MastodonPost seed) async {
+    final ids = <String>{
+      if (mastodonStatusIdFromUrl(seed.url) case final fromUrl?) fromUrl,
+      if (seed.id.trim().isNotEmpty) seed.id.trim(),
+    };
+    for (final id in ids) {
+      try {
+        final post = await getStatus(instance, id);
+        // On a proxy, a coincidental numeric hit must still be the same post.
+        if (sameMastodonStatusUrl(post.url, seed.url) || post.id == seed.id) {
+          return post;
+        }
+      } on MastodonException catch (e) {
+        if (e.kind == MastodonErrorKind.rateLimited) {
+          rethrow;
+        }
+      }
+    }
+    return null;
+  }
+
+  /// Search resolve when the instance still allows it; 401/404 are not fatal.
+  Future<MastodonPost?> _resolveStatusSoft(String instance, String url) async {
     final trimmed = url.trim();
     if (trimmed.isEmpty) {
       return null;
     }
 
-    final json = Json(
-      await _get(
-        _uri(instance, '/api/v2/search', {'q': trimmed, 'resolve': 'true', 'type': 'statuses', 'limit': '1'}),
-      ),
+    try {
+      final json = Json(
+        await _get(
+          _uri(instance, '/api/v2/search', {'q': trimmed, 'resolve': 'true', 'type': 'statuses', 'limit': '1'}),
+        ),
+      );
+      final posts = parseMastodonStatuses(json['statuses'].raw, homeDomain: _homeDomain(instance));
+      return posts.isEmpty ? null : posts.first;
+    } on MastodonException catch (e) {
+      if (e.kind == MastodonErrorKind.rateLimited) {
+        rethrow;
+      }
+      return null;
+    }
+  }
+
+  /// Federated rediscovery: lookup the author, match [seed.url] in recent posts.
+  Future<MastodonPost?> _findStatusInAccount(String instance, MastodonPost seed) async {
+    final profile = await lookup(instance, seed.acct);
+    String? maxId;
+    for (var page = 0; page < 3; page++) {
+      final posts = await _accountStatusesPage(instance, profile.id, maxId: maxId);
+      if (posts.isEmpty) {
+        return null;
+      }
+      for (final post in posts) {
+        if (sameMastodonStatusUrl(post.url, seed.url)) {
+          return post;
+        }
+      }
+      maxId = posts.last.id;
+    }
+    return null;
+  }
+
+  Future<List<MastodonPost>> _accountStatusesPage(String instance, String accountId, {String? maxId}) async {
+    final json = await _get(
+      _uri(instance, '/api/v1/accounts/$accountId/statuses', {
+        'limit': '40',
+        'exclude_replies': 'false',
+        if (maxId != null) 'max_id': maxId,
+      }),
     );
-    final posts = parseMastodonStatuses(json['statuses'].raw, homeDomain: _homeDomain(instance));
-    return posts.isEmpty ? null : posts.first;
+    return parseMastodonStatuses(json, homeDomain: _homeDomain(instance));
   }
 }

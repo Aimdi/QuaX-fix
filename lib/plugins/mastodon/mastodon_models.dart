@@ -202,6 +202,48 @@ String? mastodonInstanceDomain(String instance) {
   return host == null || host.isEmpty ? null : host;
 }
 
+/// Snowflake id from a public status URL (`/@user/123` or `/users/user/statuses/123`).
+///
+/// Status ids are instance-local for the API, but the path segment on the
+/// *origin* URL is the id that origin's `/api/v1/statuses/:id` understands —
+/// which matters when the card was federated through another instance and
+/// carries that other instance's id in [MastodonPost.id].
+String? mastodonStatusIdFromUrl(String url) {
+  final uri = Uri.tryParse(url.trim());
+  if (uri == null || uri.host.isEmpty) {
+    return null;
+  }
+  final segments = uri.pathSegments.where((e) => e.isNotEmpty).toList();
+  if (segments.length >= 4 && segments[0].toLowerCase() == 'users' && segments[2].toLowerCase() == 'statuses') {
+    final id = segments[3];
+    return RegExp(r'^\d+$').hasMatch(id) ? id : null;
+  }
+  if (segments.length >= 2) {
+    final user = segments[0].startsWith('@') ? segments[0].substring(1) : segments[0];
+    final id = segments[1];
+    if (user.isNotEmpty && RegExp(r'^\d+$').hasMatch(id)) {
+      return id;
+    }
+  }
+  return null;
+}
+
+/// Whether two status URLs name the same public post (ignore trailing slash / case).
+bool sameMastodonStatusUrl(String a, String b) {
+  String? key(String raw) {
+    final uri = Uri.tryParse(raw.trim());
+    if (uri == null || uri.host.isEmpty) {
+      return null;
+    }
+    final path = uri.path.replaceAll(RegExp(r'/+$'), '');
+    return '${uri.host.toLowerCase()}$path'.toLowerCase();
+  }
+
+  final left = key(a);
+  final right = key(b);
+  return left != null && left == right;
+}
+
 /// `user`, `@user`, `user@domain`, or `https://domain/@user` → lookup acct.
 ///
 /// Bare local usernames are kept without a domain (the home instance resolves
