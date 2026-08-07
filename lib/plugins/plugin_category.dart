@@ -3,8 +3,17 @@ import 'package:xta/generated/l10n.dart';
 
 /// Why a plugin exists, for the store — not how it is installed.
 enum PluginCategory {
-  /// Feeds and publications to read (Reddit, Substack, Threads).
-  reading,
+  /// Short-form social networks (Threads, Bluesky, Mastodon).
+  social,
+
+  /// Forums and link communities (Reddit).
+  communities,
+
+  /// Long-form publishing and newsletters (Substack).
+  newsletters,
+
+  /// Illustration and visual feeds (Pixiv).
+  art,
 
   /// Prices and markets (Stocks).
   markets,
@@ -20,7 +29,10 @@ extension PluginCategoryL10n on PluginCategory {
   String label(BuildContext context) {
     final l10n = L10n.of(context);
     return switch (this) {
-      PluginCategory.reading => l10n.plugin_category_reading,
+      PluginCategory.social => l10n.plugin_category_social,
+      PluginCategory.communities => l10n.plugin_category_communities,
+      PluginCategory.newsletters => l10n.plugin_category_newsletters,
+      PluginCategory.art => l10n.plugin_category_art,
       PluginCategory.markets => l10n.plugin_category_markets,
       PluginCategory.bookmarks => l10n.plugin_category_bookmarks,
       PluginCategory.media => l10n.plugin_category_media,
@@ -28,5 +40,5 @@ extension PluginCategoryL10n on PluginCategory {
   }
 }
 
-/// Store order: reading first, then markets, then save destinations, then media.
+/// Store order: social first, then communities, publishing, art, markets, saves, media.
 const pluginCategoryOrder = PluginCategory.values;

@@ -33,7 +33,7 @@ class PixivPlugin extends XtaPlugin {
   IconData get icon => Icons.brush;
 
   @override
-  PluginCategory get category => PluginCategory.reading;
+  PluginCategory get category => PluginCategory.art;
 
   @override
   Color get brandColor => const Color(0xFF0096FA);

@@ -27,7 +27,7 @@ class ThreadsPlugin extends XtaPlugin {
   IconData get icon => Icons.alternate_email;
 
   @override
-  PluginCategory get category => PluginCategory.reading;
+  PluginCategory get category => PluginCategory.social;
 
   @override
   Color get brandColor => const Color(0xFF101010);

@@ -35,7 +35,7 @@ class RedditPlugin extends XtaPlugin {
   IconData get icon => Icons.reddit;
 
   @override
-  PluginCategory get category => PluginCategory.reading;
+  PluginCategory get category => PluginCategory.communities;
 
   @override
   Color get brandColor => const Color(0xFFFF4500);

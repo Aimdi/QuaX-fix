@@ -26,7 +26,7 @@ class SubstackPlugin extends XtaPlugin {
   IconData get icon => Icons.newspaper;
 
   @override
-  PluginCategory get category => PluginCategory.reading;
+  PluginCategory get category => PluginCategory.newsletters;
 
   @override
   Color get brandColor => const Color(0xFFFF6719);

@@ -32,7 +32,7 @@ class BlueskyPlugin extends XtaPlugin {
   IconData get icon => Icons.cloud;
 
   @override
-  PluginCategory get category => PluginCategory.reading;
+  PluginCategory get category => PluginCategory.social;
 
   @override
   Color get brandColor => const Color(0xFF0085FF);

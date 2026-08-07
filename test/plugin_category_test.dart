@@ -10,15 +10,21 @@ void main() {
     }
   });
 
-  test('the store groups plugins under reading, markets, bookmarks and media', () {
+  test('the store groups plugins under focused categories', () {
     final groups = groupPluginsByCategory(builtInPlugins);
     expect(groups.map((g) => g.category), [
-      PluginCategory.reading,
+      PluginCategory.social,
+      PluginCategory.communities,
+      PluginCategory.newsletters,
+      PluginCategory.art,
       PluginCategory.markets,
       PluginCategory.bookmarks,
       PluginCategory.media,
     ]);
-    expect(groups.first.plugins.map((p) => p.id), containsAll(['reddit', 'substack', 'threads']));
-    expect(groups[1].plugins.single.id, 'stocks');
+    expect(groups[0].plugins.map((p) => p.id), containsAll(['threads', 'bluesky', 'mastodon']));
+    expect(groups[1].plugins.single.id, 'reddit');
+    expect(groups[2].plugins.single.id, 'substack');
+    expect(groups[3].plugins.single.id, 'pixiv');
+    expect(groups[4].plugins.single.id, 'stocks');
   });
 }

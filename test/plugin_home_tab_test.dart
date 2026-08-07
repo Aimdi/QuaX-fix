@@ -19,7 +19,7 @@ class _TablessPlugin extends XtaPlugin {
   IconData get icon => const IconData(0);
 
   @override
-  PluginCategory get category => PluginCategory.reading;
+  PluginCategory get category => PluginCategory.social;
 
   @override
   Color get brandColor => const Color(0xFF808080);

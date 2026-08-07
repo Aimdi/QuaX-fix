@@ -12,7 +12,7 @@ import 'package:xta/plugins/plugin_registry.dart';
 import 'package:xta/settings/_plugin_row.dart';
 
 /// What the reader has installed, and what is on offer — grouped by what each
-/// plugin is for (reading, markets, bookmarks, media) rather than a flat list.
+/// plugin is for (social, communities, newsletters, art, …) rather than a flat list.
 ///
 /// The offer comes from a document published in the app's repository, so a
 /// plugin can be added or withdrawn without a release. It can only ever narrow
