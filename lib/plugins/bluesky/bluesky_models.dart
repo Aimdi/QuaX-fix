@@ -466,6 +466,15 @@ class BlueskyFollowsPage {
   const BlueskyFollowsPage({required this.follows, this.cursor});
 }
 
+
+/// One page of `app.bsky.graph.getFollowers`.
+class BlueskyFollowersPage {
+  final List<BlueskyProfile> followers;
+  final String? cursor;
+
+  const BlueskyFollowersPage({required this.followers, this.cursor});
+}
+
 /// Metadata for a public Bluesky list (`app.bsky.graph.defs#listView`).
 class BlueskyListInfo {
   final String uri;
@@ -556,7 +565,17 @@ BlueskyFollowsPage parseBlueskyFollowsPage(Object? json) {
   return BlueskyFollowsPage(
     follows: [
       for (final follow in root['follows'].list) BlueskyProfile.fromJson(follow.raw),
-    ],
+    ].where((p) => p.handle.isNotEmpty || p.did.isNotEmpty).toList(growable: false),
+    cursor: root['cursor'].string,
+  );
+}
+
+BlueskyFollowersPage parseBlueskyFollowersPage(Object? json) {
+  final root = Json(json);
+  return BlueskyFollowersPage(
+    followers: [
+      for (final follower in root['followers'].list) BlueskyProfile.fromJson(follower.raw),
+    ].where((p) => p.handle.isNotEmpty || p.did.isNotEmpty).toList(growable: false),
     cursor: root['cursor'].string,
   );
 }

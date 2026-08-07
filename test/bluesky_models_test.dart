@@ -310,5 +310,16 @@ void main() {
       expect(page.list?.name, 'Cool');
       expect(page.members.single.handle, 'one.bsky.social');
     });
+
+    test('parseBlueskyFollowersPage reads followers and cursor', () {
+      final page = parseBlueskyFollowersPage({
+        'cursor': 'c2',
+        'followers': [
+          {'did': 'did:plc:2', 'handle': 'two.bsky.social'},
+        ],
+      });
+      expect(page.cursor, 'c2');
+      expect(page.followers.single.handle, 'two.bsky.social');
+    });
   });
 }

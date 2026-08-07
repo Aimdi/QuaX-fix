@@ -200,6 +200,33 @@ void main() {
       ]);
     });
 
+
+    test('getFollowers hits the graph endpoint', () async {
+      final paths = <String>[];
+      final client = BlueskyClient(
+        httpClient: MockClient((request) async {
+          paths.add(request.url.path);
+          if (request.url.path.endsWith('getFollowers')) {
+            expect(request.url.queryParameters['actor'], 'alice.bsky.social');
+            return http.Response(
+              jsonEncode({
+                'followers': [
+                  {'did': 'did:plc:2', 'handle': 'two.bsky.social'},
+                ],
+              }),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          }
+          return http.Response('unexpected', 500);
+        }),
+      );
+
+      final followers = await client.getFollowers('alice.bsky.social');
+      expect(followers.followers.single.handle, 'two.bsky.social');
+      expect(paths, ['/xrpc/app.bsky.graph.getFollowers']);
+    });
+
     test('resolveListUri builds an AT-URI from a web list reference', () async {
       final client = BlueskyClient(
         httpClient: MockClient((request) async {

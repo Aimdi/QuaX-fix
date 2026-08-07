@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/bluesky/bluesky_client.dart';
+import 'package:xta/plugins/bluesky/bluesky_follows_screen.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_post_card.dart';
 import 'package:xta/plugins/bluesky/bluesky_store.dart';
@@ -252,8 +253,18 @@ class BlueskyProfileCard extends StatelessWidget {
           spacing: 18,
           runSpacing: 6,
           children: [
-            _count(context, numbers.format(profile.followersCount), l10n.followers),
-            _count(context, numbers.format(profile.followsCount), l10n.following),
+            _count(
+              context,
+              numbers.format(profile.followersCount),
+              l10n.followers,
+              onTap: () => _openFollows(context, BlueskyFollowsKind.followers),
+            ),
+            _count(
+              context,
+              numbers.format(profile.followsCount),
+              l10n.following,
+              onTap: () => _openFollows(context, BlueskyFollowsKind.following),
+            ),
             _count(context, numbers.format(profile.postsCount), l10n.tweets),
           ],
         ),
@@ -272,12 +283,40 @@ class BlueskyProfileCard extends StatelessWidget {
     );
   }
 
-  Widget _count(BuildContext context, String value, String label) {
-    final theme = Theme.of(context);
+  Future<void> _openFollows(BuildContext context, BlueskyFollowsKind kind) async {
+    final actor = profile.did.isNotEmpty ? profile.did : profile.handle;
+    if (actor.isEmpty) {
+      return;
+    }
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BlueskyFollowsScreen(actor: actor, kind: kind),
+      ),
+    );
+  }
 
-    return Text.rich(TextSpan(children: [
-      TextSpan(text: value, style: const TextStyle(fontWeight: FontWeight.w700)),
-      TextSpan(text: ' $label', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
-    ]), style: theme.textTheme.bodyMedium);
+  Widget _count(BuildContext context, String value, String label, {VoidCallback? onTap}) {
+    final theme = Theme.of(context);
+    final text = Text.rich(
+      TextSpan(children: [
+        TextSpan(text: value, style: const TextStyle(fontWeight: FontWeight.w700)),
+        TextSpan(text: ' $label', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
+      ]),
+      style: theme.textTheme.bodyMedium,
+    );
+
+    if (onTap == null) {
+      return text;
+    }
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(4),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: text,
+      ),
+    );
   }
 }

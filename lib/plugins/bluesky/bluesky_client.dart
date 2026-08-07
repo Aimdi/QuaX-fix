@@ -142,7 +142,7 @@ class BlueskyClient {
     return thread;
   }
 
-  /// Public following graph for [actor] — used to import local follows only.
+  /// Public accounts [actor] follows (profile lists and local import).
   Future<BlueskyFollowsPage> getFollows(String actor, {int limit = 100, String? cursor}) async {
     final query = <String, String>{
       'actor': actor,
@@ -153,6 +153,20 @@ class BlueskyClient {
     }
     final json = await _get(_uri('/xrpc/app.bsky.graph.getFollows', query));
     return parseBlueskyFollowsPage(json.raw);
+  }
+
+
+  /// Public accounts that follow [actor] (read-only AppView).
+  Future<BlueskyFollowersPage> getFollowers(String actor, {int limit = 100, String? cursor}) async {
+    final query = <String, String>{
+      'actor': actor,
+      'limit': '$limit',
+    };
+    if (cursor != null && cursor.isNotEmpty) {
+      query['cursor'] = cursor;
+    }
+    final json = await _get(_uri('/xrpc/app.bsky.graph.getFollowers', query));
+    return parseBlueskyFollowersPage(json.raw);
   }
 
   /// Lists created by [actor] (public metadata only).
