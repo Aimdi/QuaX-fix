@@ -65,4 +65,51 @@ void main() {
     expect(store.state.map((p) => p.text), ['account post']);
     expect(followingCalled, isFalse);
   });
+
+  test('refresh falls back to guest when RSSHub returns nothing', () async {
+    final prefs = PrefServiceCache(cache: {
+      optionPluginThreadsDirectCookies: '',
+      optionPluginThreadsDirectBearer: '',
+      optionPluginThreadsDirectDeviceId: 'device-1',
+      optionPluginThreadsInstance: 'https://rsshub.example.org',
+      optionPluginThreadsUserIds: '{}',
+      optionPluginThreadsDirectCooldownUntil: '',
+    });
+
+    var guestGraphql = false;
+    final direct = ThreadsDirectClient(
+      prefs,
+      minGap: Duration.zero,
+      httpClient: MockClient((request) async {
+        if (request.method == 'GET' && request.url.path == '/@instagram') {
+          return http.Response(
+            r'<html><script>["LSD",[],{"token":"tok"}]</script>'
+            r'<script>{"props":{"user_id":"63404918397"}}</script></html>',
+            200,
+          );
+        }
+        if (request.method == 'POST' && request.url.path == '/api/graphql') {
+          guestGraphql = true;
+          return http.Response(
+            '''{"data":{"mediaData":{"threads":[{"thread_items":[{"post":{"pk":"9","code":"g","caption":{"text":"from guest"},"user":{"username":"instagram","full_name":"IG"}}}]}]}}}''',
+            200,
+          );
+        }
+        return http.Response('unexpected ${request.url}', 500);
+      }),
+    );
+
+    final store = ThreadsFeedStore(
+      ThreadsClient(
+        httpClient: MockClient((_) async => http.Response('{"items":[]}', 200)),
+      ),
+      direct,
+      prefs,
+      _AccountsStub([const ThreadsAccount(handle: 'instagram', name: 'instagram')]),
+    );
+
+    await store.refresh(force: true);
+    expect(guestGraphql, isTrue);
+    expect(store.state.map((p) => p.text), ['from guest']);
+  });
 }

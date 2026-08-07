@@ -158,7 +158,7 @@ const optionPluginSubstackReadIds = 'plugin.substack.read_ids';
 const substackFeedPageSize = 8;
 const substackReadIdsCap = 400;
 
-/// Threads — RSSHub / Xy by default; optional direct Meta session for reads.
+/// Threads — public guest reads by default; optional session / RSSHub / Xy.
 ///
 /// There is no public RSSHub instance default on purpose: the shared one is
 /// rate limited to the point of uselessness for this route. Direct mode pastes
@@ -175,9 +175,9 @@ const optionPluginThreadsInHomeFeed = 'plugin.threads.in_home_feed';
 /// How many posts one account contributes to the merged feed.
 const threadsPostsPerAccount = 20;
 
-/// The reader's own Xy server, which answers the profile lookups Threads will
-/// not serve anonymously. Separate from the RSSHub instance above: that one
-/// brings the posts, this one brings who wrote them.
+/// Optional Xy server for richer profile lookups. Public Threads pages already
+/// expose name / bio / avatar via OG tags; Xy is an upgrade, not a requirement.
+/// Separate from the RSSHub instance above (post proxy).
 const optionPluginThreadsApiBase = 'plugin.threads.api_base';
 const optionPluginThreadsApiToken = 'plugin.threads.api_token';
 const kThreadsApiDefaultBase = 'https://xy-threads.fly.dev';

@@ -68,24 +68,48 @@ class _ThreadsProfileScreenState extends State<ThreadsProfileScreen> {
     });
 
     final prefs = PrefService.of(context, listen: false);
+    final direct = context.read<ThreadsDirectClient>();
+    final api = context.read<ThreadsApi>();
+    final apiBase = prefs.get<String>(optionPluginThreadsApiBase) ?? kThreadsApiDefaultBase;
+    final apiToken = prefs.get<String>(optionPluginThreadsApiToken) ?? '';
     try {
-      final direct = context.read<ThreadsDirectClient>();
-      final ThreadsProfile profile;
-      if (direct.hasCookies) {
-        profile = await direct.fetchProfile(widget.username);
-      } else {
-        profile = await context.read<ThreadsApi>().profile(
-          prefs.get<String>(optionPluginThreadsApiBase) ?? kThreadsApiDefaultBase,
-          prefs.get<String>(optionPluginThreadsApiToken) ?? '',
-          widget.username,
-        );
+      // Public site first — the same page a browser shows without logging in.
+      // Cookies / Xy only step in when that fails.
+      ThreadsProfile? profile;
+      Object? lastError;
+      try {
+        profile = await direct.fetchGuestProfile(widget.username);
+      } catch (e) {
+        lastError = e;
       }
-      if (mounted) {
+      if (profile == null && direct.hasCookies) {
+        try {
+          profile = await direct.fetchProfile(widget.username);
+        } catch (e) {
+          lastError = e;
+        }
+      }
+      if (profile == null) {
+        try {
+          profile = await api.profile(apiBase, apiToken, widget.username);
+        } catch (e) {
+          lastError = e;
+        }
+      }
+      if (!mounted) {
+        return;
+      }
+      if (profile == null) {
         setState(() {
-          _profile = profile;
+          _error = lastError ?? ThreadsException(ThreadsErrorKind.noSuchFeed, 'profile missing');
           _loading = false;
         });
+        return;
       }
+      setState(() {
+        _profile = profile;
+        _loading = false;
+      });
     } catch (e) {
       if (mounted) {
         setState(() {

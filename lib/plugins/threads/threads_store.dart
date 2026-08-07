@@ -123,12 +123,27 @@ class ThreadsFeedStore extends Store<List<ThreadsPost>> {
   }
 
   /// Which route answers, given what the reader has configured.
+  ///
+  /// Public guest GraphQL is always available for followed Accounts. Cookies
+  /// upgrade that when pasted; RSSHub is tried when set, then guest if it fails
+  /// or returns nothing — a dead instance must not block reading the site.
   Future<List<ThreadsPost>> Function(String handle) _fetcher() {
     if (direct.hasCookies) {
       return direct.fetchUserThreads;
     }
-    if (_instance.trim().isNotEmpty) {
-      return (handle) => client.fetchAccount(_instance, handle);
+    final instance = _instance.trim();
+    if (instance.isNotEmpty) {
+      return (handle) async {
+        try {
+          final posts = await client.fetchAccount(instance, handle);
+          if (posts.isNotEmpty) {
+            return posts;
+          }
+        } catch (_) {
+          // Guest path below.
+        }
+        return direct.fetchGuestAccount(handle);
+      };
     }
     return direct.fetchGuestAccount;
   }

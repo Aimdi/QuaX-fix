@@ -40,6 +40,7 @@ void main() {
         tableSavedTweet,
         tableProfileNote,
         tableAntenna,
+        tableThreadsLocalLike,
       ]),
     );
 

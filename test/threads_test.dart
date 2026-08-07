@@ -12,6 +12,16 @@ Json _feed(List<Map<String, Object?>> items, {String title = 'zuck - Threads'}) 
     });
 
 void main() {
+  group('unwrapThreadsOutboundUrl', () {
+    test('unwraps l.threads.com redirects and leaves other URLs alone', () {
+      expect(
+        unwrapThreadsOutboundUrl('https://l.threads.com/?u=https%3A%2F%2Fexample.org%2Fstory'),
+        'https://example.org/story',
+      );
+      expect(unwrapThreadsOutboundUrl('https://example.org/direct'), 'https://example.org/direct');
+    });
+  });
+
   group('normaliseThreadsHandle', () {
     test('takes a bare handle, an @handle and a profile link alike', () {
       expect(normaliseThreadsHandle('zuck'), 'zuck');

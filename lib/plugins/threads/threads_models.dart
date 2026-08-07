@@ -1,10 +1,29 @@
 import 'package:xta/utils/json.dart';
 
+/// Open Graph–style link preview from Meta's `link_preview_attachment`.
+class ThreadsLinkCard {
+  final String url;
+  final String? title;
+  final String? description;
+  final String? imageUrl;
+  final String? providerName;
+
+  const ThreadsLinkCard({
+    required this.url,
+    this.title,
+    this.description,
+    this.imageUrl,
+    this.providerName,
+  });
+
+  bool get hasImage => imageUrl != null && imageUrl!.isNotEmpty;
+}
+
 /// One Threads post, as much of it as a feed carries.
 ///
-/// A feed is not the API: there are no like or reply counts here, and no
-/// conversation. What survives the trip is the text, the pictures, who wrote it
-/// and when — which is what reading a timeline needs.
+/// Meta guest/cookie payloads can also carry likes, reply/repost counts, and a
+/// link preview. RSSHub feeds do not — those fields stay null so the card never
+/// invents zeroes.
 class ThreadsPost {
   /// The entry's own id, unique across accounts — the item id the feed gave,
   /// which for this route is the post's permalink.
@@ -24,6 +43,11 @@ class ThreadsPost {
   /// Where the post lives on Threads, for opening it there.
   final String? url;
 
+  final int? likeCount;
+  final int? replyCount;
+  final int? repostCount;
+  final ThreadsLinkCard? linkCard;
+
   const ThreadsPost({
     required this.id,
     required this.handle,
@@ -33,9 +57,67 @@ class ThreadsPost {
     this.images = const [],
     this.publishedAt,
     this.url,
+    this.likeCount,
+    this.replyCount,
+    this.repostCount,
+    this.linkCard,
   });
 
   bool get hasMedia => images.isNotEmpty;
+
+  bool get hasEngagement => likeCount != null || replyCount != null || repostCount != null;
+}
+
+/// Unwrap Threads' `l.threads.com/?u=` outbound redirect when present.
+String unwrapThreadsOutboundUrl(String url) {
+  final uri = Uri.tryParse(url);
+  if (uri == null) {
+    return url;
+  }
+  final host = uri.host.toLowerCase();
+  if (host != 'l.threads.com' && host != 'l.threads.net') {
+    return url;
+  }
+  final target = uri.queryParameters['u']?.trim();
+  if (target == null || target.isEmpty) {
+    return url;
+  }
+  return target;
+}
+
+/// Preview attachment on a Meta post JSON, or null when nothing useful is there.
+ThreadsLinkCard? threadsLinkCardOf(Json post) {
+  final card = post['text_post_app_info']['link_preview_attachment'];
+  if (!card.exists) {
+    return null;
+  }
+
+  final rawUrl = card['url'].string?.trim() ?? '';
+  final title = card['title'].string?.trim();
+  final description = card['description'].string?.trim();
+  final image = card['image_url'].string?.trim();
+  final display = card['display_url'].string?.trim();
+
+  if (rawUrl.isEmpty &&
+      (title == null || title.isEmpty) &&
+      (image == null || image.isEmpty)) {
+    return null;
+  }
+
+  final url = rawUrl.isEmpty
+      ? (display == null || display.isEmpty ? '' : (display.startsWith('http') ? display : 'https://$display'))
+      : unwrapThreadsOutboundUrl(rawUrl);
+  if (url.isEmpty) {
+    return null;
+  }
+
+  return ThreadsLinkCard(
+    url: url,
+    title: title == null || title.isEmpty ? null : title,
+    description: description == null || description.isEmpty ? null : description,
+    imageUrl: image == null || image.isEmpty ? null : image,
+    providerName: display == null || display.isEmpty ? Uri.tryParse(url)?.host : display,
+  );
 }
 
 /// A Threads profile, as the Xy server reports it.
