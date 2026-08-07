@@ -195,6 +195,70 @@ class SubstackPost {
         baseUrl: publicationBaseUrl,
         name: publicationName,
       );
+
+  /// Snapshot for local likes/saves. Omits [bodyHtml] — the reader fetches it.
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'subtitle': subtitle,
+        'description': description,
+        'slug': slug,
+        'post_date': postDate,
+        'canonical_url': canonicalUrl,
+        'cover_image': coverImage,
+        'audience': audience,
+        'authorName': authorName,
+        'type': type,
+        'hasVideoUpload': hasVideoUpload,
+        'podcast_url': audioUrl,
+        'reaction_count': reactionCount,
+        'comment_count': commentCount,
+        'publicationBaseUrl': publicationBaseUrl,
+        'publicationName': publicationName,
+      };
+
+  /// Rebuild from a local like/save snapshot (or a prefs list entry).
+  factory SubstackPost.fromSnapshot(Map<String, dynamic> json) {
+    final base = json['publicationBaseUrl'] as String? ?? '';
+    final name = json['publicationName'] as String? ?? '';
+    return SubstackPost(
+      id: '${json['id'] ?? json['slug'] ?? ''}',
+      title: json['title'] as String? ?? '',
+      subtitle: json['subtitle'] as String?,
+      description: json['description'] as String?,
+      slug: json['slug'] as String? ?? '',
+      postDate: json['post_date'] as String? ?? json['postDate'] as String?,
+      canonicalUrl: json['canonical_url'] as String? ?? json['canonicalUrl'] as String?,
+      coverImage: json['cover_image'] as String? ?? json['coverImage'] as String?,
+      audience: json['audience'] as String?,
+      authorName: json['authorName'] as String?,
+      type: json['type'] as String?,
+      hasVideoUpload: json['hasVideoUpload'] == true,
+      audioUrl: json['podcast_url'] as String? ?? json['audioUrl'] as String?,
+      reactionCount: json['reaction_count'] is num ? (json['reaction_count'] as num).toInt() : null,
+      commentCount: json['comment_count'] is num ? (json['comment_count'] as num).toInt() : null,
+      publicationBaseUrl: base,
+      publicationName: name,
+    );
+  }
+
+  static List<SubstackPost> listFromPrefs(String? raw) {
+    if (raw == null || raw.isEmpty) return const [];
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) return const [];
+      return decoded
+          .whereType<Map>()
+          .map((e) => SubstackPost.fromSnapshot(Map<String, dynamic>.from(e)))
+          .where((e) => e.id.isNotEmpty && e.slug.isNotEmpty)
+          .toList();
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static String listToPrefs(List<SubstackPost> posts) =>
+      jsonEncode(posts.map((e) => e.toJson()).toList());
 }
 
 class SubstackFeedSnapshot {

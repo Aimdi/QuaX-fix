@@ -501,6 +501,8 @@ Future<void> main() async {
       optionPluginSubstackShowTab: true,
       optionPluginSubstackPublications: '[]',
       optionPluginSubstackReadIds: '[]',
+      optionPluginSubstackLikedPosts: '[]',
+      optionPluginSubstackSavedPosts: '[]',
       optionPluginBlueskyEnabled: false,
       optionPluginBlueskyShowTab: true,
       optionPluginBlueskyInstance: kBlueskyDefaultAppView,
@@ -637,6 +639,8 @@ Future<void> main() async {
     final substackClient = SubstackClient();
     final substackPublications = SubstackPublicationsStore(prefService);
     final substackRead = SubstackReadStore(prefService);
+    final substackLikes = SubstackLikesStore(prefService);
+    final substackSaved = SubstackSavedStore(prefService);
     final threadsClient = ThreadsClient();
     final threadsDirect = ThreadsDirectClient(prefService);
     final threadsApi = ThreadsApi();
@@ -687,6 +691,8 @@ Future<void> main() async {
       if (prefService.get<bool>(optionPluginSubstackEnabled) == true) ...[
         substackPublications.load(),
         substackRead.load(),
+        substackLikes.load(),
+        substackSaved.load(),
       ],
       if (prefService.get<bool>(optionPluginStocksEnabled) == true)
         stocksWatchlist.load(),
@@ -763,6 +769,8 @@ Future<void> main() async {
               ),
             ),
             Provider(create: (_) => substackRead),
+            Provider(create: (_) => substackLikes),
+            Provider(create: (_) => substackSaved),
             Provider(create: (_) => threadsClient),
             Provider(create: (_) => threadsDirect),
             Provider(create: (_) => threadsApi),
