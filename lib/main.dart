@@ -44,6 +44,7 @@ import 'package:xta/plugins/pixiv/pixiv_store.dart';
 import 'package:xta/plugins/threads/threads_api.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
 import 'package:xta/plugins/threads/threads_direct_client.dart';
+import 'package:xta/plugins/threads/threads_likes_store.dart';
 import 'package:xta/plugins/threads/threads_store.dart';
 import 'package:xta/saved/liked_tweet_model.dart';
 import 'package:xta/saved/saved_folders_screen.dart';
@@ -598,6 +599,7 @@ Future<void> main() async {
     final threadsDirect = ThreadsDirectClient(prefService);
     final threadsApi = ThreadsApi();
     final threadsAccounts = ThreadsAccountsStore();
+    final threadsLikes = ThreadsLikesStore();
     final threadsFeed = ThreadsFeedStore(threadsClient, threadsDirect, prefService, threadsAccounts);
     final blueskyClient = BlueskyClient();
     final blueskyAccounts = BlueskyAccountsStore();
@@ -634,6 +636,8 @@ Future<void> main() async {
       ],
       if (prefService.get<bool>(optionPluginStocksEnabled) == true) stocksWatchlist.load(),
       if (prefService.get<bool>(optionPluginThreadsEnabled) == true) threadsAccounts.load(),
+      // Local likes are tiny and used wherever a Threads card paints (tab or home).
+      threadsLikes.load(),
       if (prefService.get<bool>(optionPluginBlueskyEnabled) == true) blueskyAccounts.load(),
       if (prefService.get<bool>(optionPluginMastodonEnabled) == true) mastodonAccounts.load(),
     ]);
@@ -681,6 +685,7 @@ Future<void> main() async {
             Provider(create: (_) => threadsDirect),
             Provider(create: (_) => threadsApi),
             Provider(create: (_) => threadsAccounts),
+            Provider(create: (_) => threadsLikes),
             Provider(create: (_) => threadsFeed),
             Provider(create: (_) => blueskyClient),
             Provider(create: (_) => blueskyAccounts),

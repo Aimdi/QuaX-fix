@@ -231,12 +231,14 @@ ThreadsPost? threadsPostFromApi(Json post) {
   final handle = (user['username'].string ?? '').trim().toLowerCase();
   final text = (post['caption']['text'].string ?? '').trim();
   final images = _imageUrlsOf(post);
-  if (handle.isEmpty || (text.isEmpty && images.isEmpty)) return null;
+  final linkCard = threadsLinkCardOf(post);
+  if (handle.isEmpty || (text.isEmpty && images.isEmpty && linkCard == null)) return null;
 
   final code = post['code'].string;
   final pk = post['pk'].string ?? post['id'].string ?? code;
   if (pk == null || pk.isEmpty) return null;
 
+  final tpi = post['text_post_app_info'];
   final taken = post['taken_at'].integer;
   return ThreadsPost(
     id: pk,
@@ -247,6 +249,10 @@ ThreadsPost? threadsPostFromApi(Json post) {
     images: images,
     publishedAt: taken == null ? null : DateTime.fromMillisecondsSinceEpoch(taken * 1000, isUtc: true).toLocal(),
     url: code == null ? null : '$_threadsWeb/@$handle/post/$code',
+    likeCount: post['like_count'].integer,
+    replyCount: tpi['direct_reply_count'].integer,
+    repostCount: tpi['repost_count'].integer,
+    linkCard: linkCard,
   );
 }
 
