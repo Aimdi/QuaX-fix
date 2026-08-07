@@ -14,6 +14,11 @@ in-app viewer, search). Still read-only — no Pixiv write APIs.
    filter following / ranking / bookmarks / search / related / profile grids.
    Mute actions from the illust viewer (author / tags / this work).
 
+## Performance
+
+Gallery scroll/decode work (cacheWidth, soft refresh, medium thumbs, viewer
+quality ladder, tab keep-alive, …) lives in `docs/specs/pixiv-performance.md`.
+
 ## Still later
 
 - Ugoira frame playback

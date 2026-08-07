@@ -1,4 +1,3 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +5,7 @@ import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/pixiv/pixiv_client.dart';
 import 'package:xta/plugins/pixiv/pixiv_grid.dart';
 import 'package:xta/plugins/pixiv/pixiv_illust_screen.dart';
+import 'package:xta/plugins/pixiv/pixiv_image.dart';
 import 'package:xta/plugins/pixiv/pixiv_links.dart';
 import 'package:xta/plugins/pixiv/pixiv_mute_store.dart';
 import 'package:xta/plugins/pixiv/pixiv_models.dart';
@@ -210,10 +210,18 @@ class _PixivSearchScreenState extends State<PixivSearchScreen>
         _searchControls(l10n),
         Expanded(
           child:
-              ScopedBuilder<PixivIllustListStore, List<PixivIllust>>.transition(
+              ScopedBuilder<PixivIllustListStore, List<PixivIllust>>(
                 store: _illusts,
-                onLoading: (_) =>
-                    const Center(child: CircularProgressIndicator()),
+                onLoading: (_) {
+                  if (_illusts.state.isNotEmpty) {
+                    return PixivIllustGrid(
+                      illusts: _illusts.state,
+                      onRefresh: _illusts.refresh,
+                      loadingMore: _illusts.loadingMore,
+                    );
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                },
                 onError: (context, error) => Padding(
                   padding: const EdgeInsets.all(24),
                   child: FullPageErrorWidget(
@@ -234,7 +242,7 @@ class _PixivSearchScreenState extends State<PixivSearchScreen>
                   }
                   return NotificationListener<ScrollNotification>(
                     onNotification: (n) {
-                      if (n.metrics.pixels > n.metrics.maxScrollExtent - 400) {
+                      if (n.metrics.pixels > n.metrics.maxScrollExtent - 1400) {
                         _illusts.loadMore();
                       }
                       return false;
@@ -418,12 +426,17 @@ class _PixivSearchScreenState extends State<PixivSearchScreen>
                       size: 44,
                       accent: theme.colorScheme.primary,
                     )
-                  : ExtendedImage.network(
-                      avatar,
+                  : SizedBox(
                       width: 44,
                       height: 44,
-                      fit: BoxFit.cover,
-                      headers: pixivImageHeaders,
+                      child: PixivNetworkImage(
+                        url: avatar,
+                        fit: BoxFit.cover,
+                        cacheWidth:
+                            (44 * MediaQuery.devicePixelRatioOf(context)).ceil(),
+                        cacheHeight:
+                            (44 * MediaQuery.devicePixelRatioOf(context)).ceil(),
+                      ),
                     ),
             ),
             title: Text(user.name),

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/pixiv/pixiv_client.dart';
 import 'package:xta/plugins/pixiv/pixiv_grid.dart';
+import 'package:xta/plugins/pixiv/pixiv_image.dart';
 import 'package:xta/plugins/pixiv/pixiv_mute_store.dart';
 import 'package:xta/plugins/pixiv/pixiv_models.dart';
 import 'package:xta/plugins/pixiv/pixiv_search_screen.dart';
@@ -49,9 +50,14 @@ class _PixivIllustScreenState extends State<PixivIllustScreen> {
     final client = context.read<PixivClient>();
     final mute = context.read<PixivMuteStore>();
     try {
-      final detail = await client.illustDetail(_illust.id);
-      final related = await client.related(_illust.id);
+      // Parallel — don't wait on related before painting detail enrichment.
+      final results = await Future.wait([
+        client.illustDetail(_illust.id),
+        client.related(_illust.id),
+      ]);
       if (!mounted) return;
+      final detail = results[0] as PixivIllust;
+      final related = results[1] as PixivIllustPage;
       setState(() {
         _illust = detail;
         _related = mute.filter(related.illusts);
@@ -164,26 +170,63 @@ class _PixivIllustScreenState extends State<PixivIllustScreen> {
 
   Widget _viewer(List<String> pages) {
     final height = MediaQuery.sizeOf(context).height * 0.55;
+    final width = MediaQuery.sizeOf(context).width;
+    final cacheWidth = (width * MediaQuery.devicePixelRatioOf(context)).ceil();
+
     return SizedBox(
       height: height,
       child: PageView.builder(
         itemCount: pages.length,
-        onPageChanged: (i) => setState(() => _pageIndex = i),
+        onPageChanged: (i) {
+          setState(() => _pageIndex = i);
+          _prefetchViewerPage(pages, i + 1, cacheWidth);
+        },
         itemBuilder: (context, index) {
-          return InteractiveViewer(
+          final page = pages[index];
+          final image = Stack(
+            fit: StackFit.expand,
+            alignment: Alignment.center,
+            children: [
+              // Instant paint from the grid thumb already on disk.
+              if (index == 0)
+                PixivNetworkImage(
+                  url: _illust.thumbnailUrl,
+                  fit: BoxFit.contain,
+                  cacheWidth: cacheWidth,
+                ),
+              PixivNetworkImage(
+                url: page,
+                fit: BoxFit.contain,
+                cacheWidth: cacheWidth,
+              ),
+            ],
+          );
+
+          final body = InteractiveViewer(
             minScale: 1,
             maxScale: 4,
-            child: Center(
-              child: ExtendedImage.network(
-                pages[index],
-                fit: BoxFit.contain,
-                headers: pixivImageHeaders,
-              ),
-            ),
+            child: Center(child: image),
           );
+
+          if (index == 0) {
+            return Hero(tag: pixivIllustHeroTag(_illust.id), child: body);
+          }
+          return body;
         },
       ),
     );
+  }
+
+  void _prefetchViewerPage(List<String> pages, int index, int cacheWidth) {
+    if (index < 0 || index >= pages.length || !mounted) {
+      return;
+    }
+    final provider = ExtendedNetworkImageProvider(
+      pages[index],
+      headers: pixivImageHeaders,
+      cache: true,
+    );
+    precacheImage(provider, context).catchError((_) {});
   }
 
   Widget _meta(BuildContext context) {
@@ -214,12 +257,17 @@ class _PixivIllustScreenState extends State<PixivIllustScreen> {
                           size: 40,
                           accent: theme.colorScheme.primary,
                         )
-                      : ExtendedImage.network(
-                          avatar,
+                      : SizedBox(
                           width: 40,
                           height: 40,
-                          fit: BoxFit.cover,
-                          headers: pixivImageHeaders,
+                          child: PixivNetworkImage(
+                            url: avatar,
+                            fit: BoxFit.cover,
+                            cacheWidth:
+                                (40 * MediaQuery.devicePixelRatioOf(context)).ceil(),
+                            cacheHeight:
+                                (40 * MediaQuery.devicePixelRatioOf(context)).ceil(),
+                          ),
                         ),
                 ),
                 const SizedBox(width: 10),
