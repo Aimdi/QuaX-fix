@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Облікові записи",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Типово: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Наприклад https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Поки немає облікових записів",
+  "plugin_bluesky_settings_intro": "Читання працює без налаштування — публічний AppView уже заповнено. Змінюйте лише зі своїм. Вхід у Bluesky не потрібен.",
+  "plugin_bluesky_test": "Перевірити AppView",
+  "plugin_bluesky_test_ok": "Ваш AppView відповів",
+  "plugin_bluesky_use_default": "Використати типовий",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

@@ -518,9 +518,9 @@
   "@hide_sensitive_tweets": {},
   "home": "Главная",
   "@home": {},
-  "home_feed_accounts": "Аккаунты для главных лент",
+  "home_feed_accounts": "Аккаунты главной ленты",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Отключите аккаунты входа, которые нужны только для более высоких лимитов. Они остаются для профилей, поиска, комментариев и Following. «Для вас» объединяет Home-ленты только с включённых аккаунтов.",
+  "home_feed_accounts_description": "Отключайте аккаунты, которые нужны только для более высоких лимитов — они остаются доступны для других запросов. «Для вас» объединяет ленты включённых аккаунтов. «Подписки» по-прежнему используют локальные подписки.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Добавьте аккаунт, чтобы загрузить «Для вас».",
   "@home_feed_accounts_empty": {},
@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Аккаунты",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "По умолчанию: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Например https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Пока нет аккаунтов",
+  "plugin_bluesky_settings_intro": "Чтение работает без настройки — публичный AppView уже заполнен. Меняйте только при своём. Вход в Bluesky не нужен.",
+  "plugin_bluesky_test": "Проверить AppView",
+  "plugin_bluesky_test_ok": "Ваш AppView ответил",
+  "plugin_bluesky_use_default": "Использовать по умолчанию",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

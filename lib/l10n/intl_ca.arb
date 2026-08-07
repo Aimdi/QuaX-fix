@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Comptes",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Per defecte: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Per exemple https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Encara no hi ha comptes",
+  "plugin_bluesky_settings_intro": "La lectura funciona sense configuració: l’AppView públic ja està omplert. Canvieu-lo només si en teniu un de propi. No cal cap compte de Bluesky.",
+  "plugin_bluesky_test": "Prova l’AppView",
+  "plugin_bluesky_test_ok": "El vostre AppView ha respost",
+  "plugin_bluesky_use_default": "Usa el predeterminat",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

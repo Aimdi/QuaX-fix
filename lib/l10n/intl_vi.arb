@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Tài khoản",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Mặc định: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Ví dụ https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Chưa có tài khoản",
+  "plugin_bluesky_settings_intro": "Đọc được ngay không cần cấu hình — AppView công khai đã điền sẵn. Chỉ đổi khi bạn tự chạy. Không cần đăng nhập Bluesky.",
+  "plugin_bluesky_test": "Thử AppView",
+  "plugin_bluesky_test_ok": "AppView của bạn đã phản hồi",
+  "plugin_bluesky_use_default": "Dùng mặc định",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

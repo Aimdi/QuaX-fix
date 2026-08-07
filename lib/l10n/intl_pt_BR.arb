@@ -518,9 +518,9 @@
   "@hide_sensitive_tweets": {},
   "home": "Início",
   "@home": {},
-  "home_feed_accounts": "Contas para os feeds iniciais",
+  "home_feed_accounts": "Contas do início",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Desative as contas de login que você só mantém para limites mais altos. Elas continuam disponíveis para perfis, busca, comentários e Seguindo. «Para você» só mescla as timelines Home das contas ativas.",
+  "home_feed_accounts_description": "Desative as contas que você mantém só para limites de taxa mais altos — elas continuam disponíveis para outras solicitações. Para você junta as timelines das contas ligadas. Seguindo ainda usa suas assinaturas locais.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Adicione uma conta para carregar Para você.",
   "@home_feed_accounts_empty": {},
@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Contas",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Padrão: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Por exemplo https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Nenhuma conta ainda",
+  "plugin_bluesky_settings_intro": "A leitura funciona sem configuração — o AppView público já vem preenchido. Mude só se você tiver o seu. Não precisa de conta no Bluesky.",
+  "plugin_bluesky_test": "Testar AppView",
+  "plugin_bluesky_test_ok": "Seu AppView respondeu",
+  "plugin_bluesky_use_default": "Usar o padrão",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

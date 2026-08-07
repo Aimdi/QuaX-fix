@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Kontoj",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Defaŭlte: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Ekzemple https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Ankoraŭ neniuj kontoj",
+  "plugin_bluesky_settings_intro": "Legado funkcias sen agordo — la publika AppView jam estas plenigita. Ŝanĝu nur se vi havas propran. Bluesky-ensaluto ne necesas.",
+  "plugin_bluesky_test": "Testi AppView",
+  "plugin_bluesky_test_ok": "Via AppView respondis",
+  "plugin_bluesky_use_default": "Uzi defaŭltan",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

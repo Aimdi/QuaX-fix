@@ -520,7 +520,7 @@
   "@home": {},
   "home_feed_accounts": "홈 피드 계정",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "한도만 높이려고 둔 로그인 계정을 끄세요. 프로필·검색·댓글·Following에는 그대로 쓰입니다. For you는 켜 둔 계정의 Home 타임라인만 합칩니다.",
+  "home_feed_accounts_description": "더 높은 요청 한도용으로만 쓰는 계정은 끄세요 — 다른 요청에는 계속 쓰입니다. 추천은 켜 둔 계정의 타임라인을 합칩니다. 팔로잉은 계속 기기의의 구독을 씁니다.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "추천을 불러오려면 계정을 추가하세요.",
   "@home_feed_accounts_empty": {},
@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "계정",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "기본값: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "예: https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "아직 계정이 없습니다",
+  "plugin_bluesky_settings_intro": "설정 없이도 읽을 수 있습니다 — 공개 AppView가 이미 채워져 있습니다. 직접 운영할 때만 바꾸세요. Bluesky 로그인은 필요 없습니다.",
+  "plugin_bluesky_test": "AppView 테스트",
+  "plugin_bluesky_test_ok": "AppView가 응답했습니다",
+  "plugin_bluesky_use_default": "기본값 사용",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

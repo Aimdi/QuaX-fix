@@ -30,19 +30,27 @@ class BlueskyFeedPage {
   const BlueskyFeedPage({required this.posts, this.cursor});
 }
 
-/// Reads Bluesky through the public AppView — no account, no write actions.
+/// Reads Bluesky through an AppView — no account, no write actions.
+///
+/// [resolveBaseUrl] is consulted per request so Settings can change the AppView
+/// without rebuilding the client. Empty / invalid values fall back to
+/// [kBlueskyDefaultAppView].
 class BlueskyClient {
   final http.Client httpClient;
-  final String baseUrl;
+  final String Function() resolveBaseUrl;
 
-  BlueskyClient({http.Client? httpClient, this.baseUrl = 'https://public.api.bsky.app'})
-      : httpClient = httpClient ?? http.Client();
+  BlueskyClient({http.Client? httpClient, String? baseUrl, String Function()? resolveBaseUrl})
+    : httpClient = httpClient ?? http.Client(),
+      resolveBaseUrl = resolveBaseUrl ?? (() => baseUrl ?? kBlueskyDefaultAppView);
 
   static const _timeout = Duration(seconds: 20);
   static const userAgent = 'XTA Bluesky plugin';
 
+  /// Effective AppView root for the next request.
+  String get baseUrl => blueskyAppViewFromPrefs(resolveBaseUrl());
+
   Uri _uri(String path, [Map<String, String>? query]) {
-    final base = baseUrl.trim().replaceAll(RegExp(r'/+$'), '');
+    final base = baseUrl.replaceAll(RegExp(r'/+$'), '');
     return Uri.parse('$base$path').replace(queryParameters: query);
   }
 
@@ -71,6 +79,11 @@ class BlueskyClient {
     } catch (e) {
       throw BlueskyException(BlueskyErrorKind.badResponse, '$uri: $e');
     }
+  }
+
+  /// Confirms the AppView answers a known public profile.
+  Future<void> verify() async {
+    await getProfile('bsky.app');
   }
 
   /// Profile for [actor] (handle or DID).
@@ -102,10 +115,12 @@ class BlueskyClient {
 
   /// Actors matching [q], as the AppView's search returns them.
   Future<List<BlueskyProfile>> searchActors(String q, {int limit = 10}) async {
-    final json = await _get(_uri('/xrpc/app.bsky.actor.searchActors', {
-      'q': q,
-      'limit': '$limit',
-    }));
+    final json = await _get(
+      _uri('/xrpc/app.bsky.actor.searchActors', {
+        'q': q,
+        'limit': '$limit',
+      }),
+    );
     return [
       for (final actor in json['actors'].list) BlueskyProfile.fromJson(actor.raw),
     ];

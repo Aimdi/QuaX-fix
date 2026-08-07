@@ -105,6 +105,35 @@ class BlueskyAccount {
       );
 }
 
+/// Official public AppView — read-only xrpc without a Bluesky login.
+const kBlueskyDefaultAppView = 'https://public.api.bsky.app';
+
+/// Strip trailing slash; require http(s) and a hostname. Null when unusable.
+String? normaliseBlueskyAppView(String input) {
+  var value = input.trim();
+  if (value.isEmpty) {
+    return null;
+  }
+  if (!value.contains('://')) {
+    value = 'https://$value';
+  }
+  final uri = Uri.tryParse(value);
+  final host = uri?.host.trim() ?? '';
+  if (uri == null ||
+      (uri.scheme != 'https' && uri.scheme != 'http') ||
+      host.isEmpty ||
+      host.contains(' ') ||
+      host.contains('%20')) {
+    return null;
+  }
+  final path = uri.path.replaceAll(RegExp(r'/+$'), '');
+  return Uri(scheme: uri.scheme, host: host, port: uri.hasPort ? uri.port : null, path: path).toString();
+}
+
+/// Resolved AppView URL from prefs, always falling back to the working default.
+String blueskyAppViewFromPrefs(String? raw) =>
+    normaliseBlueskyAppView(raw ?? '') ?? kBlueskyDefaultAppView;
+
 /// A handle, profile URL, or DID as the plugin wants it.
 ///
 /// Accepts `@alice.bsky.social`, bare handles with dots, `bsky.app/profile/…`

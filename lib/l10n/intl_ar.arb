@@ -518,9 +518,9 @@
   "@hide_sensitive_tweets": {},
   "home": "الرئيسية",
   "@home": {},
-  "home_feed_accounts": "حسابات الخلاصات الرئيسية",
+  "home_feed_accounts": "حسابات الخلاصة الرئيسية",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "عطّل حسابات تسجيل الدخول التي تبقيها فقط لرفع الحدود. تبقى متاحة للملفات والبحث والتعليقات والمتابعة. «لك» يدمج فقط الجداول الزمنية من الحسابات المفعّلة.",
+  "home_feed_accounts_description": "عطّل الحسابات التي تبقيها فقط لحدود معدّل أعلى — تبقى متاحة للطلبات الأخرى. يدمج «لك» الجداول الزمنية للحسابات المفعّلة. ما زال «المتابَعون» يعتمد على اشتراكاتك المحلية.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "أضف حساباً لتحميل «لك».",
   "@home_feed_accounts_empty": {},
@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "الحسابات",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "الافتراضي: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "مثلًا https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "لا حسابات بعد",
+  "plugin_bluesky_settings_intro": "القراءة تعمل بلا إعداد — AppView العام مُعبَّأ مسبقًا. غيّره فقط إن كنت تشغّل خادمك. لا يلزم تسجيل دخول إلى Bluesky.",
+  "plugin_bluesky_test": "اختبار AppView",
+  "plugin_bluesky_test_ok": "استجاب AppView",
+  "plugin_bluesky_use_default": "استخدم الافتراضي",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

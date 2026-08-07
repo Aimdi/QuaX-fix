@@ -518,9 +518,9 @@
   "@hide_sensitive_tweets": {},
   "home": "主頁",
   "@home": {},
-  "home_feed_accounts": "首頁時間軸帳號",
+  "home_feed_accounts": "主頁動態帳號",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "關閉那些只為提高額度而保留的登入帳號。它們仍可用於資料、搜尋、留言與 Following。「為你推薦」只會合併仍開啟帳號的 Home 時間軸。",
+  "home_feed_accounts_description": "僅為提高請求限額而保留的帳號可關閉——其他請求仍會使用它們。「為你推薦」只合併仍開啟的帳號時間軸。「正在跟隨」仍使用本機訂閱。",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "請新增帳號以載入「為你推薦」。",
   "@home_feed_accounts_empty": {},
@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "帳號",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "預設：{url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "例如 https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "尚無帳號",
+  "plugin_bluesky_settings_intro": "無需設定即可閱讀 — 公共 AppView 已填好。只有自建時才改。不需要登入 Bluesky。",
+  "plugin_bluesky_test": "測試 AppView",
+  "plugin_bluesky_test_ok": "你的 AppView 已回應",
+  "plugin_bluesky_use_default": "使用預設",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

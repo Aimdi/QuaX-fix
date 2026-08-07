@@ -518,9 +518,9 @@
   "@hide_sensitive_tweets": {},
   "home": "Ana sayfa",
   "@home": {},
-  "home_feed_accounts": "Ana sayfa akışları için hesaplar",
+  "home_feed_accounts": "Ana akış hesapları",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Yalnızca daha yüksek limitler için tuttuğunuz oturum hesaplarını kapatın. Profiller, arama, yorumlar ve Following için kullanılabilir kalırlar. «Sana özel» yalnızca açık bırakılan hesapların Home zaman akışlarını birleştirir.",
+  "home_feed_accounts_description": "Yalnızca daha yüksek istek sınırları için tuttuğunuz hesapları kapatın — diğer istekler için kullanılabilir kalırlar. Sana özel, açık hesapların zaman akışını birleştirir. Takip edilenler hâlâ yerel aboneliklerini kullanır.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Sana özel’i yüklemek için bir hesap ekleyin.",
   "@home_feed_accounts_empty": {},
@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Hesaplar",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Varsayılan: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Örneğin https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Henüz hesap yok",
+  "plugin_bluesky_settings_intro": "Kurulum olmadan okunur — genel AppView zaten dolu. Yalnızca kendi AppView’iniz varsa değiştirin. Bluesky girişi gerekmez.",
+  "plugin_bluesky_test": "AppView’i sına",
+  "plugin_bluesky_test_ok": "AppView’iniz yanıt verdi",
+  "plugin_bluesky_use_default": "Varsayılanı kullan",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

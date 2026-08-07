@@ -518,9 +518,9 @@
   "@hide_sensitive_tweets": {},
   "home": "Startpagina",
   "@home": {},
-  "home_feed_accounts": "Accounts voor home-feeds",
+  "home_feed_accounts": "Accounts voor de starttijdlijn",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Zet loginaccounts uit die je alleen voor hogere limieten bewaart. Ze blijven beschikbaar voor profielen, zoeken, reacties en Following. Voor jou voegt alleen Home-tijdlijnen van ingeschakelde accounts samen.",
+  "home_feed_accounts_description": "Schakel accounts uit die je alleen houdt voor hogere limieten — ze blijven beschikbaar voor andere verzoeken. Voor jou voegt de tijdlijnen van ingeschakelde accounts samen. Volgend gebruikt nog steeds je lokale abonnementen.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Voeg een account toe om Voor jou te laden.",
   "@home_feed_accounts_empty": {},
@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Accounts",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Standaard: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Bijvoorbeeld https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Nog geen accounts",
+  "plugin_bluesky_settings_intro": "Lezen werkt zonder instellingen — de openbare AppView staat al ingevuld. Wijzig alleen als je er zelf een hebt. Geen Bluesky-login nodig.",
+  "plugin_bluesky_test": "AppView testen",
+  "plugin_bluesky_test_ok": "Je AppView heeft geantwoord",
+  "plugin_bluesky_use_default": "Standaard gebruiken",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

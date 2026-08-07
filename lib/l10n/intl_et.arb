@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Kontod",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Vaikimisi: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Näiteks https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Kontosid pole veel",
+  "plugin_bluesky_settings_intro": "Lugemine töötab seadistuseta — avalik AppView on juba täidetud. Muuda ainult oma AppView’i korral. Bluesky sisselogimist pole vaja.",
+  "plugin_bluesky_test": "Testi AppView’d",
+  "plugin_bluesky_test_ok": "Sinu AppView vastas",
+  "plugin_bluesky_use_default": "Kasuta vaikeväärtust",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

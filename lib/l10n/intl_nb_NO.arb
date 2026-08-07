@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Kontoer",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Standard: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "For eksempel https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Ingen kontoer ennå",
+  "plugin_bluesky_settings_intro": "Lesing fungerer uten oppsett — den offentlige AppView er allerede fylt inn. Endre bare hvis du har din egen. Bluesky-innlogging trengs ikke.",
+  "plugin_bluesky_test": "Test AppView",
+  "plugin_bluesky_test_ok": "AppView-en din svarte",
+  "plugin_bluesky_use_default": "Bruk standard",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

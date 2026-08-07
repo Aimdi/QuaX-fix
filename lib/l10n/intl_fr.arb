@@ -518,9 +518,9 @@
   "@hide_sensitive_tweets": {},
   "home": "Accueil",
   "@home": {},
-  "home_feed_accounts": "Comptes pour les fils d’accueil",
+  "home_feed_accounts": "Comptes du fil d'accueil",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "Désactivez les comptes de connexion que vous gardez seulement pour de meilleures limites. Ils restent disponibles pour les profils, la recherche, les commentaires et Abonnements. « Pour vous » ne fusionne que les fils Home des comptes laissés activés.",
+  "home_feed_accounts_description": "Désactivez les comptes que vous gardez seulement pour de meilleures limites de débit — ils restent disponibles pour les autres requêtes. Pour vous fusionne les fils des comptes activés. Abonnements utilise toujours vos abonnements locaux.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "Ajoutez un compte pour charger Pour vous.",
   "@home_feed_accounts_empty": {},
@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Comptes",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Par défaut : {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Par exemple https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Aucun compte pour l’instant",
+  "plugin_bluesky_settings_intro": "La lecture fonctionne sans configuration — l’AppView public est déjà renseigné. Ne le changez que si vous en hébergez un. Aucun compte Bluesky n’est requis.",
+  "plugin_bluesky_test": "Tester l’AppView",
+  "plugin_bluesky_test_ok": "Votre AppView a répondu",
+  "plugin_bluesky_use_default": "Utiliser la valeur par défaut",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

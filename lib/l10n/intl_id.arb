@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Akun",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Default: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Contoh https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Belum ada akun",
+  "plugin_bluesky_settings_intro": "Membaca langsung jalan — AppView publik sudah terisi. Ubah hanya jika Anda punya sendiri. Login Bluesky tidak diperlukan.",
+  "plugin_bluesky_test": "Uji AppView",
+  "plugin_bluesky_test_ok": "AppView Anda menjawab",
+  "plugin_bluesky_use_default": "Pakai default",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

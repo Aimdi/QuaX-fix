@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "Akaŭnty",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Pradvyznačana: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Naprykład https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "Pakul niama akaŭntaŭ",
+  "plugin_bluesky_settings_intro": "Čytannie pracuje biez nalady — publičny AppView užo zapoŭnieny. Zmianiajcie tolki kali majecie ŭlasny. Uvachod u Bluesky nie patrebny.",
+  "plugin_bluesky_test": "Pravieryć AppView",
+  "plugin_bluesky_test_ok": "Vaš AppView adkazaŭ",
+  "plugin_bluesky_use_default": "Uziać pradvyznačany",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

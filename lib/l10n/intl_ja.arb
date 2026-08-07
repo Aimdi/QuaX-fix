@@ -518,9 +518,9 @@
   "@hide_sensitive_tweets": {},
   "home": "ホーム",
   "@home": {},
-  "home_feed_accounts": "ホームタイムライン用アカウント",
+  "home_feed_accounts": "ホームのアカウント",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "レート制限のためだけに残しているログインアカウントをオフにします。プロフィール、検索、コメント、Following には使えます。For you はオンのアカウントの Home タイムラインだけをまとめます。",
+  "home_feed_accounts_description": "レート制限緩和のためだけに残しているアカウントはオフにできます。他のリクエストでは引き続き使われます。おすすめはオンにしたアカウントのタイムラインをまとめます。フォロー中はこれまでどおり端末内の購読を使います。",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "おすすめを表示するにはアカウントを追加してください。",
   "@home_feed_accounts_empty": {},
@@ -1816,5 +1816,29 @@
   "@chrome_avatar_description": {},
   "@chrome_avatar_error": {},
   "@chrome_avatar_from_account": {},
-  "@chrome_avatar_title": {}
+  "@chrome_avatar_title": {},
+  "plugin_bluesky_accounts": "アカウント",
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "デフォルト: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "例: https://public.api.bsky.app",
+  "plugin_bluesky_no_accounts": "まだアカウントがありません",
+  "plugin_bluesky_settings_intro": "設定なしで読めます — 公開 AppView が最初から入っています。自前のときだけ変えてください。Bluesky ログインは不要です。",
+  "plugin_bluesky_test": "AppView をテスト",
+  "plugin_bluesky_test_ok": "AppView が応答しました",
+  "plugin_bluesky_use_default": "デフォルトを使う",
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }
