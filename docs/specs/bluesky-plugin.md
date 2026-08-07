@@ -28,6 +28,9 @@ translated. This plugin talks to Bluesky's documented public AppView at
 - People search sheet (exact handle/DID/URL opens a profile; free text uses
   `searchActors`).
 - Home tab when the plugin is enabled.
+- Local follows can join subscription groups; their posts interleave into the
+  group feed beside X. Mixed-feed cards show the blue Bluesky butterfly (and a
+  blue provenance strip) so they are distinct from X posts.
 - Settings with a working default AppView (`kBlueskyDefaultAppView` /
   `https://public.api.bsky.app`). Empty or invalid values fall back to that
   default; readers can point at another AppView and test it.
@@ -37,5 +40,5 @@ translated. This plugin talks to Bluesky's documented public AppView at
 - Compose, like, repost, follow-on-Bluesky, DMs, or any write to Bluesky.
 - Notifications, lists, starter packs, or video embeds beyond what a card can
   ignore safely.
-- Interleaving Bluesky posts into the X home / group feeds.
+- Interleaving Bluesky posts into the X home / Following feed (groups only).
 - Local likes library (Threads has this; Bluesky does not yet).

@@ -7,6 +7,7 @@ import 'package:xta/plugins/bluesky/bluesky_client.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_post_card.dart';
 import 'package:xta/plugins/bluesky/bluesky_store.dart';
+import 'package:xta/subscriptions/users_model.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
 import 'package:xta/ui/errors.dart';
 
@@ -111,12 +112,14 @@ class _BlueskyProfileScreenState extends State<BlueskyProfileScreen> {
   Future<void> _toggleFollow(BlueskyProfile profile) async {
     final accounts = context.read<BlueskyAccountsStore>();
     final feed = context.read<BlueskyFeedStore>();
+    final subscriptions = context.read<SubscriptionsModel>();
 
     if (accounts.follows(profile.handle)) {
       await accounts.remove(profile.handle);
     } else {
       await accounts.add(profile.toAccount());
     }
+    await subscriptions.reloadSubscriptions();
     if (mounted) {
       await feed.refresh();
       setState(() {});

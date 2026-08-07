@@ -74,29 +74,35 @@ class BlueskyFeedStore extends Store<List<BlueskyPost>> {
   /// down with it. The error only surfaces when nothing at all could be read.
   Future<void> refresh() async {
     await execute(() async {
-      final followed = accounts.state.toList(growable: false);
-      if (followed.isEmpty) {
+      final actors = accounts.state.map((e) => e.actor).toList(growable: false);
+      return postsFor(actors);
+    });
+  }
+
+  /// Posts for [actors], newest first — used by the Bluesky tab and by group
+  /// feeds that mix Bluesky members in beside X.
+  Future<List<BlueskyPost>> postsFor(List<String> actors) async {
+    if (actors.isEmpty) {
+      return const [];
+    }
+
+    Object? lastError;
+    final batches = await mapWithConcurrency(actors, 3, (actor) async {
+      try {
+        final page = await client.getAuthorFeed(actor, limit: blueskyPostsPerAccount);
+        return page.posts;
+      } catch (e) {
+        lastError = e;
         return const <BlueskyPost>[];
       }
-
-      Object? lastError;
-      final batches = await mapWithConcurrency(followed, 3, (account) async {
-        try {
-          final page = await client.getAuthorFeed(account.actor, limit: blueskyPostsPerAccount);
-          return page.posts;
-        } catch (e) {
-          lastError = e;
-          return const <BlueskyPost>[];
-        }
-      });
-
-      final posts = batches.expand((e) => e.take(blueskyPostsPerAccount)).toList();
-      if (posts.isEmpty && lastError != null) {
-        throw lastError!;
-      }
-
-      posts.sort((a, b) => (b.publishedAt ?? DateTime(0)).compareTo(a.publishedAt ?? DateTime(0)));
-      return posts;
     });
+
+    final posts = batches.expand((e) => e.take(blueskyPostsPerAccount)).toList();
+    if (posts.isEmpty && lastError != null) {
+      throw lastError!;
+    }
+
+    posts.sort((a, b) => (b.publishedAt ?? DateTime(0)).compareTo(a.publishedAt ?? DateTime(0)));
+    return posts;
   }
 }

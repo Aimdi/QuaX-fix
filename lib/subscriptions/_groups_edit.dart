@@ -10,6 +10,7 @@ import 'package:xta/group/deck_groups.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/group/group_tree.dart';
 import 'package:xta/group/subscription_pack.dart';
+import 'package:xta/plugins/bluesky/bluesky_butterfly_icon.dart';
 import 'package:xta/plugins/reddit/reddit_avatar.dart';
 import 'package:xta/subscriptions/_group_add_member.dart';
 import 'package:xta/subscriptions/group_identity.dart';
@@ -63,12 +64,20 @@ String _memberSubtitle(Subscription subscription) => switch (subscription) {
       SearchSubscription() => L10n.current.search_term,
       RedditSubscription(:final name) => 'r/$name',
       SubstackSubscription(:final baseUrl) => Uri.tryParse(baseUrl)?.host ?? baseUrl,
+      BlueskySubscription(:final screenName) => '@$screenName',
       _ => '@${subscription.screenName}',
     };
 
 Widget _memberAvatar(Subscription subscription) => switch (subscription) {
       SearchSubscription() => const SizedBox(width: 48, child: Icon(Icons.search)),
       RedditSubscription(:final name) => RedditAvatar(name: 'r/$name', size: 40),
+      BlueskySubscription() => Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            UserAvatar(uri: subscription.profileImageUrlHttps),
+            const BlueskyButterflyIcon(size: 12),
+          ],
+        ),
       _ => UserAvatar(uri: subscription.profileImageUrlHttps),
     };
 

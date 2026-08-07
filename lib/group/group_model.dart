@@ -118,6 +118,7 @@ class GroupModel extends Store<SubscriptionGroupGet> {
         database.rawQuery(membership(tableSubstackSubscription), ids),
         database.rawQuery(membership(tableRedditSubscription), ids),
         database.rawQuery(membership(tableThreadsSubscription), ids),
+        database.rawQuery(membership(tableBlueskySubscription), ids),
       ]);
 
       var searchSubscriptions = rows[0].map((e) => SearchSubscription.fromMap(e)).toList(growable: false);
@@ -125,6 +126,7 @@ class GroupModel extends Store<SubscriptionGroupGet> {
       var substackSubscriptions = rows[2].map((e) => SubstackSubscription.fromMap(e)).toList(growable: false);
       var redditSubscriptions = rows[3].map((e) => RedditSubscription.fromMap(e)).toList(growable: false);
       var threadsSubscriptions = rows[4].map((e) => ThreadsSubscription.fromMap(e)).toList(growable: false);
+      var blueskySubscriptions = rows[5].map((e) => BlueskySubscription.fromMap(e)).toList(growable: false);
 
       // TODO: Factory
       return SubscriptionGroupGet(
@@ -137,6 +139,7 @@ class GroupModel extends Store<SubscriptionGroupGet> {
           ...substackSubscriptions,
           ...redditSubscriptions,
           ...threadsSubscriptions,
+          ...blueskySubscriptions,
         ],
         includeReplies: _includeOverride(group['include_replies']),
         includeRetweets: _includeOverride(group['include_retweets']),
