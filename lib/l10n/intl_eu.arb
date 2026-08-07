@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "Aukeratu orriak",
   "@choose_pages": {},
+  "chrome_avatar_change": "Sakatu goian ezkerreko irudia aldatzeko",
+  "chrome_avatar_choose": "Aukeratu gailutik",
+  "chrome_avatar_clear": "Erabili monograma",
+  "chrome_avatar_description": "Goian ezkerrean eta tiraderan agertzen den irudia — gailu honetan geratzen da",
+  "chrome_avatar_error": "Ezin izan da profil-argazki hori kargatu",
+  "chrome_avatar_from_account": "Erabili X-eko profil-argazkia",
+  "chrome_avatar_title": "Zure avatarra",
   "clickToShowMore": "Sakatu gehiago ikusteko",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "Jarioaren luzera zen moduan",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zenbat orrialde kargatzen dituen jarioak zen moduan gelditu aurretik.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

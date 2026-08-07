@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "Vali lehed",
   "@choose_pages": {},
+  "chrome_avatar_change": "Puuduta, et muuta ülal vasakul olevat pilti",
+  "chrome_avatar_choose": "Vali seadmest",
+  "chrome_avatar_clear": "Kasuta monogrammi",
+  "chrome_avatar_description": "Pilt ülal vasakul ja sahtlis — jääb sellesse seadmesse",
+  "chrome_avatar_error": "Profiilipilti ei õnnestunud laadida",
+  "chrome_avatar_from_account": "Kasuta X-i profiilifotot",
+  "chrome_avatar_title": "Sinu avatar",
   "clickToShowMore": "Klõpsake rohkem kuvamiseks",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "Voo pikkus Zen-režiimis",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Mitu lehte voog Zen-režiimis enne pausi laadib.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

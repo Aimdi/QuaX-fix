@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "选择页面",
   "@choose_pages": {},
+  "chrome_avatar_change": "点按以更改左上角图片",
+  "chrome_avatar_choose": "从设备选择",
+  "chrome_avatar_clear": "改用字母头像",
+  "chrome_avatar_description": "显示在左上角和侧栏的图片 — 仅保存在此设备",
+  "chrome_avatar_error": "无法加载该头像",
+  "chrome_avatar_from_account": "使用 X 头像",
+  "chrome_avatar_title": "你的头像",
   "clickToShowMore": "点击显示更多",
   "@clickToShowMore": {},
   "clip_note_hint": "为这条收藏添加备注",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "禅模式信息流长度",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

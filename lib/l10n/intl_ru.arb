@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "Выберите страницы",
   "@choose_pages": {},
+  "chrome_avatar_change": "Нажмите, чтобы изменить изображение слева сверху",
+  "chrome_avatar_choose": "Выбрать с устройства",
+  "chrome_avatar_clear": "Использовать монограмму",
+  "chrome_avatar_description": "Изображение слева сверху и в меню — остаётся на этом устройстве",
+  "chrome_avatar_error": "Не удалось загрузить это фото профиля",
+  "chrome_avatar_from_account": "Взять фото профиля X",
+  "chrome_avatar_title": "Ваш аватар",
   "clickToShowMore": "Нажмите, чтобы показать больше",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "Длина ленты в дзен-режиме",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Сколько страниц загружает лента в дзен-режиме перед паузой.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

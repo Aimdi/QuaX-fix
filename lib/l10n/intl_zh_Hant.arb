@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "選擇頁面",
   "@choose_pages": {},
+  "chrome_avatar_change": "點一下以變更左上角圖片",
+  "chrome_avatar_choose": "從裝置選擇",
+  "chrome_avatar_clear": "改用字母頭像",
+  "chrome_avatar_description": "顯示在左上角與側欄的圖片 — 僅保存在此裝置",
+  "chrome_avatar_error": "無法載入該頭像",
+  "chrome_avatar_from_account": "使用 X 頭像",
+  "chrome_avatar_title": "你的頭像",
   "clickToShowMore": " \n點擊以顯示更多…",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "禪模式時間軸長度",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禪模式下時間軸暫停前載入的頁數。",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

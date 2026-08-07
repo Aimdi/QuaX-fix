@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "Tria les pàgines",
   "@choose_pages": {},
+  "chrome_avatar_change": "Toqueu per canviar la imatge de dalt a l’esquerra",
+  "chrome_avatar_choose": "Tria del dispositiu",
+  "chrome_avatar_clear": "Fes servir el monograma",
+  "chrome_avatar_description": "Imatge a dalt a l’esquerra i al calaix — es queda en aquest dispositiu",
+  "chrome_avatar_error": "No s’ha pogut carregar aquesta foto de perfil",
+  "chrome_avatar_from_account": "Fes servir la foto de perfil d’X",
+  "chrome_avatar_title": "El teu avatar",
   "clickToShowMore": "Fes clic per mostrar-ne més",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "Longitud del feed en mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quantes pàgines carrega el feed en mode zen abans de fer una pausa.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

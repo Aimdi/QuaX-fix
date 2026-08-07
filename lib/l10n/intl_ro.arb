@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "Alegeți pagini",
   "@choose_pages": {},
+  "chrome_avatar_change": "Atinge pentru a schimba imaginea din stânga sus",
+  "chrome_avatar_choose": "Alege de pe dispozitiv",
+  "chrome_avatar_clear": "Folosește monograma",
+  "chrome_avatar_description": "Imaginea din stânga sus și din meniu — rămâne pe acest dispozitiv",
+  "chrome_avatar_error": "Nu s-a putut încărca acea fotografie de profil",
+  "chrome_avatar_from_account": "Folosește fotografia de profil X",
+  "chrome_avatar_title": "Avatarul tău",
   "clickToShowMore": "Faceți clic pentru a afișa mai mult",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "Lungimea fluxului în modul zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Câte pagini încarcă fluxul în modul zen înainte de a se opri.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "Выберыце старонкі",
   "@choose_pages": {},
+  "chrome_avatar_change": "Націсніце, каб змяніць выяву зверху злева",
+  "chrome_avatar_choose": "Выбраць з прылады",
+  "chrome_avatar_clear": "Выкарыстоўваць манаграму",
+  "chrome_avatar_description": "Выява зверху злева і ў меню — застаецца на гэтай прыладзе",
+  "chrome_avatar_error": "Не атрымалася загрузіць фота профілю",
+  "chrome_avatar_from_account": "Узяць фота профілю X",
+  "chrome_avatar_title": "Ваш аватар",
   "clickToShowMore": "Націсніце, каб паказаць больш",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "Даўжыня стужкі ў дзэн-рэжыме",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Колькі старонак загружае стужка ў дзэн-рэжыме перад паўзай.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

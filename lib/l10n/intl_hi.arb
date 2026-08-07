@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "पृष्ठ चुनें",
   "@choose_pages": {},
+  "chrome_avatar_change": "ऊपर बाएँ चित्र बदलने के लिए टैप करें",
+  "chrome_avatar_choose": "डिवाइस से चुनें",
+  "chrome_avatar_clear": "मोनोग्राम इस्तेमाल करें",
+  "chrome_avatar_description": "ऊपर बाएँ और ड्रॉअर में दिखने वाला चित्र — इसी डिवाइस पर रहता है",
+  "chrome_avatar_error": "वह प्रोफ़ाइल चित्र लोड नहीं हो सका",
+  "chrome_avatar_from_account": "X प्रोफ़ाइल फ़ोटो इस्तेमाल करें",
+  "chrome_avatar_title": "आपका अवतार",
   "clickToShowMore": "अधिक दिखाने के लिए क्लिक करें",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "ज़ेन मोड में फ़ीड की लंबाई",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "ज़ेन मोड में रुकने से पहले फ़ीड कितने पेज लोड करेगी।",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "Vybrat stránky",
   "@choose_pages": {},
+  "chrome_avatar_change": "Klepnutím změníte obrázek vlevo nahoře",
+  "chrome_avatar_choose": "Vybrat ze zařízení",
+  "chrome_avatar_clear": "Použít monogram",
+  "chrome_avatar_description": "Obrázek vlevo nahoře a v nabídce — zůstane v tomto zařízení",
+  "chrome_avatar_error": "Profilový obrázek se nepodařilo načíst",
+  "chrome_avatar_from_account": "Použít profilovou fotku z X",
+  "chrome_avatar_title": "Váš avatar",
   "clickToShowMore": "Kliknutím zobrazíte více",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "Délka kanálu v zen režimu",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolik stránek kanál v zen režimu načte, než se pozastaví.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

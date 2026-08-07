@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "اختيار الصفحات",
   "@choose_pages": {},
+  "chrome_avatar_change": "اضغط لتغيير الصورة في أعلى اليسار",
+  "chrome_avatar_choose": "اختر من الجهاز",
+  "chrome_avatar_clear": "استخدم الحرف الأول بدلًا من ذلك",
+  "chrome_avatar_description": "الصورة الظاهرة أعلى اليسار وفي الدرج — تبقى على هذا الجهاز",
+  "chrome_avatar_error": "تعذّر تحميل صورة الملف الشخصي",
+  "chrome_avatar_from_account": "استخدم صورة ملف X",
+  "chrome_avatar_title": "صورتك الشخصية",
   "clickToShowMore": "انقر لعرض المزيد",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "طول الخلاصة في وضع الهدوء",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

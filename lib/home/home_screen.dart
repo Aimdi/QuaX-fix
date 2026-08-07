@@ -10,6 +10,7 @@ import 'package:xta/generated/l10n.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/group/group_screen.dart';
 import 'package:xta/home/_account_avatar.dart';
+import 'package:xta/home/chrome_avatar.dart';
 import 'package:xta/subscriptions/group_identity.dart';
 import 'package:xta/home/_feed.dart';
 import 'package:xta/home/_missing.dart';
@@ -307,10 +308,9 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
     );
   }
 
-  /// The account block at the top of the drawer. Fetch accounts carry a screen
-  /// name but no picture, so the mark is a monogram and the counts X would show
-  /// (followers) are replaced with the honest thing the app knows: how many
-  /// accounts it is fetching through. Tapping opens account settings.
+  /// The account block at the top of the drawer. Uses the custom chrome avatar
+  /// when set; otherwise a monogram. Long-press the picture to change it;
+  /// tapping the block opens settings.
   Widget _drawerAccountHeader(BuildContext context, L10n l10n) {
     final theme = Theme.of(context);
     return FutureBuilder<Account?>(
@@ -319,12 +319,13 @@ class _ScaffoldWithBottomNavigationState extends State<ScaffoldWithBottomNavigat
         final account = snapshot.data;
         return InkWell(
           onTap: () => _goFromDrawer(context, routeSettings),
+          onLongPress: () => showChromeAvatarSheet(context),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AccountAvatar(account: account, size: 44),
+                ChromeAvatarMark(account: account, size: 44),
                 const SizedBox(height: 10),
                 Text(l10n.fritter, style: theme.textTheme.titleLarge),
                 if (account?.screenName != null)

@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "Pagina's kiezen",
   "@choose_pages": {},
+  "chrome_avatar_change": "Tik om de afbeelding linksboven te wijzigen",
+  "chrome_avatar_choose": "Kiezen van apparaat",
+  "chrome_avatar_clear": "Monogram gebruiken",
+  "chrome_avatar_description": "Afbeelding linksboven en in het menu — blijft op dit apparaat",
+  "chrome_avatar_error": "Kon die profielfoto niet laden",
+  "chrome_avatar_from_account": "X-profielfoto gebruiken",
+  "chrome_avatar_title": "Jouw avatar",
   "clickToShowMore": "Klik om meer te tonen",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "Feedlengte in zen-modus",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hoeveel pagina's een feed in zen-modus laadt voordat deze pauzeert.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

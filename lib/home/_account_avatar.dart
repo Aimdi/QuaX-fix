@@ -18,7 +18,7 @@ Future<Account?> primaryAccount() async {
 ///
 /// Fetch accounts carry a screen name but no picture, so this never pretends to
 /// be a profile photo — and falls back to a neutral glyph when no account has
-/// been added at all.
+/// been added at all. For a custom chrome picture, use [ChromeAvatarMark].
 class AccountAvatar extends StatelessWidget {
   final Account? account;
   final double size;
@@ -36,24 +36,6 @@ class AccountAvatar extends StatelessWidget {
       displayName: name,
       size: size,
       accent: Theme.of(context).colorScheme.primary,
-    );
-  }
-}
-
-/// The app bar's leading slot, wearing the primary account's mark and opening
-/// the drawer — where X wears your avatar and does the same.
-class DrawerAvatarButton extends StatelessWidget {
-  const DrawerAvatarButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<Account?>(
-      future: primaryAccount(),
-      builder: (context, snapshot) => IconButton(
-        tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-        onPressed: () => Scaffold.of(context).openDrawer(),
-        icon: AccountAvatar(account: snapshot.data, size: 30),
-      ),
     );
   }
 }

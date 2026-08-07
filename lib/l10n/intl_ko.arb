@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "페이지 선택",
   "@choose_pages": {},
+  "chrome_avatar_change": "탭하여 왼쪽 위 사진 변경",
+  "chrome_avatar_choose": "기기에서 선택",
+  "chrome_avatar_clear": "모노그램 사용",
+  "chrome_avatar_description": "왼쪽 위와 서랍에 보이는 사진 — 이 기기에만 저장됩니다",
+  "chrome_avatar_error": "프로필 사진을 불러올 수 없습니다",
+  "chrome_avatar_from_account": "X 프로필 사진 사용",
+  "chrome_avatar_title": "내 아바타",
   "clickToShowMore": "더 보기를 클릭하세요",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "젠 모드 피드 길이",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "젠 모드에서 피드가 일시 중지되기 전에 불러올 페이지 수입니다.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

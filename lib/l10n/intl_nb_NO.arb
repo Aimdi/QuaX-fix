@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "Velg sider",
   "@choose_pages": {},
+  "chrome_avatar_change": "Trykk for å endre bildet øverst til venstre",
+  "chrome_avatar_choose": "Velg fra enheten",
+  "chrome_avatar_clear": "Bruk monogram",
+  "chrome_avatar_description": "Bilde øverst til venstre og i menyen — blir på denne enheten",
+  "chrome_avatar_error": "Kunne ikke laste det profilbildet",
+  "chrome_avatar_from_account": "Bruk X-profilbilde",
+  "chrome_avatar_title": "Avataren din",
   "clickToShowMore": "Klikk for å vise mer",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1762,5 +1769,12 @@
   "zen_mode_page_cap": "Feed-lengde i zen-modus",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hvor mange sider en feed laster i zen-modus før den tar en pause.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }
