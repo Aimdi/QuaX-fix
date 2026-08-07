@@ -5,7 +5,11 @@ import 'package:xta/constants.dart';
 import 'package:xta/database/repository.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/home/home_screen.dart';
+<<<<<<< HEAD
 import 'package:xta/plugins/bluesky/bluesky_likes_store.dart';
+=======
+import 'package:xta/plugins/bluesky/bluesky_butterfly_icon.dart';
+>>>>>>> origin/cursor/bluesky-in-groups-bfa2
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_screen.dart';
 import 'package:xta/plugins/bluesky/bluesky_settings.dart';
@@ -29,6 +33,7 @@ class BlueskyPlugin extends XtaPlugin {
   @override
   String? get homeTabPrefKey => optionPluginBlueskyShowTab;
 
+  /// Store row still needs an [IconData]; the home tab uses the painted butterfly.
   @override
   IconData get icon => Icons.cloud;
 
@@ -49,8 +54,8 @@ class BlueskyPlugin extends XtaPlugin {
     return NavigationPage(
       pluginIdBluesky,
       (c) => L10n.of(c).plugin_bluesky_title,
-      const Icon(Icons.cloud_outlined),
-      const Icon(Icons.cloud),
+      const BlueskyButterflyIcon(size: 22),
+      const BlueskyButterflyIcon(size: 22),
     );
   }
 

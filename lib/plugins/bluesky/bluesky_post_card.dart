@@ -6,7 +6,11 @@ import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
+<<<<<<< HEAD
 import 'package:xta/plugins/bluesky/bluesky_likes_store.dart';
+=======
+import 'package:xta/plugins/bluesky/bluesky_butterfly_icon.dart';
+>>>>>>> origin/cursor/bluesky-in-groups-bfa2
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_profile_screen.dart';
 import 'package:xta/plugins/bluesky/bluesky_thread_screen.dart';
@@ -220,24 +224,14 @@ class BlueskyPostCard extends StatelessWidget {
             ),
             if (showSourceBadge) ...[
               const SizedBox(width: 6),
-              _badge(context, l10n.plugin_bluesky_title),
+              Tooltip(
+                message: l10n.plugin_bluesky_title,
+                child: const BlueskyButterflyIcon(size: 14),
+              ),
             ],
           ],
         ),
       ],
-    );
-  }
-
-  Widget _badge(BuildContext context, String label) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-      decoration: BoxDecoration(
-        border: Border.all(color: theme.colorScheme.outline),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(label, style: theme.textTheme.labelSmall),
     );
   }
 

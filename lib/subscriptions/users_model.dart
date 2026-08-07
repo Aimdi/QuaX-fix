@@ -41,24 +41,26 @@ class SubscriptionsModel extends Store<List<Subscription>> {
       bool orderByAscending = prefs.get(optionSubscriptionOrderByAscending);
       String orderByField = prefs.get(optionSubscriptionOrderByField);
 
-      // Five independent tables, read together. Followed Substack publications,
-      // subreddits and Threads accounts are subscriptions too, so they appear in
-      // this list and can be picked as group members like anyone else — which is
-      // the whole reason they live in tables rather than in a preference.
+      // Independent tables, read together. Followed Substack publications,
+      // subreddits, Threads and Bluesky accounts are subscriptions too, so they
+      // appear in this list and can be picked as group members like anyone else
+      // — which is the whole reason they live in tables rather than in a preference.
       final rows = await Future.wait([
         database.query(tableSubscription),
         database.query(tableSearchSubscription),
         database.query(tableSubstackSubscription),
         database.query(tableRedditSubscription),
         database.query(tableThreadsSubscription),
+        database.query(tableBlueskySubscription),
       ]);
       List<Subscription> users = rows[0].map((e) => UserSubscription.fromMap(e)).toList();
       List<Subscription> searches = rows[1].map((e) => SearchSubscription.fromMap(e)).toList();
       List<Subscription> publications = rows[2].map((e) => SubstackSubscription.fromMap(e)).toList();
       List<Subscription> subreddits = rows[3].map((e) => RedditSubscription.fromMap(e)).toList();
       List<Subscription> threads = rows[4].map((e) => ThreadsSubscription.fromMap(e)).toList();
+      List<Subscription> bluesky = rows[5].map((e) => BlueskySubscription.fromMap(e)).toList();
 
-      List<Subscription> lst = [...users, ...searches, ...publications, ...subreddits, ...threads];
+      List<Subscription> lst = [...users, ...searches, ...publications, ...subreddits, ...threads, ...bluesky];
       if (orderCustom.isEmpty) {
         return lst.sorted((a, b) {
           var one = orderByAscending ? a : b;

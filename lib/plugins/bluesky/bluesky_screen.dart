@@ -11,6 +11,7 @@ import 'package:xta/plugins/bluesky/bluesky_post_card.dart';
 import 'package:xta/plugins/bluesky/bluesky_profile_screen.dart';
 import 'package:xta/plugins/bluesky/bluesky_search_sheet.dart';
 import 'package:xta/plugins/bluesky/bluesky_store.dart';
+import 'package:xta/subscriptions/users_model.dart';
 import 'package:xta/ui/errors.dart';
 
 /// The Bluesky tab: local follows feed, plus a device-only Liked library.
@@ -69,9 +70,13 @@ class _BlueskyScreenState extends State<BlueskyScreen> {
     final accounts = context.read<BlueskyAccountsStore>();
     final l10n = L10n.of(context);
 
+    final subscriptions = context.read<SubscriptionsModel>();
+    final feed = context.read<BlueskyFeedStore>();
+
     try {
       final profile = await client.getProfile(actor);
       await accounts.add(profile.toAccount());
+      await subscriptions.reloadSubscriptions();
     } catch (e) {
       if (mounted) {
         messenger.showSnackBar(SnackBar(content: Text(blueskyErrorMessage(l10n, e))));
@@ -80,7 +85,7 @@ class _BlueskyScreenState extends State<BlueskyScreen> {
     }
 
     if (mounted) {
-      await context.read<BlueskyFeedStore>().refresh();
+      await feed.refresh();
     }
   }
 

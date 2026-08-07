@@ -10,6 +10,7 @@ import 'package:xta/plugins/bluesky/bluesky_import_list_screen.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_profile_screen.dart';
 import 'package:xta/plugins/bluesky/bluesky_store.dart';
+import 'package:xta/subscriptions/users_model.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
 
 /// AppView URL and the accounts followed through it.
@@ -75,9 +76,13 @@ class _BlueskySettingsScreenState extends State<BlueskySettingsScreen> {
   }
 
   Future<void> _remove(String handle) async {
-    await context.read<BlueskyAccountsStore>().remove(handle);
+    final accounts = context.read<BlueskyAccountsStore>();
+    final subscriptions = context.read<SubscriptionsModel>();
+    final feed = context.read<BlueskyFeedStore>();
+    await accounts.remove(handle);
+    await subscriptions.reloadSubscriptions();
     if (mounted) {
-      await context.read<BlueskyFeedStore>().refresh();
+      await feed.refresh();
     }
   }
 
