@@ -212,7 +212,7 @@ class _RedditSearchTabState<T> extends State<_RedditSearchTab<T>>
 
     return ListView(
       children: [
-        if (leading != null) leading,
+        ?leading,
         if (_error != null)
           Padding(
             padding: const EdgeInsets.all(24),

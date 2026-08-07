@@ -81,7 +81,7 @@ class _RedditPostSheet extends StatelessWidget {
           label: l10n.share_link,
           onTap: () {
             Navigator.pop(context);
-            Share.share(redditPostUrl(post));
+            SharePlus.instance.share(ShareParams(text: redditPostUrl(post)));
           },
         ),
         const SizedBox(height: 8),
