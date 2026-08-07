@@ -3,11 +3,13 @@ import 'dart:convert';
 
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:ffcache/ffcache.dart';
+import 'package:xta/catcher/exceptions.dart';
 import 'package:xta/client/endpoints.dart';
 import 'package:xta/client/errors.dart';
 import 'package:xta/client/transport.dart';
 import 'package:xta/client/timeline_parser.dart';
 import 'package:xta/client/tweet_models.dart';
+import 'package:xta/database/entities.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/profile/profile_model.dart';
 import 'package:xta/user.dart';
@@ -633,6 +635,43 @@ class Twitter {
     return List.from(jsonDecode(result)).map((e) => Trends.fromJson(e)).toList(growable: false);
   }
 
+  static Map<String, Object> _homeTimelineParams({required String userId, required int count, String? cursor}) {
+    final params = <String, Object>{
+      "variables":
+          "{\"userId\":\"160534877\",\"count\":$count,\"includePromotedContent\":false,\"withQuickPromoteEligibilityTweetFields\":true,\"withVoice\":true,\"withV2Timeline\":true}",
+      "features":
+          "{\"rweb_lists_timeline_redesign_enabled\":true,\"responsive_web_graphql_exclude_directive_enabled\":true,\"verified_phone_label_enabled\":true,\"creator_subscriptions_tweet_preview_api_enabled\":true,\"responsive_web_graphql_timeline_navigation_enabled\":true,\"responsive_web_graphql_skip_user_profile_image_extensions_enabled\":false,\"tweetypie_unmention_optimization_enabled\":true,\"responsive_web_edit_tweet_api_enabled\":true,\"graphql_is_translatable_rweb_tweet_is_translatable_enabled\":true,\"view_counts_everywhere_api_enabled\":true,\"longform_notetweets_consumption_enabled\":true,\"responsive_web_twitter_article_tweet_consumption_enabled\":false,\"tweet_awards_web_tipping_enabled\":false,\"freedom_of_speech_not_reach_fetch_enabled\":true,\"standardized_nudges_misinfo\":true,\"tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled\":true,\"longform_notetweets_rich_text_read_enabled\":true,\"longform_notetweets_inline_media_enabled\":true,\"responsive_web_media_download_video_enabled\":false,\"responsive_web_enhance_cards_enabled\":false}",
+      "fieldToggles": "{\"withAuxiliaryUserLabels\":false,\"withArticleRichContentState\":false}",
+    };
+    final variables = json.decode(params["variables"].toString()) as Map<String, dynamic>;
+    variables["userId"] = userId;
+    if (cursor != null) {
+      variables['cursor'] = cursor;
+    }
+    params["variables"] = json.encode(variables);
+    return params;
+  }
+
+  static TweetStatus _parseHomeTimeline(
+    Map<String, dynamic> result, {
+    List<String>? pinnedTweets,
+    required bool includeReplies,
+    required bool showPinnedTweet,
+    required int Function() getTweetsCounter,
+    required void Function() incrementTweetsCounter,
+  }) {
+    return TimelineParser.createTimelineChains(
+      result,
+      'tweet',
+      pinnedTweets ?? [],
+      includeReplies == false,
+      includeReplies,
+      showPinnedTweet,
+      getTweetsCounter,
+      incrementTweetsCounter,
+    );
+  }
+
   static Future<TweetStatus> getTimelineTweets(
     String id,
     String type, {
@@ -644,35 +683,42 @@ class Twitter {
     required int Function() getTweetsCounter,
     required void Function() incrementTweetsCounter,
   }) async {
-    bool showPinnedTweet = true;
-    Map<String, Object> defaultUserTweetsParam = {
-      "variables":
-          "{\"userId\":\"160534877\",\"count\":$count,\"includePromotedContent\":false,\"withQuickPromoteEligibilityTweetFields\":true,\"withVoice\":true,\"withV2Timeline\":true}",
-      "features":
-          "{\"rweb_lists_timeline_redesign_enabled\":true,\"responsive_web_graphql_exclude_directive_enabled\":true,\"verified_phone_label_enabled\":true,\"creator_subscriptions_tweet_preview_api_enabled\":true,\"responsive_web_graphql_timeline_navigation_enabled\":true,\"responsive_web_graphql_skip_user_profile_image_extensions_enabled\":false,\"tweetypie_unmention_optimization_enabled\":true,\"responsive_web_edit_tweet_api_enabled\":true,\"graphql_is_translatable_rweb_tweet_is_translatable_enabled\":true,\"view_counts_everywhere_api_enabled\":true,\"longform_notetweets_consumption_enabled\":true,\"responsive_web_twitter_article_tweet_consumption_enabled\":false,\"tweet_awards_web_tipping_enabled\":false,\"freedom_of_speech_not_reach_fetch_enabled\":true,\"standardized_nudges_misinfo\":true,\"tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled\":true,\"longform_notetweets_rich_text_read_enabled\":true,\"longform_notetweets_inline_media_enabled\":true,\"responsive_web_media_download_video_enabled\":false,\"responsive_web_enhance_cards_enabled\":false}",
-      "fieldToggles": "{\"withAuxiliaryUserLabels\":false,\"withArticleRichContentState\":false}",
-    };
-
-    Map<String, dynamic> variables = json.decode(defaultUserTweetsParam["variables"].toString());
-    variables["userId"] = id;
-    if (cursor != null) {
-      variables['cursor'] = cursor;
-    }
-    defaultUserTweetsParam["variables"] = json.encode(variables);
-
-    var response = await _twitterApi.client.get(XEndpoints.uri(XEndpoints.homeTimeline, defaultUserTweetsParam));
-    var result = json.decode(response.body);
-    //if this page is not first one on the profile page, dont add pinned tweet
-    if (variables['cursor'] != null) showPinnedTweet = false;
-    return TimelineParser.createTimelineChains(
+    final params = _homeTimelineParams(userId: id, count: count, cursor: cursor);
+    final response = await _twitterApi.client.get(XEndpoints.uri(XEndpoints.homeTimeline, params));
+    final result = json.decode(response.body) as Map<String, dynamic>;
+    return _parseHomeTimeline(
       result,
-      'tweet',
-      pinnedTweets ?? [],
-      includeReplies == false,
-      includeReplies,
-      showPinnedTweet,
-      getTweetsCounter,
-      incrementTweetsCounter,
+      pinnedTweets: pinnedTweets,
+      includeReplies: includeReplies,
+      showPinnedTweet: cursor == null,
+      getTweetsCounter: getTweetsCounter,
+      incrementTweetsCounter: incrementTweetsCounter,
+    );
+  }
+
+  /// HomeTimeline for one pinned login [account] (no account rotation).
+  static Future<TweetStatus> getTimelineTweetsForAccount(
+    Account account, {
+    List<String>? pinnedTweets,
+    int count = 10,
+    String? cursor,
+    bool includeReplies = true,
+    required int Function() getTweetsCounter,
+    required void Function() incrementTweetsCounter,
+  }) async {
+    final params = _homeTimelineParams(userId: account.id, count: count, cursor: cursor);
+    final response = await QuackerTwitterClient.fetchAs(account, XEndpoints.uri(XEndpoints.homeTimeline, params));
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw HttpException(response);
+    }
+    final result = json.decode(response.body) as Map<String, dynamic>;
+    return _parseHomeTimeline(
+      result,
+      pinnedTweets: pinnedTweets,
+      includeReplies: includeReplies,
+      showPinnedTweet: cursor == null,
+      getTweetsCounter: getTweetsCounter,
+      incrementTweetsCounter: incrementTweetsCounter,
     );
   }
 

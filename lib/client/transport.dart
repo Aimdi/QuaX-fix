@@ -18,6 +18,7 @@ import 'package:xta/client/client_regular_account.dart';
 import 'package:xta/client/client_unauthenticated.dart';
 import 'package:xta/client/rate_limit_tracker.dart';
 import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
 
 const Duration _defaultTimeout = Duration(seconds: 30);
 
@@ -35,6 +36,34 @@ class QuackerTwitterClient extends TwitterClient {
         return Future.error(HttpException(response));
       }
     });
+  }
+
+  /// Fetches [uri] with a single pinned [account] — no rotation.
+  ///
+  /// Used when For you intentionally loads HomeTimeline for a chosen login
+  /// account (or merges several). Other requests keep using [fetch] so accounts
+  /// turned off for home feeds still raise rate limits elsewhere.
+  static Future<http.Response> fetchAs(Account account, Uri uri, {Map<String, String>? headers}) async {
+    final endpoint = uri.path;
+    final response = await XRegularAccount().fetch(
+      uri,
+      headers: headers,
+      log: log,
+      authHeader: json.decode(account.authHeader),
+    );
+    final code = response.statusCode;
+    if (code >= 200 && code < 300) {
+      RateLimitTracker.clear(account.id, endpoint);
+      if (!account.isClean) {
+        await recordAccountSuccess(account.id);
+      }
+      return response;
+    }
+    if (code == 429) {
+      RateLimitTracker.flag(account.id, endpoint, _resetFromHeaders(response));
+      throw RateLimitedException();
+    }
+    return response;
   }
 
   /// Tries accounts (healthy ones first, then flagged ones as a fallback),
@@ -57,6 +86,9 @@ class QuackerTwitterClient extends TwitterClient {
   static Future<http.Response> fetch(Uri uri, {Map<String, String>? headers}) async {
     final endpoint = uri.path;
     final now = DateTime.now();
+    // Home-feed account toggles must not shrink this pool: TweetDetail (comments)
+    // and SearchTimeline (quotes / Following chunks) share fetch(), and excluding
+    // a login account here would break those screens for no feed-related gain.
     final accounts = await getAccounts();
     final selector = AccountSelector(
       accounts,

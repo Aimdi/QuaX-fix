@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollDirection;
+import 'package:xta/client/accounts.dart';
 import 'package:xta/client/client.dart';
+import 'package:xta/home/home_account_filter.dart';
 import 'package:xta/group/feed_read_position.dart';
 import 'package:xta/profile/profile.dart';
 import 'package:xta/plugins/reddit/reddit_interleaved.dart';
@@ -152,9 +154,11 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
   }
 
   Future<TweetPageResult> _loadTweets(String? cursor) async {
-    final result = await Twitter.getTimelineTweets(
-      user.idStr!,
-      widget.type,
+    final disabled = context.read<HomeAccountFilterStore>().state;
+    final accounts = await getAccounts();
+    final result = await loadMergedForYouPage(
+      accounts: accounts,
+      disabledIds: disabled,
       cursor: cursor,
       count: pageSize,
       includeReplies: widget.includeReplies,
@@ -168,7 +172,7 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
         _pendingFirstPage = result.chains;
       }
     }
-    return (chains: result.chains, nextCursor: result.cursorBottom);
+    return result;
   }
 
   bool _onScrollNotification(ScrollNotification notification) {

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
+import 'package:provider/provider.dart';
 import 'package:xta/client/client_regular_account.dart';
 import 'package:xta/client/login_webview.dart';
 import 'package:xta/database/entities.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/client/accounts.dart';
+import 'package:xta/home/home_account_filter.dart';
 
 class SettingsAccountFragment extends StatefulWidget {
   const SettingsAccountFragment({super.key});
@@ -56,6 +59,7 @@ class _SettingsAccountFragment extends State<SettingsAccountFragment> {
   @override
   Widget build(BuildContext context) {
     var model = XRegularAccount();
+    final filter = context.read<HomeAccountFilterStore>();
     return Scaffold(
       appBar: AppBar(
         title: Text(L10n.current.account),
@@ -70,19 +74,29 @@ class _SettingsAccountFragment extends State<SettingsAccountFragment> {
           builder: (BuildContext listContext, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const LinearProgressIndicator();
-            } else {
-              List<Account> data = snapshot.data;
-              return ListView.builder(
-                  itemCount: data.length,
-                  itemBuilder: (BuildContext itemContext, int index) {
-                    final account = data[index];
-                    return Dismissible(
-                        // Every row shared one key, so dismissing an account
-                        // handed its dismissed state to the row beneath it.
+            }
+
+            final List<Account> data = snapshot.data ?? const <Account>[];
+            if (data.isEmpty) {
+              return Center(child: Text(L10n.of(context).home_feed_accounts_empty));
+            }
+
+            return ScopedBuilder<HomeAccountFilterStore, Set<String>>(
+              store: filter,
+              onState: (_, disabled) {
+                return ListView(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                      child: Text(
+                        L10n.of(context).home_feed_accounts_description,
+                        style: TextStyle(color: Theme.of(context).disabledColor),
+                      ),
+                    ),
+                    ...data.map((account) {
+                      final enabled = isHomeAccountEnabled(account.id, disabled);
+                      return Dismissible(
                         key: ValueKey(account.id),
-                        // One way only, with something behind it: a swipe that
-                        // could go either way and showed nothing gave no hint
-                        // that it deleted, and no chance to change course.
                         direction: DismissDirection.endToStart,
                         background: const _DeleteBackground(),
                         confirmDismiss: (_) => _confirmDelete(context, account),
@@ -90,13 +104,21 @@ class _SettingsAccountFragment extends State<SettingsAccountFragment> {
                           await model.deleteAccount(account.id.toString());
                           setState(() {});
                         },
-                        child: Card(
-                            child: ListTile(
+                        child: SwitchListTile(
+                          secondary: const Icon(Icons.account_circle),
                           title: Text(account.screenName ?? L10n.of(context).unknown_username),
-                          leading: const Icon(Icons.account_circle),
-                        )));
-                  });
-            }
+                          subtitle: Text(L10n.of(context).home_feed_include_in_for_you),
+                          value: enabled,
+                          onChanged: (value) async {
+                            await filter.setEnabled(account.id, value, accounts: data);
+                          },
+                        ),
+                      );
+                    }),
+                  ],
+                );
+              },
+            );
           }),
     );
   }

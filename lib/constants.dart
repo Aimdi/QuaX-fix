@@ -9,6 +9,10 @@ const optionHelloLastBuild = 'hello.last_build';
 const optionHomePages = 'home.pages';
 const optionHomeInitialTab = 'home.initial_tab';
 const optionHomeDefaultFeedTab = 'home.default_feed_tab';
+/// Login accounts excluded from the merged For you timeline (JSON string list).
+/// Empty means every saved account participates. New accounts stay included
+/// until the reader turns them off.
+const optionHomeFeedDisabledAccountIds = 'home.feed_disabled_account_ids';
 
 /// Plugin tabs already offered to the bar once, so removing one sticks.
 const optionSeededPluginTabs = 'plugins.seeded_tabs';
