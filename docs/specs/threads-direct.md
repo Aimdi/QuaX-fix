@@ -39,6 +39,11 @@ Tapping a post opens an in-app thread screen. Replies come from a guest scrape
 of the public post URL (`parseThreadsSsrThread` over `data-sjs` `thread_items`).
 Open-in-browser and article link previews still leave the app.
 
+Pure **reposts** arrive as an empty outer shell with the original under
+`text_post_app_info.share_info.reposted_post`. Parsers unwrap that, keep the
+original author/content, and mark `repostedByHandle` so cards show
+“{name} reposted” and SSR profile scrapes still match the profile owner.
+
 ## Feed priority
 
 1. Local Accounts non-empty → merge those handles via:

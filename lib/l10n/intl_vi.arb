@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Hồ sơ này ở chế độ riêng tư; chỉ phần tự giới thiệu là công khai.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} đã đăng lại",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Thêm tài khoản Threads để đọc bài công khai — không cần đăng nhập. Cookie, Bearer, RSSHub và Xy bên dưới là tùy chọn.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Thử kết nối",

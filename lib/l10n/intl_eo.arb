@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Ĉi tiu profilo estas privata; publika estas nur kion ĝi diras pri si mem.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} reafiŝis",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Aldonu Threads-kontojn por legi iliajn publikajn afiŝojn — sen ensaluto. Kuketoj, Bearer, RSSHub kaj Xy sube estas nedevigaj.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Provi la konekton",

@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Acest profil e privat; public e doar ce spune despre sine.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} a redistribuit",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Adaugă conturi Threads ca să le citești postările publice — fără autentificare. Cookie-urile, Bearer, RSSHub și Xy de mai jos sunt opționale.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Testează conexiunea",

@@ -48,6 +48,10 @@ class ThreadsPost {
   final int? repostCount;
   final ThreadsLinkCard? linkCard;
 
+  /// When set, this row is a repost: [repostedByHandle] shared [handle]'s post.
+  final String? repostedByHandle;
+  final String? repostedByName;
+
   const ThreadsPost({
     required this.id,
     required this.handle,
@@ -61,11 +65,24 @@ class ThreadsPost {
     this.replyCount,
     this.repostCount,
     this.linkCard,
+    this.repostedByHandle,
+    this.repostedByName,
   });
 
   bool get hasMedia => images.isNotEmpty;
 
   bool get hasEngagement => likeCount != null || replyCount != null || repostCount != null;
+
+  bool get isRepost => repostedByHandle != null && repostedByHandle!.isNotEmpty;
+
+  /// Who to show on a "X reposted" line.
+  String get reposterDisplayName {
+    final name = repostedByName?.trim() ?? '';
+    if (name.isNotEmpty) {
+      return name;
+    }
+    return repostedByHandle ?? '';
+  }
 }
 
 /// Minimal profile card from posts when the public page scrape failed.

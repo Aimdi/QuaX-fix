@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Denne profilen er privat; bare det den sier om seg selv er offentlig.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} republiserte",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Legg til Threads-kontoer for å lese offentlige innlegg — uten innlogging. Informasjonskapsler, Bearer, RSSHub og Xy under er valgfrie.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Test tilkoblingen",

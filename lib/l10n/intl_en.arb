@@ -1325,6 +1325,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "This profile is private, so only what it says about itself is public.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} reposted",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Add Threads accounts to read their public posts — no login needed. Cookies, Bearer, RSSHub and Xy below are optional extras.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Test connection",

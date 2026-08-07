@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "See profiil on privaatne; avalik on vaid see, mida ta enda kohta ütleb.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} postitas uuesti",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Lisa Threads’i kontod, et lugeda nende avalikke postitusi — ilma sisselogimiseta. Allpool olevad küpsised, Bearer, RSSHub ja Xy on valikulised.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Testi ühendust",

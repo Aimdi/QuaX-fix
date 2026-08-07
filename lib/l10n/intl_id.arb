@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Profil ini privat; yang publik hanya apa yang dikatakannya tentang dirinya.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} memposting ulang",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Tambahkan akun Threads untuk membaca pos publik mereka — tanpa masuk. Cookie, Bearer, RSSHub, dan Xy di bawah opsional.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Uji koneksi",

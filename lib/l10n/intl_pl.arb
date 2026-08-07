@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Ten profil jest prywatny — publiczne jest tylko to, co mówi o sobie.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} podał(a) dalej",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Dodaj konta Threads, aby czytać ich publiczne posty — bez logowania. Cookies, Bearer, RSSHub i Xy poniżej są opcjonalne.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Sprawdź połączenie",

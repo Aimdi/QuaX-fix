@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "このプロフィールは非公開です。公開されているのは自己紹介だけです。",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name}さんが再投稿しました",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Threadsアカウントを追加すると、ログインなしで公開投稿を読めます。下のCookie・Bearer・RSSHub・Xyは任意です。",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "接続を試す",
