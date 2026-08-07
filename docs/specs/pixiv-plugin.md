@@ -1,8 +1,7 @@
 # Pixiv plugin (private)
 
-Read-only browsing of a Pixiv following feed. Inspired by the *approach* of
-[pixez-flutter](https://github.com/Notsfsssf/pixez-flutter) (GPL-3.0) and
-[Pixiv-MultiPlatform](https://github.com/magic-cucumber/Pixiv-MultiPlatform) —
+Read-only Pixiv gallery inspired by the *approach* of
+[pixez-flutter](https://github.com/Notsfsssf/pixez-flutter) (GPL-3.0) —
 **none of their code is copied or translated**. Auth and `app-api.pixiv.net`
 calls are written fresh in Dart against the well-known unofficial API shape.
 
@@ -28,7 +27,8 @@ Pixiv no longer accepts password login on the app API. XTA supports the same
 4. POST `https://oauth.secure.pixiv.net/auth/token` with
    `grant_type=authorization_code`, the code, verifier, redirect URI, and the
    public Android app client id/secret.
-5. Persist `refresh_token` (and short-lived `access_token`) in preferences.
+5. Persist `refresh_token` (and short-lived `access_token` + `user_id`) in
+   preferences.
 
 **Advanced fallback:** paste a refresh token manually in settings (same storage).
 
@@ -37,17 +37,37 @@ Constants and implementation: `lib/plugins/pixiv/pixiv_auth.dart`,
 
 No compose, bookmark, follow, or like write-backs to Pixiv.
 
-## MVP
+## Features
 
 | Feature | Detail |
 |---|---|
-| Settings | Sign in with Pixiv (WebView PKCE), sign out, advanced refresh-token paste, show R-18 toggle (off by default), test connection |
-| Home tab | Following timeline (`GET /v2/illust/follow`) |
-| Cards | Title, author, thumbnail (Referer required), open `pixiv.net/artworks/{id}` |
-| Profile | User detail + their illusts by numeric id |
+| Settings | Sign in with Pixiv (WebView PKCE), sign out, advanced refresh-token paste, show R-18 toggle (off by default), test connection, local muted author/tag/work review |
+| Home tabs | Following (`/v2/illust/follow`), Ranking (`/v1/illust/ranking`), public/private Bookmarks (`/v1/user/bookmarks/illust`) |
+| Gallery | Pixez-style staggered grid (`flutter_staggered_grid_view`) with page-count / R-18 / ugoira chips |
+| Viewer | In-app illust screen — multi-page manga, caption, tags, bookmark/view counts, related works, local mute actions |
+| Search | Illusts (`/v1/search/illust`) and users (`/v1/search/user`); recent queries; Pixiv artwork/user link open; target and sort controls; tag chips open search |
+| Profile | User detail + staggered grid of their illusts |
+| Local mute | Preference-backed author ids, tag names, and work ids filter following, ranking, bookmarks, search, related, and profile grids |
 
-## Not in MVP
+## Endpoints
 
-- Ugoira playback, manga reader, novel API
-- Search, ranking, comments, local download manager
-- Bookmark / follow / like on Pixiv
+| Call | Path |
+|---|---|
+| Following | `GET /v2/illust/follow` |
+| Ranking | `GET /v1/illust/ranking?mode=` |
+| Bookmarks | `GET /v1/user/bookmarks/illust` |
+| Search illust | `GET /v1/search/illust` |
+| Search user | `GET /v1/search/user` |
+| Illust detail | `GET /v1/illust/detail` |
+| Related | `GET /v2/illust/related` |
+| User detail | `GET /v1/user/detail` |
+| User illusts | `GET /v1/user/illusts` |
+
+## Not yet
+
+- Ugoira frame playback
+- Novel API
+- Local download manager
+- Bookmark / follow / like **write** APIs on Pixiv
+- Comments
+- Proxy / mirror modes

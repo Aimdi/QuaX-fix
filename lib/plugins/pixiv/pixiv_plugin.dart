@@ -10,9 +10,9 @@ import 'package:xta/plugins/pixiv/pixiv_store.dart';
 import 'package:xta/plugins/plugin.dart';
 import 'package:xta/plugins/plugin_category.dart';
 
-/// Private Pixiv reading plugin — following feed via refresh-token auth.
+/// Private Pixiv gallery — following, ranking, bookmarks, search (read-only).
 ///
-/// Inspired by pixez-flutter / Pixiv-MultiPlatform's approach; code is original.
+/// Inspired by pixez-flutter's approach; code is original.
 /// See docs/specs/pixiv-plugin.md.
 class PixivPlugin extends XtaPlugin {
   PixivPlugin();
@@ -42,7 +42,8 @@ class PixivPlugin extends XtaPlugin {
   String title(BuildContext context) => L10n.of(context).plugin_pixiv_title;
 
   @override
-  String description(BuildContext context) => L10n.of(context).plugin_pixiv_description;
+  String description(BuildContext context) =>
+      L10n.of(context).plugin_pixiv_description;
 
   @override
   NavigationPage homePage(BuildContext context) {
@@ -67,7 +68,12 @@ class PixivPlugin extends XtaPlugin {
     await prefs.set(optionPluginPixivRefreshToken, '');
     await prefs.set(optionPluginPixivAccessToken, '');
     await prefs.set(optionPluginPixivAccessExpiresAt, '');
+    await prefs.set(optionPluginPixivUserId, 0);
     await prefs.set(optionPluginPixivShowR18, false);
+    await prefs.set(optionPluginPixivMutedAuthors, '[]');
+    await prefs.set(optionPluginPixivMutedTags, '[]');
+    await prefs.set(optionPluginPixivMutedIllusts, '[]');
+    await prefs.set(optionPluginPixivSearchHistory, '[]');
   }
 
   @override

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/database/repository.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/home/home_screen.dart';
+import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_screen.dart';
+import 'package:xta/plugins/bluesky/bluesky_settings.dart';
 import 'package:xta/plugins/bluesky/bluesky_store.dart';
 import 'package:xta/plugins/plugin.dart';
 import 'package:xta/plugins/plugin_category.dart';
@@ -56,13 +59,21 @@ class BlueskyPlugin extends XtaPlugin {
   }
 
   @override
-  Widget? settingsScreen(BuildContext context) => null;
+  Widget? settingsScreen(BuildContext context) => const BlueskySettingsScreen();
 
   @override
   List<String> get tables => const [tableBlueskySubscription];
 
   @override
+  Future<void> resetPreferences(BasePrefService prefs) async {
+    await prefs.set(optionPluginBlueskyInstance, kBlueskyDefaultAppView);
+  }
+
+  @override
   Future<void> forgetLoadedData(BuildContext context) async {
-    await context.read<BlueskyAccountsStore>().load();
+    final accounts = context.read<BlueskyAccountsStore>();
+    final feed = context.read<BlueskyFeedStore>();
+    await accounts.load();
+    await feed.refresh();
   }
 }

@@ -276,6 +276,32 @@ class _SubstackReaderScreenState extends State<SubstackReaderScreen> {
                 padding: EdgeInsets.zero,
               ),
             ),
+          ScopedBuilder<SubstackLikesStore, List<SubstackPost>>(
+            store: context.read<SubstackLikesStore>(),
+            onState: (context, liked) {
+              final isLiked = liked.any((p) => p.id == _post.id);
+              return IconButton(
+                tooltip: isLiked
+                    ? L10n.of(context).plugin_substack_unlike
+                    : L10n.of(context).plugin_substack_like,
+                icon: Icon(isLiked ? Icons.favorite : Icons.favorite_outline),
+                onPressed: () => context.read<SubstackLikesStore>().toggle(_post),
+              );
+            },
+          ),
+          ScopedBuilder<SubstackSavedStore, List<SubstackPost>>(
+            store: context.read<SubstackSavedStore>(),
+            onState: (context, saved) {
+              final isSaved = saved.any((p) => p.id == _post.id);
+              return IconButton(
+                tooltip: isSaved
+                    ? L10n.of(context).plugin_substack_unsave
+                    : L10n.of(context).plugin_substack_save,
+                icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_outline),
+                onPressed: () => context.read<SubstackSavedStore>().toggle(_post),
+              );
+            },
+          ),
           IconButton(
             tooltip: L10n.of(context).plugin_substack_comments,
             icon: const Icon(Icons.mode_comment_outlined),

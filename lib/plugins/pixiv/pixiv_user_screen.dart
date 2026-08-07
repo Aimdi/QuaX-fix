@@ -1,17 +1,19 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/pixiv/pixiv_client.dart';
-import 'package:xta/plugins/pixiv/pixiv_illust_card.dart';
+import 'package:xta/plugins/pixiv/pixiv_grid.dart';
+import 'package:xta/plugins/pixiv/pixiv_mute_store.dart';
 import 'package:xta/plugins/pixiv/pixiv_models.dart';
 import 'package:xta/plugins/pixiv/pixiv_settings.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
 import 'package:xta/ui/errors.dart';
 import 'package:xta/utils/urls.dart';
 
-/// One Pixiv user's profile and illusts (read-only).
+/// One Pixiv user's profile and works in a staggered grid (read-only).
 class PixivUserScreen extends StatefulWidget {
   final int userId;
 
@@ -26,8 +28,8 @@ class _PixivUserScreenState extends State<PixivUserScreen> {
   List<PixivIllust> _illusts = const [];
   String? _nextUrl;
   Object? _error;
-  bool _loading = true;
-  bool _loadingMore = false;
+  var _loading = true;
+  var _loadingMore = false;
 
   @override
   void initState() {
@@ -42,13 +44,14 @@ class _PixivUserScreenState extends State<PixivUserScreen> {
     });
 
     final client = context.read<PixivClient>();
+    final mute = context.read<PixivMuteStore>();
     try {
       final user = await client.userDetail(widget.userId);
       final page = await client.userIllusts(widget.userId);
       if (mounted) {
         setState(() {
           _user = user;
-          _illusts = page.illusts;
+          _illusts = mute.filter(page.illusts);
           _nextUrl = page.nextUrl;
           _loading = false;
         });
@@ -68,11 +71,13 @@ class _PixivUserScreenState extends State<PixivUserScreen> {
       return;
     }
     setState(() => _loadingMore = true);
+    final client = context.read<PixivClient>();
+    final mute = context.read<PixivMuteStore>();
     try {
-      final page = await context.read<PixivClient>().userIllusts(widget.userId, nextUrl: _nextUrl);
+      final page = await client.userIllusts(widget.userId, nextUrl: _nextUrl);
       if (mounted) {
         setState(() {
-          _illusts = [..._illusts, ...page.illusts];
+          _illusts = [..._illusts, ...mute.filter(page.illusts)];
           _nextUrl = page.nextUrl;
           _loadingMore = false;
         });
@@ -95,7 +100,8 @@ class _PixivUserScreenState extends State<PixivUserScreen> {
             IconButton(
               icon: const Icon(Icons.open_in_new),
               tooltip: l10n.plugin_pixiv_open_on_pixiv,
-              onPressed: () => openUri(context, 'https://www.pixiv.net/users/${_user!.id}'),
+              onPressed: () =>
+                  openUri(context, 'https://www.pixiv.net/users/${_user!.id}'),
             ),
         ],
       ),
@@ -135,64 +141,94 @@ class _PixivUserScreenState extends State<PixivUserScreen> {
         }
         return false;
       },
-      child: ListView(
-        padding: const EdgeInsets.only(bottom: 24),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    ClipOval(
-                      child: avatar == null
-                          ? FallbackAvatar(
-                              seed: '${user.id}',
-                              displayName: user.name,
-                              size: 64,
-                              accent: theme.colorScheme.primary)
-                          : ExtendedImage.network(
-                              avatar,
-                              width: 64,
-                              height: 64,
-                              fit: BoxFit.cover,
-                              headers: pixivImageHeaders,
-                              cacheWidth: (64 * MediaQuery.devicePixelRatioOf(context)).ceil(),
-                            ),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(user.name,
-                              style: theme.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700)),
-                          Text('@${user.account}',
-                              style: theme.textTheme.bodyMedium!
-                                  .copyWith(color: theme.colorScheme.onSurfaceVariant)),
-                        ],
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      ClipOval(
+                        child: avatar == null
+                            ? FallbackAvatar(
+                                seed: '${user.id}',
+                                displayName: user.name,
+                                size: 64,
+                                accent: theme.colorScheme.primary,
+                              )
+                            : ExtendedImage.network(
+                                avatar,
+                                width: 64,
+                                height: 64,
+                                fit: BoxFit.cover,
+                                headers: pixivImageHeaders,
+                                cacheWidth:
+                                    (64 *
+                                            MediaQuery.devicePixelRatioOf(
+                                              context,
+                                            ))
+                                        .ceil(),
+                              ),
                       ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              user.name,
+                              style: theme.textTheme.titleLarge!.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              '@${user.account}',
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (user.comment.trim().isNotEmpty) ...[
+                    const SizedBox(height: 14),
+                    Text(
+                      user.comment.trim(),
+                      style: theme.textTheme.bodyMedium,
                     ),
                   ],
-                ),
-                if (user.comment.trim().isNotEmpty) ...[
                   const SizedBox(height: 14),
-                  Text(user.comment.trim(), style: theme.textTheme.bodyMedium),
+                  Text(
+                    '${numbers.format(user.illustsCount)} ${l10n.tweets} · ${numbers.format(user.followersCount)} ${l10n.followers}',
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ],
-                const SizedBox(height: 14),
-                Text(
-                  '${numbers.format(user.illustsCount)} ${l10n.tweets} · ${numbers.format(user.followersCount)} ${l10n.followers}',
-                  style: theme.textTheme.bodyMedium,
-                ),
-              ],
+              ),
             ),
           ),
-          for (final illust in _illusts) PixivIllustCard(key: ValueKey(illust.id), illust: illust),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(4, 0, 4, 24),
+            sliver: SliverMasonryGrid.count(
+              crossAxisCount: 2,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+              childCount: _illusts.length,
+              itemBuilder: (context, index) =>
+                  PixivIllustTile(illust: _illusts[index]),
+            ),
+          ),
           if (_loadingMore)
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: Center(child: CircularProgressIndicator()),
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Center(child: CircularProgressIndicator()),
+              ),
             ),
         ],
       ),

@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/substack/substack_archive_screen.dart';
 import 'package:xta/plugins/substack/substack_models.dart';
+import 'package:xta/plugins/substack/substack_note_screen.dart';
 import 'package:xta/plugins/substack/substack_store.dart';
 import 'package:xta/subscriptions/users_model.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/ui/dates.dart';
-import 'package:xta/utils/urls.dart';
 
 String _initial(String? name) {
   final trimmed = name?.trim() ?? '';
@@ -34,7 +34,10 @@ class SubstackNoteCard extends StatelessWidget {
         tweetFlatCard(
           color: theme.cardColor,
           child: InkWell(
-            onTap: note.url == null ? null : () => openUri(context, note.url!),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => SubstackNoteScreen(note: note)),
+            ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Column(

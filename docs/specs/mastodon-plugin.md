@@ -23,6 +23,9 @@ a merged newest-first timeline of every locally followed acct’s public statuse
 | Account lookup | `GET /api/v1/accounts/lookup?acct=` |
 | Account statuses | `GET /api/v1/accounts/:id/statuses` |
 | Account by id | `GET /api/v1/accounts/:id` |
+| Resolve status URL | `GET /api/v2/search?q=&resolve=true&type=statuses` |
+| Status | `GET /api/v1/statuses/:id` |
+| Status context | `GET /api/v1/statuses/:id/context` |
 
 No OAuth app registration. No write methods.
 
@@ -30,8 +33,9 @@ No OAuth app registration. No write methods.
 
 Public statuses render with a tweet-sized layout: avatar, body text, media,
 PreviewCard link/article preview (`card`), and a read-only engagement row
-(`replies_count` / `reblogs_count` / `favourites_count`). Taps open the status
-(or the card URL) in the browser — no write APIs.
+(`replies_count` / `reblogs_count` / `favourites_count`). Tapping a post opens
+an in-app thread (status + public replies via `context`). The open-in-browser
+control and article link previews still leave the app — no write APIs.
 
 ## Not implemented
 

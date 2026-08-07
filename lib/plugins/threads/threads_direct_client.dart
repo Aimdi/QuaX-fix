@@ -225,7 +225,55 @@ ThreadsProfile? threadsProfileFromGuestHtml(String html, String handle) {
   );
 }
 
+/// One Meta post object → [ThreadsPost], including pure reposts.
+///
+/// A repost often has an empty outer caption; the original lives under
+/// `text_post_app_info.share_info.reposted_post`. Skipping those empty shells
+/// is why followed accounts' reposts never showed up.
 ThreadsPost? threadsPostFromApi(Json post) {
+  if (!post.exists) return null;
+
+  final reposted = post['text_post_app_info']['share_info']['reposted_post'];
+  if (reposted.exists) {
+    return _threadsRepostFromApi(outer: post, inner: reposted);
+  }
+  return _threadsOriginalFromApi(post);
+}
+
+ThreadsPost? _threadsRepostFromApi({required Json outer, required Json inner}) {
+  final original = _threadsOriginalFromApi(inner);
+  if (original == null) {
+    return null;
+  }
+
+  final user = outer['user'];
+  final reposter = (user['username'].string ?? '').trim().toLowerCase();
+  if (reposter.isEmpty) {
+    return null;
+  }
+  final reposterName = (user['full_name'].string ?? '').trim();
+  final outerPk = outer['pk'].string ?? outer['id'].string ?? original.id;
+  final taken = outer['taken_at'].integer;
+
+  return ThreadsPost(
+    id: outerPk,
+    handle: original.handle,
+    authorName: original.authorName,
+    avatarUrl: original.avatarUrl,
+    text: original.text,
+    images: original.images,
+    publishedAt: taken == null ? original.publishedAt : DateTime.fromMillisecondsSinceEpoch(taken * 1000, isUtc: true).toLocal(),
+    url: original.url,
+    likeCount: original.likeCount,
+    replyCount: original.replyCount,
+    repostCount: original.repostCount,
+    linkCard: original.linkCard,
+    repostedByHandle: reposter,
+    repostedByName: reposterName.isEmpty ? reposter : reposterName,
+  );
+}
+
+ThreadsPost? _threadsOriginalFromApi(Json post) {
   if (!post.exists) return null;
   final user = post['user'];
   final handle = (user['username'].string ?? '').trim().toLowerCase();
@@ -292,6 +340,9 @@ ThreadsProfile? threadsProfileFromUserJson(Json user) {
 }
 
 /// Walks decoded `data-sjs` blobs for `thread_items` posts.
+///
+/// Profile pages: one card per thread (the root item). Post pages should use
+/// [parseThreadsSsrThread], which keeps every reply in the chain.
 List<ThreadsPost> parseThreadsSsrHtml(String body, String handle) {
   final document = html_parser.parse(body);
   final posts = <ThreadsPost>[];
@@ -306,26 +357,60 @@ List<ThreadsPost> parseThreadsSsrHtml(String body, String handle) {
     } catch (_) {
       continue;
     }
-    _collectSsrPosts(decoded, handle, posts, seen);
+    _collectSsrPosts(decoded, handle, posts, seen, rootsOnly: true);
   }
   return posts;
 }
 
-void _collectSsrPosts(Object? node, String handle, List<ThreadsPost> out, Set<String> seen) {
+/// Every post embedded in a Threads post page (root + replies).
+List<ThreadsPost> parseThreadsSsrThread(String body) {
+  final document = html_parser.parse(body);
+  final posts = <ThreadsPost>[];
+  final seen = <String>{};
+
+  for (final script in document.querySelectorAll('script[data-sjs]')) {
+    final text = script.text.trim();
+    if (text.isEmpty || !text.contains('thread_items')) continue;
+    Object? decoded;
+    try {
+      decoded = jsonDecode(text);
+    } catch (_) {
+      continue;
+    }
+    _collectSsrPosts(decoded, '', posts, seen, rootsOnly: false);
+  }
+  return posts;
+}
+
+void _collectSsrPosts(
+  Object? node,
+  String handle,
+  List<ThreadsPost> out,
+  Set<String> seen, {
+  required bool rootsOnly,
+}) {
   if (node is Map) {
     final items = node['thread_items'];
     if (items is List && items.isNotEmpty) {
-      final post = threadsPostFromApi(Json(items.first is Map ? (items.first as Map)['post'] : null));
-      if (post != null && (post.handle == handle || handle.isEmpty) && seen.add(post.id)) {
-        out.add(post);
+      final slice = rootsOnly ? items.take(1) : items;
+      for (final item in slice) {
+        final post = threadsPostFromApi(Json(item is Map ? item['post'] : null));
+        // Reposts keep the original author on [ThreadsPost.handle]; the profile
+        // owner is [repostedByHandle]. Match either so SSR profile scrapes keep them.
+        final matches = handle.isEmpty ||
+            post?.handle == handle ||
+            post?.repostedByHandle == handle;
+        if (post != null && matches && seen.add(post.id)) {
+          out.add(post);
+        }
       }
     }
     for (final value in node.values) {
-      _collectSsrPosts(value, handle, out, seen);
+      _collectSsrPosts(value, handle, out, seen, rootsOnly: rootsOnly);
     }
   } else if (node is List) {
     for (final value in node) {
-      _collectSsrPosts(value, handle, out, seen);
+      _collectSsrPosts(value, handle, out, seen, rootsOnly: rootsOnly);
     }
   }
 }
@@ -701,6 +786,38 @@ class ThreadsDirectClient {
       throw ThreadsException(ThreadsErrorKind.noSuchFeed, 'no posts for @$key (GraphQL+SSR empty)');
     }
     return posts;
+  }
+
+  /// Public conversation for a Threads post URL (guest HTML scrape).
+  ///
+  /// Returns root + replies when the page embeds them. Empty when Meta sent
+  /// nothing parseable — the caller still has the seed card from the feed.
+  Future<List<ThreadsPost>> fetchGuestPostThread(String postUrl) async {
+    final uri = Uri.tryParse(postUrl.trim());
+    if (uri == null || !uri.host.contains('threads.')) {
+      throw ThreadsException(ThreadsErrorKind.unreachable, 'not a threads url: $postUrl');
+    }
+
+    final response = await _get(
+      uri,
+      {
+        'User-Agent': _safariUa,
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
+      respectCooldown: false,
+    );
+    if (response.statusCode == 404) {
+      throw ThreadsException(ThreadsErrorKind.noSuchFeed, '$uri: 404');
+    }
+    if (response.statusCode == 429) {
+      throw ThreadsException(ThreadsErrorKind.throttled, '$uri: 429');
+    }
+    if (response.statusCode != 200) {
+      throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: ${response.statusCode}');
+    }
+
+    return parseThreadsSsrThread(utf8.decode(response.bodyBytes));
   }
 
   Future<String> _fetchProfileHtml(String handle) async {

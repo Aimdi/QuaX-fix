@@ -15,9 +15,9 @@ in browser.
 | Account / email subscriptions | No login | Local follows in SQLite |
 | Full paid posts | Public JSON only | Free preview when Substack sends `body_html`; else lock pane → browser |
 | Notes (Following) | Needs session | Public discovery via `GET /api/v1/reader/feed` (global Notes mix); open note on substack.com |
-| Like / comment / restack | Write APIs | Read-only comments; no reactions |
+| Like / comment / restack | Write APIs | Local like + save (device only); read-only comments; share instead of restack |
 | Personalized recommendations | Auth | Follow from a Note’s publication; RSS channel metadata |
-| Cross-pub search / inbox | Account feed | Per-pub archive search; local Unread / Free / Podcast filters |
+| Cross-pub search / inbox | Account feed | Inbox tab (unread follows); Library search; per-pub archive search; filter chips |
 | Offline | None before | Cache public article bodies (FFCache) after first open |
 | API outages / odd hosts | JSON-only was brittle | RSS `/feed` fallback for listings + publication name/logo/description |
 

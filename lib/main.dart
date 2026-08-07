@@ -26,6 +26,7 @@ import 'package:xta/group/combined_groups.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/group/group_screen.dart';
 import 'package:xta/home/_feed.dart';
+import 'package:xta/home/chrome_avatar.dart';
 import 'package:xta/home/home_account_filter.dart';
 import 'package:xta/home/home_model.dart';
 import 'package:xta/home/home_screen.dart';
@@ -38,10 +39,12 @@ import 'package:xta/profile/profile.dart';
 import 'package:xta/plugins/substack/substack_client.dart';
 import 'package:xta/plugins/substack/substack_store.dart';
 import 'package:xta/plugins/bluesky/bluesky_client.dart';
+import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_store.dart';
 import 'package:xta/plugins/mastodon/mastodon_client.dart';
 import 'package:xta/plugins/mastodon/mastodon_store.dart';
 import 'package:xta/plugins/pixiv/pixiv_client.dart';
+import 'package:xta/plugins/pixiv/pixiv_mute_store.dart';
 import 'package:xta/plugins/pixiv/pixiv_store.dart';
 import 'package:xta/plugins/threads/threads_api.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
@@ -413,6 +416,7 @@ Future<void> main() async {
       optionHomeInitialTab: 'feed',
       optionHomeDefaultFeedTab: feedTabs[0].id.name,
       optionHomeFeedDisabledAccountIds: '[]',
+      optionChromeAvatarRevision: 0,
       optionImageQuality: MediaQuality.medium.stored,
       optionMediaVideoQuality: MediaQuality.medium.stored,
       optionMediaDisableAutoload: false,
@@ -498,8 +502,11 @@ Future<void> main() async {
       optionPluginSubstackShowTab: true,
       optionPluginSubstackPublications: '[]',
       optionPluginSubstackReadIds: '[]',
+      optionPluginSubstackLikedPosts: '[]',
+      optionPluginSubstackSavedPosts: '[]',
       optionPluginBlueskyEnabled: false,
       optionPluginBlueskyShowTab: true,
+      optionPluginBlueskyInstance: kBlueskyDefaultAppView,
       optionPluginMastodonEnabled: false,
       optionPluginMastodonShowTab: true,
       optionPluginMastodonInstance: '',
@@ -509,9 +516,15 @@ Future<void> main() async {
       optionPluginPixivAccessToken: '',
       optionPluginPixivAccessExpiresAt: '',
       optionPluginPixivShowR18: false,
+      optionPluginPixivUserId: 0,
+      optionPluginPixivMutedAuthors: '[]',
+      optionPluginPixivMutedTags: '[]',
+      optionPluginPixivMutedIllusts: '[]',
+      optionPluginPixivSearchHistory: '[]',
       optionPluginThreadsDirectCookies: '',
       optionPluginThreadsDirectBearer: '',
       optionPluginThreadsDirectDeviceId: '',
+      optionPluginThreadsLikedPosts: '[]',
       optionPluginStoreShowPrivate: false,
       optionSubscriptionGroupsOrderByAscending: true,
       optionDisableWarningsForUnrelatedPostsInFeed: false,
@@ -633,18 +646,22 @@ Future<void> main() async {
     final substackClient = SubstackClient();
     final substackPublications = SubstackPublicationsStore(prefService);
     final substackRead = SubstackReadStore(prefService);
+    final substackLikes = SubstackLikesStore(prefService);
+    final substackSaved = SubstackSavedStore(prefService);
     final threadsClient = ThreadsClient();
     final threadsDirect = ThreadsDirectClient(prefService);
     final threadsApi = ThreadsApi();
     final threadsAccounts = ThreadsAccountsStore();
-    final threadsLikes = ThreadsLikesStore();
+    final threadsLikes = ThreadsLikesStore(prefService);
     final threadsFeed = ThreadsFeedStore(
       threadsClient,
       threadsDirect,
       prefService,
       threadsAccounts,
     );
-    final blueskyClient = BlueskyClient();
+    final blueskyClient = BlueskyClient(
+      resolveBaseUrl: () => prefService.get<String>(optionPluginBlueskyInstance) ?? kBlueskyDefaultAppView,
+    );
     final blueskyAccounts = BlueskyAccountsStore();
     final blueskyFeed = BlueskyFeedStore(blueskyClient, blueskyAccounts);
     final mastodonClient = MastodonClient();
@@ -655,7 +672,9 @@ Future<void> main() async {
       mastodonAccounts,
     );
     final pixivClient = PixivClient(prefService);
-    final pixivFeed = PixivFeedStore(pixivClient);
+    final pixivMute = PixivMuteStore(prefService);
+    final pixivSearchHistory = PixivSearchHistoryStore(prefService);
+    final pixivFeed = PixivFeedStore(pixivClient, filter: pixivMute.filter);
 
     // Everything above only constructs; the reads all happen here. They were a
     // chain of awaits, each waiting on the last for no reason — none of them
@@ -681,6 +700,8 @@ Future<void> main() async {
       if (prefService.get<bool>(optionPluginSubstackEnabled) == true) ...[
         substackPublications.load(),
         substackRead.load(),
+        substackLikes.load(),
+        substackSaved.load(),
       ],
       if (prefService.get<bool>(optionPluginStocksEnabled) == true)
         stocksWatchlist.load(),
@@ -692,6 +713,10 @@ Future<void> main() async {
         blueskyAccounts.load(),
       if (prefService.get<bool>(optionPluginMastodonEnabled) == true)
         mastodonAccounts.load(),
+      if (prefService.get<bool>(optionPluginPixivEnabled) == true) ...[
+        pixivMute.load(),
+        pixivSearchHistory.load(),
+      ],
     ]);
 
     runApp(
@@ -737,6 +762,7 @@ Future<void> main() async {
               ),
             ),
             Provider(create: (_) => HomeAccountFilterStore(prefService)),
+            Provider(create: (_) => ChromeAvatarStore(prefService)),
             Provider(create: (_) => substackClient),
             Provider(create: (_) => substackPublications),
             Provider(
@@ -756,6 +782,8 @@ Future<void> main() async {
               ),
             ),
             Provider(create: (_) => substackRead),
+            Provider(create: (_) => substackLikes),
+            Provider(create: (_) => substackSaved),
             Provider(create: (_) => threadsClient),
             Provider(create: (_) => threadsDirect),
             Provider(create: (_) => threadsApi),
@@ -769,6 +797,8 @@ Future<void> main() async {
             Provider(create: (_) => mastodonAccounts),
             Provider(create: (_) => mastodonFeed),
             Provider(create: (_) => pixivClient),
+            Provider(create: (_) => pixivMute),
+            Provider(create: (_) => pixivSearchHistory),
             Provider(create: (_) => pixivFeed),
             ChangeNotifierProvider(
               create: (_) =>

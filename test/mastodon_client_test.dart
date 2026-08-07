@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:xta/plugins/mastodon/mastodon_client.dart';
+import 'package:xta/plugins/mastodon/mastodon_models.dart';
 
 void main() {
   group('MastodonClient', () {
@@ -99,6 +100,81 @@ void main() {
       final posts = await client.getStatuses('https://mastodon.social', '1', limit: 5);
       expect(posts, hasLength(1));
       expect(posts.first.text, 'Hi');
+    });
+
+    test('fetchThread resolves a status URL then loads context', () async {
+      final client = MastodonClient(
+        httpClient: MockClient((request) async {
+          final path = request.url.path;
+          if (path == '/api/v2/search') {
+            expect(request.url.queryParameters['q'], 'https://other.social/@b/22');
+            expect(request.url.queryParameters['resolve'], 'true');
+            return http.Response(
+              jsonEncode({
+                'statuses': [
+                  {
+                    'id': '100',
+                    'created_at': '2026-08-01T09:00:00.000Z',
+                    'content': '<p>Root</p>',
+                    'url': 'https://other.social/@b/22',
+                    'replies_count': 1,
+                    'account': {
+                      'id': '2',
+                      'username': 'b',
+                      'acct': 'b@other.social',
+                      'display_name': 'B',
+                      'note': '',
+                      'url': 'https://other.social/@b',
+                    },
+                    'media_attachments': [],
+                  }
+                ],
+              }),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          }
+          if (path == '/api/v1/statuses/100/context') {
+            return http.Response(
+              jsonEncode({
+                'ancestors': [],
+                'descendants': [
+                  {
+                    'id': '101',
+                    'created_at': '2026-08-01T10:00:00.000Z',
+                    'content': '<p>Reply</p>',
+                    'url': 'https://other.social/@c/101',
+                    'account': {
+                      'id': '3',
+                      'username': 'c',
+                      'acct': 'c@other.social',
+                      'display_name': 'C',
+                      'note': '',
+                      'url': 'https://other.social/@c',
+                    },
+                    'media_attachments': [],
+                  }
+                ],
+              }),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          }
+          return http.Response('unexpected ${request.url}', 500);
+        }),
+      );
+
+      final seed = MastodonPost(
+        id: '22',
+        acct: 'b@other.social',
+        authorName: 'B',
+        text: 'Root',
+        url: 'https://other.social/@b/22',
+      );
+      final thread = await client.fetchThread('https://mastodon.social', seed);
+      expect(thread.status.id, '100');
+      expect(thread.descendants, hasLength(1));
+      expect(thread.descendants.first.text, 'Reply');
     });
 
     test('maps 404 and 429 to typed errors', () async {

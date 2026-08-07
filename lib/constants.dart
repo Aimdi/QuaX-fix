@@ -15,6 +15,9 @@ const optionHomeDefaultFeedTab = 'home.default_feed_tab';
 /// until the reader turns them off.
 const optionHomeFeedDisabledAccountIds = 'home.feed_disabled_account_ids';
 
+/// Revision of the local chrome (upper-left) avatar. `0` = use the monogram.
+const optionChromeAvatarRevision = 'chrome.avatar_revision';
+
 /// Plugin tabs already offered to the bar once, so removing one sticks.
 const optionSeededPluginTabs = 'plugins.seeded_tabs';
 
@@ -178,8 +181,12 @@ const optionPluginSubstackEnabled = 'plugin.substack.enabled';
 const optionPluginSubstackShowTab = 'plugin.substack.show_tab';
 const optionPluginSubstackPublications = 'plugin.substack.publications';
 const optionPluginSubstackReadIds = 'plugin.substack.read_ids';
+const optionPluginSubstackLikedPosts = 'plugin.substack.liked_posts';
+const optionPluginSubstackSavedPosts = 'plugin.substack.saved_posts';
 const substackFeedPageSize = 8;
 const substackReadIdsCap = 400;
+const substackLikedPostsCap = 400;
+const substackSavedPostsCap = 200;
 
 /// Threads — public guest reads by default; optional session / RSSHub / Xy.
 ///
@@ -191,12 +198,16 @@ const pluginIdThreads = 'threads';
 const optionPluginThreadsEnabled = 'plugin.threads.enabled';
 const optionPluginThreadsShowTab = 'plugin.threads.show_tab';
 const optionPluginThreadsInstance = 'plugin.threads.instance';
+const optionPluginThreadsLikedPosts = 'plugin.threads.liked_posts';
 
 /// Whether followed Threads accounts also appear in Following and For you.
 const optionPluginThreadsInHomeFeed = 'plugin.threads.in_home_feed';
 
 /// How many posts one account contributes to the merged feed.
 const threadsPostsPerAccount = 20;
+
+/// How many full liked-post snapshots are kept for the local Liked tab.
+const threadsLikedPostsCap = 400;
 
 /// Optional Xy server for richer profile lookups. Public Threads pages already
 /// expose name / bio / avatar via OG tags; Xy is an upgrade, not a requirement.
@@ -226,6 +237,9 @@ const pluginIdBluesky = 'bluesky';
 const optionPluginBlueskyEnabled = 'plugin.bluesky.enabled';
 const optionPluginBlueskyShowTab = 'plugin.bluesky.show_tab';
 
+/// Bluesky AppView base URL. Empty falls back to [kBlueskyDefaultAppView].
+const optionPluginBlueskyInstance = 'plugin.bluesky.instance';
+
 /// How many posts one account contributes to the merged Bluesky feed.
 const blueskyPostsPerAccount = 20;
 
@@ -251,7 +265,12 @@ const optionPluginPixivShowTab = 'plugin.pixiv.show_tab';
 const optionPluginPixivRefreshToken = 'plugin.pixiv.refresh_token';
 const optionPluginPixivAccessToken = 'plugin.pixiv.access_token';
 const optionPluginPixivAccessExpiresAt = 'plugin.pixiv.access_expires_at';
+const optionPluginPixivUserId = 'plugin.pixiv.user_id';
 const optionPluginPixivShowR18 = 'plugin.pixiv.show_r18';
+const optionPluginPixivMutedAuthors = 'plugin.pixiv.muted_authors';
+const optionPluginPixivMutedTags = 'plugin.pixiv.muted_tags';
+const optionPluginPixivMutedIllusts = 'plugin.pixiv.muted_illusts';
+const optionPluginPixivSearchHistory = 'plugin.pixiv.search_history';
 
 /// When true, the plugin store also lists [XtaPlugin.isPrivate] plugins that
 /// the public catalogue holds back with `available: false`.

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:xta/utils/json.dart';
 
 /// Open Graph–style link preview from Meta's `link_preview_attachment`.
@@ -17,6 +19,27 @@ class ThreadsLinkCard {
   });
 
   bool get hasImage => imageUrl != null && imageUrl!.isNotEmpty;
+
+  Map<String, dynamic> toJson() => {
+    'url': url,
+    'title': title,
+    'description': description,
+    'imageUrl': imageUrl,
+    'providerName': providerName,
+  };
+
+  factory ThreadsLinkCard.fromSnapshot(Object? raw) {
+    final json = raw is Map
+        ? Map<String, dynamic>.from(raw)
+        : const <String, dynamic>{};
+    return ThreadsLinkCard(
+      url: json['url'] as String? ?? '',
+      title: json['title'] as String?,
+      description: json['description'] as String?,
+      imageUrl: json['imageUrl'] as String?,
+      providerName: json['providerName'] as String?,
+    );
+  }
 }
 
 /// One Threads post, as much of it as a feed carries.
@@ -48,6 +71,10 @@ class ThreadsPost {
   final int? repostCount;
   final ThreadsLinkCard? linkCard;
 
+  /// When set, this row is a repost: [repostedByHandle] shared [handle]'s post.
+  final String? repostedByHandle;
+  final String? repostedByName;
+
   const ThreadsPost({
     required this.id,
     required this.handle,
@@ -61,11 +88,125 @@ class ThreadsPost {
     this.replyCount,
     this.repostCount,
     this.linkCard,
+    this.repostedByHandle,
+    this.repostedByName,
   });
 
   bool get hasMedia => images.isNotEmpty;
 
-  bool get hasEngagement => likeCount != null || replyCount != null || repostCount != null;
+  bool get hasEngagement =>
+      likeCount != null || replyCount != null || repostCount != null;
+
+  bool get isRepost => repostedByHandle != null && repostedByHandle!.isNotEmpty;
+
+  /// Who to show on a "X reposted" line.
+  String get reposterDisplayName {
+    final name = repostedByName?.trim() ?? '';
+    if (name.isNotEmpty) {
+      return name;
+    }
+    return repostedByHandle ?? '';
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'handle': handle,
+    'authorName': authorName,
+    'avatarUrl': avatarUrl,
+    'text': text,
+    'images': images,
+    'publishedAt': publishedAt?.toIso8601String(),
+    'url': url,
+    'likeCount': likeCount,
+    'replyCount': replyCount,
+    'repostCount': repostCount,
+    'linkCard': linkCard?.toJson(),
+    'repostedByHandle': repostedByHandle,
+    'repostedByName': repostedByName,
+  };
+
+  factory ThreadsPost.fromSnapshot(Object? raw) {
+    final json = raw is Map
+        ? Map<String, dynamic>.from(raw)
+        : const <String, dynamic>{};
+    final handle = json['handle'] as String? ?? '';
+    final linkCardRaw = json['linkCard'];
+    final linkCard = linkCardRaw == null
+        ? null
+        : ThreadsLinkCard.fromSnapshot(linkCardRaw);
+
+    return ThreadsPost(
+      id: json['id'] as String? ?? '',
+      handle: handle,
+      authorName: json['authorName'] as String? ?? handle,
+      avatarUrl: json['avatarUrl'] as String?,
+      text: json['text'] as String? ?? '',
+      images:
+          (json['images'] as List?)?.whereType<String>().toList(
+            growable: false,
+          ) ??
+          const [],
+      publishedAt: DateTime.tryParse(
+        json['publishedAt'] as String? ?? '',
+      )?.toLocal(),
+      url: json['url'] as String?,
+      likeCount: _snapshotCount(json['likeCount']),
+      replyCount: _snapshotCount(json['replyCount']),
+      repostCount: _snapshotCount(json['repostCount']),
+      linkCard: linkCard == null || linkCard.url.isEmpty ? null : linkCard,
+      repostedByHandle: json['repostedByHandle'] as String?,
+      repostedByName: json['repostedByName'] as String?,
+    );
+  }
+
+  static List<ThreadsPost> listFromPrefs(String? raw) {
+    if (raw == null || raw.isEmpty) return const [];
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) return const [];
+      return decoded
+          .whereType<Map>()
+          .map((e) => ThreadsPost.fromSnapshot(Map<String, dynamic>.from(e)))
+          .where((e) => e.id.isNotEmpty)
+          .toList(growable: false);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static String listToPrefs(List<ThreadsPost> posts) =>
+      jsonEncode(posts.map((e) => e.toJson()).toList());
+}
+
+int? _snapshotCount(Object? value) => value is num ? value.toInt() : null;
+
+/// Minimal profile card from posts when the public page scrape failed.
+ThreadsProfile? threadsProfileFromPosts(
+  String handle,
+  List<ThreadsPost> posts,
+) {
+  final key = (normaliseThreadsHandle(handle) ?? handle).trim().toLowerCase();
+  if (key.isEmpty || posts.isEmpty) {
+    return null;
+  }
+  final sample = posts.firstWhere(
+    (p) => p.handle == key,
+    orElse: () => posts.first,
+  );
+  return ThreadsProfile(
+    pk: '',
+    id: '',
+    username: key,
+    fullName: sample.authorName,
+    isVerified: false,
+    isPrivate: false,
+    profilePicUrl: sample.avatarUrl ?? '',
+    biography: '',
+    followerCount: 0,
+    followingCount: 0,
+    mediaCount: 0,
+    externalUrl: 'https://www.threads.com/@$key',
+  );
 }
 
 /// Unwrap Threads' `l.threads.com/?u=` outbound redirect when present.
@@ -105,7 +246,9 @@ ThreadsLinkCard? threadsLinkCardOf(Json post) {
   }
 
   final url = rawUrl.isEmpty
-      ? (display == null || display.isEmpty ? '' : (display.startsWith('http') ? display : 'https://$display'))
+      ? (display == null || display.isEmpty
+            ? ''
+            : (display.startsWith('http') ? display : 'https://$display'))
       : unwrapThreadsOutboundUrl(rawUrl);
   if (url.isEmpty) {
     return null;
@@ -114,9 +257,13 @@ ThreadsLinkCard? threadsLinkCardOf(Json post) {
   return ThreadsLinkCard(
     url: url,
     title: title == null || title.isEmpty ? null : title,
-    description: description == null || description.isEmpty ? null : description,
+    description: description == null || description.isEmpty
+        ? null
+        : description,
     imageUrl: image == null || image.isEmpty ? null : image,
-    providerName: display == null || display.isEmpty ? Uri.tryParse(url)?.host : display,
+    providerName: display == null || display.isEmpty
+        ? Uri.tryParse(url)?.host
+        : display,
   );
 }
 
@@ -177,10 +324,14 @@ class ThreadsProfile {
 
   /// What to show as the name: the display name, or the handle when the
   /// profile has none.
-  String get displayName => fullName.trim().isEmpty ? username : fullName.trim();
+  String get displayName =>
+      fullName.trim().isEmpty ? username : fullName.trim();
 
-  ThreadsAccount toAccount() =>
-      ThreadsAccount(handle: username, name: displayName, avatarUrl: profilePicUrl.isEmpty ? null : profilePicUrl);
+  ThreadsAccount toAccount() => ThreadsAccount(
+    handle: username,
+    name: displayName,
+    avatarUrl: profilePicUrl.isEmpty ? null : profilePicUrl,
+  );
 }
 
 /// An account the reader follows, as the plugin thinks of it.
@@ -190,10 +341,17 @@ class ThreadsAccount {
   final String name;
   final String? avatarUrl;
 
-  const ThreadsAccount({required this.handle, required this.name, this.avatarUrl});
+  const ThreadsAccount({
+    required this.handle,
+    required this.name,
+    this.avatarUrl,
+  });
 
-  ThreadsAccount copyWith({String? name, String? avatarUrl}) =>
-      ThreadsAccount(handle: handle, name: name ?? this.name, avatarUrl: avatarUrl ?? this.avatarUrl);
+  ThreadsAccount copyWith({String? name, String? avatarUrl}) => ThreadsAccount(
+    handle: handle,
+    name: name ?? this.name,
+    avatarUrl: avatarUrl ?? this.avatarUrl,
+  );
 }
 
 /// A handle as the route wants it: no `@`, no URL around it, lower case.

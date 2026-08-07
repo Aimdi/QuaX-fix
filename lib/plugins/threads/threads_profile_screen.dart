@@ -9,17 +9,14 @@ import 'package:xta/plugins/threads/threads_api.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
 import 'package:xta/plugins/threads/threads_direct_client.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
+import 'package:xta/plugins/threads/threads_post_card.dart';
 import 'package:xta/plugins/threads/threads_settings.dart';
 import 'package:xta/plugins/threads/threads_store.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
 import 'package:xta/ui/errors.dart';
 import 'package:xta/utils/urls.dart';
 
-/// What a failed Xy lookup should say.
-///
-/// The server writes a sentence for a person and sends it as `message`; that is
-/// preferred over anything this app could invent, and the generic lines are
-/// only for when it said nothing.
+/// What a failed Xy / guest lookup should say.
 String threadsApiErrorMessage(L10n l10n, Object error) {
   if (error is ThreadsException) {
     return threadsSettingsError(l10n, error);
@@ -40,7 +37,7 @@ String threadsApiErrorMessage(L10n l10n, Object error) {
   };
 }
 
-/// One Threads profile, looked up through the reader's Xy server.
+/// One Threads profile plus their public posts.
 class ThreadsProfileScreen extends StatefulWidget {
   final String username;
 
@@ -52,13 +49,20 @@ class ThreadsProfileScreen extends StatefulWidget {
 
 class _ThreadsProfileScreenState extends State<ThreadsProfileScreen> {
   ThreadsProfile? _profile;
+  List<ThreadsPost> _posts = const [];
   Object? _error;
-  bool _loading = true;
+  var _loading = true;
+
+  String get _handle => (normaliseThreadsHandle(widget.username) ?? widget.username).trim().toLowerCase();
 
   @override
   void initState() {
     super.initState();
-    _load();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _load();
+      }
+    });
   }
 
   Future<void> _load() async {
@@ -67,68 +71,106 @@ class _ThreadsProfileScreenState extends State<ThreadsProfileScreen> {
       _error = null;
     });
 
+    final handle = _handle;
+    if (handle.isEmpty) {
+      setState(() {
+        _error = ThreadsException(ThreadsErrorKind.noSuchFeed, 'empty handle');
+        _loading = false;
+      });
+      return;
+    }
+
     final prefs = PrefService.of(context, listen: false);
     final direct = context.read<ThreadsDirectClient>();
     final api = context.read<ThreadsApi>();
+    final feed = context.read<ThreadsFeedStore>();
     final apiBase = prefs.get<String>(optionPluginThreadsApiBase) ?? kThreadsApiDefaultBase;
     final apiToken = prefs.get<String>(optionPluginThreadsApiToken) ?? '';
+
+    // Header and posts are independent — a dead OG scrape must not hide posts.
+    final profileFuture = _resolveProfile(direct, api, apiBase, apiToken, handle);
+    final postsFuture = feed.postsFor([handle], forceRefresh: true);
+
+    ThreadsProfile? profile;
+    Object? profileError;
+    List<ThreadsPost> posts = const [];
+    Object? postsError;
+
     try {
-      // Public site first — the same page a browser shows without logging in.
-      // Cookies / Xy only step in when that fails.
-      ThreadsProfile? profile;
-      Object? lastError;
-      try {
-        profile = await direct.fetchGuestProfile(widget.username);
-      } catch (e) {
-        lastError = e;
-      }
-      if (profile == null && direct.hasCookies) {
-        try {
-          profile = await direct.fetchProfile(widget.username);
-        } catch (e) {
-          lastError = e;
-        }
-      }
-      if (profile == null) {
-        try {
-          profile = await api.profile(apiBase, apiToken, widget.username);
-        } catch (e) {
-          lastError = e;
-        }
-      }
-      if (!mounted) {
-        return;
-      }
-      if (profile == null) {
-        setState(() {
-          _error = lastError ?? ThreadsException(ThreadsErrorKind.noSuchFeed, 'profile missing');
-          _loading = false;
-        });
-        return;
-      }
+      profile = await profileFuture;
+    } catch (e) {
+      profileError = e;
+    }
+
+    try {
+      posts = await postsFuture;
+    } catch (e) {
+      postsError = e;
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    profile ??= threadsProfileFromPosts(handle, posts);
+
+    if (profile == null && posts.isEmpty) {
       setState(() {
-        _profile = profile;
+        _error = profileError ?? postsError ?? ThreadsException(ThreadsErrorKind.noSuchFeed, 'profile missing');
         _loading = false;
       });
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = e;
-          _loading = false;
-        });
+      return;
+    }
+
+    setState(() {
+      _profile = profile;
+      _posts = posts;
+      // Soft error only when we have nothing useful at all; otherwise show what we have.
+      _error = null;
+      _loading = false;
+    });
+  }
+
+  Future<ThreadsProfile?> _resolveProfile(
+    ThreadsDirectClient direct,
+    ThreadsApi api,
+    String apiBase,
+    String apiToken,
+    String handle,
+  ) async {
+    try {
+      return await direct.fetchGuestProfile(handle);
+    } catch (_) {
+      // Fall through.
+    }
+    if (direct.hasCookies) {
+      try {
+        return await direct.fetchProfile(handle);
+      } catch (_) {
+        // Fall through.
       }
+    }
+    try {
+      return await api.profile(apiBase, apiToken, handle);
+    } catch (_) {
+      return null;
     }
   }
 
   Future<void> _follow(ThreadsProfile profile) async {
     final messenger = ScaffoldMessenger.of(context);
     final added = L10n.of(context).plugin_threads_account_added;
+    final accounts = context.read<ThreadsAccountsStore>();
+    final feed = context.read<ThreadsFeedStore>();
 
-    await context.read<ThreadsAccountsStore>().add(profile.toAccount());
+    await accounts.add(profile.toAccount());
     if (mounted) {
-      await context.read<ThreadsFeedStore>().refresh();
+      await feed.refresh();
     }
     messenger.showSnackBar(SnackBar(content: Text(added)));
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -136,7 +178,7 @@ class _ThreadsProfileScreenState extends State<ThreadsProfileScreen> {
     final l10n = L10n.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text('@${widget.username}')),
+      appBar: AppBar(title: Text('@$_handle')),
       body: _body(context, l10n),
     );
   }
@@ -160,9 +202,31 @@ class _ThreadsProfileScreenState extends State<ThreadsProfileScreen> {
     }
 
     final profile = _profile!;
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [ThreadsProfileCard(profile: profile, onFollow: () => _follow(profile))],
+    final alreadyFollows = context.read<ThreadsAccountsStore>().state.any((a) => a.handle == profile.username);
+
+    return RefreshIndicator(
+      onRefresh: _load,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.only(bottom: 24),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: ThreadsProfileCard(
+              profile: profile,
+              onFollow: alreadyFollows ? null : () => _follow(profile),
+            ),
+          ),
+          if (_posts.isEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+              child: Text(l10n.plugin_threads_no_posts, textAlign: TextAlign.center),
+            )
+          else
+            for (final post in _posts)
+              ThreadsPostCard(key: ValueKey(post.id), post: post, showSourceBadge: false),
+        ],
+      ),
     );
   }
 }

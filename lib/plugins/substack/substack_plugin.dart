@@ -59,6 +59,8 @@ class SubstackPlugin extends XtaPlugin {
   Future<void> resetPreferences(BasePrefService prefs) async {
     await prefs.set(optionPluginSubstackPublications, '[]');
     await prefs.set(optionPluginSubstackReadIds, '[]');
+    await prefs.set(optionPluginSubstackLikedPosts, '[]');
+    await prefs.set(optionPluginSubstackSavedPosts, '[]');
   }
 
   @override
@@ -66,6 +68,12 @@ class SubstackPlugin extends XtaPlugin {
     await context.read<SubstackPublicationsStore>().load();
     if (context.mounted) {
       await context.read<SubstackReadStore>().load();
+    }
+    if (context.mounted) {
+      await context.read<SubstackLikesStore>().load();
+    }
+    if (context.mounted) {
+      await context.read<SubstackSavedStore>().load();
     }
   }
 }
