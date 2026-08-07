@@ -513,7 +513,7 @@
   "@home": {},
   "home_feed_accounts": "홈 피드 계정",
   "@home_feed_accounts": {},
-  "home_feed_accounts_description": "더 높은 요청 한도용으로만 쓰는 계정은 끄세요 — 다른 요청에는 계속 쓰입니다. 추천은 켜 둔 계정의 타임라인을 합칩니다. 팔로잉은 계속 기기의의 구독을 씁니다.",
+  "home_feed_accounts_description": "한도만 높이려고 둔 로그인 계정을 끄세요. 프로필·검색·댓글·Following에는 그대로 쓰입니다. For you는 켜 둔 계정의 Home 타임라인만 합칩니다.",
   "@home_feed_accounts_description": {},
   "home_feed_accounts_empty": "추천을 불러오려면 계정을 추가하세요.",
   "@home_feed_accounts_empty": {},
