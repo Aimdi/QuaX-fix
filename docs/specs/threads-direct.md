@@ -25,7 +25,15 @@ Settings lead with public reading + Accounts. Optional sections follow:
 2. **RSSHub** — self-hosted proxy; not required.
 3. **Xy** — optional profile helper; public OG tags already cover name/bio/avatar.
 
-No in-app password / Bloks login. No like, follow, repost, or compose.
+No in-app password / Bloks login. No follow, repost, or compose on Meta.
+Likes on cards are **local only** (device SQLite) — never sent to Threads.
+
+## Card UI
+
+Meta post JSON can include `like_count`, `direct_reply_count`, `repost_count`,
+and `link_preview_attachment`. Cards show reply/repost counts when present, a
+large link preview when present, and a local like heart (`threads_local_like`).
+The shown like total is Meta’s count plus one when liked on-device.
 
 ## Feed priority
 
@@ -55,13 +63,13 @@ Profile lookup prefers guest HTML (OG tags + `user_id`), then cookies, then Xy.
 
 ## MVP
 
-- Cookie + Bearer paste, test, clear
-- Following feed (Bearer, no Accounts) and/or merged follows (cookies / guest GraphQL / SSR / RSSHub)
-- Profile lookup prefers cookies when set, else Xy
+- Guest public posts + OG profiles without login
+- Optional Cookie + Bearer paste, test, clear
+- Local likes; reply/repost counts + link previews when Meta sends them
 - Unit tests with `MockClient` fixtures (no live credentials)
 
 ## Not in MVP
 
 - In-app login WebView
-- Write actions
+- Write actions to Meta (boost / remote like / follow)
 - Video carousel playback beyond image URLs already on cards
