@@ -1235,7 +1235,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "Ez dago Notesik erakusteko orain",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Substack-eko Notes publikoak — ez zure Following jarioa. Ukitu hemen irakurtzeko, edo jarraitu argitalpena.",
+  "plugin_substack_notes_intro": "Substackeko Notes publikoak — ez zure Following pertsonala. Ukitu ohar bat gunean irekitzeko, edo jarraitu bere argitalpena.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Ireki itsatsitako mezua",
   "@plugin_substack_open_pasted_post": {},
@@ -1339,7 +1339,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Bilatu profila",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Oraindik konturik ez",
+  "plugin_threads_no_accounts": "Oraindik ez dago Threads konturik",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Oraindik ez dago zer irakurri",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Jarraitu norbaiti irakurtzen hasteko",
+  "plugin_threads_home": "Hasiera",
+  "plugin_threads_liked": "Gogokoak",
+  "plugin_threads_liked_empty": "Oraindik ez dago gogoko mezurik — bihotzak gailu honetan geratzen dira",
+  "plugin_threads_reposted": "{name}(e)k birbidali du",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Utzi jarraitzeari",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

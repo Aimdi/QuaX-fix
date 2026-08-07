@@ -27,6 +27,8 @@ Settings lead with public reading + Accounts. Optional sections follow:
 
 No in-app password / Bloks login. No follow, repost, or compose on Meta.
 Likes on cards are **local only** (device SQLite) — never sent to Threads.
+The local Liked library and tab polish are specified in
+`docs/specs/threads-polish.md`.
 
 ## Card UI
 
@@ -34,6 +36,15 @@ Meta post JSON can include `like_count`, `direct_reply_count`, `repost_count`,
 and `link_preview_attachment`. Cards show reply/repost counts when present, a
 large link preview when present, and a local like heart (`threads_local_like`).
 The shown like total is Meta’s count plus one when liked on-device.
+
+Tapping a post opens an in-app thread screen. Replies come from a guest scrape
+of the public post URL (`parseThreadsSsrThread` over `data-sjs` `thread_items`).
+Open-in-browser and article link previews still leave the app.
+
+Pure **reposts** arrive as an empty outer shell with the original under
+`text_post_app_info.share_info.reposted_post`. Parsers unwrap that, keep the
+original author/content, and mark `repostedByHandle` so cards show
+“{name} reposted” and SSR profile scrapes still match the profile owner.
 
 ## Feed priority
 
@@ -53,6 +64,8 @@ Cookie/Bearer `login_required` still parks *session* calls for 30 minutes.
 Guest GraphQL/SSR ignores that cooldown so Accounts keep loading.
 
 Profile lookup prefers guest HTML (OG tags + `user_id`), then cookies, then Xy.
+The profile screen also loads that handle’s public posts (same guest / cookie /
+RSSHub route as the feed) — a header-only screen was reading as empty.
 
 ## Throttle & risk
 

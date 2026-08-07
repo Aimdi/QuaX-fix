@@ -1242,7 +1242,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "지금 보여줄 Notes가 없습니다",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Substack의 공개 Notes — 개인 Following 피드가 아닙니다. 탭하여 여기서 읽거나 발행물을 팔로우하세요.",
+  "plugin_substack_notes_intro": "Substack 곳곳의 공개 Notes입니다. 개인 Following 피드가 아닙니다. 노트를 눌러 사이트에서 열거나 발행물을 팔로우하세요.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "붙여넣은 글 열기",
   "@plugin_substack_open_pasted_post": {},
@@ -1346,7 +1346,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "프로필 찾기",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "아직 계정이 없습니다",
+  "plugin_threads_no_accounts": "아직 Threads 계정이 없습니다",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "아직 읽을 것이 없습니다",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "읽기 시작하려면 누군가를 팔로우하세요",
+  "plugin_threads_home": "홈",
+  "plugin_threads_liked": "좋아요",
+  "plugin_threads_liked_empty": "아직 좋아요한 게시물이 없습니다 — 하트는 이 기기에만 저장됩니다",
+  "plugin_threads_reposted": "{name} 님이 리포스트함",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "팔로우 취소",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

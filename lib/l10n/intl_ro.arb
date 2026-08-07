@@ -1235,7 +1235,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "Nicio Note de afișat acum",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Notes publice de pe Substack — nu feed-ul tău Following. Atinge pentru a citi aici sau urmărește publicația.",
+  "plugin_substack_notes_intro": "Notes publice de pe Substack — nu fluxul tău personal Following. Atinge o notă ca s-o deschizi pe site sau urmărește publicația.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Deschide postarea lipită",
   "@plugin_substack_open_pasted_post": {},
@@ -1339,7 +1339,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Caută un profil",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Încă niciun cont",
+  "plugin_threads_no_accounts": "Încă nu există conturi Threads",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Încă nimic de citit",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Urmărește pe cineva ca să începi să citești",
+  "plugin_threads_home": "Acasă",
+  "plugin_threads_liked": "Apreciate",
+  "plugin_threads_liked_empty": "Încă nu există postări apreciate — inimile rămân pe acest dispozitiv",
+  "plugin_threads_reposted": "{name} a redistribuit",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Nu mai urmări",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

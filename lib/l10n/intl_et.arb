@@ -1235,7 +1235,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "Praegu pole Notes’e näidata",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Avalikud Substacki Notes — mitte sinu isiklik Following. Puuduta lugemiseks siin või järgi väljaannet.",
+  "plugin_substack_notes_intro": "Avalikud Notes Substackist — mitte sinu isiklik Following. Puuduta märkust, et avada see saidil, või jälgi väljaannet.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Ava kleebitud postitus",
   "@plugin_substack_open_pasted_post": {},
@@ -1339,7 +1339,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Otsi profiili",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Kontosid veel pole",
+  "plugin_threads_no_accounts": "Threads kontosid pole veel",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Veel pole midagi lugeda",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Lugemise alustamiseks jälgi kedagi",
+  "plugin_threads_home": "Avaleht",
+  "plugin_threads_liked": "Meeldinud",
+  "plugin_threads_liked_empty": "Meeldinud postitusi veel pole — südamed jäävad sellesse seadmesse",
+  "plugin_threads_reposted": "{name} postitas uuesti",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Lõpeta jälgimine",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

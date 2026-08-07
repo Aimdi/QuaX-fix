@@ -1235,7 +1235,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "Ara no hi ha Notes per mostrar",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Notes públiques de Substack — no el teu fil Following. Toca’n una per llegir-la aquí, o segueix-ne la publicació.",
+  "plugin_substack_notes_intro": "Notes públiques d’arreu de Substack — no el teu fil Following personal. Toca una nota per obrir-la al lloc, o segueix-ne la publicació.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Obre l’entrada enganxada",
   "@plugin_substack_open_pasted_post": {},
@@ -1339,7 +1339,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Cerca un perfil",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Encara no hi ha comptes",
+  "plugin_threads_no_accounts": "Encara no hi ha comptes de Threads",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Encara no hi ha res per llegir",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Segueix algú per començar a llegir",
+  "plugin_threads_home": "Inici",
+  "plugin_threads_liked": "M’agrada",
+  "plugin_threads_liked_empty": "Encara no hi ha publicacions que t’agradin — els cors es queden en aquest dispositiu",
+  "plugin_threads_reposted": "{name} ha republicat",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Deixa de seguir",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

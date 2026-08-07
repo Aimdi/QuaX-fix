@@ -1235,7 +1235,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "Pakul niama Notes",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Publičnyja Notes z Substack — nie vaša asabistaja stužka Following. Naciśnicie, kab pračytać tut, abo padpišyćesia na vydannie.",
+  "plugin_substack_notes_intro": "Publičnyja Notes z Substack — nie vaša asabistaja stužka Following. Nacisnicie natatku, kab adkryć jaje na sajcie, abo padpišycesia na vydannie.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Adkryć ustaŭleny post",
   "@plugin_substack_open_pasted_post": {},
@@ -1339,7 +1339,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Znajsci profil",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Ulikovych zapisaŭ pakul niama",
+  "plugin_threads_no_accounts": "Akaŭntaŭ Threads pakul niama",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Pakul niama čaho čytać",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Padpišyciesia na kahości, kab pačać čytać",
+  "plugin_threads_home": "Hałoŭnaja",
+  "plugin_threads_liked": "Spadabanae",
+  "plugin_threads_liked_empty": "Spadabanych dopisaŭ pakul niama — sercajki zastajucca na hetaj pryładzie",
+  "plugin_threads_reposted": "{name} zrabiŭ(ła) repost",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Adpisacca",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

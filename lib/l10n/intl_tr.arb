@@ -1242,7 +1242,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "Şu an gösterilecek Notes yok",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Substack’teki herkese açık Notes — kişisel Following akışınız değil. Burada okumak için dokunun veya yayını takip edin.",
+  "plugin_substack_notes_intro": "Substack’teki herkese açık Notes — kişisel Following akışınız değil. Notu sitede açmak için dokunun veya yayınını takip edin.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Yapıştırılan yazıyı aç",
   "@plugin_substack_open_pasted_post": {},
@@ -1346,7 +1346,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Profil ara",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Henüz hesap yok",
+  "plugin_threads_no_accounts": "Henüz Threads hesabı yok",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Henüz okunacak bir şey yok",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Okumaya başlamak için birini takip edin",
+  "plugin_threads_home": "Ana sayfa",
+  "plugin_threads_liked": "Beğenilenler",
+  "plugin_threads_liked_empty": "Henüz beğenilen gönderi yok — kalpler bu cihazda kalır",
+  "plugin_threads_reposted": "{name} yeniden paylaştı",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Takibi bırak",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

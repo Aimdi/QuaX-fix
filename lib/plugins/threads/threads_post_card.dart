@@ -8,6 +8,8 @@ import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/threads/threads_likes_store.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
+import 'package:xta/plugins/threads/threads_profile_screen.dart';
+import 'package:xta/plugins/threads/threads_thread_screen.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
 import 'package:xta/tweet/_like_button.dart';
 import 'package:xta/tweet/tweet.dart' show tweetCardColor;
@@ -35,9 +37,57 @@ class ThreadsPostCard extends StatelessWidget {
   /// Set in a mixed timeline so the card says where it came from.
   final bool showSourceBadge;
 
-  const ThreadsPostCard({super.key, required this.post, this.showSourceBadge = true});
+  /// When false, the card body does not navigate (used for the root of a thread).
+  final bool openOnTap;
+
+  /// Override for opening the post in-app. Defaults to [ThreadsThreadScreen].
+  final VoidCallback? onOpen;
+
+  /// Author avatar / name — defaults to [ThreadsProfileScreen].
+  final VoidCallback? onAuthorTap;
+
+  /// External browser affordance in the engagement row.
+  final VoidCallback? onOpenBrowser;
+
+  const ThreadsPostCard({
+    super.key,
+    required this.post,
+    this.showSourceBadge = true,
+    this.openOnTap = true,
+    this.onOpen,
+    this.onAuthorTap,
+    this.onOpenBrowser,
+  });
 
   void _open(BuildContext context) {
+    if (onOpen != null) {
+      onOpen!();
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => ThreadsThreadScreen(post: post)),
+    );
+  }
+
+  void _openAuthor(BuildContext context) {
+    if (onAuthorTap != null) {
+      onAuthorTap!();
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ThreadsProfileScreen(username: post.handle),
+      ),
+    );
+  }
+
+  void _openBrowser(BuildContext context) {
+    if (onOpenBrowser != null) {
+      onOpenBrowser!();
+      return;
+    }
     final url = post.url;
     if (url != null) {
       openUri(context, url);
@@ -54,24 +104,33 @@ class ThreadsPostCard extends StatelessWidget {
         tweetFlatCard(
           color: tweetCardColor(context),
           child: InkWell(
-            onTap: () => _open(context),
+            onTap: openOnTap ? () => _open(context) : null,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _avatar(context),
+                  GestureDetector(
+                    onTap: () => _openAuthor(context),
+                    child: _avatar(context),
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        _header(context),
+                        GestureDetector(
+                          onTap: () => _openAuthor(context),
+                          behavior: HitTestBehavior.opaque,
+                          child: _header(context),
+                        ),
                         if (post.text.isNotEmpty) ...[
                           const SizedBox(height: 6),
                           Text(
                             post.text,
-                            style: theme.textTheme.bodyLarge!.copyWith(height: 1.35),
+                            style: theme.textTheme.bodyLarge!.copyWith(
+                              height: 1.35,
+                            ),
                           ),
                         ],
                         if (post.hasMedia) ...[
@@ -82,7 +141,11 @@ class ThreadsPostCard extends StatelessWidget {
                           const SizedBox(height: 10),
                           _ThreadsLinkPreview(card: post.linkCard!),
                         ],
-                        _ThreadsEngagementRow(post: post, onOpen: () => _open(context)),
+                        _ThreadsEngagementRow(
+                          post: post,
+                          onOpen: () => _open(context),
+                          onOpenBrowser: () => _openBrowser(context),
+                        ),
                       ],
                     ),
                   ),
@@ -114,7 +177,8 @@ class ThreadsPostCard extends StatelessWidget {
               width: size,
               height: size,
               fit: BoxFit.cover,
-              cacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).ceil(),
+              cacheWidth: (size * MediaQuery.devicePixelRatioOf(context))
+                  .ceil(),
             ),
     );
   }
@@ -122,7 +186,9 @@ class ThreadsPostCard extends StatelessWidget {
   Widget _header(BuildContext context) {
     final theme = Theme.of(context);
     final date = post.publishedAt;
-    final metaStyle = theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant);
+    final metaStyle = theme.textTheme.bodySmall!.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,18 +199,30 @@ class ThreadsPostCard extends StatelessWidget {
               child: Text(
                 post.authorName,
                 overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800),
+                style: theme.textTheme.titleSmall!.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
-            if (showSourceBadge) ...[const SizedBox(width: 6), _badge(context, L10n.of(context).plugin_threads_title)],
+            if (showSourceBadge) ...[
+              const SizedBox(width: 6),
+              _badge(context, L10n.of(context).plugin_threads_title),
+            ],
           ],
         ),
         Row(
           children: [
             Flexible(
-              child: Text('@${post.handle}', overflow: TextOverflow.ellipsis, style: metaStyle),
+              child: Text(
+                '@${post.handle}',
+                overflow: TextOverflow.ellipsis,
+                style: metaStyle,
+              ),
             ),
-            if (date != null) ...[Text(' · ', style: metaStyle), Text(createCompactDate(date), style: metaStyle)],
+            if (date != null) ...[
+              Text(' · ', style: metaStyle),
+              Text(createCompactDate(date), style: metaStyle),
+            ],
           ],
         ),
       ],
@@ -250,7 +328,9 @@ class _ThreadsLinkPreview extends StatelessWidget {
                       host,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                      style: theme.textTheme.labelSmall!.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     if (card.title != null) ...[
                       const SizedBox(height: 4),
@@ -258,7 +338,10 @@ class _ThreadsLinkPreview extends StatelessWidget {
                         card.title!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w700, height: 1.25),
+                        style: theme.textTheme.titleSmall!.copyWith(
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
+                        ),
                       ),
                     ],
                     if (card.description != null) ...[
@@ -267,7 +350,9 @@ class _ThreadsLinkPreview extends StatelessWidget {
                         card.description!,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                        style: theme.textTheme.bodySmall!.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ],
@@ -285,15 +370,21 @@ class _ThreadsLinkPreview extends StatelessWidget {
 class _ThreadsEngagementRow extends StatelessWidget {
   final ThreadsPost post;
   final VoidCallback onOpen;
+  final VoidCallback onOpenBrowser;
 
-  const _ThreadsEngagementRow({required this.post, required this.onOpen});
+  const _ThreadsEngagementRow({
+    required this.post,
+    required this.onOpen,
+    required this.onOpenBrowser,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final muted = theme.colorScheme.onSurfaceVariant;
     final prefs = PrefService.of(context, listen: false);
-    final hideCounts = prefs.get(optionZenMode) == true || prefs.get(optionCalmMode) == true;
+    final hideCounts =
+        prefs.get(optionZenMode) == true || prefs.get(optionCalmMode) == true;
     final likes = context.read<ThreadsLikesStore>();
 
     String metaLabel(int? count) {
@@ -312,21 +403,29 @@ class _ThreadsEngagementRow extends StatelessWidget {
               style: footerButtonStyle,
               onPressed: onOpen,
               icon: Icon(Icons.mode_comment_outlined, size: 18, color: muted),
-              label: Text(metaLabel(post.replyCount), style: theme.textTheme.bodySmall!.copyWith(color: muted)),
+              label: Text(
+                metaLabel(post.replyCount),
+                style: theme.textTheme.bodySmall!.copyWith(color: muted),
+              ),
             ),
           if (post.repostCount != null)
             TextButton.icon(
               style: footerButtonStyle,
               onPressed: onOpen,
               icon: Icon(Icons.repeat, size: 18, color: muted),
-              label: Text(metaLabel(post.repostCount), style: theme.textTheme.bodySmall!.copyWith(color: muted)),
+              label: Text(
+                metaLabel(post.repostCount),
+                style: theme.textTheme.bodySmall!.copyWith(color: muted),
+              ),
             ),
-          ScopedBuilder<ThreadsLikesStore, Set<String>>(
+          ScopedBuilder<ThreadsLikesStore, List<ThreadsPost>>(
             store: likes,
-            distinct: (state) => state.contains(post.id),
+            distinct: (_) => likes.isLiked(post.id),
             onState: (context, state) {
-              final isLiked = state.contains(post.id);
-              final shown = post.likeCount == null ? null : post.likeCount! + (isLiked ? 1 : 0);
+              final isLiked = likes.isLiked(post.id);
+              final shown = post.likeCount == null
+                  ? null
+                  : post.likeCount! + (isLiked ? 1 : 0);
               final likeLabel = hideCounts || shown == null
                   ? ''
                   : _threadsCountFormat.format(shown);
@@ -336,7 +435,7 @@ class _ThreadsEngagementRow extends StatelessWidget {
                 color: isLiked ? theme.colorScheme.primary : muted,
                 onPressed: () async {
                   final wasLiked = isLiked;
-                  await likes.toggle(post.id);
+                  await likes.toggle(post);
                   if (!wasLiked && context.mounted) {
                     maybeShowLikeToast(context);
                   }
@@ -348,7 +447,7 @@ class _ThreadsEngagementRow extends StatelessWidget {
           if (post.url != null)
             IconButton(
               tooltip: L10n.of(context).open_in_browser,
-              onPressed: onOpen,
+              onPressed: onOpenBrowser,
               icon: Icon(Icons.open_in_new, size: 18, color: muted),
             ),
         ],

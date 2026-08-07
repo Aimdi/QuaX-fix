@@ -1242,7 +1242,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "لا توجد Notes للعرض الآن",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "ملاحظات عامة من Substack — ليست خلاصة المتابعة الشخصية. المس ملاحظة لقراءتها هنا، أو تابع نشرتها.",
+  "plugin_substack_notes_intro": "Notes عامة من أنحاء Substack — وليست خلاصة المتابعة الشخصية. انقر ملاحظة لفتحها في الموقع، أو تابع منشأتها.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "فتح المنشور الملصوق",
   "@plugin_substack_open_pasted_post": {},
@@ -1346,7 +1346,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "ابحث عن ملف شخصي",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "لا حسابات بعد",
+  "plugin_threads_no_accounts": "لا توجد حسابات Threads بعد",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "لا شيء لقراءته بعد",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "تابع شخصًا لتبدأ القراءة",
+  "plugin_threads_home": "الرئيسية",
+  "plugin_threads_liked": "المعجبة",
+  "plugin_threads_liked_empty": "لا توجد منشورات معجب بها بعد — تبقى القلوب على هذا الجهاز",
+  "plugin_threads_reposted": "أعاد {name} النشر",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "إلغاء المتابعة",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

@@ -1,8 +1,11 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
+import 'package:xta/plugins/threads/threads_direct_client.dart';
+import 'package:xta/plugins/threads/threads_likes_store.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 import 'package:xta/plugins/threads/threads_post_card.dart';
 import 'package:xta/plugins/threads/threads_profile_screen.dart';
@@ -22,7 +25,8 @@ String threadsErrorMessage(L10n l10n, Object error) {
     ThreadsErrorKind.throttled => l10n.plugin_threads_error_throttled,
     ThreadsErrorKind.unreachable => l10n.plugin_threads_error_unreachable,
     ThreadsErrorKind.unauthorized => l10n.plugin_threads_error_unauthorized,
-    ThreadsErrorKind.sessionSuspended => l10n.plugin_threads_error_session_suspended,
+    ThreadsErrorKind.sessionSuspended =>
+      l10n.plugin_threads_error_session_suspended,
   };
 }
 
@@ -37,16 +41,33 @@ class ThreadsScreen extends StatefulWidget {
 }
 
 class _ThreadsScreenState extends State<ThreadsScreen> {
+  final _shell = _ThreadsShellStore();
+  final _likedScrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-    // The accounts are already loaded at startup; the feed is not, because it
-    // is a request per account and nobody asked for it until this tab exists.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        context.read<ThreadsFeedStore>().refresh();
+        _loadHome();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _likedScrollController.dispose();
+    _shell.destroy();
+    super.dispose();
+  }
+
+  Future<void> _loadHome({bool force = false}) async {
+    final accounts = context.read<ThreadsAccountsStore>();
+    final likes = context.read<ThreadsLikesStore>();
+    final feed = context.read<ThreadsFeedStore>();
+    await accounts.load();
+    await likes.load();
+    await feed.refresh(force: force);
   }
 
   /// Looks a handle up on the Xy server and shows whoever it finds, so an
@@ -57,19 +78,29 @@ class _ThreadsScreenState extends State<ThreadsScreen> {
       return;
     }
 
-    await Navigator.push(context, MaterialPageRoute(builder: (_) => ThreadsProfileScreen(username: handle)));
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => ThreadsProfileScreen(username: handle)),
+    );
   }
 
   Future<void> _addAccount() async {
+    final direct = context.read<ThreadsDirectClient>();
+    final accounts = context.read<ThreadsAccountsStore>();
+    final feed = context.read<ThreadsFeedStore>();
     final handle = await showThreadsAddAccountDialog(context);
-    if (handle == null || !mounted) {
+    if (handle == null) {
       return;
     }
 
-    await context.read<ThreadsAccountsStore>().add(ThreadsAccount(handle: handle, name: handle));
-    if (mounted) {
-      await context.read<ThreadsFeedStore>().refresh();
+    var account = ThreadsAccount(handle: handle, name: handle);
+    try {
+      account = (await direct.fetchProfile(handle)).toAccount();
+    } catch (_) {
+      // Public posts can still load even when the profile card cannot.
     }
+    await accounts.add(account);
+    await feed.refresh(force: true);
   }
 
   @override
@@ -80,7 +111,11 @@ class _ThreadsScreenState extends State<ThreadsScreen> {
       appBar: AppBar(
         title: Text(l10n.plugin_threads_title),
         actions: [
-          IconButton(icon: const Icon(Icons.search), tooltip: l10n.plugin_threads_lookup, onPressed: _lookUpProfile),
+          IconButton(
+            icon: const Icon(Icons.search),
+            tooltip: l10n.plugin_threads_lookup,
+            onPressed: _lookUpProfile,
+          ),
           IconButton(
             icon: const Icon(Icons.person_add_alt),
             tooltip: l10n.plugin_threads_add_account,
@@ -89,79 +124,302 @@ class _ThreadsScreenState extends State<ThreadsScreen> {
           IconButton(
             icon: const Icon(Icons.settings),
             tooltip: l10n.settings,
-            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ThreadsSettingsScreen())),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ThreadsSettingsScreen()),
+            ),
           ),
         ],
       ),
-      body: Column(
+      body: ScopedBuilder<_ThreadsShellStore, int>(
+        store: _shell,
+        onState: (context, tab) => Column(
+          children: [
+            _ShellTabs(selected: tab, onSelected: _shell.select),
+            Expanded(
+              child: IndexedStack(
+                index: tab,
+                children: [
+                  _HomePane(
+                    scrollController: widget.scrollController,
+                    onAddAccount: _addAccount,
+                    onLookUpProfile: _lookUpProfile,
+                    onRefresh: () => _loadHome(force: true),
+                  ),
+                  _LikedPane(
+                    scrollController: _likedScrollController,
+                    likes: context.read<ThreadsLikesStore>(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ThreadsShellStore extends Store<int> {
+  _ThreadsShellStore() : super(0);
+
+  void select(int index) => update(index);
+}
+
+class _ShellTabs extends StatelessWidget {
+  final int selected;
+  final ValueChanged<int> onSelected;
+
+  const _ShellTabs({required this.selected, required this.onSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+
+    return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Row(
         children: [
-          const ThreadsFollowingStrip(),
-          Expanded(
-            child: ScopedBuilder<ThreadsFeedStore, List<ThreadsPost>>.transition(
-              store: context.read<ThreadsFeedStore>(),
-              onLoading: (_) => const Center(child: CircularProgressIndicator()),
-              onError: (context, error) => Padding(
+          _ShellTab(
+            label: l10n.plugin_threads_home,
+            icon: Icons.home_outlined,
+            selected: selected == 0,
+            onTap: () => onSelected(0),
+          ),
+          _ShellTab(
+            label: l10n.plugin_threads_liked,
+            icon: Icons.favorite_border,
+            selected: selected == 1,
+            onTap: () => onSelected(1),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShellTab extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _ShellTab({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = selected
+        ? theme.colorScheme.primary
+        : theme.colorScheme.onSurfaceVariant;
+
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: selected
+                    ? theme.colorScheme.primary
+                    : theme.dividerColor,
+                width: selected ? 3 : 1,
+              ),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 18, color: color),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: theme.textTheme.labelLarge!.copyWith(color: color),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomePane extends StatelessWidget {
+  final ScrollController scrollController;
+  final Future<void> Function() onAddAccount;
+  final Future<void> Function() onLookUpProfile;
+  final Future<void> Function() onRefresh;
+
+  const _HomePane({
+    required this.scrollController,
+    required this.onAddAccount,
+    required this.onLookUpProfile,
+    required this.onRefresh,
+  });
+
+  Widget _feed(BuildContext context, L10n l10n, List<ThreadsPost> posts) {
+    if (posts.isEmpty) {
+      return _empty(context);
+    }
+
+    return RefreshIndicator(
+      // The reader pulled: that is the one moment worth going past the cache.
+      onRefresh: onRefresh,
+      child: ListView.builder(
+        controller: scrollController,
+        itemCount: posts.length,
+        itemBuilder: (context, index) => ThreadsPostCard(
+          key: ValueKey(posts[index].id),
+          post: posts[index],
+          showSourceBadge: false,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+    final feed = context.read<ThreadsFeedStore>();
+
+    return Column(
+      children: [
+        const ThreadsFollowingStrip(),
+        Expanded(
+          child: ScopedBuilder<ThreadsFeedStore, List<ThreadsPost>>.transition(
+            store: feed,
+            onLoading: (_) => const Center(child: CircularProgressIndicator()),
+            onError: (context, error) {
+              final notConfigured =
+                  error is ThreadsException &&
+                  error.kind == ThreadsErrorKind.notConfigured;
+              if (notConfigured) {
+                return _empty(context);
+              }
+              return Padding(
                 padding: const EdgeInsets.all(24),
                 child: FullPageErrorWidget(
                   error: error,
                   stackTrace: null,
                   prefix: threadsErrorMessage(l10n, error ?? Exception()),
-                  onRetry: () => context.read<ThreadsFeedStore>().refresh(),
+                  onRetry: onRefresh,
                 ),
-              ),
-              onState: (context, posts) => _feed(context, l10n, posts),
+              );
+            },
+            onState: (context, posts) => _feed(context, l10n, posts),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _empty(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = L10n.of(context);
+    final accounts = context.read<ThreadsAccountsStore>().state;
+
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: ListView(
+        controller: scrollController,
+        padding: const EdgeInsets.fromLTRB(32, 72, 32, 32),
+        children: [
+          Icon(
+            Icons.alternate_email,
+            size: 52,
+            color: theme.colorScheme.outline,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            accounts.isEmpty
+                ? l10n.plugin_threads_no_accounts
+                : l10n.plugin_threads_no_posts,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleMedium!.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.plugin_threads_empty_cta,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium!.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Center(
+            child: FilledButton.icon(
+              onPressed: onAddAccount,
+              icon: const Icon(Icons.person_add_alt),
+              label: Text(l10n.plugin_threads_add_account),
+            ),
+          ),
+          Center(
+            child: TextButton.icon(
+              onPressed: onLookUpProfile,
+              icon: const Icon(Icons.search),
+              label: Text(l10n.plugin_threads_lookup),
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _feed(BuildContext context, L10n l10n, List<ThreadsPost> posts) {
-    if (posts.isEmpty) {
-      return ScopedBuilder<ThreadsAccountsStore, List<ThreadsAccount>>(
-        store: context.read<ThreadsAccountsStore>(),
-        onState: (context, accounts) => ListView(
-          padding: const EdgeInsets.all(32),
-          children: [
-            Text(
-              accounts.isEmpty ? l10n.plugin_threads_no_accounts : l10n.plugin_threads_no_posts,
-              textAlign: TextAlign.center,
-            ),
-            // Naming who is followed turns "nothing here" into something the
-            // reader can act on: an empty feed with three accounts in it is a
-            // different problem from an empty feed with none.
-            if (accounts.isNotEmpty) ...[
-              const SizedBox(height: 24),
-              for (final account in accounts)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: FallbackAvatar(
-                    seed: account.handle,
-                    displayName: account.name,
-                    size: 36,
-                    accent: Theme.of(context).colorScheme.primary,
-                  ),
-                  title: Text('@${account.handle}'),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => ThreadsProfileScreen(username: account.handle)),
-                  ),
-                ),
-            ],
-          ],
-        ),
-      );
-    }
+class _LikedPane extends StatelessWidget {
+  final ScrollController scrollController;
+  final ThreadsLikesStore likes;
 
+  const _LikedPane({required this.scrollController, required this.likes});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
     return RefreshIndicator(
-      // The reader pulled: that is the one moment worth going past the cache.
-      onRefresh: () => context.read<ThreadsFeedStore>().refresh(force: true),
-      child: ListView.builder(
-        controller: widget.scrollController,
-        itemCount: posts.length,
-        itemBuilder: (context, index) =>
-            ThreadsPostCard(key: ValueKey(posts[index].id), post: posts[index], showSourceBadge: false),
+      onRefresh: likes.load,
+      child: ScopedBuilder<ThreadsLikesStore, List<ThreadsPost>>(
+        store: likes,
+        onState: (context, posts) {
+          if (posts.isEmpty) {
+            return ListView(
+              controller: scrollController,
+              padding: const EdgeInsets.fromLTRB(32, 72, 32, 32),
+              children: [
+                Icon(
+                  Icons.favorite_border,
+                  size: 52,
+                  color: Theme.of(context).colorScheme.outline,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.plugin_threads_liked_empty,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            );
+          }
+
+          return ListView.builder(
+            controller: scrollController,
+            itemCount: posts.length,
+            itemBuilder: (context, index) => ThreadsPostCard(
+              key: ValueKey('liked-${posts[index].id}'),
+              post: posts[index],
+              showSourceBadge: false,
+            ),
+          );
+        },
       ),
     );
   }
@@ -175,6 +433,38 @@ class _ThreadsScreenState extends State<ThreadsScreen> {
 /// before the feed loads, and each one opens the profile it belongs to.
 class ThreadsFollowingStrip extends StatelessWidget {
   const ThreadsFollowingStrip({super.key});
+
+  Future<void> _confirmUnfollow(
+    BuildContext context,
+    ThreadsAccount account,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        final l10n = L10n.of(dialogContext);
+        return AlertDialog(
+          title: Text(l10n.plugin_threads_unfollow),
+          content: Text('@${account.handle}'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: Text(l10n.plugin_threads_unfollow),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed == true && context.mounted) {
+      await context.read<ThreadsAccountsStore>().remove(account.handle);
+      if (context.mounted) {
+        await context.read<ThreadsFeedStore>().refresh(force: true);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -200,19 +490,18 @@ class ThreadsFollowingStrip extends StatelessWidget {
               return InkWell(
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => ThreadsProfileScreen(username: account.handle)),
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        ThreadsProfileScreen(username: account.handle),
+                  ),
                 ),
+                onLongPress: () => _confirmUnfollow(context, account),
                 child: SizedBox(
                   width: 64,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      FallbackAvatar(
-                        seed: account.handle,
-                        displayName: account.name,
-                        size: 40,
-                        accent: theme.colorScheme.primary,
-                      ),
+                      _FollowingAvatar(account: account),
                       const SizedBox(height: 4),
                       Text(
                         account.handle,
@@ -233,8 +522,41 @@ class ThreadsFollowingStrip extends StatelessWidget {
   }
 }
 
+class _FollowingAvatar extends StatelessWidget {
+  final ThreadsAccount account;
+
+  const _FollowingAvatar({required this.account});
+
+  @override
+  Widget build(BuildContext context) {
+    const size = 40.0;
+    final avatarUrl = account.avatarUrl;
+    if (avatarUrl == null || avatarUrl.isEmpty) {
+      return FallbackAvatar(
+        seed: account.handle,
+        displayName: account.name,
+        size: size,
+        accent: Theme.of(context).colorScheme.primary,
+      );
+    }
+
+    return ClipOval(
+      child: ExtendedImage.network(
+        avatarUrl,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        cacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).ceil(),
+      ),
+    );
+  }
+}
+
 /// Asks for a handle, and hands back the normalised one.
-Future<String?> showThreadsAddAccountDialog(BuildContext context, {bool lookup = false}) {
+Future<String?> showThreadsAddAccountDialog(
+  BuildContext context, {
+  bool lookup = false,
+}) {
   final controller = TextEditingController();
 
   return showDialog<String>(
@@ -245,11 +567,19 @@ Future<String?> showThreadsAddAccountDialog(BuildContext context, {bool lookup =
 
       return StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: Text(lookup ? l10n.plugin_threads_lookup : l10n.plugin_threads_add_account),
+          title: Text(
+            lookup
+                ? l10n.plugin_threads_lookup
+                : l10n.plugin_threads_add_account,
+          ),
           content: TextField(
             controller: controller,
             autofocus: true,
-            decoration: InputDecoration(hintText: l10n.plugin_threads_account_hint, errorText: error, prefixText: '@'),
+            decoration: InputDecoration(
+              hintText: l10n.plugin_threads_account_hint,
+              errorText: error,
+              prefixText: '@',
+            ),
             onSubmitted: (_) {
               final handle = normaliseThreadsHandle(controller.text);
               if (handle == null) {
@@ -260,7 +590,10 @@ Future<String?> showThreadsAddAccountDialog(BuildContext context, {bool lookup =
             },
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.cancel),
+            ),
             TextButton(
               onPressed: () {
                 final handle = normaliseThreadsHandle(controller.text);

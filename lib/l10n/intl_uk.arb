@@ -1235,7 +1235,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "Зараз немає Notes для показу",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Публічні Notes із Substack — не ваша особиста стрічка Following. Натисніть, щоб читати тут, або підпишіться на видання.",
+  "plugin_substack_notes_intro": "Публічні Notes із Substack — не ваша особиста стрічка Following. Торкніться нотатки, щоб відкрити її на сайті, або підпишіться на видання.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Відкрити вставлений пост",
   "@plugin_substack_open_pasted_post": {},
@@ -1339,7 +1339,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Знайти профіль",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Акаунтів поки немає",
+  "plugin_threads_no_accounts": "Акаунтів Threads поки немає",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Поки нічого читати",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Підпишіться на когось, щоб почати читати",
+  "plugin_threads_home": "Головна",
+  "plugin_threads_liked": "Вподобані",
+  "plugin_threads_liked_empty": "Вподобаних дописів поки немає — сердечка залишаються на цьому пристрої",
+  "plugin_threads_reposted": "{name} зробив(ла) репост",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Відписатися",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

@@ -376,3 +376,18 @@ List<MastodonPost> parseMastodonStatuses(Object? json, {String? homeDomain}) {
   final items = root.raw is List ? root.list : const <Json>[];
   return [for (final item in items) ?mastodonPostFromStatus(item.raw, homeDomain: homeDomain)];
 }
+
+/// A status plus the public conversation around it.
+class MastodonThread {
+  final MastodonPost status;
+  final List<MastodonPost> ancestors;
+  final List<MastodonPost> descendants;
+  final String? homeDomain;
+
+  const MastodonThread({
+    required this.status,
+    this.ancestors = const [],
+    this.descendants = const [],
+    this.homeDomain,
+  });
+}

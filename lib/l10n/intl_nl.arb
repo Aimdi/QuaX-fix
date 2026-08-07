@@ -1242,7 +1242,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "Geen Notes om te tonen",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Openbare Notes van Substack — niet je persoonlijke Following. Tik om hier te lezen, of volg de publicatie.",
+  "plugin_substack_notes_intro": "Openbare Notes van Substack — niet je persoonlijke Following. Tik op een notitie om die op de site te openen, of volg de publicatie.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Geplakte post openen",
   "@plugin_substack_open_pasted_post": {},
@@ -1346,7 +1346,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Profiel opzoeken",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Nog geen accounts",
+  "plugin_threads_no_accounts": "Nog geen Threads-accounts",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Nog niets te lezen",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Volg iemand om te beginnen met lezen",
+  "plugin_threads_home": "Home",
+  "plugin_threads_liked": "Geliket",
+  "plugin_threads_liked_empty": "Nog geen gelikete berichten — hartjes blijven op dit apparaat",
+  "plugin_threads_reposted": "{name} heeft opnieuw geplaatst",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Niet meer volgen",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

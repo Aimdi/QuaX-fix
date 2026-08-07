@@ -1235,7 +1235,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "Teď nejsou žádné Notes",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Veřejné Notes ze Substacku — ne váš osobní Following. Klepněte pro čtení zde, nebo odebírejte publikaci.",
+  "plugin_substack_notes_intro": "Veřejné Notes ze Substacku — ne váš osobní Following. Klepnutím otevřete poznámku na webu, nebo sledujte její publikaci.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Otevřít vložený příspěvek",
   "@plugin_substack_open_pasted_post": {},
@@ -1339,7 +1339,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Najít profil",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Zatím žádné účty",
+  "plugin_threads_no_accounts": "Zatím žádné účty Threads",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Zatím není co číst",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Začněte někoho sledovat a číst",
+  "plugin_threads_home": "Domů",
+  "plugin_threads_liked": "Líbí se",
+  "plugin_threads_liked_empty": "Zatím žádné oblíbené příspěvky — srdíčka zůstávají na tomto zařízení",
+  "plugin_threads_reposted": "{name} přeposlal(a)",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Přestat sledovat",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

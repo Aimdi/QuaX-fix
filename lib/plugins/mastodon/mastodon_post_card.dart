@@ -5,6 +5,8 @@ import 'package:pref/pref.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/mastodon/mastodon_models.dart';
+import 'package:xta/plugins/mastodon/mastodon_profile_screen.dart';
+import 'package:xta/plugins/mastodon/mastodon_thread_screen.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/tweet/tweet_footer.dart';
@@ -24,9 +26,51 @@ class MastodonPostCard extends StatelessWidget {
   final MastodonPost post;
   final bool showSourceBadge;
 
-  const MastodonPostCard({super.key, required this.post, this.showSourceBadge = true});
+  /// When false, the card body does not navigate (used for the root of a thread).
+  final bool openOnTap;
 
-  void _open(BuildContext context) => openUri(context, post.url);
+  /// Override for opening the post in-app. Defaults to [MastodonThreadScreen].
+  final VoidCallback? onOpen;
+
+  /// Author avatar / name — defaults to [MastodonProfileScreen].
+  final VoidCallback? onAuthorTap;
+
+  /// External browser affordance in the engagement row.
+  final VoidCallback? onOpenBrowser;
+
+  const MastodonPostCard({
+    super.key,
+    required this.post,
+    this.showSourceBadge = true,
+    this.openOnTap = true,
+    this.onOpen,
+    this.onAuthorTap,
+    this.onOpenBrowser,
+  });
+
+  void _open(BuildContext context) {
+    if (onOpen != null) {
+      onOpen!();
+      return;
+    }
+    Navigator.push(context, MaterialPageRoute(builder: (_) => MastodonThreadScreen(post: post)));
+  }
+
+  void _openAuthor(BuildContext context) {
+    if (onAuthorTap != null) {
+      onAuthorTap!();
+      return;
+    }
+    Navigator.push(context, MaterialPageRoute(builder: (_) => MastodonProfileScreen(acct: post.acct)));
+  }
+
+  void _openBrowser(BuildContext context) {
+    if (onOpenBrowser != null) {
+      onOpenBrowser!();
+      return;
+    }
+    openUri(context, post.url);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,19 +82,26 @@ class MastodonPostCard extends StatelessWidget {
         tweetFlatCard(
           color: theme.cardColor,
           child: InkWell(
-            onTap: () => _open(context),
+            onTap: openOnTap ? () => _open(context) : null,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _avatar(context),
+                  GestureDetector(
+                    onTap: () => _openAuthor(context),
+                    child: _avatar(context),
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        _header(context),
+                        GestureDetector(
+                          onTap: () => _openAuthor(context),
+                          behavior: HitTestBehavior.opaque,
+                          child: _header(context),
+                        ),
                         if (post.text.isNotEmpty) ...[
                           const SizedBox(height: 6),
                           Text(
@@ -66,7 +117,11 @@ class MastodonPostCard extends StatelessWidget {
                           const SizedBox(height: 10),
                           _MastodonLinkPreview(card: post.linkCard!),
                         ],
-                        _MastodonEngagementRow(post: post, onOpen: () => _open(context)),
+                        _MastodonEngagementRow(
+                          post: post,
+                          onOpen: () => _open(context),
+                          onOpenBrowser: () => _openBrowser(context),
+                        ),
                       ],
                     ),
                   ),
@@ -183,7 +238,7 @@ class MastodonPostCard extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 240,
+      height: 220,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: post.images.length,
@@ -192,10 +247,10 @@ class MastodonPostCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius),
           child: ExtendedImage.network(
             post.images[index],
-            width: 220,
-            height: 240,
+            width: 200,
+            height: 220,
             fit: BoxFit.cover,
-            cacheWidth: (220 * scale).ceil(),
+            cacheWidth: (200 * scale).ceil(),
           ),
         ),
       ),
@@ -280,12 +335,17 @@ class _MastodonLinkPreview extends StatelessWidget {
   }
 }
 
-/// Read-only replies / boosts / favourites — taps open the status in the browser.
+/// Read-only replies / boosts / favourites — body opens in-app; the icon leaves.
 class _MastodonEngagementRow extends StatelessWidget {
   final MastodonPost post;
   final VoidCallback onOpen;
+  final VoidCallback onOpenBrowser;
 
-  const _MastodonEngagementRow({required this.post, required this.onOpen});
+  const _MastodonEngagementRow({
+    required this.post,
+    required this.onOpen,
+    required this.onOpenBrowser,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -321,7 +381,7 @@ class _MastodonEngagementRow extends StatelessWidget {
           const Spacer(),
           IconButton(
             tooltip: L10n.of(context).open_in_browser,
-            onPressed: onOpen,
+            onPressed: onOpenBrowser,
             icon: Icon(Icons.open_in_new, size: 18, color: muted),
           ),
         ],

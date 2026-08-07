@@ -1235,7 +1235,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "Neniuj Notes nun",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Publikaj Notes el Substack — ne via persona Following. Tuŝu por legi ĉi tie, aŭ abonu la eldonaĵon.",
+  "plugin_substack_notes_intro": "Publikaj Notes el Substack — ne via persona Following. Tuŝu noton por malfermi ĝin en la retejo, aŭ sekvu ĝian eldonaĵon.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Malfermi la algluitan afiŝon",
   "@plugin_substack_open_pasted_post": {},
@@ -1339,7 +1339,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Serĉi profilon",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Ankoraŭ neniuj kontoj",
+  "plugin_threads_no_accounts": "Ankoraŭ neniuj Threads-kontoj",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Ankoraŭ nenio legenda",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Sekvu iun por eklegi",
+  "plugin_threads_home": "Hejmo",
+  "plugin_threads_liked": "Ŝatitaj",
+  "plugin_threads_liked_empty": "Ankoraŭ neniuj ŝatitaj afiŝoj — koroj restas sur ĉi tiu aparato",
+  "plugin_threads_reposted": "{name} reafiŝis",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Ne plu sekvi",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

@@ -1235,7 +1235,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "Hiện không có Notes để hiện",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Notes công khai từ Substack — không phải feed Following cá nhân. Chạm để đọc tại đây, hoặc theo dõi ấn phẩm.",
+  "plugin_substack_notes_intro": "Notes công khai trên Substack — không phải feed Following cá nhân. Chạm ghi chú để mở trên site, hoặc theo dõi ấn phẩm.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Mở bài đã dán",
   "@plugin_substack_open_pasted_post": {},
@@ -1339,7 +1339,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Tìm hồ sơ",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Chưa có tài khoản nào",
+  "plugin_threads_no_accounts": "Chưa có tài khoản Threads nào",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Chưa có gì để đọc",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Theo dõi ai đó để bắt đầu đọc",
+  "plugin_threads_home": "Trang chủ",
+  "plugin_threads_liked": "Đã thích",
+  "plugin_threads_liked_empty": "Chưa có bài viết đã thích — trái tim chỉ ở trên thiết bị này",
+  "plugin_threads_reposted": "{name} đã đăng lại",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Bỏ theo dõi",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

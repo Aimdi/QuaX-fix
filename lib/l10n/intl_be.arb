@@ -1235,7 +1235,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "Пакуль няма Notes",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Публічныя Notes з Substack — не ваша асабістая стужка Following. Націсніце, каб прачытаць тут, або падпішыцеся на выданне.",
+  "plugin_substack_notes_intro": "Публічныя Notes з Substack — не ваша асабістая стужка Following. Націсніце нататку, каб адкрыць яе на сайце, або падпішыцеся на выданне.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Адкрыць устаўлены пост",
   "@plugin_substack_open_pasted_post": {},
@@ -1339,7 +1339,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Знайсці профіль",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Уліковых запісаў пакуль няма",
+  "plugin_threads_no_accounts": "Акаўнтаў Threads пакуль няма",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Пакуль няма чаго чытаць",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Падпішыцеся на кагосьці, каб пачаць чытаць",
+  "plugin_threads_home": "Галоўная",
+  "plugin_threads_liked": "Упадабаныя",
+  "plugin_threads_liked_empty": "Пакуль няма ўпадабаных допісаў — сэрцайкі застаюцца на гэтай прыладзе",
+  "plugin_threads_reposted": "{name} зрабіў(ла) рэпост",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Адпісацца",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

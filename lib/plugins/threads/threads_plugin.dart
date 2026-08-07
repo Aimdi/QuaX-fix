@@ -67,6 +67,7 @@ class ThreadsPlugin extends XtaPlugin {
     await prefs.set(optionPluginThreadsDirectCookies, '');
     await prefs.set(optionPluginThreadsDirectBearer, '');
     await prefs.set(optionPluginThreadsDirectDeviceId, '');
+    await prefs.set(optionPluginThreadsLikedPosts, '[]');
   }
 
   @override

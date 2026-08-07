@@ -7,6 +7,7 @@ import 'package:pref/pref.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
 import 'package:xta/plugins/threads/threads_direct_client.dart';
+import 'package:xta/plugins/threads/threads_models.dart';
 
 void main() {
   group('parseThreadsCookieHeader', () {
@@ -109,6 +110,79 @@ void main() {
       expect(posts.first.linkCard?.title, 'A story');
       expect(posts.first.linkCard?.url, 'https://example.org/story');
     });
+
+    test('unwraps share_info.reposted_post and keeps the reposter', () {
+      final posts = parseThreadsApiFeed({
+        'threads': [
+          {
+            'thread_items': [
+              {
+                'post': {
+                  'pk': '99',
+                  'code': 'outerCode',
+                  'caption': {'text': ''},
+                  'taken_at': 1700000000,
+                  'like_count': 1,
+                  'user': {
+                    'username': 'zuck',
+                    'full_name': 'Mark Zuckerberg',
+                    'profile_pic_url': 'https://cdn.example/zuck.jpg',
+                  },
+                  'text_post_app_info': {
+                    'direct_reply_count': 0,
+                    'repost_count': 0,
+                    'share_info': {
+                      'reposted_post': {
+                        'pk': '55',
+                        'code': 'innerCode',
+                        'caption': {'text': 'original from meta'},
+                        'taken_at': 1699990000,
+                        'like_count': 42,
+                        'user': {
+                          'username': 'meta',
+                          'full_name': 'Meta',
+                          'profile_pic_url': 'https://cdn.example/meta.jpg',
+                        },
+                        'text_post_app_info': {
+                          'direct_reply_count': 3,
+                          'repost_count': 7,
+                          'quote_count': 1,
+                        },
+                        'image_versions2': {
+                          'candidates': [
+                            {'url': 'https://cdn.example/inner.jpg', 'width': 640},
+                          ],
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+
+      expect(posts, hasLength(1));
+      final post = posts.first;
+      expect(post.isRepost, isTrue);
+      expect(post.id, '99');
+      expect(post.handle, 'meta');
+      expect(post.authorName, 'Meta');
+      expect(post.text, 'original from meta');
+      expect(post.repostedByHandle, 'zuck');
+      expect(post.repostedByName, 'Mark Zuckerberg');
+      expect(post.likeCount, 42);
+      expect(post.replyCount, 3);
+      expect(post.repostCount, 7);
+      expect(post.images.single, 'https://cdn.example/inner.jpg');
+      expect(post.url, 'https://www.threads.com/@meta/post/innerCode');
+      // Timing reflects when the profile reposted, not the original.
+      expect(
+        post.publishedAt,
+        DateTime.fromMillisecondsSinceEpoch(1700000000 * 1000, isUtc: true).toLocal(),
+      );
+    });
   });
 
   group('parseThreadsSsrHtml', () {
@@ -141,6 +215,104 @@ void main() {
       expect(posts, hasLength(1));
       expect(posts.first.text, 'from ssr');
     });
+
+    test('profile parse keeps only the root of each thread_items list', () {
+      final blob = jsonEncode({
+        'thread_items': [
+          {
+            'post': {
+              'pk': '1',
+              'code': 'a',
+              'caption': {'text': 'root'},
+              'user': {'username': 'zuck', 'full_name': 'Z'},
+            },
+          },
+          {
+            'post': {
+              'pk': '2',
+              'code': 'b',
+              'caption': {'text': 'reply'},
+              'user': {'username': 'other', 'full_name': 'O'},
+            },
+          },
+        ],
+      });
+      final html = '<html><script type="application/json" data-sjs>$blob</script></html>';
+      final posts = parseThreadsSsrHtml(html, 'zuck');
+      expect(posts.map((p) => p.text), ['root']);
+    });
+
+    test('keeps reposts when matching the reposter handle', () {
+      final blob = jsonEncode({
+        'require': [
+          [
+            'RelayPrefetchedStreamCache',
+            'next',
+            [
+              null,
+              {
+                'thread_items': [
+                  {
+                    'post': {
+                      'pk': '99',
+                      'code': 'outer',
+                      'caption': {'text': ''},
+                      'taken_at': 1700000000,
+                      'user': {'username': 'zuck', 'full_name': 'Mark'},
+                      'text_post_app_info': {
+                        'share_info': {
+                          'reposted_post': {
+                            'pk': '55',
+                            'code': 'inner',
+                            'caption': {'text': 'from someone else'},
+                            'user': {'username': 'meta', 'full_name': 'Meta'},
+                          },
+                        },
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          ],
+        ],
+      });
+      final html = '<html><script type="application/json" data-sjs>$blob</script></html>';
+      final posts = parseThreadsSsrHtml(html, 'zuck');
+      expect(posts, hasLength(1));
+      expect(posts.first.isRepost, isTrue);
+      expect(posts.first.handle, 'meta');
+      expect(posts.first.repostedByHandle, 'zuck');
+      expect(posts.first.text, 'from someone else');
+    });
+  });
+
+  group('parseThreadsSsrThread', () {
+    test('keeps every reply in the thread_items chain', () {
+      final blob = jsonEncode({
+        'thread_items': [
+          {
+            'post': {
+              'pk': '1',
+              'code': 'a',
+              'caption': {'text': 'root'},
+              'user': {'username': 'zuck', 'full_name': 'Z'},
+            },
+          },
+          {
+            'post': {
+              'pk': '2',
+              'code': 'b',
+              'caption': {'text': 'reply'},
+              'user': {'username': 'other', 'full_name': 'O'},
+            },
+          },
+        ],
+      });
+      final html = '<html><script type="application/json" data-sjs>$blob</script></html>';
+      final posts = parseThreadsSsrThread(html);
+      expect(posts.map((p) => p.text), ['root', 'reply']);
+    });
   });
 
   group('guest GraphQL helpers', () {
@@ -167,6 +339,23 @@ void main() {
     test('extractThreadsUserIdFromHtml falls back to modal userID and ignores 0', () {
       final html = r'{"userID":"0"}{"userID":"63404918397"}{"userID":"63404918397"}{"userID":"1"}';
       expect(extractThreadsUserIdFromHtml(html, 'anyone'), '63404918397');
+    });
+
+    test('threadsProfileFromPosts builds a card when OG scrape is empty', () {
+      final profile = threadsProfileFromPosts('zuck', [
+        const ThreadsPost(
+          id: '1',
+          handle: 'zuck',
+          authorName: 'Mark',
+          text: 'hi',
+          avatarUrl: 'https://example.org/a.jpg',
+        ),
+      ]);
+      expect(profile, isNotNull);
+      expect(profile!.username, 'zuck');
+      expect(profile.fullName, 'Mark');
+      expect(profile.profilePicUrl, 'https://example.org/a.jpg');
+      expect(threadsProfileFromPosts('nobody', const []), isNull);
     });
 
     test('threadsProfileFromGuestHtml reads OG title, description and image', () {
@@ -478,6 +667,43 @@ void main() {
 
       final posts = await client.fetchGuestAccount('zuck');
       expect(posts.first.text, 'ssr fallback');
+    });
+
+    test('fetchGuestPostThread scrapes root and replies from a post URL', () async {
+      final blob = jsonEncode({
+        'thread_items': [
+          {
+            'post': {
+              'pk': '1',
+              'code': 'Aa',
+              'caption': {'text': 'root'},
+              'user': {'username': 'zuck', 'full_name': 'Z'},
+            },
+          },
+          {
+            'post': {
+              'pk': '2',
+              'code': 'Bb',
+              'caption': {'text': 'reply'},
+              'user': {'username': 'other', 'full_name': 'O'},
+            },
+          },
+        ],
+      });
+      final client = ThreadsDirectClient(
+        prefs,
+        minGap: Duration.zero,
+        httpClient: MockClient((request) async {
+          expect(request.url.path, '/@zuck/post/Aa');
+          return http.Response(
+            '<html><script type="application/json" data-sjs>$blob</script></html>',
+            200,
+          );
+        }),
+      );
+
+      final posts = await client.fetchGuestPostThread('https://www.threads.com/@zuck/post/Aa');
+      expect(posts.map((p) => p.text), ['root', 'reply']);
     });
   });
 }

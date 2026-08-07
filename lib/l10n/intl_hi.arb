@@ -1235,7 +1235,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "अभी दिखाने के लिए कोई Notes नहीं",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Substack की सार्वजनिक Notes — आपका निजी Following फ़ीड नहीं। यहाँ पढ़ने के लिए टैप करें, या प्रकाशन फ़ॉलो करें।",
+  "plugin_substack_notes_intro": "Substack भर की सार्वजनिक Notes — आपका निजी Following फ़ीड नहीं। नोट खोलने के लिए टैप करें, या उसका प्रकाशन फ़ॉलो करें।",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "चिपकाई गई पोस्ट खोलें",
   "@plugin_substack_open_pasted_post": {},
@@ -1339,7 +1339,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "प्रोफ़ाइल खोजें",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "अभी कोई खाता नहीं",
+  "plugin_threads_no_accounts": "अभी कोई Threads खाता नहीं है",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "अभी पढ़ने के लिए कुछ नहीं",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "पढ़ना शुरू करने के लिए किसी को फ़ॉलो करें",
+  "plugin_threads_home": "होम",
+  "plugin_threads_liked": "पसंद किए गए",
+  "plugin_threads_liked_empty": "अभी तक कोई पसंद की गई पोस्ट नहीं — हार्ट इसी डिवाइस पर रहते हैं",
+  "plugin_threads_reposted": "{name} ने रीपोस्ट किया",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "फ़ॉलो करना बंद करें",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }

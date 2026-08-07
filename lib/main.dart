@@ -518,6 +518,7 @@ Future<void> main() async {
       optionPluginThreadsDirectCookies: '',
       optionPluginThreadsDirectBearer: '',
       optionPluginThreadsDirectDeviceId: '',
+      optionPluginThreadsLikedPosts: '[]',
       optionPluginStoreShowPrivate: false,
       optionSubscriptionGroupsOrderByAscending: true,
       optionDisableWarningsForUnrelatedPostsInFeed: false,
@@ -645,7 +646,7 @@ Future<void> main() async {
     final threadsDirect = ThreadsDirectClient(prefService);
     final threadsApi = ThreadsApi();
     final threadsAccounts = ThreadsAccountsStore();
-    final threadsLikes = ThreadsLikesStore();
+    final threadsLikes = ThreadsLikesStore(prefService);
     final threadsFeed = ThreadsFeedStore(
       threadsClient,
       threadsDirect,

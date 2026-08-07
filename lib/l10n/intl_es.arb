@@ -1242,7 +1242,7 @@
   "@plugin_substack_no_content": {},
   "plugin_substack_notes_empty": "No hay Notes que mostrar ahora",
   "@plugin_substack_notes_empty": {},
-  "plugin_substack_notes_intro": "Notes públicas de Substack: no tu feed Following. Toca una para leerla aquí, o sigue su publicación.",
+  "plugin_substack_notes_intro": "Notes públicas de Substack — no tu feed Following personal. Toca una nota para abrirla en el sitio, o sigue su publicación.",
   "@plugin_substack_notes_intro": {},
   "plugin_substack_open_pasted_post": "Abrir la publicación pegada",
   "@plugin_substack_open_pasted_post": {},
@@ -1346,7 +1346,7 @@
   "@plugin_threads_invalid_handle": {},
   "plugin_threads_lookup": "Buscar un perfil",
   "@plugin_threads_lookup": {},
-  "plugin_threads_no_accounts": "Todavía no hay cuentas",
+  "plugin_threads_no_accounts": "Aún no hay cuentas de Threads",
   "@plugin_threads_no_accounts": {},
   "plugin_threads_no_posts": "Todavía no hay nada que leer",
   "@plugin_threads_no_posts": {},
@@ -1874,5 +1874,23 @@
   "@plugin_substack_save": {},
   "@plugin_substack_saved_empty": {},
   "@plugin_substack_unlike": {},
-  "@plugin_substack_unsave": {}
+  "@plugin_substack_unsave": {},
+  "plugin_threads_empty_cta": "Sigue a alguien para empezar a leer",
+  "plugin_threads_home": "Inicio",
+  "plugin_threads_liked": "Me gusta",
+  "plugin_threads_liked_empty": "Aún no hay publicaciones con me gusta — los corazones se quedan en este dispositivo",
+  "plugin_threads_reposted": "{name} ha republicado",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_threads_unfollow": "Dejar de seguir",
+  "@plugin_threads_empty_cta": {},
+  "@plugin_threads_home": {},
+  "@plugin_threads_liked": {},
+  "@plugin_threads_liked_empty": {},
+  "@plugin_threads_unfollow": {}
 }
