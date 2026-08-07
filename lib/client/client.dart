@@ -376,7 +376,8 @@ class Twitter {
         "responsive_web_grok_analyze_post_followups_enabled": true,
         "responsive_web_jetfuel_frame": true,
         "responsive_web_grok_share_attachment_enabled": true,
-        "responsive_web_grok_annotations_enabled": true,
+        // false: with this on, TweetDetail has been observed to omit replies.
+        "responsive_web_grok_annotations_enabled": false,
         "articles_preview_enabled": true,
         "responsive_web_edit_tweet_api_enabled": true,
         "graphql_is_translatable_rweb_tweet_is_translatable_enabled": true,

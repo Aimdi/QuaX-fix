@@ -51,17 +51,17 @@ class XEndpoints {
     userByRestId: XEndpoint(
       name: userByRestId,
       operation: 'UserByRestId',
-      queryId: 'Qs44y3K0SXxItjNi6mUFQA',
+      queryId: 'XIpMDIi_YoVzXeoON-cfAQ',
       host: 'twitter.com',
     ),
     userByScreenName: XEndpoint(
       name: userByScreenName,
       operation: 'UserByScreenName',
-      queryId: 'qW5u-DAuXpMEG0zA1F7UGQ',
+      queryId: 'IGgvgiOx4QZndDHuD3x9TQ',
       host: 'twitter.com',
     ),
-    following: XEndpoint(name: following, operation: 'Following', queryId: 'FEcMGoVOUjm0aU9BJrrGZA', host: 'x.com'),
-    followers: XEndpoint(name: followers, operation: 'Followers', queryId: '4yeuNabfz3qFlfncCAy8Yw', host: 'x.com'),
+    following: XEndpoint(name: following, operation: 'Following', queryId: 'F42cDX8PDFxkbjjq6JrM2w', host: 'x.com'),
+    followers: XEndpoint(name: followers, operation: 'Followers', queryId: '_orfRBQae57vylFPH0Huhg', host: 'x.com'),
     listByRestId: XEndpoint(
       name: listByRestId,
       operation: 'ListByRestId',
@@ -71,42 +71,45 @@ class XEndpoints {
     listMembers: XEndpoint(
       name: listMembers,
       operation: 'ListMembers',
-      queryId: 'kcsJubZ1BIwpdKrYfiNRtg',
+      queryId: 'oIetCo19avgStX4mOnGsPg',
       host: 'x.com',
     ),
+    // Conversation / replies. Rotates often; endpoints.json can repair installs.
     tweetDetail: XEndpoint(
       name: tweetDetail,
       operation: 'TweetDetail',
-      queryId: 'xIYgDwjboktoFeXe_fgacw',
+      queryId: 'oCon7R-cgWRFy6EfZjaKfg',
       host: 'x.com',
     ),
+    // Quotes (`quoted_tweet_id:`) and Following search chunks.
     searchTimeline: XEndpoint(
       name: searchTimeline,
       operation: 'SearchTimeline',
-      queryId: '-TFXKoMnMTKdEXcCn-eahw',
+      queryId: 'Yw6L66Pw54NHKuq4Dp7b4Q',
       host: 'x.com',
     ),
-    // People search hits the same operation with a different id and host.
+    // People search hits the same operation; keep a separate registry key so an
+    // override can target it without touching tweet search.
     searchTimelineUsers: XEndpoint(
       name: searchTimelineUsers,
       operation: 'SearchTimeline',
-      queryId: '-KWrbTBsPifMuLUqqDiU_A',
+      queryId: 'Yw6L66Pw54NHKuq4Dp7b4Q',
       host: 'twitter.com',
     ),
     homeTimeline: XEndpoint(
       name: homeTimeline,
       operation: 'HomeTimeline',
-      queryId: 'W4Tpu1uueTGK53paUgxF0Q',
+      queryId: '7zlnp2TxC044W4C1ZUJMHw',
       host: 'twitter.com',
     ),
-    userMedia: XEndpoint(name: userMedia, operation: 'UserMedia', queryId: '36oKqyQ7E_9CmtONGjJRsA', host: 'x.com'),
+    userMedia: XEndpoint(name: userMedia, operation: 'UserMedia', queryId: '9EovraBTXJYGSEQXZqlLmQ', host: 'x.com'),
     userTweetsAndReplies: XEndpoint(
       name: userTweetsAndReplies,
       operation: 'UserTweetsAndReplies',
-      queryId: 'T52C7z3XOxUTSsIn1sQ5MA',
+      queryId: 'D5eKzDa5ZoJuC1TCeAXbWA',
       host: 'x.com',
     ),
-    userTweets: XEndpoint(name: userTweets, operation: 'UserTweets', queryId: '2GIWTr7XwadIixZDtyXd4A', host: 'x.com'),
+    userTweets: XEndpoint(name: userTweets, operation: 'UserTweets', queryId: '36rb3Xj3iJ64Q-9wKDjCcQ', host: 'x.com'),
   };
 
   static Map<String, String> _overrides = const {};
