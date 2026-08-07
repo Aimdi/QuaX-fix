@@ -73,6 +73,10 @@ RSSHub route as the feed) — a header-only screen was reading as empty.
   `429`, “Please wait…”, or `login_required` / `logout_reason: 8`.
 - Sessions may die; accounts may be checkpointed. Documented in settings copy.
 - Guest GraphQL `doc_id`s can rotate; SSR remains the fallback.
+- Soft refresh keeps prior posts on screen; failures do not blank the feed.
+- Concurrent guest profile + posts for one handle share a single in-flight
+  `/@handle` HTML GET (fewer Meta hits, not more).
+- Image CDN timeouts only — no image prefetch storms.
 
 ## MVP
 

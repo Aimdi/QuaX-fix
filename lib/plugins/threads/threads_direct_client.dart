@@ -426,6 +426,11 @@ class ThreadsDirectClient {
   DateTime? _lastRequestAt;
   DateTime? _cooldownUntil;
 
+  /// Concurrent profile + posts for the same handle used to GET `/@handle`
+  /// twice (two paced round-trips). Share one in-flight HTML body instead —
+  /// fewer requests to Meta, not more.
+  final Map<String, Future<String>> _profileHtmlInFlight = {};
+
   ThreadsDirectClient(this.prefs, {http.Client? httpClient, this.minGap = const Duration(seconds: 2)})
     : httpClient = httpClient ?? http.Client();
 
@@ -822,7 +827,18 @@ class ThreadsDirectClient {
     return parseThreadsSsrThread(utf8.decode(response.bodyBytes));
   }
 
-  Future<String> _fetchProfileHtml(String handle) async {
+  Future<String> _fetchProfileHtml(String handle) {
+    final key = handle.trim().toLowerCase();
+    return _profileHtmlInFlight.putIfAbsent(key, () async {
+      try {
+        return await _downloadProfileHtml(key);
+      } finally {
+        _profileHtmlInFlight.remove(key);
+      }
+    });
+  }
+
+  Future<String> _downloadProfileHtml(String handle) async {
     final uri = Uri.parse('$_threadsWeb/@$handle');
     final response = await _get(
       uri,

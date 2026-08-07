@@ -41,6 +41,7 @@ class _ThreadsThreadScreenState extends State<ThreadsThreadScreen> {
       return;
     }
 
+    // Keep the seed card; only the replies strip shows a spinner.
     setState(() {
       _loading = true;
       _error = null;
@@ -59,14 +60,14 @@ class _ThreadsThreadScreenState extends State<ThreadsThreadScreen> {
       setState(() {
         _status = root;
         _replies = replies;
-        _loading = false;
       });
     } catch (e) {
       if (!mounted) return;
-      setState(() {
-        _error = e;
-        _loading = false;
-      });
+      setState(() => _error = e);
+    } finally {
+      if (mounted) {
+        setState(() => _loading = false);
+      }
     }
   }
 

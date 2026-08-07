@@ -82,28 +82,43 @@ class ThreadsFeedStore extends Store<List<ThreadsPost>> {
   String get _instance => prefs.get<String>(optionPluginThreadsInstance) ?? '';
 
   /// Reads the best available source (see docs/specs/threads-direct.md).
+  ///
+  /// Soft path when the feed already has posts: keep the list on screen and on
+  /// failure (same idea as Pixiv). Never blank the tab into a spinner that
+  /// looks like Meta is hanging — and never ask harder just to paint loading.
   Future<void> refresh({bool force = false}) async {
-    await execute(() async {
-      final handles = accounts.state.map((e) => e.handle).toList(growable: false);
-
-      // Local Accounts (cookies → guest GraphQL fallback). A pasted Bearer no
-      // longer hides this list — that was the empty-feed bug for readers who
-      // signed in and also followed people in the plugin.
-      if (handles.isNotEmpty) {
-        return postsFor(handles, forceRefresh: force);
+    if (state.isNotEmpty) {
+      try {
+        update(await _loadPosts(force: force));
+      } catch (_) {
+        update(state);
       }
+      return;
+    }
 
-      // No local Accounts: Bearer shows the Meta home/For You timeline.
-      if (direct.hasBearer) {
-        return await direct.fetchFollowingTimeline();
-      }
+    await execute(() => _loadPosts(force: force));
+  }
 
-      if (direct.hasCookies || _instance.trim().isNotEmpty) {
-        // Session alone does not invent Accounts — add handles in the tab.
-        return const <ThreadsPost>[];
-      }
-      throw ThreadsException(ThreadsErrorKind.notConfigured, 'no accounts or session');
-    });
+  Future<List<ThreadsPost>> _loadPosts({required bool force}) async {
+    final handles = accounts.state.map((e) => e.handle).toList(growable: false);
+
+    // Local Accounts (cookies → guest GraphQL fallback). A pasted Bearer no
+    // longer hides this list — that was the empty-feed bug for readers who
+    // signed in and also followed people in the plugin.
+    if (handles.isNotEmpty) {
+      return postsFor(handles, forceRefresh: force);
+    }
+
+    // No local Accounts: Bearer shows the Meta home/For You timeline.
+    if (direct.hasBearer) {
+      return await direct.fetchFollowingTimeline();
+    }
+
+    if (direct.hasCookies || _instance.trim().isNotEmpty) {
+      // Session alone does not invent Accounts — add handles in the tab.
+      return const <ThreadsPost>[];
+    }
+    throw ThreadsException(ThreadsErrorKind.notConfigured, 'no accounts or session');
   }
 
   /// Posts for [handles], newest first, through whichever source is configured.

@@ -49,7 +49,9 @@ class ThreadsClient {
 
   ThreadsClient({http.Client? httpClient}) : httpClient = httpClient ?? http.Client();
 
-  static const _timeout = Duration(seconds: 20);
+  /// Fail a dead RSSHub proxy quickly so guest can answer — does not increase
+  /// Meta traffic (guest is the same path as when RSSHub was never set).
+  static const _timeout = Duration(seconds: 10);
 
   /// The feed address for [handle] on [instance].
   ///
