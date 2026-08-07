@@ -179,7 +179,7 @@ class RedditCommentImages extends StatelessWidget {
                                 .ceil()
                           : null,
                       alignment: Alignment.centerLeft,
-                      errorBuilder: (context, _, __) =>
+                      errorBuilder: (context, error, stackTrace) =>
                           RedditBrokenImage(url: url),
                     ),
                   ),

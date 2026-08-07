@@ -121,11 +121,11 @@ class _RedditSearchScreenState extends State<RedditSearchScreen> {
     RedditClient client,
     String query,
   ) async {
-    final posts = await client.searchPosts(query);
-    return filterRedditPosts(
-      posts,
-      nsfwMode: storedRedditNsfwMode(PrefService.of(context, listen: false)),
+    final nsfwMode = storedRedditNsfwMode(
+      PrefService.of(context, listen: false),
     );
+    final posts = await client.searchPosts(query);
+    return filterRedditPosts(posts, nsfwMode: nsfwMode);
   }
 }
 

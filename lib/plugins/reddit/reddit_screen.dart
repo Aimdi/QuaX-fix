@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/reddit/reddit_actions.dart';
+import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_feed_list.dart';
 import 'package:xta/plugins/reddit/reddit_listing_body.dart';
 import 'package:xta/plugins/reddit/reddit_saved_screen.dart';
