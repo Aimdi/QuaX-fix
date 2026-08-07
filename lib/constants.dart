@@ -9,6 +9,7 @@ const optionHelloLastBuild = 'hello.last_build';
 const optionHomePages = 'home.pages';
 const optionHomeInitialTab = 'home.initial_tab';
 const optionHomeDefaultFeedTab = 'home.default_feed_tab';
+
 /// Login accounts excluded from the merged For you timeline (JSON string list).
 /// Empty means every saved account participates. New accounts stay included
 /// until the reader turns them off.
@@ -26,7 +27,8 @@ const optionMediaDefaultMute = 'media.mute';
 const optionMediaDefaultLoop = 'media.loop';
 const optionMediaDefaultAutoPlay = 'media.auto_play';
 const optionMediaBackgroundPlayback = 'media.allow_background_play';
-const optionMediaAllowBackgroundPlayOtherApps = 'media.allow_background_play.other_apps';
+const optionMediaAllowBackgroundPlayOtherApps =
+    'media.allow_background_play.other_apps';
 const optionMediaVideoPrefetchSeconds = 'media.video_prefetch_seconds';
 
 /// Whether decoded frames go straight from the hardware decoder to the screen.
@@ -119,6 +121,15 @@ const redditSourcePublic = 'public';
 /// The listing a Reddit feed uses until the reader picks another.
 const redditSortHot = 'hot';
 
+/// The time window used by top and controversial Reddit listings.
+const redditTimeFilterDay = 'day';
+
+/// The Reddit tab section shown by default.
+const redditFeedModeFollowing = 'following';
+
+/// Over-18 posts are hidden, gated, or shown.
+const redditNsfwModeTap = 'tap';
+
 /// Where the subreddit artwork is kept, named here so the plugin can delete
 /// the same directory it fills.
 const redditIconsCacheName = 'reddit_icons';
@@ -137,6 +148,18 @@ const optionPluginRedditShowTab = 'plugin.reddit.show_tab';
 /// Which order subreddit listings are read in, shared by every screen that
 /// shows them so the choice is made once.
 const optionPluginRedditSort = 'plugin.reddit.sort';
+
+/// Time window for top and controversial Reddit listings.
+const optionPluginRedditTimeFilter = 'plugin.reddit.time_filter';
+
+/// The selected Reddit discovery section.
+const optionPluginRedditFeedMode = 'plugin.reddit.feed_mode';
+
+/// Whether over-18 Reddit posts are hidden, tap-gated, or shown.
+const optionPluginRedditNsfwMode = 'plugin.reddit.nsfw_mode';
+
+/// JSON snapshots of locally saved Reddit posts.
+const optionPluginRedditSavedPosts = 'plugin.reddit.saved_posts';
 
 const pluginIdStocks = 'stocks';
 const optionPluginStocksEnabled = 'plugin.stocks.enabled';
@@ -191,7 +214,8 @@ const optionPluginThreadsDirectDeviceId = 'plugin.threads.direct.device_id';
 /// parked. Persisted rather than kept in memory: a cooldown that a restart
 /// clears is no cooldown at all, and reopening the app to immediately resume
 /// hammering is how a temporary block becomes a lost account.
-const optionPluginThreadsDirectCooldownUntil = 'plugin.threads.direct.cooldown_until';
+const optionPluginThreadsDirectCooldownUntil =
+    'plugin.threads.direct.cooldown_until';
 
 /// Handle → numeric Meta user id, so a followed account is looked up once
 /// rather than searched for again on every read.
@@ -260,7 +284,8 @@ const optionCrashGithubRepo = 'crash.github_repo';
 const optionCrashGithubToken = 'crash.github_token';
 const defaultCrashGithubRepo = githubRepo;
 
-const optionDisableWarningsForUnrelatedPostsInFeed = 'disable_warnings_for_unrelated_posts_in_feed';
+const optionDisableWarningsForUnrelatedPostsInFeed =
+    'disable_warnings_for_unrelated_posts_in_feed';
 
 const alwaysShowFullTweetContents = 'always_show_full_tweet_contents';
 
@@ -271,8 +296,10 @@ const optionAiBaseUrl = 'ai.base_url';
 const optionAiApiKey = 'ai.api_key';
 const optionAiModel = 'ai.model';
 
-const optionSubscriptionGroupsOrderByAscending = 'subscription_groups.order_by.ascending';
-const optionSubscriptionGroupsOrderByField = 'subscription_groups.order_by.field';
+const optionSubscriptionGroupsOrderByAscending =
+    'subscription_groups.order_by.ascending';
+const optionSubscriptionGroupsOrderByField =
+    'subscription_groups.order_by.field';
 // How many tile columns the groups board shows (2 = bold, 3 = compact).
 const optionSubscriptionGroupsColumns = 'subscription_groups.columns';
 // How the groups tab is laid out. This used to be implied by the sort order —
@@ -308,7 +335,12 @@ const xLookBackgroundLight = 'light';
 const xLookBackgroundDim = 'dim';
 const xLookBackgroundLightsOut = 'lights_out';
 
-const xLookBackgrounds = [xLookBackgroundSystem, xLookBackgroundLight, xLookBackgroundDim, xLookBackgroundLightsOut];
+const xLookBackgrounds = [
+  xLookBackgroundSystem,
+  xLookBackgroundLight,
+  xLookBackgroundDim,
+  xLookBackgroundLightsOut,
+];
 
 const xLookAccentBlue = 'blue';
 
@@ -476,7 +508,8 @@ const optionEndpointRegistryFetchedAt = 'api.endpoint_registry.fetched_at';
 /// have, so every fetch 404'd and neither had ever been read.
 const githubPublishBranch = 'main';
 
-const defaultEndpointRegistryUrl = 'https://raw.githubusercontent.com/$githubRepo/$githubPublishBranch/endpoints.json';
+const defaultEndpointRegistryUrl =
+    'https://raw.githubusercontent.com/$githubRepo/$githubPublishBranch/endpoints.json';
 const Duration endpointRegistryTimeout = Duration(seconds: 10);
 
 // Plugin catalogue: decides which plugins the store offers, published the same
@@ -485,7 +518,8 @@ const Duration endpointRegistryTimeout = Duration(seconds: 10);
 const optionPluginCatalogueUrl = 'plugin.catalogue.url';
 const optionPluginCatalogueCache = 'plugin.catalogue.cache';
 const optionPluginCatalogueFetchedAt = 'plugin.catalogue.fetched_at';
-const defaultPluginCatalogueUrl = 'https://raw.githubusercontent.com/$githubRepo/$githubPublishBranch/plugins.json';
+const defaultPluginCatalogueUrl =
+    'https://raw.githubusercontent.com/$githubRepo/$githubPublishBranch/plugins.json';
 
 // Offline read cache for threads and profile timelines (feed_group_chunk covers
 // group feeds). Short windows: these are re-read within a session far more

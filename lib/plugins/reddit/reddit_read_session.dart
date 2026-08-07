@@ -27,12 +27,14 @@ class RedditReadSession {
     RedditAuth? auth,
   }) async {
     final clientId = prefs.get<String>(optionPluginRedditClientId) ?? '';
-    final preferPublic = prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
+    final preferPublic =
+        prefs.get<String>(optionPluginRedditSource) == redditSourcePublic;
     if (preferPublic) {
       return RedditReadSession(clientId: clientId, preferPublic: true);
     }
 
-    final refreshToken = prefs.get<String>(optionPluginRedditRefreshToken) ?? '';
+    final refreshToken =
+        prefs.get<String>(optionPluginRedditRefreshToken) ?? '';
     if (refreshToken.isEmpty) {
       return RedditReadSession(clientId: clientId, preferPublic: false);
     }
@@ -42,7 +44,11 @@ class RedditReadSession {
         clientId: clientId,
         refreshToken: refreshToken,
       );
-      return RedditReadSession(clientId: clientId, preferPublic: false, userToken: token);
+      return RedditReadSession(
+        clientId: clientId,
+        preferPublic: false,
+        userToken: token,
+      );
     } on RedditException {
       // Reddit no longer accepts this refresh token — drop it so every path
       // falls back the same way instead of retrying a dead session.
@@ -55,25 +61,29 @@ class RedditReadSession {
     RedditClient client,
     String name, {
     RedditSort sort = RedditSort.hot,
+    RedditTimeFilter timeFilter = RedditTimeFilter.day,
     int limit = 25,
     String? after,
-  }) =>
-      client.fetchSubreddit(
-        name,
-        clientId: clientId,
-        sort: sort,
-        limit: limit,
-        after: after,
-        userToken: userToken,
-        preferPublic: preferPublic,
-      );
+  }) => client.fetchSubreddit(
+    name,
+    clientId: clientId,
+    sort: sort,
+    timeFilter: timeFilter,
+    limit: limit,
+    after: after,
+    userToken: userToken,
+    preferPublic: preferPublic,
+  );
 
-  Future<({List<RedditComment> comments, String? selfText, String? postUrl, List<String> postImages})>
-      fetchComments(
-    RedditClient client,
-    String permalink, {
-    String? sort,
-  }) =>
+  Future<
+    ({
+      List<RedditComment> comments,
+      String? selfText,
+      String? postUrl,
+      List<String> postImages,
+    })
+  >
+  fetchComments(RedditClient client, String permalink, {String? sort}) =>
       client.fetchComments(
         permalink,
         sort: sort,

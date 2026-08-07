@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
@@ -6,6 +7,7 @@ import 'package:xta/plugins/reddit/reddit_listing_screen.dart';
 import 'package:xta/plugins/reddit/reddit_post_card.dart';
 import 'package:xta/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
 import 'package:xta/plugins/reddit/reddit_search_html.dart';
+import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
 import 'package:xta/ui/errors.dart';
 
 /// Searching Reddit for posts, subreddits and accounts.
@@ -48,11 +50,17 @@ class _RedditSearchScreenState extends State<RedditSearchScreen> {
             controller: _controller,
             autofocus: true,
             textInputAction: TextInputAction.search,
-            decoration: InputDecoration(border: InputBorder.none, hintText: l10n.plugin_reddit_search_hint),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: l10n.plugin_reddit_search_hint,
+            ),
             onSubmitted: _search,
           ),
           actions: [
-            IconButton(icon: const Icon(Icons.search), onPressed: () => _search(_controller.text)),
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () => _search(_controller.text),
+            ),
           ],
           bottom: TabBar(
             tabs: [
@@ -66,8 +74,9 @@ class _RedditSearchScreenState extends State<RedditSearchScreen> {
           children: [
             _RedditSearchTab<RedditPost>(
               query: _query,
-              search: (client, q) => client.searchPosts(q),
-              itemBuilder: (context, post) => RedditPostCard(post: post, showSourceBadge: false),
+              search: _searchPosts,
+              itemBuilder: (context, post) =>
+                  RedditPostCard(post: post, showSourceBadge: false),
             ),
             _RedditSearchTab<RedditSubredditResult>(
               query: _query,
@@ -80,7 +89,8 @@ class _RedditSearchScreenState extends State<RedditSearchScreen> {
                 icon: Icons.travel_explore,
                 onTap: () => _open(context, RedditListingScreen.subreddit(q)),
               ),
-              itemBuilder: (context, result) => _RedditSubredditRow(result: result),
+              itemBuilder: (context, result) =>
+                  _RedditSubredditRow(result: result),
             ),
             _RedditSearchTab<RedditUserResult>(
               query: _query,
@@ -93,7 +103,8 @@ class _RedditSearchScreenState extends State<RedditSearchScreen> {
               itemBuilder: (context, result) => _RedditNameRow(
                 label: 'u/${result.name}',
                 icon: Icons.person_outline,
-                onTap: () => _open(context, RedditListingScreen.user(result.name)),
+                onTap: () =>
+                    _open(context, RedditListingScreen.user(result.name)),
               ),
             ),
           ],
@@ -104,6 +115,17 @@ class _RedditSearchScreenState extends State<RedditSearchScreen> {
 
   static void _open(BuildContext context, Widget screen) {
     Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
+  }
+
+  Future<List<RedditPost>> _searchPosts(
+    RedditClient client,
+    String query,
+  ) async {
+    final posts = await client.searchPosts(query);
+    return filterRedditPosts(
+      posts,
+      nsfwMode: storedRedditNsfwMode(PrefService.of(context, listen: false)),
+    );
   }
 }
 
@@ -129,7 +151,8 @@ class _RedditSearchTab<T> extends StatefulWidget {
   State<_RedditSearchTab<T>> createState() => _RedditSearchTabState<T>();
 }
 
-class _RedditSearchTabState<T> extends State<_RedditSearchTab<T>> with AutomaticKeepAliveClientMixin {
+class _RedditSearchTabState<T> extends State<_RedditSearchTab<T>>
+    with AutomaticKeepAliveClientMixin {
   List<T>? _results;
   Object? _error;
   String? _loaded;
@@ -204,9 +227,15 @@ class _RedditSearchTabState<T> extends State<_RedditSearchTab<T>> with Automatic
             ),
           )
         else if (results == null)
-          const Padding(padding: EdgeInsets.all(32), child: Center(child: CircularProgressIndicator()))
+          const Padding(
+            padding: EdgeInsets.all(32),
+            child: Center(child: CircularProgressIndicator()),
+          )
         else if (results.isEmpty && leading == null)
-          Padding(padding: const EdgeInsets.all(32), child: Center(child: Text(l10n.no_results)))
+          Padding(
+            padding: const EdgeInsets.all(32),
+            child: Center(child: Text(l10n.no_results)),
+          )
         else
           for (final item in results) widget.itemBuilder(context, item),
       ],
@@ -227,11 +256,15 @@ class _RedditSubredditRow extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.travel_explore),
       title: Text('r/${result.name}'),
-      subtitle: description == null ? null : Text(description, maxLines: 2, overflow: TextOverflow.ellipsis),
+      subtitle: description == null
+          ? null
+          : Text(description, maxLines: 2, overflow: TextOverflow.ellipsis),
       trailing: subscribers == null ? null : Text('$subscribers'),
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => RedditListingScreen.subreddit(result.name)),
+        MaterialPageRoute(
+          builder: (_) => RedditListingScreen.subreddit(result.name),
+        ),
       ),
     );
   }
@@ -243,7 +276,11 @@ class _RedditNameRow extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const _RedditNameRow({required this.label, required this.icon, required this.onTap});
+  const _RedditNameRow({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

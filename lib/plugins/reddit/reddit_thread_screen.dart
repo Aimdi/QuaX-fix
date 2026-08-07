@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
@@ -11,6 +12,7 @@ import 'package:xta/plugins/reddit/reddit_listing_screen.dart';
 import 'package:xta/plugins/reddit/reddit_post_media.dart';
 import 'package:xta/plugins/reddit/reddit_read_session.dart';
 import 'package:xta/plugins/reddit/reddit_screen.dart' show redditErrorMessage;
+import 'package:xta/plugins/reddit/reddit_store.dart';
 import 'package:xta/ui/dates.dart';
 import 'package:xta/ui/errors.dart';
 
@@ -55,7 +57,11 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
       final client = context.read<RedditClient>();
       final prefs = PrefService.of(context, listen: false);
       final session = await RedditReadSession.resolve(prefs: prefs);
-      final result = await session.fetchComments(client, _post.permalink, sort: _sort);
+      final result = await session.fetchComments(
+        client,
+        _post.permalink,
+        sort: _sort,
+      );
       if (!mounted) return;
       setState(() {
         _comments = flattenComments(result.comments);
@@ -101,7 +107,9 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
 
   bool _isOwnPermalink(String url) {
     final uri = Uri.tryParse(url);
-    return uri != null && uri.host.endsWith('reddit.com') && uri.path.contains('/comments/');
+    return uri != null &&
+        uri.host.endsWith('reddit.com') &&
+        uri.path.contains('/comments/');
   }
 
   @override
@@ -113,6 +121,7 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
       appBar: AppBar(
         title: Text('r/${widget.post.subreddit}'),
         actions: [
+          _ThreadSaveButton(post: _post),
           PopupMenuButton<String>(
             tooltip: l10n.plugin_reddit_sort,
             icon: const Icon(Icons.sort),
@@ -126,11 +135,26 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
               _load();
             },
             itemBuilder: (context) => [
-              PopupMenuItem(value: '', child: Text(l10n.plugin_reddit_sort_best)),
-              PopupMenuItem(value: 'top', child: Text(l10n.plugin_reddit_sort_top)),
-              PopupMenuItem(value: 'new', child: Text(l10n.plugin_reddit_sort_new)),
-              PopupMenuItem(value: 'controversial', child: Text(l10n.plugin_reddit_sort_controversial)),
-              PopupMenuItem(value: 'old', child: Text(l10n.plugin_reddit_sort_old)),
+              PopupMenuItem(
+                value: '',
+                child: Text(l10n.plugin_reddit_sort_best),
+              ),
+              PopupMenuItem(
+                value: 'top',
+                child: Text(l10n.plugin_reddit_sort_top),
+              ),
+              PopupMenuItem(
+                value: 'new',
+                child: Text(l10n.plugin_reddit_sort_new),
+              ),
+              PopupMenuItem(
+                value: 'controversial',
+                child: Text(l10n.plugin_reddit_sort_controversial),
+              ),
+              PopupMenuItem(
+                value: 'old',
+                child: Text(l10n.plugin_reddit_sort_old),
+              ),
             ],
           ),
         ],
@@ -140,7 +164,11 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
         child: ListView.builder(
           // One header plus the flattened tree: nesting the widgets instead
           // would build every reply of every collapsed branch up front.
-          itemCount: 1 + (comments == null ? 1 : visibleComments(comments, _collapsed).length),
+          itemCount:
+              1 +
+              (comments == null
+                  ? 1
+                  : visibleComments(comments, _collapsed).length),
           itemBuilder: (context, index) {
             if (index == 0) {
               return _header(context);
@@ -189,10 +217,17 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(post.title, style: theme.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700)),
+          Text(
+            post.title,
+            style: theme.textTheme.titleLarge!.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           const SizedBox(height: 6),
           DefaultTextStyle.merge(
-            style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            style: theme.textTheme.bodySmall!.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
             child: Row(
               children: [
                 RedditSubredditAvatar(subreddit: post.subreddit, size: 22),
@@ -222,80 +257,110 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
 
   /// A row that folds on tap. [hidden] is how many replies its fold is
   /// holding, shown as a chip so a collapsed argument says how big it was.
-  Widget _commentRow(BuildContext context, FlatComment entry, {int hidden = 0}) {
+  Widget _commentRow(
+    BuildContext context,
+    FlatComment entry, {
+    int hidden = 0,
+  }) {
     final theme = Theme.of(context);
     final comment = entry.comment;
     final depth = entry.depth;
     final folded = _collapsed.contains(comment.id);
-    final indent = kRedditIndentPerLevel * (depth > kRedditMaxIndentDepth ? kRedditMaxIndentDepth : depth);
+    final indent =
+        kRedditIndentPerLevel *
+        (depth > kRedditMaxIndentDepth ? kRedditMaxIndentDepth : depth);
 
     return InkWell(
-      onTap: () => setState(() => folded ? _collapsed.remove(comment.id) : _collapsed.add(comment.id)),
+      onTap: () => setState(
+        () =>
+            folded ? _collapsed.remove(comment.id) : _collapsed.add(comment.id),
+      ),
       child: Padding(
-      padding: EdgeInsets.fromLTRB(12 + indent, 6, 12, 6),
-      child: Container(
-        padding: EdgeInsets.only(left: depth == 0 ? 0 : 8),
-        decoration: depth == 0
-            ? null
-            : BoxDecoration(
-                border: Border(left: BorderSide(color: theme.colorScheme.outlineVariant, width: 2)),
-              ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            DefaultTextStyle.merge(
-              style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
-              child: Row(
-                children: [
-                  RedditAvatar(name: comment.author, size: 20),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: GestureDetector(
-                      // A name in a thread is a way to the rest of what they
-                      // posted, the same as it is on the card.
-                      onTap: comment.author == null
-                          ? null
-                          : () => Navigator.push(context,
-                              MaterialPageRoute(builder: (_) => RedditListingScreen.user(comment.author!))),
-                      child: Text(
-                        comment.author == null ? '' : 'u/${comment.author}',
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: comment.isSubmitter ? theme.colorScheme.primary : null,
+        padding: EdgeInsets.fromLTRB(12 + indent, 6, 12, 6),
+        child: Container(
+          padding: EdgeInsets.only(left: depth == 0 ? 0 : 8),
+          decoration: depth == 0
+              ? null
+              : BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                      color: theme.colorScheme.outlineVariant,
+                      width: 2,
+                    ),
+                  ),
+                ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DefaultTextStyle.merge(
+                style: theme.textTheme.bodySmall!.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+                child: Row(
+                  children: [
+                    RedditAvatar(name: comment.author, size: 20),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: GestureDetector(
+                        // A name in a thread is a way to the rest of what they
+                        // posted, the same as it is on the card.
+                        onTap: comment.author == null
+                            ? null
+                            : () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      RedditListingScreen.user(comment.author!),
+                                ),
+                              ),
+                        child: Text(
+                          comment.author == null ? '' : 'u/${comment.author}',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: comment.isSubmitter
+                                ? theme.colorScheme.primary
+                                : null,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  if (comment.score != null) ...[
-                    const SizedBox(width: 8),
-                    Text('${comment.score}'),
+                    if (comment.score != null) ...[
+                      const SizedBox(width: 8),
+                      Text('${comment.score}'),
+                    ],
+                    if (comment.createdAt != null) ...[
+                      const SizedBox(width: 8),
+                      Text(createRelativeDate(comment.createdAt!)),
+                    ],
                   ],
-                  if (comment.createdAt != null) ...[
-                    const SizedBox(width: 8),
-                    Text(createRelativeDate(comment.createdAt!)),
-                  ],
-                ],
-              ),
-            ),
-            const SizedBox(height: 2),
-            if (folded)
-              Container(
-                margin: const EdgeInsets.only(top: 2),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text('+${hidden + 1}', style: theme.textTheme.labelSmall),
-              )
-            else ...[
-              if (comment.body.isNotEmpty) Text(comment.body, style: theme.textTheme.bodyMedium),
-              RedditCommentImages(urls: comment.mediaUrls),
+              ),
+              const SizedBox(height: 2),
+              if (folded)
+                Container(
+                  margin: const EdgeInsets.only(top: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    '+${hidden + 1}',
+                    style: theme.textTheme.labelSmall,
+                  ),
+                )
+              else ...[
+                if (comment.body.isNotEmpty)
+                  Text(comment.body, style: theme.textTheme.bodyMedium),
+                RedditCommentImages(urls: comment.mediaUrls),
+              ],
             ],
-          ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -307,32 +372,68 @@ class _RedditThreadScreenState extends State<RedditThreadScreen> {
     final theme = Theme.of(context);
     final comment = entry.comment;
     final depth = entry.depth;
-    final indent = kRedditIndentPerLevel * (depth > kRedditMaxIndentDepth ? kRedditMaxIndentDepth : depth);
-    final count = (comment.moreCount ?? -1) > 0 ? ' · ${comment.moreCount}' : '';
+    final indent =
+        kRedditIndentPerLevel *
+        (depth > kRedditMaxIndentDepth ? kRedditMaxIndentDepth : depth);
+    final count = (comment.moreCount ?? -1) > 0
+        ? ' · ${comment.moreCount}'
+        : '';
 
     return InkWell(
       onTap: comment.permalink == null
           ? null
           : () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => RedditThreadScreen(post: _post.copyWith(permalink: comment.permalink)),
+              context,
+              MaterialPageRoute(
+                builder: (_) => RedditThreadScreen(
+                  post: _post.copyWith(permalink: comment.permalink),
                 ),
               ),
+            ),
       child: Padding(
         padding: EdgeInsets.fromLTRB(12.0 + indent, 10, 12, 10),
         child: Row(
           children: [
-            Icon(Icons.subdirectory_arrow_right, size: 16, color: theme.colorScheme.primary),
+            Icon(
+              Icons.subdirectory_arrow_right,
+              size: 16,
+              color: theme.colorScheme.primary,
+            ),
             const SizedBox(width: 6),
             Text(
               '${L10n.of(context).plugin_reddit_more_replies}$count',
-              style: theme.textTheme.bodySmall!
-                  .copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w600),
+              style: theme.textTheme.bodySmall!.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ThreadSaveButton extends StatelessWidget {
+  final RedditPost post;
+
+  const _ThreadSaveButton({required this.post});
+
+  @override
+  Widget build(BuildContext context) {
+    final saved = context.read<RedditSavedStore>();
+    final l10n = L10n.of(context);
+
+    return ScopedBuilder<RedditSavedStore, List<RedditPost>>(
+      store: saved,
+      onState: (context, posts) {
+        final isSaved = saved.isSaved(post);
+        return IconButton(
+          tooltip: isSaved ? l10n.action_unsave_post : l10n.action_save_post,
+          icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border),
+          onPressed: () => saved.toggle(post),
+        );
+      },
     );
   }
 }

@@ -6,8 +6,11 @@ import 'package:http/testing.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_html.dart';
 
-http.Response _json(Object body, int status) =>
-    http.Response(jsonEncode(body), status, headers: {'content-type': 'application/json'});
+http.Response _json(Object body, int status) => http.Response(
+  jsonEncode(body),
+  status,
+  headers: {'content-type': 'application/json'},
+);
 
 Map<String, dynamic> _tokenBody({int expiresIn = 3600}) => {
   'access_token': 'tok_123',
@@ -16,7 +19,10 @@ Map<String, dynamic> _tokenBody({int expiresIn = 3600}) => {
   'scope': '*',
 };
 
-Map<String, dynamic> _listingBody({String? after, List<Map<String, dynamic>>? children}) => {
+Map<String, dynamic> _listingBody({
+  String? after,
+  List<Map<String, dynamic>>? children,
+}) => {
   'kind': 'Listing',
   'data': {
     'after': after,
@@ -108,14 +114,26 @@ const _unreadablePage = '<html><body>nothing familiar</body></html>';
 void main() {
   group('normaliseSubreddit', () {
     test('accepts the shapes people paste', () {
-      for (final input in ['dartlang', 'r/dartlang', '/r/dartlang', '/r/dartlang/', 'R/dartlang']) {
+      for (final input in [
+        'dartlang',
+        'r/dartlang',
+        '/r/dartlang',
+        '/r/dartlang/',
+        'R/dartlang',
+      ]) {
         expect(normaliseSubreddit(input), 'dartlang', reason: input);
       }
     });
 
     test('pulls the name out of a URL', () {
-      expect(normaliseSubreddit('https://www.reddit.com/r/dartlang/'), 'dartlang');
-      expect(normaliseSubreddit('https://old.reddit.com/r/dartlang/comments/abc/x/'), 'dartlang');
+      expect(
+        normaliseSubreddit('https://www.reddit.com/r/dartlang/'),
+        'dartlang',
+      );
+      expect(
+        normaliseSubreddit('https://old.reddit.com/r/dartlang/comments/abc/x/'),
+        'dartlang',
+      );
     });
 
     test('rejects what is not a subreddit', () {
@@ -134,43 +152,62 @@ void main() {
   });
 
   group('authorisation', () {
-    test('uses the installed_client grant with the client id as basic auth', () async {
-      final requests = <http.Request>[];
-      final client = RedditClient(
-        httpClient: MockClient((request) async {
-          requests.add(request);
-          return request.url.path.contains('access_token') ? _json(_tokenBody(), 200) : _json(_listingBody(), 200);
-        }),
-      );
+    test(
+      'uses the installed_client grant with the client id as basic auth',
+      () async {
+        final requests = <http.Request>[];
+        final client = RedditClient(
+          httpClient: MockClient((request) async {
+            requests.add(request);
+            return request.url.path.contains('access_token')
+                ? _json(_tokenBody(), 200)
+                : _json(_listingBody(), 200);
+          }),
+        );
 
-      await client.fetchSubreddit('dartlang', clientId: 'my_client_id');
+        await client.fetchSubreddit('dartlang', clientId: 'my_client_id');
 
-      final token = requests.first;
-      expect(token.url, Uri.parse('https://www.reddit.com/api/v1/access_token'));
-      expect(token.body, contains('grant_type=https://oauth.reddit.com/grants/installed_client'));
-      expect(token.body, contains('device_id=${RedditClient.deviceId}'));
-      expect(token.headers['Authorization'], 'Basic ${base64Encode(utf8.encode('my_client_id:'))}');
-      expect(token.headers['User-Agent'], RedditClient.userAgent);
-    });
+        final token = requests.first;
+        expect(
+          token.url,
+          Uri.parse('https://www.reddit.com/api/v1/access_token'),
+        );
+        expect(
+          token.body,
+          contains(
+            'grant_type=https://oauth.reddit.com/grants/installed_client',
+          ),
+        );
+        expect(token.body, contains('device_id=${RedditClient.deviceId}'));
+        expect(
+          token.headers['Authorization'],
+          'Basic ${base64Encode(utf8.encode('my_client_id:'))}',
+        );
+        expect(token.headers['User-Agent'], RedditClient.userAgent);
+      },
+    );
 
-    test('reuses the token for a second request instead of re-authorising', () async {
-      var tokenCalls = 0;
-      final client = RedditClient(
-        httpClient: MockClient((request) async {
-          if (request.url.path.contains('access_token')) {
-            tokenCalls++;
-            return _json(_tokenBody(), 200);
-          }
-          return _json(_listingBody(), 200);
-        }),
-      );
+    test(
+      'reuses the token for a second request instead of re-authorising',
+      () async {
+        var tokenCalls = 0;
+        final client = RedditClient(
+          httpClient: MockClient((request) async {
+            if (request.url.path.contains('access_token')) {
+              tokenCalls++;
+              return _json(_tokenBody(), 200);
+            }
+            return _json(_listingBody(), 200);
+          }),
+        );
 
-      await client.fetchSubreddit('dartlang', clientId: 'id');
-      await client.fetchSubreddit('flutterdev', clientId: 'id');
+        await client.fetchSubreddit('dartlang', clientId: 'id');
+        await client.fetchSubreddit('flutterdev', clientId: 'id');
 
-      expect(tokenCalls, 1);
-      expect(client.hasToken, isTrue);
-    });
+        expect(tokenCalls, 1);
+        expect(client.hasToken, isTrue);
+      },
+    );
 
     test('a token that is about to expire is not reused', () async {
       var tokenCalls = 0;
@@ -196,46 +233,66 @@ void main() {
     // Without a client id the reader used to fail every request. It now reads
     // the public web, which takes no credentials, so switching the plugin on is
     // enough to see posts.
-    test('no client id scrapes old.reddit first, with no token and no auth header', () async {
-      final requested = <http.Request>[];
-      final client = RedditClient(
-        httpClient: MockClient((request) async {
-          requested.add(request);
-          return http.Response(_listingHtml, 200, headers: {'content-type': 'text/html'});
-        }),
-      );
+    test(
+      'no client id scrapes old.reddit first, with no token and no auth header',
+      () async {
+        final requested = <http.Request>[];
+        final client = RedditClient(
+          httpClient: MockClient((request) async {
+            requested.add(request);
+            return http.Response(
+              _listingHtml,
+              200,
+              headers: {'content-type': 'text/html'},
+            );
+          }),
+        );
 
-      final listing = await client.fetchSubreddit('dartlang', clientId: '  ');
+        final listing = await client.fetchSubreddit('dartlang', clientId: '  ');
 
-      expect(requested, hasLength(1), reason: 'no token request, and the HTML answered');
-      expect(requested.single.url.host, 'old.reddit.com');
-      expect(requested.single.url.path, '/r/dartlang/hot');
-      expect(requested.single.headers.containsKey('Authorization'), isFalse);
-      // The website, not the API: it has to look like a browser to be served.
-      expect(requested.single.headers['User-Agent'], RedditClient.publicUserAgent);
-      expect(listing.posts.single.id, 'abc123');
-    });
+        expect(
+          requested,
+          hasLength(1),
+          reason: 'no token request, and the HTML answered',
+        );
+        expect(requested.single.url.host, 'old.reddit.com');
+        expect(requested.single.url.path, '/r/dartlang/hot');
+        expect(requested.single.headers.containsKey('Authorization'), isFalse);
+        // The website, not the API: it has to look like a browser to be served.
+        expect(
+          requested.single.headers['User-Agent'],
+          RedditClient.publicUserAgent,
+        );
+        expect(listing.posts.single.id, 'abc123');
+      },
+    );
 
-    test('unreadable HTML falls back to the JSON endpoints rather than giving up', () async {
-      // Reddit deprecated unauthenticated .json, so HTML leads — but if that
-      // page changes shape, the old route is still worth asking.
-      final urls = <Uri>[];
-      final client = RedditClient(
-        httpClient: MockClient((request) async {
-          urls.add(request.url);
-          if (request.url.path.endsWith('.json')) {
-            return _json(_listingBody(), 200);
-          }
-          return http.Response('<html><body>nothing familiar</body></html>', 200);
-        }),
-      );
+    test(
+      'unreadable HTML falls back to the JSON endpoints rather than giving up',
+      () async {
+        // Reddit deprecated unauthenticated .json, so HTML leads — but if that
+        // page changes shape, the old route is still worth asking.
+        final urls = <Uri>[];
+        final client = RedditClient(
+          httpClient: MockClient((request) async {
+            urls.add(request.url);
+            if (request.url.path.endsWith('.json')) {
+              return _json(_listingBody(), 200);
+            }
+            return http.Response(
+              '<html><body>nothing familiar</body></html>',
+              200,
+            );
+          }),
+        );
 
-      final listing = await client.fetchSubreddit('dartlang', clientId: '');
+        final listing = await client.fetchSubreddit('dartlang', clientId: '');
 
-      expect(urls.first.host, 'old.reddit.com');
-      expect(urls.any((u) => u.path == '/r/dartlang/hot.json'), isTrue);
-      expect(listing.posts, isNotEmpty);
-    });
+        expect(urls.first.host, 'old.reddit.com');
+        expect(urls.any((u) => u.path == '/r/dartlang/hot.json'), isTrue);
+        expect(listing.posts, isNotEmpty);
+      },
+    );
 
     test('the over-18 gate is answered with a cookie, not a login', () async {
       final cookies = <String?>[];
@@ -258,22 +315,34 @@ void main() {
       expect(listing.posts, isNotEmpty);
     });
 
-    test('an anonymous reader that Reddit refuses is told what happened', () async {
-      // This used to report "add a client id". Reddit now rejects nearly every
-      // new app registration, so that named a remedy the reader cannot obtain
-      // for a refusal that usually passes on its own.
-      const expected = {403: RedditErrorKind.blocked, 429: RedditErrorKind.rateLimited};
+    test(
+      'an anonymous reader that Reddit refuses is told what happened',
+      () async {
+        // This used to report "add a client id". Reddit now rejects nearly every
+        // new app registration, so that named a remedy the reader cannot obtain
+        // for a refusal that usually passes on its own.
+        const expected = {
+          403: RedditErrorKind.blocked,
+          429: RedditErrorKind.rateLimited,
+        };
 
-      for (final entry in expected.entries) {
-        final client = RedditClient(httpClient: MockClient((_) async => _json({'error': entry.key}, entry.key)));
+        for (final entry in expected.entries) {
+          final client = RedditClient(
+            httpClient: MockClient(
+              (_) async => _json({'error': entry.key}, entry.key),
+            ),
+          );
 
-        await expectLater(
-          client.fetchSubreddit('dartlang', clientId: ''),
-          throwsA(isA<RedditException>().having((e) => e.kind, 'kind', entry.value)),
-          reason: 'HTTP ${entry.key}',
-        );
-      }
-    });
+          await expectLater(
+            client.fetchSubreddit('dartlang', clientId: ''),
+            throwsA(
+              isA<RedditException>().having((e) => e.kind, 'kind', entry.value),
+            ),
+            reason: 'HTTP ${entry.key}',
+          );
+        }
+      },
+    );
 
     // www refusing an anonymous reader does not mean old. will: the two are
     // served and throttled separately.
@@ -294,7 +363,11 @@ void main() {
 
       final listing = await client.fetchSubreddit('dartlang', clientId: '');
 
-      expect(urls.map((u) => u.host), ['old.reddit.com', 'www.reddit.com', 'old.reddit.com']);
+      expect(urls.map((u) => u.host), [
+        'old.reddit.com',
+        'www.reddit.com',
+        'old.reddit.com',
+      ]);
       expect(listing.posts, isNotEmpty);
     });
 
@@ -309,31 +382,52 @@ void main() {
 
       await client.fetchSubreddit('dartlang', clientId: '');
 
-      expect(urls, hasLength(1), reason: 'the JSON fallback is only paid on failure');
+      expect(
+        urls,
+        hasLength(1),
+        reason: 'the JSON fallback is only paid on failure',
+      );
     });
 
-    test('both public hosts refusing is reported as a block, not as missing setup', () async {
-      // It used to say "add a client id". Reddit now turns away nearly every
-      // new app registration, so that sent readers somewhere they could not
-      // get to for a refusal that usually passes on its own.
-      final client = RedditClient(httpClient: MockClient((_) async => _json({'error': 403}, 403)));
+    test(
+      'both public hosts refusing is reported as a block, not as missing setup',
+      () async {
+        // It used to say "add a client id". Reddit now turns away nearly every
+        // new app registration, so that sent readers somewhere they could not
+        // get to for a refusal that usually passes on its own.
+        final client = RedditClient(
+          httpClient: MockClient((_) async => _json({'error': 403}, 403)),
+        );
+
+        await expectLater(
+          client.fetchSubreddit('dartlang', clientId: ''),
+          throwsA(
+            isA<RedditException>()
+                .having((e) => e.kind, 'kind', RedditErrorKind.blocked)
+                .having(
+                  (e) => e.detail,
+                  'detail',
+                  contains('both public hosts'),
+                ),
+          ),
+        );
+      },
+    );
+
+    test('both public hosts throttling is reported as rate limiting', () async {
+      final client = RedditClient(
+        httpClient: MockClient((_) async => _json({'error': 429}, 429)),
+      );
 
       await expectLater(
         client.fetchSubreddit('dartlang', clientId: ''),
         throwsA(
-          isA<RedditException>()
-              .having((e) => e.kind, 'kind', RedditErrorKind.blocked)
-              .having((e) => e.detail, 'detail', contains('both public hosts')),
+          isA<RedditException>().having(
+            (e) => e.kind,
+            'kind',
+            RedditErrorKind.rateLimited,
+          ),
         ),
-      );
-    });
-
-    test('both public hosts throttling is reported as rate limiting', () async {
-      final client = RedditClient(httpClient: MockClient((_) async => _json({'error': 429}, 429)));
-
-      await expectLater(
-        client.fetchSubreddit('dartlang', clientId: ''),
-        throwsA(isA<RedditException>().having((e) => e.kind, 'kind', RedditErrorKind.rateLimited)),
       );
     });
 
@@ -389,7 +483,13 @@ void main() {
 
       await expectLater(
         client.fetchSubreddit('dartlang', clientId: ''),
-        throwsA(isA<RedditException>().having((e) => e.kind, 'kind', RedditErrorKind.notFound)),
+        throwsA(
+          isA<RedditException>().having(
+            (e) => e.kind,
+            'kind',
+            RedditErrorKind.notFound,
+          ),
+        ),
       );
       // A missing subreddit is missing on every host, so the first route to say
       // so is the last one asked.
@@ -401,7 +501,12 @@ void main() {
       final client = RedditClient(
         httpClient: MockClient((request) async {
           requested.add(request);
-          return _json(request.url.path.contains('access_token') ? _tokenBody() : _listingBody(), 200);
+          return _json(
+            request.url.path.contains('access_token')
+                ? _tokenBody()
+                : _listingBody(),
+            200,
+          );
         }),
       );
 
@@ -412,11 +517,19 @@ void main() {
     });
 
     test('a rejected client id is reported as unauthorised', () async {
-      final client = RedditClient(httpClient: MockClient((_) async => _json({'error': 401}, 401)));
+      final client = RedditClient(
+        httpClient: MockClient((_) async => _json({'error': 401}, 401)),
+      );
 
       await expectLater(
         client.verify(clientId: 'wrong'),
-        throwsA(isA<RedditException>().having((e) => e.kind, 'kind', RedditErrorKind.unauthorized)),
+        throwsA(
+          isA<RedditException>().having(
+            (e) => e.kind,
+            'kind',
+            RedditErrorKind.unauthorized,
+          ),
+        ),
       );
     });
   });
@@ -460,20 +573,29 @@ void main() {
       expect(hosts, ['old.reddit.com']);
     });
 
-    test('a page whose shape changed is worth asking another route about', () async {
-      final urls = <Uri>[];
-      final client = RedditClient(
-        httpClient: MockClient((request) async {
-          urls.add(request.url);
-          return request.url.path.endsWith('.json') ? _json(_listingBody(), 200) : http.Response(_unreadablePage, 200);
-        }),
-      );
+    test(
+      'a page whose shape changed is worth asking another route about',
+      () async {
+        final urls = <Uri>[];
+        final client = RedditClient(
+          httpClient: MockClient((request) async {
+            urls.add(request.url);
+            return request.url.path.endsWith('.json')
+                ? _json(_listingBody(), 200)
+                : http.Response(_unreadablePage, 200);
+          }),
+        );
 
-      final listing = await client.fetchSubreddit('dartlang', clientId: '');
+        final listing = await client.fetchSubreddit('dartlang', clientId: '');
 
-      expect(listing.posts, isNotEmpty);
-      expect(urls.length, greaterThan(1), reason: 'unreadable is the one page kind that is not a verdict');
-    });
+        expect(listing.posts, isNotEmpty);
+        expect(
+          urls.length,
+          greaterThan(1),
+          reason: 'unreadable is the one page kind that is not a verdict',
+        );
+      },
+    );
 
     test('a refusal is reported as itself and ends the search', () async {
       const refusals = {
@@ -507,62 +629,150 @@ void main() {
       }
     });
 
-    test('a private community is refused with a 403 and still names the reason', () async {
-      // Reddit serves the private interstitial under a 403, so the status alone
-      // would have reported a block and lost which community it was about.
-      final client = RedditClient(httpClient: MockClient((_) async => http.Response(_privatePage, 403)));
+    test(
+      'a private community is refused with a 403 and still names the reason',
+      () async {
+        // Reddit serves the private interstitial under a 403, so the status alone
+        // would have reported a block and lost which community it was about.
+        final client = RedditClient(
+          httpClient: MockClient((_) async => http.Response(_privatePage, 403)),
+        );
 
-      await expectLater(
-        client.fetchSubreddit('dartlang', clientId: ''),
-        throwsA(
-          isA<RedditException>()
-              .having((e) => e.kind, 'kind', RedditErrorKind.notFound)
-              .having((e) => e.detail, 'detail', contains('private')),
-        ),
-      );
-    });
+        await expectLater(
+          client.fetchSubreddit('dartlang', clientId: ''),
+          throwsA(
+            isA<RedditException>()
+                .having((e) => e.kind, 'kind', RedditErrorKind.notFound)
+                .having((e) => e.detail, 'detail', contains('private')),
+          ),
+        );
+      },
+    );
   });
 
   group('fetchSubreddit', () {
-    test('asks for the sort, limit and raw_json, and reads the listing', () async {
-      Uri? listingUrl;
+    test(
+      'asks for the sort, limit and raw_json, and reads the listing',
+      () async {
+        Uri? listingUrl;
+        final client = RedditClient(
+          httpClient: MockClient((request) async {
+            if (request.url.path.contains('access_token'))
+              return _json(_tokenBody(), 200);
+            listingUrl = request.url;
+            return _json(_listingBody(after: 't3_abc123'), 200);
+          }),
+        );
+
+        final listing = await client.fetchSubreddit(
+          'r/dartlang',
+          clientId: 'id',
+          sort: RedditSort.newest,
+          limit: 10,
+        );
+
+        expect(listingUrl!.host, 'oauth.reddit.com');
+        expect(listingUrl!.path, '/r/dartlang/new');
+        expect(listingUrl!.queryParameters['limit'], '10');
+        expect(listingUrl!.queryParameters['raw_json'], '1');
+
+        expect(listing.after, 't3_abc123');
+        final post = listing.posts.single;
+        expect(post.id, 'abc123');
+        expect(post.title, 'Dart 4 is out');
+        expect(post.subreddit, 'dartlang');
+        expect(post.score, 412);
+        expect(post.commentCount, 37);
+        expect(post.createdAt, isNotNull);
+        expect(post.thumbnailUrl, 'https://b.thumbs.redditmedia.com/x.jpg');
+      },
+    );
+
+    test(
+      'adds t= for authenticated top and controversial listings only',
+      () async {
+        final urls = <Uri>[];
+        final client = RedditClient(
+          httpClient: MockClient((request) async {
+            if (request.url.path.contains('access_token'))
+              return _json(_tokenBody(), 200);
+            urls.add(request.url);
+            return _json(_listingBody(), 200);
+          }),
+        );
+
+        await client.fetchSubreddit(
+          'dartlang',
+          clientId: 'id',
+          sort: RedditSort.top,
+          timeFilter: RedditTimeFilter.week,
+        );
+        await client.fetchSubreddit(
+          'dartlang',
+          clientId: 'id',
+          sort: RedditSort.hot,
+          timeFilter: RedditTimeFilter.year,
+        );
+        await client.fetchSubreddit(
+          'dartlang',
+          clientId: 'id',
+          sort: RedditSort.controversial,
+          timeFilter: RedditTimeFilter.all,
+        );
+
+        expect(urls[0].queryParameters['t'], 'week');
+        expect(urls[1].queryParameters.containsKey('t'), isFalse);
+        expect(urls[2].queryParameters['t'], 'all');
+      },
+    );
+
+    test('adds t= to public HTML and JSON listing routes', () async {
+      final urls = <Uri>[];
       final client = RedditClient(
         httpClient: MockClient((request) async {
-          if (request.url.path.contains('access_token')) return _json(_tokenBody(), 200);
-          listingUrl = request.url;
-          return _json(_listingBody(after: 't3_abc123'), 200);
+          urls.add(request.url);
+          return request.url.path.endsWith('.json')
+              ? _json(_listingBody(), 200)
+              : http.Response(_unreadablePage, 200);
         }),
       );
 
-      final listing = await client.fetchSubreddit('r/dartlang', clientId: 'id', sort: RedditSort.newest, limit: 10);
+      await client.fetchSubreddit(
+        'dartlang',
+        clientId: '',
+        sort: RedditSort.top,
+        timeFilter: RedditTimeFilter.month,
+      );
 
-      expect(listingUrl!.host, 'oauth.reddit.com');
-      expect(listingUrl!.path, '/r/dartlang/new');
-      expect(listingUrl!.queryParameters['limit'], '10');
-      expect(listingUrl!.queryParameters['raw_json'], '1');
-
-      expect(listing.after, 't3_abc123');
-      final post = listing.posts.single;
-      expect(post.id, 'abc123');
-      expect(post.title, 'Dart 4 is out');
-      expect(post.subreddit, 'dartlang');
-      expect(post.score, 412);
-      expect(post.commentCount, 37);
-      expect(post.createdAt, isNotNull);
-      expect(post.thumbnailUrl, 'https://b.thumbs.redditmedia.com/x.jpg');
+      expect(urls.first.path, '/r/dartlang/top');
+      expect(urls.first.queryParameters['t'], 'month');
+      expect(urls.first.queryParameters.containsKey('raw_json'), isFalse);
+      expect(
+        urls.any(
+          (url) =>
+              url.path == '/r/dartlang/top.json' &&
+              url.queryParameters['t'] == 'month',
+        ),
+        isTrue,
+      );
     });
 
     test('passes the cursor on for the next page', () async {
       Uri? listingUrl;
       final client = RedditClient(
         httpClient: MockClient((request) async {
-          if (request.url.path.contains('access_token')) return _json(_tokenBody(), 200);
+          if (request.url.path.contains('access_token'))
+            return _json(_tokenBody(), 200);
           listingUrl = request.url;
           return _json(_listingBody(), 200);
         }),
       );
 
-      await client.fetchSubreddit('dartlang', clientId: 'id', after: 't3_abc123');
+      await client.fetchSubreddit(
+        'dartlang',
+        clientId: 'id',
+        after: 't3_abc123',
+      );
 
       expect(listingUrl!.queryParameters['after'], 't3_abc123');
     });
@@ -570,49 +780,63 @@ void main() {
     test('a null after means the end of the listing', () async {
       final client = RedditClient(
         httpClient: MockClient((request) async {
-          if (request.url.path.contains('access_token')) return _json(_tokenBody(), 200);
+          if (request.url.path.contains('access_token'))
+            return _json(_tokenBody(), 200);
           return _json(_listingBody(after: null), 200);
         }),
       );
 
-      expect((await client.fetchSubreddit('dartlang', clientId: 'id')).after, isNull);
-    });
-
-    test('skips children that are not posts, and posts without a title', () async {
-      final client = RedditClient(
-        httpClient: MockClient((request) async {
-          if (request.url.path.contains('access_token')) return _json(_tokenBody(), 200);
-          return _json(
-            _listingBody(
-              children: [
-                {
-                  'kind': 't1',
-                  'data': {'id': 'comment'},
-                },
-                {
-                  'kind': 't3',
-                  'data': {'id': 'no_title'},
-                },
-                {
-                  'kind': 't3',
-                  'data': {'id': 'ok', 'title': 'Fine', 'subreddit': 'x', 'permalink': '/x'},
-                },
-              ],
-            ),
-            200,
-          );
-        }),
+      expect(
+        (await client.fetchSubreddit('dartlang', clientId: 'id')).after,
+        isNull,
       );
-
-      final listing = await client.fetchSubreddit('dartlang', clientId: 'id');
-
-      expect(listing.posts.map((p) => p.id), ['ok']);
     });
+
+    test(
+      'skips children that are not posts, and posts without a title',
+      () async {
+        final client = RedditClient(
+          httpClient: MockClient((request) async {
+            if (request.url.path.contains('access_token'))
+              return _json(_tokenBody(), 200);
+            return _json(
+              _listingBody(
+                children: [
+                  {
+                    'kind': 't1',
+                    'data': {'id': 'comment'},
+                  },
+                  {
+                    'kind': 't3',
+                    'data': {'id': 'no_title'},
+                  },
+                  {
+                    'kind': 't3',
+                    'data': {
+                      'id': 'ok',
+                      'title': 'Fine',
+                      'subreddit': 'x',
+                      'permalink': '/x',
+                    },
+                  },
+                ],
+              ),
+              200,
+            );
+          }),
+        );
+
+        final listing = await client.fetchSubreddit('dartlang', clientId: 'id');
+
+        expect(listing.posts.map((p) => p.id), ['ok']);
+      },
+    );
 
     test('a self post carries its text and no thumbnail', () async {
       final client = RedditClient(
         httpClient: MockClient((request) async {
-          if (request.url.path.contains('access_token')) return _json(_tokenBody(), 200);
+          if (request.url.path.contains('access_token'))
+            return _json(_tokenBody(), 200);
           return _json(
             _listingBody(
               children: [
@@ -636,12 +860,52 @@ void main() {
         }),
       );
 
-      final post = (await client.fetchSubreddit('dartlang', clientId: 'id')).posts.single;
+      final post = (await client.fetchSubreddit(
+        'dartlang',
+        clientId: 'id',
+      )).posts.single;
 
       expect(post.isSelf, isTrue);
       expect(post.selfText, 'Some body text');
-      expect(post.thumbnailUrl, isNull, reason: '"self" is a sentinel, not an image');
+      expect(
+        post.thumbnailUrl,
+        isNull,
+        reason: '"self" is a sentinel, not an image',
+      );
       expect(post.over18, isTrue);
+    });
+
+    test('a spoiler post carries the flag', () async {
+      final client = RedditClient(
+        httpClient: MockClient((request) async {
+          if (request.url.path.contains('access_token'))
+            return _json(_tokenBody(), 200);
+          return _json(
+            _listingBody(
+              children: [
+                {
+                  'kind': 't3',
+                  'data': {
+                    'id': 'spoiled',
+                    'title': 'Ending explained',
+                    'subreddit': 'movies',
+                    'permalink': '/r/movies/comments/spoiled/x/',
+                    'spoiler': true,
+                  },
+                },
+              ],
+            ),
+            200,
+          );
+        }),
+      );
+
+      final post = (await client.fetchSubreddit(
+        'movies',
+        clientId: 'id',
+      )).posts.single;
+
+      expect(post.spoiler, isTrue);
     });
 
     test('an unknown subreddit name never leaves the device', () async {
@@ -655,7 +919,13 @@ void main() {
 
       await expectLater(
         client.fetchSubreddit('not a subreddit', clientId: 'id'),
-        throwsA(isA<RedditException>().having((e) => e.kind, 'kind', RedditErrorKind.notFound)),
+        throwsA(
+          isA<RedditException>().having(
+            (e) => e.kind,
+            'kind',
+            RedditErrorKind.notFound,
+          ),
+        ),
       );
       expect(called, isFalse);
     });
@@ -671,91 +941,210 @@ void main() {
       for (final entry in cases.entries) {
         final client = RedditClient(
           httpClient: MockClient((request) async {
-            if (request.url.path.contains('access_token')) return _json(_tokenBody(), 200);
+            if (request.url.path.contains('access_token'))
+              return _json(_tokenBody(), 200);
             return _json({'error': entry.key}, entry.key);
           }),
         );
 
         await expectLater(
           client.fetchSubreddit('dartlang', clientId: 'id'),
-          throwsA(isA<RedditException>().having((e) => e.kind, 'kind', entry.value)),
+          throwsA(
+            isA<RedditException>().having((e) => e.kind, 'kind', entry.value),
+          ),
           reason: 'HTTP ${entry.key}',
         );
       }
     });
 
-    test('a 401 on a listing drops the cached token so the next try re-authorises', () async {
-      var tokenCalls = 0;
-      var listingCalls = 0;
-      final client = RedditClient(
-        httpClient: MockClient((request) async {
-          if (request.url.path.contains('access_token')) {
-            tokenCalls++;
-            return _json(_tokenBody(), 200);
-          }
-          listingCalls++;
-          return listingCalls == 1 ? _json({'error': 401}, 401) : _json(_listingBody(), 200);
-        }),
-      );
+    test(
+      'a 401 on a listing drops the cached token so the next try re-authorises',
+      () async {
+        var tokenCalls = 0;
+        var listingCalls = 0;
+        final client = RedditClient(
+          httpClient: MockClient((request) async {
+            if (request.url.path.contains('access_token')) {
+              tokenCalls++;
+              return _json(_tokenBody(), 200);
+            }
+            listingCalls++;
+            return listingCalls == 1
+                ? _json({'error': 401}, 401)
+                : _json(_listingBody(), 200);
+          }),
+        );
 
-      await expectLater(client.fetchSubreddit('dartlang', clientId: 'id'), throwsA(isA<RedditException>()));
-      expect(client.hasToken, isFalse);
+        await expectLater(
+          client.fetchSubreddit('dartlang', clientId: 'id'),
+          throwsA(isA<RedditException>()),
+        );
+        expect(client.hasToken, isFalse);
 
-      await client.fetchSubreddit('dartlang', clientId: 'id');
-      expect(tokenCalls, 2);
-    });
+        await client.fetchSubreddit('dartlang', clientId: 'id');
+        expect(tokenCalls, 2);
+      },
+    );
 
     test('HTML instead of JSON is a bad response, not a crash', () async {
       final client = RedditClient(
         httpClient: MockClient((request) async {
-          if (request.url.path.contains('access_token')) return _json(_tokenBody(), 200);
-          return http.Response('<html>blocked</html>', 200, headers: {'content-type': 'text/html'});
+          if (request.url.path.contains('access_token'))
+            return _json(_tokenBody(), 200);
+          return http.Response(
+            '<html>blocked</html>',
+            200,
+            headers: {'content-type': 'text/html'},
+          );
         }),
       );
 
       await expectLater(
         client.fetchSubreddit('dartlang', clientId: 'id'),
-        throwsA(isA<RedditException>().having((e) => e.kind, 'kind', RedditErrorKind.badResponse)),
+        throwsA(
+          isA<RedditException>().having(
+            (e) => e.kind,
+            'kind',
+            RedditErrorKind.badResponse,
+          ),
+        ),
       );
     });
 
     test('an unreachable host is a network failure', () async {
-      final client = RedditClient(httpClient: MockClient((_) async => throw http.ClientException('no route')));
+      final client = RedditClient(
+        httpClient: MockClient(
+          (_) async => throw http.ClientException('no route'),
+        ),
+      );
 
       await expectLater(
         client.fetchSubreddit('dartlang', clientId: 'id'),
-        throwsA(isA<RedditException>().having((e) => e.kind, 'kind', RedditErrorKind.network)),
+        throwsA(
+          isA<RedditException>().having(
+            (e) => e.kind,
+            'kind',
+            RedditErrorKind.network,
+          ),
+        ),
       );
     });
   });
 
   group('what a post has to show', () {
-    RedditPost post({String? url, String? domain}) =>
-        RedditPost(id: 'a', title: 't', subreddit: 'x', permalink: '/r/x/comments/a/', url: url, domain: domain);
+    RedditPost post({String? url, String? domain}) => RedditPost(
+      id: 'a',
+      title: 't',
+      subreddit: 'x',
+      permalink: '/r/x/comments/a/',
+      url: url,
+      domain: domain,
+    );
 
     test('a direct picture is shown at full width', () {
-      expect(post(url: 'https://i.redd.it/abc.jpg', domain: 'i.redd.it').imageUrl, 'https://i.redd.it/abc.jpg');
-      expect(post(url: 'https://example.com/photo.PNG').imageUrl, 'https://example.com/photo.PNG');
       expect(
-        post(url: 'https://preview.redd.it/x?width=640', domain: 'preview.redd.it').imageUrl,
+        post(url: 'https://i.redd.it/abc.jpg', domain: 'i.redd.it').imageUrl,
+        'https://i.redd.it/abc.jpg',
+      );
+      expect(
+        post(url: 'https://example.com/photo.PNG').imageUrl,
+        'https://example.com/photo.PNG',
+      );
+      expect(
+        post(
+          url: 'https://preview.redd.it/x?width=640',
+          domain: 'preview.redd.it',
+        ).imageUrl,
         isNotNull,
         reason: 'the host serves the picture whatever the path looks like',
       );
     });
 
     test('a page is not a picture, however tempting the thumbnail is', () {
-      expect(post(url: 'https://www.reddit.com/gallery/abc', domain: 'reddit.com').imageUrl, isNull);
-      expect(post(url: 'https://v.redd.it/abc', domain: 'v.redd.it').imageUrl, isNull);
-      expect(post(url: 'https://news.example.com/story', domain: 'news.example.com').imageUrl, isNull);
+      expect(
+        post(
+          url: 'https://www.reddit.com/gallery/abc',
+          domain: 'reddit.com',
+        ).imageUrl,
+        isNull,
+      );
+      expect(
+        post(url: 'https://v.redd.it/abc', domain: 'v.redd.it').imageUrl,
+        isNull,
+      );
+      expect(
+        post(
+          url: 'https://news.example.com/story',
+          domain: 'news.example.com',
+        ).imageUrl,
+        isNull,
+      );
       expect(post().imageUrl, isNull);
       expect(post(url: 'not a url at all').imageUrl, isNull);
     });
 
-    test('a video is recognised so the card offers a play badge, not a dead image', () {
-      expect(post(url: 'https://v.redd.it/abc', domain: 'v.redd.it').isVideo, isTrue);
-      expect(post(url: 'https://www.youtube.com/watch?v=1', domain: 'youtube.com').isVideo, isTrue);
-      expect(post(url: 'https://example.com/story', domain: 'example.com').isVideo, isFalse);
-      expect(post().isVideo, isFalse);
+    test(
+      'a video is recognised so the card offers a play badge, not a dead image',
+      () {
+        expect(
+          post(url: 'https://v.redd.it/abc', domain: 'v.redd.it').isVideo,
+          isTrue,
+        );
+        expect(
+          post(
+            url: 'https://www.youtube.com/watch?v=1',
+            domain: 'youtube.com',
+          ).isVideo,
+          isTrue,
+        );
+        expect(
+          post(url: 'https://example.com/story', domain: 'example.com').isVideo,
+          isFalse,
+        );
+        expect(post().isVideo, isFalse);
+      },
+    );
+
+    test('NSFW hide mode removes over-18 posts', () {
+      final safe = post();
+      final adult = RedditPost(
+        id: 'b',
+        title: 'b',
+        subreddit: 'x',
+        permalink: '/r/x/comments/b/',
+        over18: true,
+      );
+
+      expect(filterRedditPosts([safe, adult], nsfwMode: RedditNsfwMode.hide), [
+        safe,
+      ]);
+      expect(filterRedditPosts([safe, adult], nsfwMode: RedditNsfwMode.tap), [
+        safe,
+        adult,
+      ]);
+    });
+
+    test('saved snapshots keep enough post data to reopen', () {
+      final saved = RedditPost.listFromPrefs(
+        jsonEncode([
+          RedditPost(
+            id: 's1',
+            title: 'Saved',
+            subreddit: 'dartlang',
+            permalink: '/r/dartlang/comments/s1/saved/',
+            url: 'https://i.redd.it/s1.jpg',
+            over18: true,
+            spoiler: true,
+            galleryImages: const ['https://i.redd.it/one.jpg'],
+          ).toJson(),
+        ]),
+      );
+
+      expect(saved.single.id, 's1');
+      expect(saved.single.url, 'https://i.redd.it/s1.jpg');
+      expect(saved.single.over18, isTrue);
+      expect(saved.single.spoiler, isTrue);
+      expect(saved.single.galleryImages, ['https://i.redd.it/one.jpg']);
     });
   });
 
@@ -784,10 +1173,14 @@ void main() {
             },
             'media_metadata': {
               'one': {
-                's': {'u': 'https://preview.redd.it/one.jpg?width=640&amp;s=abc'},
+                's': {
+                  'u': 'https://preview.redd.it/one.jpg?width=640&amp;s=abc',
+                },
               },
               'two': {
-                's': {'u': 'https://preview.redd.it/two.jpg?width=640&amp;s=def'},
+                's': {
+                  'u': 'https://preview.redd.it/two.jpg?width=640&amp;s=def',
+                },
               },
             },
           },
@@ -847,21 +1240,24 @@ void main() {
       expect(RedditPost.fromChild(child())!.galleryImages, isEmpty);
     });
 
-    test('metadata that no longer fits reads as nothing rather than throwing', () {
-      final post = RedditPost.fromChild(
-        child(
-          extra: {
-            'gallery_data': 'nonsense',
-            'media_metadata': {
-              'one': {'s': 'also nonsense'},
-              'two': 42,
+    test(
+      'metadata that no longer fits reads as nothing rather than throwing',
+      () {
+        final post = RedditPost.fromChild(
+          child(
+            extra: {
+              'gallery_data': 'nonsense',
+              'media_metadata': {
+                'one': {'s': 'also nonsense'},
+                'two': 42,
+              },
             },
-          },
-        ),
-      )!;
+          ),
+        )!;
 
-      expect(post.galleryImages, isEmpty);
-    });
+        expect(post.galleryImages, isEmpty);
+      },
+    );
   });
 
   group('a post\'s preview', () {
@@ -877,21 +1273,36 @@ void main() {
           'preview': {
             'images': [
               {
-                'source': {'url': 'https://preview.redd.it/poster.jpg?width=1080&amp;s=xyz'},
+                'source': {
+                  'url':
+                      'https://preview.redd.it/poster.jpg?width=1080&amp;s=xyz',
+                },
               },
             ],
           },
         },
       })!;
 
-      expect(post.previewImage, 'https://preview.redd.it/poster.jpg?width=1080&s=xyz');
-      expect(post.imageUrl, isNull, reason: 'a poster frame is the card\'s banner, not the post\'s picture');
+      expect(
+        post.previewImage,
+        'https://preview.redd.it/poster.jpg?width=1080&s=xyz',
+      );
+      expect(
+        post.imageUrl,
+        isNull,
+        reason: 'a poster frame is the card\'s banner, not the post\'s picture',
+      );
     });
 
     test('a post without one has none', () {
       final post = RedditPost.fromChild({
         'kind': 't3',
-        'data': {'id': 'p', 'title': 't', 'subreddit': 'x', 'permalink': '/r/x/comments/p/'},
+        'data': {
+          'id': 'p',
+          'title': 't',
+          'subreddit': 'x',
+          'permalink': '/r/x/comments/p/',
+        },
       })!;
 
       expect(post.previewImage, isNull);
@@ -920,52 +1331,58 @@ void main() {
 
     test('a signed-in reader hits the authenticated host', () async {
       final hosts = <String>[];
-      final client = RedditClient(httpClient: MockClient((request) async {
-        hosts.add(request.url.host);
-        expect(request.headers['Authorization'], 'Bearer user_tok');
-        return _json([
-          {
-            'kind': 'Listing',
-            'data': {
-              'children': [
-                {
-                  'kind': 't3',
-                  'data': {
-                    'id': 'abc123',
-                    'title': 'Dart 4 is out',
-                    'subreddit': 'dartlang',
-                    'permalink': permalink,
-                    'selftext': 'Body',
-                    'url': 'https://dart.dev/blog',
-                    'is_self': true,
+      final client = RedditClient(
+        httpClient: MockClient((request) async {
+          hosts.add(request.url.host);
+          expect(request.headers['Authorization'], 'Bearer user_tok');
+          return _json([
+            {
+              'kind': 'Listing',
+              'data': {
+                'children': [
+                  {
+                    'kind': 't3',
+                    'data': {
+                      'id': 'abc123',
+                      'title': 'Dart 4 is out',
+                      'subreddit': 'dartlang',
+                      'permalink': permalink,
+                      'selftext': 'Body',
+                      'url': 'https://dart.dev/blog',
+                      'is_self': true,
+                    },
                   },
-                },
-              ],
+                ],
+              },
             },
-          },
-          {
-            'kind': 'Listing',
-            'data': {
-              'children': [
-                {
-                  'kind': 't1',
-                  'data': {
-                    'id': 'c1',
-                    'author': 'someone',
-                    'body': 'Hello',
-                    'score': 3,
-                    'created_utc': 1769000000,
-                    'permalink': '${permalink}c1/',
-                    'replies': '',
+            {
+              'kind': 'Listing',
+              'data': {
+                'children': [
+                  {
+                    'kind': 't1',
+                    'data': {
+                      'id': 'c1',
+                      'author': 'someone',
+                      'body': 'Hello',
+                      'score': 3,
+                      'created_utc': 1769000000,
+                      'permalink': '${permalink}c1/',
+                      'replies': '',
+                    },
                   },
-                },
-              ],
+                ],
+              },
             },
-          },
-        ], 200);
-      }));
+          ], 200);
+        }),
+      );
 
-      final result = await client.fetchComments(permalink, clientId: 'app', userToken: 'user_tok');
+      final result = await client.fetchComments(
+        permalink,
+        clientId: 'app',
+        userToken: 'user_tok',
+      );
       expect(hosts, ['oauth.reddit.com']);
       expect(result.comments.single.id, 'c1');
       expect(result.selfText, 'Body');
@@ -973,26 +1390,42 @@ void main() {
 
     test('a refused OAuth read falls back to the old site', () async {
       final hosts = <String>[];
-      final client = RedditClient(httpClient: MockClient((request) async {
-        hosts.add(request.url.host);
-        if (request.url.host == 'oauth.reddit.com') {
-          return _json({'error': 403}, 403);
-        }
-        return http.Response(threadHtml, 200, headers: {'content-type': 'text/html'});
-      }));
+      final client = RedditClient(
+        httpClient: MockClient((request) async {
+          hosts.add(request.url.host);
+          if (request.url.host == 'oauth.reddit.com') {
+            return _json({'error': 403}, 403);
+          }
+          return http.Response(
+            threadHtml,
+            200,
+            headers: {'content-type': 'text/html'},
+          );
+        }),
+      );
 
-      final result = await client.fetchComments(permalink, clientId: 'app', userToken: 'user_tok');
+      final result = await client.fetchComments(
+        permalink,
+        clientId: 'app',
+        userToken: 'user_tok',
+      );
       expect(hosts, ['oauth.reddit.com', 'old.reddit.com']);
       expect(result.comments.single.body, 'Hello');
     });
 
     test('preferPublic scrapes even when a token is sitting there', () async {
       final hosts = <String>[];
-      final client = RedditClient(httpClient: MockClient((request) async {
-        hosts.add(request.url.host);
-        expect(request.headers.containsKey('Authorization'), isFalse);
-        return http.Response(threadHtml, 200, headers: {'content-type': 'text/html'});
-      }));
+      final client = RedditClient(
+        httpClient: MockClient((request) async {
+          hosts.add(request.url.host);
+          expect(request.headers.containsKey('Authorization'), isFalse);
+          return http.Response(
+            threadHtml,
+            200,
+            headers: {'content-type': 'text/html'},
+          );
+        }),
+      );
 
       final result = await client.fetchComments(
         permalink,

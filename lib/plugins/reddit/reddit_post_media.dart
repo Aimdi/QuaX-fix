@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:pref/pref.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_gallery.dart';
 import 'package:xta/plugins/reddit/reddit_media_urls.dart';
 import 'package:xta/plugins/reddit/reddit_media_frame.dart';
+import 'package:xta/plugins/reddit/reddit_sort_sheet.dart';
 import 'package:xta/tweet/_video.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/ui/capped_network_image.dart';
@@ -24,13 +26,19 @@ class RedditPostMedia extends StatelessWidget {
   /// screen edge and needs the gutter here; a thread screen already has one.
   final EdgeInsets padding;
 
-  const RedditPostMedia({super.key, required this.post, this.padding = const EdgeInsets.fromLTRB(16, 10, 16, 0)});
+  const RedditPostMedia({
+    super.key,
+    required this.post,
+    this.padding = const EdgeInsets.fromLTRB(16, 10, 16, 0),
+  });
 
   @override
   Widget build(BuildContext context) {
     final media = _media(context);
 
-    return media == null ? const SizedBox.shrink() : Padding(padding: padding, child: media);
+    return media == null
+        ? const SizedBox.shrink()
+        : Padding(padding: padding, child: media);
   }
 
   Widget? _media(BuildContext context) {
@@ -42,7 +50,11 @@ class RedditPostMedia extends StatelessWidget {
     if (dash != null) {
       final ratio = redditMediaAspectRatio(post.videoAspectRatio);
 
-      return _gate(context, aspectRatio: ratio, child: _video(context, dash, ratio));
+      return _gate(
+        context,
+        aspectRatio: ratio,
+        child: _video(context, dash, ratio),
+      );
     }
 
     final gallery = collapseRedditImageUrls(post.galleryImages);
@@ -67,8 +79,18 @@ class RedditPostMedia extends StatelessWidget {
     return null;
   }
 
-  Widget _gate(BuildContext context, {required Widget child, double aspectRatio = kRedditSensitiveAspectRatio}) {
-    return RedditSensitiveGate(sensitive: post.over18, revealKey: post.id, aspectRatio: aspectRatio, child: child);
+  Widget _gate(
+    BuildContext context, {
+    required Widget child,
+    double aspectRatio = kRedditSensitiveAspectRatio,
+  }) {
+    return RedditSensitiveGate(
+      sensitive: _shouldGate(context, post),
+      revealKey: post.id,
+      kind: _gateKind(post),
+      aspectRatio: aspectRatio,
+      child: child,
+    );
   }
 
   Widget _video(BuildContext context, String dash, double ratio) {
@@ -139,7 +161,9 @@ class RedditCommentImages extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: kRedditCommentMediaMaxHeight),
+                constraints: const BoxConstraints(
+                  maxHeight: kRedditCommentMediaMaxHeight,
+                ),
                 child: Semantics(
                   image: true,
                   label: label,
@@ -150,10 +174,13 @@ class RedditCommentImages extends StatelessWidget {
                       // Decoded at the width it is drawn at, which under an
                       // indented reply is a good deal less than the screen.
                       cacheWidth: constraints.hasBoundedWidth
-                          ? (constraints.maxWidth * MediaQuery.devicePixelRatioOf(context)).ceil()
+                          ? (constraints.maxWidth *
+                                    MediaQuery.devicePixelRatioOf(context))
+                                .ceil()
                           : null,
                       alignment: Alignment.centerLeft,
-                      errorBuilder: (context, _, __) => RedditBrokenImage(url: url),
+                      errorBuilder: (context, _, __) =>
+                          RedditBrokenImage(url: url),
                     ),
                   ),
                 ),
@@ -188,14 +215,20 @@ class RedditBrokenImage extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.broken_image_outlined, size: 18, color: theme.colorScheme.onSurfaceVariant),
+              Icon(
+                Icons.broken_image_outlined,
+                size: 18,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
               const SizedBox(width: 6),
               Flexible(
                 child: Text(
                   Uri.tryParse(url)?.host ?? url,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  style: theme.textTheme.bodySmall!.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ],
@@ -258,13 +291,19 @@ class _RedditLinkCard extends StatelessWidget {
               post.domain ?? Uri.tryParse(url)?.host ?? url,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              style: theme.textTheme.bodyMedium!.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(right: 12),
-          child: Icon(Icons.open_in_new, size: 18, color: theme.colorScheme.onSurfaceVariant),
+          child: Icon(
+            Icons.open_in_new,
+            size: 18,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
       ],
     );
@@ -296,8 +335,9 @@ class _RedditLinkCard extends StatelessWidget {
     // The poster frame of an over-18 post is the post: it is held back with the
     // same tile a picture would be.
     return RedditSensitiveGate(
-      sensitive: post.over18,
+      sensitive: _shouldGate(context, post),
       revealKey: post.id,
+      kind: _gateKind(post),
       aspectRatio: kRedditMediaMaxAspectRatio,
       child: banner,
     );
@@ -315,10 +355,15 @@ class _RedditLinkCard extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           ColoredBox(color: theme.colorScheme.surfaceContainerHighest),
-          if (thumbnail != null && !post.over18)
+          if (thumbnail != null && !_shouldGate(context, post))
             CappedNetworkImage(url: thumbnail)
           else
-            Icon(post.over18 ? Icons.visibility_off_outlined : Icons.link, color: theme.colorScheme.onSurfaceVariant),
+            Icon(
+              _shouldGate(context, post)
+                  ? Icons.visibility_off_outlined
+                  : Icons.link,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
           if (post.isVideo)
             const Center(
               child: CircleAvatar(
@@ -332,3 +377,15 @@ class _RedditLinkCard extends StatelessWidget {
     );
   }
 }
+
+bool _shouldGate(BuildContext context, RedditPost post) {
+  if (post.spoiler) {
+    return true;
+  }
+  final prefs = PrefService.of(context);
+  return post.over18 && storedRedditNsfwMode(prefs) != RedditNsfwMode.show;
+}
+
+RedditSensitiveGateKind _gateKind(RedditPost post) => post.spoiler
+    ? RedditSensitiveGateKind.spoiler
+    : RedditSensitiveGateKind.nsfw;

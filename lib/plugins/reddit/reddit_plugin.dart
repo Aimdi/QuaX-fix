@@ -47,7 +47,8 @@ class RedditPlugin extends XtaPlugin {
   String title(BuildContext context) => L10n.of(context).plugin_reddit_title;
 
   @override
-  String description(BuildContext context) => L10n.of(context).plugin_reddit_description;
+  String description(BuildContext context) =>
+      L10n.of(context).plugin_reddit_description;
 
   @override
   NavigationPage homePage(BuildContext context) {
@@ -68,7 +69,10 @@ class RedditPlugin extends XtaPlugin {
   Widget? settingsScreen(BuildContext context) => const RedditSettingsScreen();
 
   @override
-  List<String> get tables => const [tableRedditSubscription, tableRedditLocalVote];
+  List<String> get tables => const [
+    tableRedditSubscription,
+    tableRedditLocalVote,
+  ];
 
   @override
   List<String> get caches => const [redditIconsCacheName];
@@ -82,6 +86,10 @@ class RedditPlugin extends XtaPlugin {
     await prefs.set(optionPluginRedditRefreshToken, '');
     await prefs.set(optionPluginRedditSource, redditSourceAuto);
     await prefs.set(optionPluginRedditSort, redditSortHot);
+    await prefs.set(optionPluginRedditTimeFilter, redditTimeFilterDay);
+    await prefs.set(optionPluginRedditFeedMode, redditFeedModeFollowing);
+    await prefs.set(optionPluginRedditNsfwMode, redditNsfwModeTap);
+    await prefs.set(optionPluginRedditSavedPosts, '[]');
     await prefs.set(optionPluginRedditInHomeFeed, false);
   }
 
@@ -91,6 +99,7 @@ class RedditPlugin extends XtaPlugin {
     // stores outlive the screen either way.
     final client = context.read<RedditClient>();
     final votes = context.read<RedditVotesStore>();
+    final saved = context.read<RedditSavedStore>();
 
     await context.read<RedditSubredditsStore>().load();
     client.forgetToken();
@@ -98,5 +107,6 @@ class RedditPlugin extends XtaPlugin {
     // still in memory — an uninstall that left the arrows lit would look like
     // the votes had been kept.
     votes.update(const <String>{});
+    saved.update(const <RedditPost>[]);
   }
 }

@@ -24,7 +24,9 @@ class RedditSettingsScreen extends StatefulWidget {
 }
 
 class _RedditSettingsScreenState extends State<RedditSettingsScreen> {
-  late final RedditIdentityStore _identity = RedditIdentityStore(context.read<RedditAuth>());
+  late final RedditIdentityStore _identity = RedditIdentityStore(
+    context.read<RedditAuth>(),
+  );
 
   @override
   void initState() {
@@ -38,7 +40,8 @@ class _RedditSettingsScreenState extends State<RedditSettingsScreen> {
     super.dispose();
   }
 
-  void _loadIdentity() => _identity.load(PrefService.of(context, listen: false));
+  void _loadIdentity() =>
+      _identity.load(PrefService.of(context, listen: false));
 
   /// Anything that changes the credentials changes who Reddit says we are.
   Future<void> _afterAccountChange() async {
@@ -48,12 +51,26 @@ class _RedditSettingsScreenState extends State<RedditSettingsScreen> {
   }
 
   Future<void> _setSource(String source) async {
-    await PrefService.of(context, listen: false).set(optionPluginRedditSource, source);
+    await PrefService.of(
+      context,
+      listen: false,
+    ).set(optionPluginRedditSource, source);
     if (!mounted) return;
 
     setState(() {});
     _loadIdentity();
     await context.read<RedditFeedStore>().refresh();
+  }
+
+  Future<void> _setNsfwMode(RedditNsfwMode mode) async {
+    await PrefService.of(
+      context,
+      listen: false,
+    ).set(optionPluginRedditNsfwMode, mode.name);
+    if (!mounted) return;
+
+    setState(() {});
+    await context.read<RedditFeedStore>().refresh(force: true);
   }
 
   @override
@@ -85,6 +102,9 @@ class _RedditSettingsScreenState extends State<RedditSettingsScreen> {
           ),
           _SectionHeader(title: l10n.feed),
           _sortTile(l10n, prefs),
+          _SectionHeader(title: l10n.plugin_reddit_nsfw_display),
+          for (final mode in RedditNsfwMode.values)
+            _nsfwTile(l10n, prefs, mode),
           SwitchListTile(
             secondary: const Icon(Icons.dynamic_feed_outlined),
             title: Text(l10n.plugin_reddit_in_home_feed),
@@ -110,7 +130,9 @@ class _RedditSettingsScreenState extends State<RedditSettingsScreen> {
       store: _identity,
       onState: (context, name) => ListTile(
         leading: Icon(signedIn ? Icons.account_circle_outlined : Icons.login),
-        title: Text(signedIn ? l10n.plugin_reddit_signed_in : l10n.plugin_reddit_sign_in),
+        title: Text(
+          signedIn ? l10n.plugin_reddit_signed_in : l10n.plugin_reddit_sign_in,
+        ),
         subtitle: name == null ? null : Text('u/$name'),
         trailing: signedIn
             ? TextButton(
@@ -139,7 +161,9 @@ class _RedditSettingsScreenState extends State<RedditSettingsScreen> {
     return ListTile(
       leading: const Icon(Icons.key_outlined),
       title: Text(l10n.plugin_reddit_client_id),
-      subtitle: Text(clientId.isEmpty ? l10n.plugin_reddit_client_id_help : clientId),
+      subtitle: Text(
+        clientId.isEmpty ? l10n.plugin_reddit_client_id_help : clientId,
+      ),
       onTap: () async {
         await editRedditClientId(context);
         await _afterAccountChange();
@@ -148,12 +172,15 @@ class _RedditSettingsScreenState extends State<RedditSettingsScreen> {
   }
 
   Widget _sortTile(L10n l10n, BasePrefService prefs) {
-    final entry = redditSortLabel(context, storedRedditSort(prefs));
+    final sort = storedRedditSort(prefs);
+    final entry = redditSortLabel(context, sort);
 
     return ListTile(
       leading: Icon(entry.icon),
       title: Text(l10n.plugin_reddit_sort),
-      subtitle: Text(entry.label),
+      subtitle: Text(
+        redditSortTitle(context, sort, storedRedditTimeFilter(prefs)),
+      ),
       onTap: () async {
         final chosen = await openRedditSortSheet(context);
         if (!mounted) return;
@@ -165,6 +192,36 @@ class _RedditSettingsScreenState extends State<RedditSettingsScreen> {
       },
     );
   }
+
+  Widget _nsfwTile(L10n l10n, BasePrefService prefs, RedditNsfwMode mode) {
+    final selected = storedRedditNsfwMode(prefs) == mode;
+    return ListTile(
+      leading: Icon(_nsfwIcon(mode)),
+      title: Text(_nsfwTitle(l10n, mode)),
+      subtitle: Text(_nsfwDescription(l10n, mode)),
+      trailing: selected ? const Icon(Icons.check) : null,
+      selected: selected,
+      onTap: selected ? null : () => _setNsfwMode(mode),
+    );
+  }
+
+  IconData _nsfwIcon(RedditNsfwMode mode) => switch (mode) {
+    RedditNsfwMode.hide => Icons.visibility_off_outlined,
+    RedditNsfwMode.tap => Icons.touch_app_outlined,
+    RedditNsfwMode.show => Icons.visibility_outlined,
+  };
+
+  String _nsfwTitle(L10n l10n, RedditNsfwMode mode) => switch (mode) {
+    RedditNsfwMode.hide => l10n.plugin_reddit_nsfw_hide,
+    RedditNsfwMode.tap => l10n.plugin_reddit_nsfw_tap,
+    RedditNsfwMode.show => l10n.plugin_reddit_nsfw_show,
+  };
+
+  String _nsfwDescription(L10n l10n, RedditNsfwMode mode) => switch (mode) {
+    RedditNsfwMode.hide => l10n.plugin_reddit_nsfw_hide_description,
+    RedditNsfwMode.tap => l10n.plugin_reddit_nsfw_tap_description,
+    RedditNsfwMode.show => l10n.plugin_reddit_nsfw_show_description,
+  };
 
   /// One of the two routes, with what it costs stated where the choice is made
   /// rather than left for the reader to infer.
@@ -199,7 +256,10 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
       child: Text(
         title,
-        style: theme.textTheme.titleSmall?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w600),
+        style: theme.textTheme.titleSmall?.copyWith(
+          color: theme.colorScheme.primary,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

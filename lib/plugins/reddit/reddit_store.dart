@@ -29,7 +29,10 @@ class RedditSubredditsStore extends Store<List<String>> {
 
   Future<List<String>> _read() async {
     final database = await Repository.readOnly();
-    final rows = await database.query(tableRedditSubscription, orderBy: 'name COLLATE NOCASE');
+    final rows = await database.query(
+      tableRedditSubscription,
+      orderBy: 'name COLLATE NOCASE',
+    );
 
     return rows.map((e) => e['name'] as String).toList(growable: false);
   }
@@ -83,9 +86,17 @@ class RedditSubredditsStore extends Store<List<String>> {
     await execute(() async {
       final id = subreddit.toLowerCase();
       final database = await Repository.writable();
-      await database.delete(tableRedditSubscription, where: 'id = ?', whereArgs: [id]);
+      await database.delete(
+        tableRedditSubscription,
+        where: 'id = ?',
+        whereArgs: [id],
+      );
       // A subreddit that is gone should not linger as a member of a group.
-      await database.delete(tableSubscriptionGroupMember, where: 'profile_id = ?', whereArgs: [id]);
+      await database.delete(
+        tableSubscriptionGroupMember,
+        where: 'profile_id = ?',
+        whereArgs: [id],
+      );
       return _read();
     });
   }
@@ -119,6 +130,43 @@ class RedditFeedStore extends Store<List<RedditPost>> {
   /// [force] is the pull-to-refresh: it goes past the shared cache, which is
   /// otherwise how the reader would pull down and be handed the same posts.
   Future<void> refresh({RedditSort? sort, bool force = false}) async {
-    await execute(() => source.posts(subreddits.state, sort: sort, forceRefresh: force));
+    await execute(
+      () => source.posts(subreddits.state, sort: sort, forceRefresh: force),
+    );
+  }
+}
+
+const int kRedditSavedPostsCap = 200;
+
+class RedditSavedStore extends Store<List<RedditPost>> {
+  final BasePrefService prefs;
+
+  RedditSavedStore(this.prefs) : super(const []);
+
+  Future<void> load() async {
+    await execute(
+      () async => RedditPost.listFromPrefs(
+        prefs.get<String>(optionPluginRedditSavedPosts),
+      ),
+    );
+  }
+
+  bool isSaved(RedditPost post) => state.any((saved) => saved.id == post.id);
+
+  Future<void> toggle(RedditPost post) async {
+    await execute(() async {
+      final exists = isSaved(post);
+      final next = exists
+          ? state.where((saved) => saved.id != post.id).toList(growable: false)
+          : [
+              post,
+              ...state.where((saved) => saved.id != post.id),
+            ].take(kRedditSavedPostsCap).toList();
+      await prefs.set(
+        optionPluginRedditSavedPosts,
+        jsonEncode(next.map((saved) => saved.toJson()).toList()),
+      );
+      return next;
+    });
   }
 }

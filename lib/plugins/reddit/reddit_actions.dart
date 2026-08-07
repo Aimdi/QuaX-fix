@@ -25,7 +25,14 @@ class RedditFeedActions extends StatefulWidget {
   /// other route to them.
   final bool showAppSettings;
 
-  const RedditFeedActions({super.key, this.showAppSettings = false});
+  /// Called after a setting changes what the active Reddit body should fetch.
+  final Future<void> Function()? onRefresh;
+
+  const RedditFeedActions({
+    super.key,
+    this.showAppSettings = false,
+    this.onRefresh,
+  });
 
   @override
   State<RedditFeedActions> createState() => _RedditFeedActionsState();
@@ -74,7 +81,11 @@ class _RedditFeedActionsState extends State<RedditFeedActions> {
           child: ListTile(
             contentPadding: EdgeInsets.zero,
             leading: Icon(_signedIn ? Icons.logout : Icons.login),
-            title: Text(_signedIn ? l10n.plugin_reddit_sign_out : l10n.plugin_reddit_sign_in),
+            title: Text(
+              _signedIn
+                  ? l10n.plugin_reddit_sign_out
+                  : l10n.plugin_reddit_sign_in,
+            ),
           ),
         ),
         // The client id used to sit here on its own, which left the rest of
@@ -111,7 +122,10 @@ class _RedditFeedActionsState extends State<RedditFeedActions> {
       return _signedIn ? _signOutHere() : _signInHere();
     }
     if (value == _menuPluginSettings) {
-      await Navigator.push(context, MaterialPageRoute(builder: (_) => const RedditSettingsScreen()));
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const RedditSettingsScreen()),
+      );
       // Everything on that screen — the sign-in, the client id, the route —
       // changes what this menu should say next time it opens.
       if (mounted) setState(() {});
@@ -124,7 +138,7 @@ class _RedditFeedActionsState extends State<RedditFeedActions> {
 
     await prefs.set(optionPluginRedditSource, value);
     if (mounted) {
-      await context.read<RedditFeedStore>().refresh();
+      await _refreshActive();
     }
   }
 
@@ -184,24 +198,43 @@ class _RedditFeedActionsState extends State<RedditFeedActions> {
       children: [
         IconButton(
           tooltip: l10n.plugin_reddit_sort,
-          icon: Icon(redditSortLabel(context, storedRedditSort(PrefService.of(context))).icon),
+          icon: Icon(
+            redditSortLabel(
+              context,
+              storedRedditSort(PrefService.of(context)),
+            ).icon,
+          ),
           onPressed: () async {
             if (await openRedditSortSheet(context) != null && context.mounted) {
-              await context.read<RedditFeedStore>().refresh();
+              await _refreshActive();
             }
           },
         ),
         IconButton(
           tooltip: l10n.plugin_reddit_search_hint,
           icon: const Icon(Icons.search),
-          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RedditSearchScreen())),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const RedditSearchScreen()),
+          ),
         ),
-        IconButton(tooltip: l10n.plugin_reddit_add, icon: const Icon(Icons.add), onPressed: _addSubreddit),
-        IconButton(tooltip: l10n.subscriptions, icon: const Icon(Icons.list), onPressed: _manageSubreddits),
+        IconButton(
+          tooltip: l10n.plugin_reddit_add,
+          icon: const Icon(Icons.add),
+          onPressed: _addSubreddit,
+        ),
+        IconButton(
+          tooltip: l10n.subscriptions,
+          icon: const Icon(Icons.list),
+          onPressed: _manageSubreddits,
+        ),
         _sourceMenu(context),
       ],
     );
   }
+
+  Future<void> _refreshActive() =>
+      widget.onRefresh?.call() ?? context.read<RedditFeedStore>().refresh();
 }
 
 /// Asks for a subreddit and follows it.
@@ -227,8 +260,15 @@ Future<void> addRedditSubreddit(BuildContext context) async {
           onSubmitted: (value) => Navigator.pop(dialogContext, value.trim()),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext), child: Text(l10n.cancel)),
-          TextButton(onPressed: () => Navigator.pop(dialogContext, controller.text.trim()), child: Text(l10n.ok)),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () =>
+                Navigator.pop(dialogContext, controller.text.trim()),
+            child: Text(l10n.ok),
+          ),
         ],
       );
     },
@@ -237,7 +277,9 @@ Future<void> addRedditSubreddit(BuildContext context) async {
   if (entered == null || entered.isEmpty || !context.mounted) return;
 
   if (normaliseSubreddit(entered) == null) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L10n.of(context).plugin_reddit_error_not_found)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(L10n.of(context).plugin_reddit_error_not_found)),
+    );
     return;
   }
 
