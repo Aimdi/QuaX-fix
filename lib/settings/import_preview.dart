@@ -125,6 +125,7 @@ String _label(BuildContext context, BackupCategory category) => switch (category
   BackupCategory.filters => L10n.of(context).filters,
   BackupCategory.readPositions => L10n.of(context).reading_positions,
   BackupCategory.upvotes => L10n.of(context).plugin_reddit_upvotes,
+  BackupCategory.threadsLikes => L10n.of(context).plugin_threads_liked,
   BackupCategory.accounts => L10n.of(context).account,
   BackupCategory.profileNotes => L10n.of(context).profile_note_title,
   BackupCategory.antennas => L10n.of(context).antenna_title,

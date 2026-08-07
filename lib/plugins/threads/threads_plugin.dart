@@ -57,7 +57,10 @@ class ThreadsPlugin extends XtaPlugin {
   Widget? settingsScreen(BuildContext context) => const ThreadsSettingsScreen();
 
   @override
-  List<String> get tables => const [tableThreadsSubscription];
+  List<String> get tables => const [
+    tableThreadsSubscription,
+    tableThreadsLocalLike,
+  ];
 
   @override
   Future<void> resetPreferences(BasePrefService prefs) async {

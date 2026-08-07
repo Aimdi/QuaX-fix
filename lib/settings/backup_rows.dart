@@ -79,6 +79,23 @@ class RedditLocalVote with ToMappable {
   Map<String, dynamic> toMap() => {'id': id};
 }
 
+/// A Threads like that only ever existed on this device.
+///
+/// Meta is never told — the heart just remembers — so a restore that skips
+/// this table loses likes that no re-sync can bring back. Post bodies for the
+/// Liked library live in preferences; this table is the id set the heart uses.
+class ThreadsLocalLike with ToMappable {
+  final String id;
+
+  ThreadsLocalLike({required this.id});
+
+  factory ThreadsLocalLike.fromMap(Map<String, Object?> map) =>
+      ThreadsLocalLike(id: (map['id'] as String?) ?? '');
+
+  @override
+  Map<String, dynamic> toMap() => {'id': id};
+}
+
 Future<List<T>> _readRows<T>(String table, T Function(Map<String, Object?>) fromMap) async {
   final database = await Repository.readOnly();
 
@@ -111,6 +128,10 @@ Future<List<MastodonSubscription>> readMastodonSubscriptions() =>
     _readRows(tableMastodonSubscription, MastodonSubscription.fromMap);
 
 Future<List<RedditLocalVote>> readRedditLocalVotes() => _readRows(tableRedditLocalVote, RedditLocalVote.fromMap);
+
+Future<List<ThreadsLocalLike>> readThreadsLocalLikes() =>
+    _readRows(tableThreadsLocalLike, ThreadsLocalLike.fromMap);
+
 Future<List<ProfileNote>> readProfileNotes() => _readRows(tableProfileNote, ProfileNote.fromMap);
 
 Future<List<Antenna>> readAntennas() => _readRows(tableAntenna, Antenna.fromMap);

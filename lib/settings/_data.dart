@@ -144,6 +144,7 @@ Future<SettingsData> collectBackup(BuildContext context, {required bool includeA
     blueskySubscriptions: await readBlueskySubscriptions(),
     mastodonSubscriptions: await readMastodonSubscriptions(),
     redditLocalVotes: await readRedditLocalVotes(),
+    threadsLocalLikes: await readThreadsLocalLikes(),
     subscriptionGroups: groupModel.state,
     subscriptionGroupMembers: await groupModel.listGroupMembers(),
     searchGroupMembers: await readSearchGroupMembers(),

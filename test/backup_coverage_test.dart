@@ -11,9 +11,9 @@ import 'package:xta/settings/backup_rows.dart';
 /// Tables a backup deliberately leaves out, and why.
 ///
 /// Everything else in the schema has to be in the backup. Having no such
-/// comparison is how three tables of real user data — followed stocks,
-/// followed Threads accounts, and Reddit upvotes that exist nowhere but this
-/// device — went unbacked-up for as long as they did: adding a table and
+/// comparison is how tables of real user data — followed stocks, followed
+/// Threads accounts, Reddit upvotes, and Threads likes that exist nowhere but
+/// this device — went unbacked-up for as long as they did: adding a table and
 /// forgetting the section cost nothing and said nothing.
 const _deliberatelyNotBackedUp = {
   // Caches of what a server already served, dropped after a week anyway.
@@ -63,6 +63,7 @@ void main() {
         blueskySubscriptions: const [],
         mastodonSubscriptions: const [],
         redditLocalVotes: const [],
+        threadsLocalLikes: const [],
         profileNotes: const [],
         antennas: const [],
         subscriptionGroups: const [],
@@ -102,6 +103,7 @@ void main() {
           ThreadsSubscription(id: 'reader', name: 'Reader', avatarUrl: null, createdAt: createdAt, inFeed: true),
         ],
         redditLocalVotes: [RedditLocalVote(id: 'abc123')],
+        threadsLocalLikes: [ThreadsLocalLike(id: 't_like_1')],
       ),
       includeReadPositions: false,
     );
@@ -112,6 +114,7 @@ void main() {
     expect((await database.query(tableStockSubscription)).single['symbol'], 'AAPL');
     expect((await database.query(tableThreadsSubscription)).single['name'], 'Reader');
     expect((await database.query(tableRedditLocalVote)).single['id'], 'abc123');
+    expect((await database.query(tableThreadsLocalLike)).single['id'], 't_like_1');
   });
 
   test('nothing is excluded that no longer exists', () async {

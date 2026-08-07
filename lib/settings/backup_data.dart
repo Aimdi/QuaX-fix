@@ -10,10 +10,11 @@ import 'package:xta/settings/backup_rows.dart';
 /// after a week anyway, and `post_notification` was removed from the schema in
 /// migration 30, so nothing has rows there to save.
 ///
-/// Everything else is here. Followed stocks, followed Threads accounts and
-/// device-local Reddit upvotes were missed until now because none of them is
-/// one of the four tables `SubscriptionsModel` reads — the upvotes especially,
-/// since Reddit is never told about them and this file is their only copy.
+/// Everything else is here. Followed stocks, followed Threads accounts,
+/// device-local Reddit upvotes and Threads likes were missed until now because
+/// none of them is one of the four tables `SubscriptionsModel` reads — the
+/// upvotes and likes especially, since the networks are never told about them
+/// and this file is their only copy.
 
 /// Raised whenever an older build could misread a newer file. A reader that
 /// meets a higher number refuses the file instead of applying the part of it
@@ -44,6 +45,7 @@ enum BackupCategory {
   filters,
   readPositions,
   upvotes,
+  threadsLikes,
   accounts,
   profileNotes,
   antennas,
@@ -63,6 +65,7 @@ class SettingsData {
   final List<BlueskySubscription>? blueskySubscriptions;
   final List<MastodonSubscription>? mastodonSubscriptions;
   final List<RedditLocalVote>? redditLocalVotes;
+  final List<ThreadsLocalLike>? threadsLocalLikes;
   final List<SubscriptionGroup>? subscriptionGroups;
   final List<SubscriptionGroupMember>? subscriptionGroupMembers;
   final List<SearchGroupMember>? searchGroupMembers;
@@ -90,6 +93,7 @@ class SettingsData {
     this.blueskySubscriptions,
     this.mastodonSubscriptions,
     this.redditLocalVotes,
+    this.threadsLocalLikes,
     this.subscriptionGroups,
     this.subscriptionGroupMembers,
     this.searchGroupMembers,
@@ -119,6 +123,7 @@ class SettingsData {
       blueskySubscriptions: _rows(json['blueskySubscriptions'], BlueskySubscription.fromMap),
       mastodonSubscriptions: _rows(json['mastodonSubscriptions'], MastodonSubscription.fromMap),
       redditLocalVotes: _rows(json['redditLocalVotes'], RedditLocalVote.fromMap),
+      threadsLocalLikes: _rows(json['threadsLocalLikes'], ThreadsLocalLike.fromMap),
       subscriptionGroups: _rows(json['subscriptionGroups'], SubscriptionGroup.fromMap),
       subscriptionGroupMembers: _rows(json['subscriptionGroupMembers'], SubscriptionGroupMember.fromMap),
       searchGroupMembers: _rows(json['searchGroupMembers'], SearchGroupMember.fromMap),
@@ -149,6 +154,7 @@ class SettingsData {
       'blueskySubscriptions': _maps(blueskySubscriptions),
       'mastodonSubscriptions': _maps(mastodonSubscriptions),
       'redditLocalVotes': _maps(redditLocalVotes),
+      'threadsLocalLikes': _maps(threadsLocalLikes),
       'subscriptionGroups': _maps(subscriptionGroups),
       'subscriptionGroupMembers': _maps(subscriptionGroupMembers),
       'searchGroupMembers': _maps(searchGroupMembers),
@@ -198,6 +204,7 @@ Map<BackupCategory, int> backupCounts(SettingsData data) {
     BackupCategory.filters: _total([data.retweetFilters, data.replyFilters]),
     BackupCategory.readPositions: data.feedReadPositions?.length,
     BackupCategory.upvotes: data.redditLocalVotes?.length,
+    BackupCategory.threadsLikes: data.threadsLocalLikes?.length,
     BackupCategory.accounts: data.accounts?.length,
     BackupCategory.profileNotes: data.profileNotes?.length,
     BackupCategory.antennas: data.antennas?.length,
@@ -232,6 +239,7 @@ Map<String, List<ToMappable>> backupTables(SettingsData data, {required bool inc
     tableBlueskySubscription: data.blueskySubscriptions,
     tableMastodonSubscription: data.mastodonSubscriptions,
     tableRedditLocalVote: data.redditLocalVotes,
+    tableThreadsLocalLike: data.threadsLocalLikes,
     tableSubscriptionGroup: data.subscriptionGroups,
     tableSubscriptionGroupMember: data.subscriptionGroupMembers,
     tableSearchSubscriptionGroupMember: data.searchGroupMembers,
