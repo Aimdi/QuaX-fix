@@ -154,7 +154,7 @@ const optionPluginSubstackReadIds = 'plugin.substack.read_ids';
 const substackFeedPageSize = 8;
 const substackReadIdsCap = 400;
 
-/// Threads — RSSHub / Xy by default; optional direct Meta session for reads.
+/// Threads — public guest reads by default; optional session / RSSHub / Xy.
 ///
 /// There is no public RSSHub instance default on purpose: the shared one is
 /// rate limited to the point of uselessness for this route. Direct mode pastes
