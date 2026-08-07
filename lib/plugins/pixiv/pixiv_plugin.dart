@@ -67,6 +67,7 @@ class PixivPlugin extends XtaPlugin {
     await prefs.set(optionPluginPixivRefreshToken, '');
     await prefs.set(optionPluginPixivAccessToken, '');
     await prefs.set(optionPluginPixivAccessExpiresAt, '');
+    await prefs.set(optionPluginPixivUserId, 0);
     await prefs.set(optionPluginPixivShowR18, false);
   }
 

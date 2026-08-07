@@ -48,6 +48,8 @@ void main() {
       expect(user.name, 'Reader');
       expect(user.id, 123);
       expect(prefs.get<String>(optionPluginPixivAccessToken), 'access-1');
+      expect(prefs.get<int>(optionPluginPixivUserId), 123);
+      expect(client.storedUserId, 123);
       expect(prefs.get<String>(optionPluginPixivRefreshToken), 'refresh-2');
     });
 
@@ -155,6 +157,69 @@ void main() {
           md5.convert(utf8.encode('${headers['X-Client-Time']}${PixivClient.clientHashSalt}')).toString(),
         );
       });
+    });
+
+    test('ranking and search hit the expected paths', () async {
+      await prefs.set(optionPluginPixivAccessToken, 'access-1');
+      await prefs.set(
+        optionPluginPixivAccessExpiresAt,
+        DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+      );
+
+      final paths = <String>[];
+      final client = PixivClient(
+        prefs,
+        httpClient: MockClient((request) async {
+          paths.add(request.url.path);
+          if (request.url.path.contains('search/user')) {
+            return _json({
+              'user_previews': [
+                {
+                  'user': {
+                    'id': 9,
+                    'name': 'N',
+                    'account': 'n',
+                    'comment': '',
+                    'profile_image_urls': {},
+                  },
+                },
+              ],
+            }, 200);
+          }
+          if (request.url.path.contains('illust/detail')) {
+            return _json({
+              'illust': {
+                'id': 5,
+                'title': 'T',
+                'caption': '',
+                'type': 'illust',
+                'image_urls': {'square_medium': 'https://i.pximg.net/a.jpg'},
+                'user': {'id': 1, 'name': 'A', 'account': 'a', 'profile_image_urls': {}},
+                'page_count': 1,
+                'x_restrict': 0,
+                'sanity_level': 2,
+              },
+            }, 200);
+          }
+          return _json({'illusts': [], 'next_url': null}, 200);
+        }),
+      );
+
+      await client.ranking(mode: 'week');
+      await client.searchIllust('cat');
+      final users = await client.searchUsers('artist');
+      final detail = await client.illustDetail(5);
+      await client.related(5);
+      await client.bookmarks(userId: 123);
+
+      expect(paths, contains('/v1/illust/ranking'));
+      expect(paths, contains('/v1/search/illust'));
+      expect(paths, contains('/v1/search/user'));
+      expect(paths, contains('/v1/illust/detail'));
+      expect(paths, contains('/v2/illust/related'));
+      expect(paths, contains('/v1/user/bookmarks/illust'));
+      expect(users.users.single.id, 9);
+      expect(detail.id, 5);
     });
 
     test('a refused token surfaces what Pixiv actually said', () async {

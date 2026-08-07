@@ -55,6 +55,53 @@ void main() {
       expect(posts.first.pageCount, 2);
       expect(posts.first.url, 'https://www.pixiv.net/artworks/42');
       expect(posts.first.thumbnailUrl, contains('cat.jpg'));
+      expect(posts.first.caption, 'meow');
+    });
+
+    test('reads tags, size and manga page urls', () {
+      final posts = parsePixivIllustList({
+        'illusts': [
+          {
+            'id': 1,
+            'title': 'Manga',
+            'caption': '<p>hi <b>there</b></p>',
+            'type': 'manga',
+            'width': 800,
+            'height': 1200,
+            'image_urls': {
+              'square_medium': 'https://i.pximg.net/sq.jpg',
+              'large': 'https://i.pximg.net/large0.jpg',
+            },
+            'meta_pages': [
+              {
+                'image_urls': {'original': 'https://i.pximg.net/p0.jpg', 'large': 'https://i.pximg.net/l0.jpg'},
+              },
+              {
+                'image_urls': {'original': 'https://i.pximg.net/p1.jpg'},
+              },
+            ],
+            'tags': [
+              {'name': '猫', 'translated_name': 'cat'},
+              {'name': 'オリジナル'},
+            ],
+            'user': {'id': 2, 'name': 'A', 'account': 'a', 'profile_image_urls': {}},
+            'page_count': 2,
+            'x_restrict': 0,
+            'sanity_level': 2,
+          },
+        ],
+      });
+
+      expect(posts, hasLength(1));
+      final illust = posts.first;
+      expect(illust.caption, 'hi there');
+      expect(illust.width, 800);
+      expect(illust.height, 1200);
+      expect(illust.aspectRatio, closeTo(800 / 1200, 0.001));
+      expect(illust.pageUrls, ['https://i.pximg.net/p0.jpg', 'https://i.pximg.net/p1.jpg']);
+      expect(illust.viewerUrls, hasLength(2));
+      expect(illust.tags.map((t) => t.displayName), ['cat', 'オリジナル']);
+      expect(illust.isManga, isTrue);
     });
 
     test('keeps R-18 when asked', () {

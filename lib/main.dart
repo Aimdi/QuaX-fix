@@ -485,6 +485,7 @@ Future<void> main() async {
       optionPluginPixivAccessToken: '',
       optionPluginPixivAccessExpiresAt: '',
       optionPluginPixivShowR18: false,
+      optionPluginPixivUserId: 0,
       optionPluginThreadsDirectCookies: '',
       optionPluginThreadsDirectBearer: '',
       optionPluginThreadsDirectDeviceId: '',

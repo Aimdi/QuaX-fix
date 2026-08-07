@@ -183,11 +183,15 @@ class PixivClient {
     }
     await prefs.set(optionPluginPixivAccessExpiresAt, clock().add(Duration(seconds: expiresIn - 60)).toIso8601String());
 
-    return PixivAuthUser(
+    final authUser = PixivAuthUser(
       id: user['id'].integer ?? int.tryParse(user['id'].string ?? '') ?? 0,
       name: user['name'].string?.trim() ?? '',
       account: user['account'].string?.trim() ?? '',
     );
+    if (authUser.id != 0) {
+      await prefs.set(optionPluginPixivUserId, authUser.id);
+    }
+    return authUser;
   }
 
   Future<String> _accessToken() async {
@@ -212,6 +216,9 @@ class PixivClient {
       optionPluginPixivAccessExpiresAt,
       DateTime.now().add(Duration(seconds: tokens.expiresIn - 60)).toIso8601String(),
     );
+    if (tokens.user.id != 0) {
+      await prefs.set(optionPluginPixivUserId, tokens.user.id);
+    }
     return tokens.user;
   }
 
@@ -219,6 +226,12 @@ class PixivClient {
     await prefs.set(optionPluginPixivRefreshToken, '');
     await prefs.set(optionPluginPixivAccessToken, '');
     await prefs.set(optionPluginPixivAccessExpiresAt, '');
+    await prefs.set(optionPluginPixivUserId, 0);
+  }
+
+  int? get storedUserId {
+    final id = prefs.get<int>(optionPluginPixivUserId) ?? 0;
+    return id == 0 ? null : id;
   }
 
   Future<Object?> _apiGet(String path, [Map<String, String>? query]) async {
@@ -263,15 +276,83 @@ class PixivClient {
     return _decode(response, uri);
   }
 
-  Future<PixivIllustPage> following({String? nextUrl}) async {
-    final json = nextUrl == null
-        ? await _apiGet('/v2/illust/follow', {'restrict': 'public'})
-        : await _apiGetUrl(nextUrl);
+  PixivIllustPage _illustPage(Object? json) {
     final root = Json(json);
     return PixivIllustPage(
       illusts: parsePixivIllustList(json, includeR18: showR18),
       nextUrl: root['next_url'].string,
     );
+  }
+
+  Future<PixivIllustPage> following({String? nextUrl}) async {
+    final json = nextUrl == null
+        ? await _apiGet('/v2/illust/follow', {'restrict': 'public'})
+        : await _apiGetUrl(nextUrl);
+    return _illustPage(json);
+  }
+
+  /// Daily / weekly / monthly ranking — Pixez's discovery surface.
+  Future<PixivIllustPage> ranking({String mode = 'day', String? nextUrl}) async {
+    final json = nextUrl == null
+        ? await _apiGet('/v1/illust/ranking', {'mode': mode, 'filter': 'for_android'})
+        : await _apiGetUrl(nextUrl);
+    return _illustPage(json);
+  }
+
+  /// Public bookmarks for [userId] (usually the signed-in account).
+  Future<PixivIllustPage> bookmarks({required int userId, String? nextUrl}) async {
+    final json = nextUrl == null
+        ? await _apiGet('/v1/user/bookmarks/illust', {
+            'user_id': '$userId',
+            'restrict': 'public',
+            'filter': 'for_android',
+          })
+        : await _apiGetUrl(nextUrl);
+    return _illustPage(json);
+  }
+
+  Future<PixivIllustPage> searchIllust(String word, {String? nextUrl}) async {
+    final trimmed = word.trim();
+    if (trimmed.isEmpty) {
+      return const PixivIllustPage(illusts: []);
+    }
+    final json = nextUrl == null
+        ? await _apiGet('/v1/search/illust', {
+            'word': trimmed,
+            'search_target': 'partial_match_for_tags',
+            'sort': 'date_desc',
+            'filter': 'for_android',
+          })
+        : await _apiGetUrl(nextUrl);
+    return _illustPage(json);
+  }
+
+  Future<({List<PixivUser> users, String? nextUrl})> searchUsers(String word, {String? nextUrl}) async {
+    final trimmed = word.trim();
+    if (trimmed.isEmpty) {
+      return (users: const <PixivUser>[], nextUrl: null);
+    }
+    final json = nextUrl == null
+        ? await _apiGet('/v1/search/user', {'word': trimmed, 'filter': 'for_android'})
+        : await _apiGetUrl(nextUrl);
+    final root = Json(json);
+    return (users: parsePixivUserList(json), nextUrl: root['next_url'].string);
+  }
+
+  Future<PixivIllust> illustDetail(int illustId) async {
+    final json = await _apiGet('/v1/illust/detail', {'illust_id': '$illustId'});
+    final illust = pixivIllustFromJson(Json(json)['illust'].raw);
+    if (illust == null) {
+      throw PixivException(PixivErrorKind.badResponse, 'empty illust $illustId');
+    }
+    return illust;
+  }
+
+  Future<PixivIllustPage> related(int illustId, {String? nextUrl}) async {
+    final json = nextUrl == null
+        ? await _apiGet('/v2/illust/related', {'illust_id': '$illustId', 'filter': 'for_android'})
+        : await _apiGetUrl(nextUrl);
+    return _illustPage(json);
   }
 
   Future<PixivUser> userDetail(int userId) async {
@@ -287,10 +368,6 @@ class PixivClient {
     final json = nextUrl == null
         ? await _apiGet('/v1/user/illusts', {'user_id': '$userId', 'type': 'illust', 'filter': 'for_android'})
         : await _apiGetUrl(nextUrl);
-    final root = Json(json);
-    return PixivIllustPage(
-      illusts: parsePixivIllustList(json, includeR18: showR18),
-      nextUrl: root['next_url'].string,
-    );
+    return _illustPage(json);
   }
 }

@@ -227,6 +227,7 @@ const optionPluginPixivShowTab = 'plugin.pixiv.show_tab';
 const optionPluginPixivRefreshToken = 'plugin.pixiv.refresh_token';
 const optionPluginPixivAccessToken = 'plugin.pixiv.access_token';
 const optionPluginPixivAccessExpiresAt = 'plugin.pixiv.access_expires_at';
+const optionPluginPixivUserId = 'plugin.pixiv.user_id';
 const optionPluginPixivShowR18 = 'plugin.pixiv.show_r18';
 
 /// When true, the plugin store also lists [XtaPlugin.isPrivate] plugins that
