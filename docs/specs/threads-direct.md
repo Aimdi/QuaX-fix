@@ -57,6 +57,8 @@ Cookie/Bearer `login_required` still parks *session* calls for 30 minutes.
 Guest GraphQL/SSR ignores that cooldown so Accounts keep loading.
 
 Profile lookup prefers guest HTML (OG tags + `user_id`), then cookies, then Xy.
+The profile screen also loads that handle’s public posts (same guest / cookie /
+RSSHub route as the feed) — a header-only screen was reading as empty.
 
 ## Throttle & risk
 

@@ -9,7 +9,10 @@ import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/threads/threads_likes_store.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 import 'package:xta/plugins/threads/threads_profile_screen.dart';
+<<<<<<< HEAD
 import 'package:xta/plugins/threads/threads_thread_screen.dart';
+=======
+>>>>>>> origin/cursor/threads-profile-posts-bfa2
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
 import 'package:xta/tweet/_like_button.dart';
 import 'package:xta/tweet/tweet.dart' show tweetCardColor;
@@ -84,6 +87,13 @@ class ThreadsPostCard extends StatelessWidget {
     if (url != null) {
       openUri(context, url);
     }
+  }
+
+  void _openAuthor(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => ThreadsProfileScreen(username: post.handle)),
+    );
   }
 
   @override

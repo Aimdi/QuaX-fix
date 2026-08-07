@@ -68,6 +68,29 @@ class ThreadsPost {
   bool get hasEngagement => likeCount != null || replyCount != null || repostCount != null;
 }
 
+/// Minimal profile card from posts when the public page scrape failed.
+ThreadsProfile? threadsProfileFromPosts(String handle, List<ThreadsPost> posts) {
+  final key = (normaliseThreadsHandle(handle) ?? handle).trim().toLowerCase();
+  if (key.isEmpty || posts.isEmpty) {
+    return null;
+  }
+  final sample = posts.firstWhere((p) => p.handle == key, orElse: () => posts.first);
+  return ThreadsProfile(
+    pk: '',
+    id: '',
+    username: key,
+    fullName: sample.authorName,
+    isVerified: false,
+    isPrivate: false,
+    profilePicUrl: sample.avatarUrl ?? '',
+    biography: '',
+    followerCount: 0,
+    followingCount: 0,
+    mediaCount: 0,
+    externalUrl: 'https://www.threads.com/@$key',
+  );
+}
+
 /// Unwrap Threads' `l.threads.com/?u=` outbound redirect when present.
 String unwrapThreadsOutboundUrl(String url) {
   final uri = Uri.tryParse(url);
