@@ -1,6 +1,27 @@
 import 'package:html/parser.dart' as html;
 import 'package:xta/utils/json.dart';
 
+/// Open Graph–style link preview attached to a public status (`card` in the API).
+class MastodonLinkCard {
+  final String url;
+  final String? title;
+  final String? description;
+  final String? imageUrl;
+  final String? providerName;
+  final String? type;
+
+  const MastodonLinkCard({
+    required this.url,
+    this.title,
+    this.description,
+    this.imageUrl,
+    this.providerName,
+    this.type,
+  });
+
+  bool get hasImage => imageUrl != null && imageUrl!.isNotEmpty;
+}
+
 /// One public Mastodon status, as much as a card needs.
 class MastodonPost {
   final String id;
@@ -15,6 +36,11 @@ class MastodonPost {
   /// True when this card shows a boosted status (reblog unwrapped).
   final bool boosted;
 
+  final int repliesCount;
+  final int reblogsCount;
+  final int favouritesCount;
+  final MastodonLinkCard? linkCard;
+
   const MastodonPost({
     required this.id,
     required this.acct,
@@ -25,6 +51,10 @@ class MastodonPost {
     this.images = const [],
     this.publishedAt,
     this.boosted = false,
+    this.repliesCount = 0,
+    this.reblogsCount = 0,
+    this.favouritesCount = 0,
+    this.linkCard,
   });
 
   bool get hasMedia => images.isNotEmpty;
@@ -266,6 +296,36 @@ List<String> mastodonImagesOf(Json status) {
   return urls;
 }
 
+/// PreviewCard on a status, or null when Mastodon sent nothing useful.
+MastodonLinkCard? mastodonLinkCardOf(Json status) {
+  final card = status['card'];
+  if (!card.exists) {
+    return null;
+  }
+  final url = card['url'].string?.trim() ?? '';
+  if (url.isEmpty) {
+    return null;
+  }
+  final title = card['title'].string?.trim();
+  final description = card['description'].string?.trim();
+  final image = card['image'].string?.trim();
+  final provider = card['provider_name'].string?.trim();
+  final type = card['type'].string?.trim();
+  if ((title == null || title.isEmpty) &&
+      (description == null || description.isEmpty) &&
+      (image == null || image.isEmpty)) {
+    return null;
+  }
+  return MastodonLinkCard(
+    url: url,
+    title: title == null || title.isEmpty ? null : title,
+    description: description == null || description.isEmpty ? null : description,
+    imageUrl: image == null || image.isEmpty ? null : image,
+    providerName: provider == null || provider.isEmpty ? null : provider,
+    type: type == null || type.isEmpty ? null : type,
+  );
+}
+
 /// One status JSON object → [MastodonPost], or null when empty.
 MastodonPost? mastodonPostFromStatus(Object? json, {String? homeDomain}) {
   final root = Json(json);
@@ -283,7 +343,8 @@ MastodonPost? mastodonPostFromStatus(Object? json, {String? homeDomain}) {
   final body = mastodonHtmlToText(status['content'].string);
   final text = [if (spoiler.isNotEmpty) spoiler, if (body.isNotEmpty) body].join('\n\n');
   final images = mastodonImagesOf(status);
-  if (text.isEmpty && images.isEmpty) {
+  final linkCard = mastodonLinkCardOf(status);
+  if (text.isEmpty && images.isEmpty && linkCard == null) {
     return null;
   }
 
@@ -302,6 +363,10 @@ MastodonPost? mastodonPostFromStatus(Object? json, {String? homeDomain}) {
     publishedAt: DateTime.tryParse(status['created_at'].string ?? '')?.toLocal(),
     url: url,
     boosted: boosted,
+    repliesCount: status['replies_count'].integer ?? 0,
+    reblogsCount: status['reblogs_count'].integer ?? 0,
+    favouritesCount: status['favourites_count'].integer ?? 0,
+    linkCard: linkCard,
   );
 }
 

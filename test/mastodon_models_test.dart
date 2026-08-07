@@ -42,13 +42,24 @@ void main() {
   });
 
   group('parseMastodonStatuses', () {
-    test('reads text, author, images and unwraps a boost', () {
+    test('reads text, author, images, counts, link card and unwraps a boost', () {
       final posts = parseMastodonStatuses([
         {
           'id': '1',
           'created_at': '2026-08-01T09:00:00.000Z',
           'content': '<p>Hello <br>there</p>',
           'url': 'https://mastodon.social/@a/1',
+          'replies_count': 3,
+          'reblogs_count': 12,
+          'favourites_count': 40,
+          'card': {
+            'url': 'https://example.org/article',
+            'title': 'An article',
+            'description': 'About things',
+            'image': 'https://example.org/og.jpg',
+            'type': 'link',
+            'provider_name': 'Example',
+          },
           'account': {
             'id': '10',
             'username': 'alice',
@@ -87,6 +98,9 @@ void main() {
             'content': '<p>Boosted</p>',
             'url': 'https://other.social/@bob/99',
             'spoiler_text': '',
+            'replies_count': 1,
+            'reblogs_count': 2,
+            'favourites_count': 5,
             'account': {
               'id': '20',
               'username': 'bob',
@@ -105,11 +119,48 @@ void main() {
       expect(posts.first.acct, 'alice@mastodon.social');
       expect(posts.first.images, ['https://example.org/thumb.jpg']);
       expect(posts.first.boosted, isFalse);
+      expect(posts.first.repliesCount, 3);
+      expect(posts.first.reblogsCount, 12);
+      expect(posts.first.favouritesCount, 40);
+      expect(posts.first.linkCard?.title, 'An article');
+      expect(posts.first.linkCard?.imageUrl, 'https://example.org/og.jpg');
+      expect(posts.first.linkCard?.providerName, 'Example');
 
       expect(posts.last.id, '99');
       expect(posts.last.text, 'Boosted');
       expect(posts.last.acct, 'bob@other.social');
       expect(posts.last.boosted, isTrue);
+      expect(posts.last.favouritesCount, 5);
+    });
+
+    test('keeps a link-only status that has no text or images', () {
+      final posts = parseMastodonStatuses([
+        {
+          'id': '7',
+          'content': '',
+          'url': 'https://mastodon.social/@a/7',
+          'account': {
+            'id': '10',
+            'username': 'alice',
+            'acct': 'alice',
+            'display_name': 'Alice',
+            'note': '',
+            'url': 'https://mastodon.social/@alice',
+          },
+          'media_attachments': [],
+          'card': {
+            'url': 'https://news.example/story',
+            'title': 'Story',
+            'description': '',
+            'image': 'https://news.example/cover.jpg',
+            'type': 'link',
+          },
+        },
+      ], homeDomain: 'mastodon.social');
+
+      expect(posts, hasLength(1));
+      expect(posts.single.linkCard?.url, 'https://news.example/story');
+      expect(posts.single.hasMedia, isFalse);
     });
 
     test('drops empty items and tolerates a reshaped payload', () {
