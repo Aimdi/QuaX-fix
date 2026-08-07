@@ -8,6 +8,8 @@ import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/threads/threads_likes_store.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
+import 'package:xta/plugins/threads/threads_profile_screen.dart';
+import 'package:xta/plugins/threads/threads_thread_screen.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
 import 'package:xta/tweet/_like_button.dart';
 import 'package:xta/tweet/tweet.dart' show tweetCardColor;
@@ -35,9 +37,49 @@ class ThreadsPostCard extends StatelessWidget {
   /// Set in a mixed timeline so the card says where it came from.
   final bool showSourceBadge;
 
-  const ThreadsPostCard({super.key, required this.post, this.showSourceBadge = true});
+  /// When false, the card body does not navigate (used for the root of a thread).
+  final bool openOnTap;
+
+  /// Override for opening the post in-app. Defaults to [ThreadsThreadScreen].
+  final VoidCallback? onOpen;
+
+  /// Author avatar / name — defaults to [ThreadsProfileScreen].
+  final VoidCallback? onAuthorTap;
+
+  /// External browser affordance in the engagement row.
+  final VoidCallback? onOpenBrowser;
+
+  const ThreadsPostCard({
+    super.key,
+    required this.post,
+    this.showSourceBadge = true,
+    this.openOnTap = true,
+    this.onOpen,
+    this.onAuthorTap,
+    this.onOpenBrowser,
+  });
 
   void _open(BuildContext context) {
+    if (onOpen != null) {
+      onOpen!();
+      return;
+    }
+    Navigator.push(context, MaterialPageRoute(builder: (_) => ThreadsThreadScreen(post: post)));
+  }
+
+  void _openAuthor(BuildContext context) {
+    if (onAuthorTap != null) {
+      onAuthorTap!();
+      return;
+    }
+    Navigator.push(context, MaterialPageRoute(builder: (_) => ThreadsProfileScreen(username: post.handle)));
+  }
+
+  void _openBrowser(BuildContext context) {
+    if (onOpenBrowser != null) {
+      onOpenBrowser!();
+      return;
+    }
     final url = post.url;
     if (url != null) {
       openUri(context, url);
@@ -54,19 +96,26 @@ class ThreadsPostCard extends StatelessWidget {
         tweetFlatCard(
           color: tweetCardColor(context),
           child: InkWell(
-            onTap: () => _open(context),
+            onTap: openOnTap ? () => _open(context) : null,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _avatar(context),
+                  GestureDetector(
+                    onTap: () => _openAuthor(context),
+                    child: _avatar(context),
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        _header(context),
+                        GestureDetector(
+                          onTap: () => _openAuthor(context),
+                          behavior: HitTestBehavior.opaque,
+                          child: _header(context),
+                        ),
                         if (post.text.isNotEmpty) ...[
                           const SizedBox(height: 6),
                           Text(
@@ -82,7 +131,11 @@ class ThreadsPostCard extends StatelessWidget {
                           const SizedBox(height: 10),
                           _ThreadsLinkPreview(card: post.linkCard!),
                         ],
-                        _ThreadsEngagementRow(post: post, onOpen: () => _open(context)),
+                        _ThreadsEngagementRow(
+                          post: post,
+                          onOpen: () => _open(context),
+                          onOpenBrowser: () => _openBrowser(context),
+                        ),
                       ],
                     ),
                   ),
@@ -285,8 +338,13 @@ class _ThreadsLinkPreview extends StatelessWidget {
 class _ThreadsEngagementRow extends StatelessWidget {
   final ThreadsPost post;
   final VoidCallback onOpen;
+  final VoidCallback onOpenBrowser;
 
-  const _ThreadsEngagementRow({required this.post, required this.onOpen});
+  const _ThreadsEngagementRow({
+    required this.post,
+    required this.onOpen,
+    required this.onOpenBrowser,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -348,7 +406,7 @@ class _ThreadsEngagementRow extends StatelessWidget {
           if (post.url != null)
             IconButton(
               tooltip: L10n.of(context).open_in_browser,
-              onPressed: onOpen,
+              onPressed: onOpenBrowser,
               icon: Icon(Icons.open_in_new, size: 18, color: muted),
             ),
         ],

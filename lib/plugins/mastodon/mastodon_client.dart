@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:xta/plugins/mastodon/mastodon_models.dart';
+import 'package:xta/utils/json.dart';
 
 /// Why a Mastodon read could not be served, in terms the screen explains it.
 enum MastodonErrorKind { notConfigured, network, notFound, rateLimited, unauthorized, badResponse }
@@ -182,5 +183,61 @@ class MastodonClient {
   Future<List<MastodonPost>> fetchAccount(String instance, String acct, {int limit = 20}) async {
     final profile = await lookup(instance, acct);
     return getStatuses(instance, profile.id, limit: limit);
+  }
+
+  /// One public status by local id on [instance].
+  Future<MastodonPost> getStatus(String instance, String id) async {
+    final json = await _get(_uri(instance, '/api/v1/statuses/$id'));
+    final post = mastodonPostFromStatus(json, homeDomain: _homeDomain(instance));
+    if (post == null) {
+      throw MastodonException(MastodonErrorKind.badResponse, 'empty status $id');
+    }
+    return post;
+  }
+
+  /// Ancestors and replies for a status on [instance].
+  Future<({List<MastodonPost> ancestors, List<MastodonPost> descendants})> getContext(String instance, String id) async {
+    final root = Json(await _get(_uri(instance, '/api/v1/statuses/$id/context')));
+    final home = _homeDomain(instance);
+    return (
+      ancestors: parseMastodonStatuses(root['ancestors'].raw, homeDomain: home),
+      descendants: parseMastodonStatuses(root['descendants'].raw, homeDomain: home),
+    );
+  }
+
+  /// Resolve a remote status URL on [instance] via search, then load its context.
+  ///
+  /// Status ids are instance-local, so a card from one origin cannot be opened
+  /// on another with the raw id — the public URL is what every candidate knows.
+  Future<MastodonThread> fetchThread(String instance, MastodonPost seed) async {
+    final home = _homeDomain(instance);
+    final resolved = await _resolveStatus(instance, seed.url);
+    final status = resolved ?? await getStatus(instance, seed.id);
+    final context = await getContext(instance, status.id);
+    return MastodonThread(
+      status: status,
+      ancestors: context.ancestors,
+      descendants: context.descendants,
+      homeDomain: home,
+    );
+  }
+
+  /// [fetchThread] over [instances], same walk as profile lookups.
+  Future<MastodonThread> fetchThreadAnywhere(List<String> instances, MastodonPost seed) =>
+      firstInstanceThat(instances, (instance) => fetchThread(instance, seed));
+
+  Future<MastodonPost?> _resolveStatus(String instance, String url) async {
+    final trimmed = url.trim();
+    if (trimmed.isEmpty) {
+      return null;
+    }
+
+    final json = Json(
+      await _get(
+        _uri(instance, '/api/v2/search', {'q': trimmed, 'resolve': 'true', 'type': 'statuses', 'limit': '1'}),
+      ),
+    );
+    final posts = parseMastodonStatuses(json['statuses'].raw, homeDomain: _homeDomain(instance));
+    return posts.isEmpty ? null : posts.first;
   }
 }

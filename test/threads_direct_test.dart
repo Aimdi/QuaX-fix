@@ -141,6 +141,60 @@ void main() {
       expect(posts, hasLength(1));
       expect(posts.first.text, 'from ssr');
     });
+
+    test('profile parse keeps only the root of each thread_items list', () {
+      final blob = jsonEncode({
+        'thread_items': [
+          {
+            'post': {
+              'pk': '1',
+              'code': 'a',
+              'caption': {'text': 'root'},
+              'user': {'username': 'zuck', 'full_name': 'Z'},
+            },
+          },
+          {
+            'post': {
+              'pk': '2',
+              'code': 'b',
+              'caption': {'text': 'reply'},
+              'user': {'username': 'other', 'full_name': 'O'},
+            },
+          },
+        ],
+      });
+      final html = '<html><script type="application/json" data-sjs>$blob</script></html>';
+      final posts = parseThreadsSsrHtml(html, 'zuck');
+      expect(posts.map((p) => p.text), ['root']);
+    });
+  });
+
+  group('parseThreadsSsrThread', () {
+    test('keeps every reply in the thread_items chain', () {
+      final blob = jsonEncode({
+        'thread_items': [
+          {
+            'post': {
+              'pk': '1',
+              'code': 'a',
+              'caption': {'text': 'root'},
+              'user': {'username': 'zuck', 'full_name': 'Z'},
+            },
+          },
+          {
+            'post': {
+              'pk': '2',
+              'code': 'b',
+              'caption': {'text': 'reply'},
+              'user': {'username': 'other', 'full_name': 'O'},
+            },
+          },
+        ],
+      });
+      final html = '<html><script type="application/json" data-sjs>$blob</script></html>';
+      final posts = parseThreadsSsrThread(html);
+      expect(posts.map((p) => p.text), ['root', 'reply']);
+    });
   });
 
   group('guest GraphQL helpers', () {
@@ -478,6 +532,43 @@ void main() {
 
       final posts = await client.fetchGuestAccount('zuck');
       expect(posts.first.text, 'ssr fallback');
+    });
+
+    test('fetchGuestPostThread scrapes root and replies from a post URL', () async {
+      final blob = jsonEncode({
+        'thread_items': [
+          {
+            'post': {
+              'pk': '1',
+              'code': 'Aa',
+              'caption': {'text': 'root'},
+              'user': {'username': 'zuck', 'full_name': 'Z'},
+            },
+          },
+          {
+            'post': {
+              'pk': '2',
+              'code': 'Bb',
+              'caption': {'text': 'reply'},
+              'user': {'username': 'other', 'full_name': 'O'},
+            },
+          },
+        ],
+      });
+      final client = ThreadsDirectClient(
+        prefs,
+        minGap: Duration.zero,
+        httpClient: MockClient((request) async {
+          expect(request.url.path, '/@zuck/post/Aa');
+          return http.Response(
+            '<html><script type="application/json" data-sjs>$blob</script></html>',
+            200,
+          );
+        }),
+      );
+
+      final posts = await client.fetchGuestPostThread('https://www.threads.com/@zuck/post/Aa');
+      expect(posts.map((p) => p.text), ['root', 'reply']);
     });
   });
 }

@@ -35,6 +35,10 @@ and `link_preview_attachment`. Cards show reply/repost counts when present, a
 large link preview when present, and a local like heart (`threads_local_like`).
 The shown like total is Meta’s count plus one when liked on-device.
 
+Tapping a post opens an in-app thread screen. Replies come from a guest scrape
+of the public post URL (`parseThreadsSsrThread` over `data-sjs` `thread_items`).
+Open-in-browser and article link previews still leave the app.
+
 ## Feed priority
 
 1. Local Accounts non-empty → merge those handles via:
