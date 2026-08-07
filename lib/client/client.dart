@@ -431,24 +431,31 @@ class Twitter {
     }
 
     var addEntriesInstructions = instructions.firstWhereOrNull((e) => e['type'] == 'TimelineAddEntries');
-    if (addEntriesInstructions == null) {
+    var addModInstructions = instructions.firstWhereOrNull((e) => e['type'] == 'TimelineAddToModule');
+    var addEntries = List.from(addEntriesInstructions?['entries'] ?? []);
+    var moduleItems = List.from(addModInstructions?['moduleItems'] ?? []);
+    var repEntries = List.from(instructions.where((e) => e['type'] == 'TimelineReplaceEntry'));
+
+    // Later pages often only carry TimelineAddToModule — treat that as a page.
+    if (addEntries.isEmpty && moduleItems.isEmpty) {
       return TweetStatus(chains: [], cursorBottom: null, cursorTop: null);
     }
 
-    var addEntries = List.from(addEntriesInstructions['entries']);
-    var repEntries = List.from(instructions.where((e) => e['type'] == 'TimelineReplaceEntry'));
+    var chains = [
+      ...TimelineParser.createTweetChains(addEntries),
+      ...TimelineParser.chainsFromModuleItems(moduleItems),
+    ];
 
-    // TODO: Could this use createUnconversationedChains at some point?
-    var chains = TimelineParser.createTweetChains(addEntries);
-
-    String? cursorBottom = TimelineParser.getCursor(addEntries, repEntries, 'cursor-bottom', 'Bottom');
+    String? cursorBottom = TimelineParser.getCursor(addEntries, repEntries, 'cursor-bottom', 'Bottom') ??
+        TimelineParser.getBottomCursorFromModuleItems(moduleItems);
     String? cursorTop = TimelineParser.getCursor(addEntries, repEntries, 'cursor-top', 'Top');
 
     return TweetStatus(
       chains: chains,
       cursorBottom: cursorBottom,
       cursorTop: cursorTop,
-      cursorShowMore: TimelineParser.getShowMoreCursor(addEntries),
+      cursorShowMore: TimelineParser.getShowMoreCursor(addEntries) ??
+          TimelineParser.getShowMoreCursorFromModuleItems(moduleItems),
     );
   }
 
