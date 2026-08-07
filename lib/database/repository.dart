@@ -38,8 +38,10 @@ const String tablePostNotification = 'post_notification';
 const String tableRetweetFilter = 'retweet_filter';
 const String tableReplyFilter = 'reply_filter';
 const String tableFeedReadPosition = 'feed_read_position';
+const String tableProfileNote = 'profile_note';
+const String tableAntenna = 'antenna';
 
-const int databaseVersion = 48;
+const int databaseVersion = 49;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -598,6 +600,29 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
       reverseSql: 'DROP TABLE $tableMastodonSubscription',
     ),
   ],
+  49: [
+    // Clip note on a saved post (Misskey-style); searchable from Saved.
+    // Tolerant: migration-test fixtures often omit saved_tweet.
+    Migration(Operation(_addSavedTweetNoteColumn)),
+    // Private, never-synced note on any profile id.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableProfileNote ('
+      'id VARCHAR PRIMARY KEY, note TEXT NOT NULL, '
+      'updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableProfileNote',
+    ),
+    // Keyword listeners as first-class feeds (Misskey antennas).
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableAntenna ('
+      'id VARCHAR PRIMARY KEY, name VARCHAR NOT NULL, '
+      'include_terms TEXT NOT NULL, exclude_terms TEXT, '
+      'scope VARCHAR NOT NULL DEFAULT \'search\', '
+      'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableAntenna',
+    ),
+    // Per-account cap: max chains from this author per feed load.
+    Migration(Operation(_addSubscriptionMaxPostsColumn)),
+  ],
 });
 
 /// Indexes added in migration 39, applied so that a failure cannot block the
@@ -633,6 +658,22 @@ Future<void> _addFolderAutoUploadColumn(Database db) async {
     await db.execute('ALTER TABLE $tableSavedTweetFolder ADD COLUMN auto_upload BOOLEAN DEFAULT 0');
   } catch (e) {
     Repository.log.warning('Could not add auto_upload to $tableSavedTweetFolder: $e');
+  }
+}
+
+Future<void> _addSavedTweetNoteColumn(Database db) async {
+  try {
+    await db.execute('ALTER TABLE $tableSavedTweet ADD COLUMN note TEXT');
+  } catch (e) {
+    Repository.log.warning('Could not add note to $tableSavedTweet: $e');
+  }
+}
+
+Future<void> _addSubscriptionMaxPostsColumn(Database db) async {
+  try {
+    await db.execute('ALTER TABLE $tableSubscription ADD COLUMN max_posts_per_load INTEGER');
+  } catch (e) {
+    Repository.log.warning('Could not add max_posts_per_load to $tableSubscription: $e');
   }
 }
 

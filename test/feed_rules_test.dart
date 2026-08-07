@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/database/entities.dart';
+import 'package:xta/group/custom_feed_rules.dart';
 import 'package:xta/group/feed_rules.dart';
 
 SubscriptionGroupGet _group({required bool custom}) => SubscriptionGroupGet(
@@ -15,7 +16,7 @@ SubscriptionGroupGet _group({required bool custom}) => SubscriptionGroupGet(
   contentFilter: contentFilterSfw,
   minLikes: 10,
   minRetweets: 5,
-  mutedKeywords: const ['spoilers'],
+  mutedKeywords: const [MutedKeyword(term: 'spoilers')],
 );
 
 void main() {
@@ -25,7 +26,7 @@ void main() {
       // sorting by Recent silently unmuted everything the reader had muted.
       final rules = feedRulesOf(_group(custom: false));
 
-      expect(rules.mutedKeywords, ['spoilers']);
+      expect(rules.mutedKeywords.single.term, 'spoilers');
       expect(rules.minLikes, 10);
       expect(rules.minRetweets, 5);
       expect(rules.contentFilter, contentFilterSfw);

@@ -8,7 +8,7 @@ import 'package:xta/profile/profile.dart';
 import 'package:xta/plugins/reddit/reddit_interleaved.dart';
 import 'package:xta/tweet/interleaved_items.dart';
 import 'package:xta/tweet/paginated_tweet_list.dart';
-import 'package:xta/ui/errors.dart';
+import 'package:xta/tweet/sensitive_media_gate.dart';
 import 'package:xta/user.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:pref/pref.dart';
@@ -23,8 +23,7 @@ class ForYouTweets extends StatefulWidget {
   final bool includeReplies;
   final BasePrefService pref;
 
-  const ForYouTweets(this.feed,
-      {super.key, required this.type, required this.includeReplies, required this.pref});
+  const ForYouTweets(this.feed, {super.key, required this.type, required this.includeReplies, required this.pref});
 
   @override
   State<ForYouTweets> createState() => _ForYouTweetsState();
@@ -108,13 +107,12 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
         _lastSeen = position;
         _readPositionReady = true;
       });
-      // First page may have arrived while the DB read was in flight, or the
-      // controller may still hold items from a prior tab visit.
+      // Only a fresh first page waiting in [_pendingFirstPage] — never the
+      // prior tab's cached items, which would lock caught-up restore wrong.
       final pending = _pendingFirstPage;
       _pendingFirstPage = null;
-      final items = pending ?? widget.feed.items;
-      if (items != null && items.isNotEmpty) {
-        _onFirstPageLoaded(items);
+      if (pending != null && pending.isNotEmpty) {
+        _onFirstPageLoaded(pending);
       }
     });
   }
@@ -229,41 +227,32 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
   Widget build(BuildContext context) {
     super.build(context);
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider<TweetContextState>(
-              create: (_) => TweetContextState(PrefService.of(context).get(optionTweetsHideSensitive)))
-        ],
-        builder: (context, child) {
-          return Consumer<TweetContextState>(builder: (context, model, child) {
-            if (model.hideSensitive && (user.possiblySensitive ?? false)) {
-              return EmojiErrorWidget(
-                emoji: '🍆🙈🍆',
-                message: L10n.current.possibly_sensitive,
-                errorMessage: L10n.current.possibly_sensitive_profile,
-                onRetry: () async => model.setHideSensitive(false),
-                retryText: L10n.current.yes_please,
-              );
-            }
-
-            return NotificationListener<ScrollNotification>(
-              onNotification: _onScrollNotification,
-              child: PaginatedTweetList(
-                feed: widget.feed,
-                loadPage: _loadTweets,
-                interleaved: _redditItems,
-                username: user.screenName,
-                // Reddit alongside X's reload rather than in front of it: a
-                // pull has to reach Reddit too, or the cache would keep
-                // handing back the posts already on screen.
-                onRefresh: () async => unawaited(_loadRedditPosts(force: true)),
-                firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets,
-                newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
-                emptyMessage: L10n.of(context).unable_to_load_the_tweets_for_the_feed,
-                isSeen: _tracksReadPosition && _lastSeen != null ? _isSeen : null,
-                caughtUpDividerKey: _caughtUpKey,
-              ),
-            );
-          });
-        });
+      providers: [
+        ChangeNotifierProvider<TweetContextState>(create: (_) => TweetContextState.fromPrefs(PrefService.of(context))),
+      ],
+      child: SensitiveMediaGate(
+        sensitive: user.possiblySensitive ?? false,
+        errorMessage: L10n.current.possibly_sensitive_profile,
+        wrapInCard: false,
+        child: NotificationListener<ScrollNotification>(
+          onNotification: _onScrollNotification,
+          child: PaginatedTweetList(
+            feed: widget.feed,
+            loadPage: _loadTweets,
+            interleaved: _redditItems,
+            username: user.screenName,
+            // Reddit alongside X's reload rather than in front of it: a
+            // pull has to reach Reddit too, or the cache would keep
+            // handing back the posts already on screen.
+            onRefresh: () async => unawaited(_loadRedditPosts(force: true)),
+            firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets,
+            newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
+            emptyMessage: L10n.of(context).unable_to_load_the_tweets_for_the_feed,
+            isSeen: _tracksReadPosition && _lastSeen != null ? _isSeen : null,
+            caughtUpDividerKey: _caughtUpKey,
+          ),
+        ),
+      ),
+    );
   }
 }

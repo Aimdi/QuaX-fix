@@ -2,10 +2,14 @@ import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:xta/constants.dart';
+import 'package:xta/database/entities.dart';
+import 'package:xta/generated/l10n.dart';
 import 'package:xta/profile/profile.dart';
 import 'package:xta/search/search.dart';
+import 'package:xta/subscriptions/users_model.dart';
 import 'package:xta/utils/urls.dart';
 import 'package:xta/utils/_entities.dart';
 import 'package:xta/tweet/ticker_screen.dart';
@@ -52,6 +56,63 @@ void disposeRichTextParts(List<RichTextPart> parts) {
     recognizer.dispose();
   }
   _recognizersOf[parts] = null;
+}
+
+String _normalizeHashtag(String tag) => tag.startsWith('#') ? tag : '#$tag';
+
+bool _isFollowingTopic(BuildContext context, String tag) {
+  final normalized = _normalizeHashtag(tag);
+  return context.read<SubscriptionsModel>().state.any((s) => s is SearchSubscription && s.id == normalized);
+}
+
+Future<void> _toggleTopicFollow(BuildContext context, String tag) async {
+  final normalized = _normalizeHashtag(tag);
+  final model = context.read<SubscriptionsModel>();
+  final followed = _isFollowingTopic(context, normalized);
+  await model.toggleSubscribe(SearchSubscription(id: normalized, createdAt: DateTime.now()), followed);
+  if (!context.mounted) {
+    return;
+  }
+  final messenger = ScaffoldMessenger.of(context);
+  messenger.showSnackBar(SnackBar(
+    content: Text(followed ? L10n.of(context).unsubscribe : L10n.of(context).topic_follow_done(normalized)),
+  ));
+}
+
+void _showTopicFollowSheet(BuildContext context, String tag) {
+  final normalized = _normalizeHashtag(tag);
+  final followed = _isFollowingTopic(context, normalized);
+
+  showModalBottomSheet<void>(
+    context: context,
+    builder: (sheetContext) => SafeArea(
+      child: ListTile(
+        leading: Icon(followed ? Icons.check : Icons.tag),
+        title: Text(followed ? L10n.of(sheetContext).topic_following : L10n.of(sheetContext).topic_follow),
+        onTap: () {
+          Navigator.pop(sheetContext);
+          _toggleTopicFollow(context, normalized);
+        },
+      ),
+    ),
+  );
+}
+
+InlineSpan _hashtagSpan(
+  EntitySpanContext context,
+  String text,
+  VoidCallback onTap,
+  VoidCallback onLongPress,
+) {
+  return WidgetSpan(
+    alignment: PlaceholderAlignment.baseline,
+    baseline: TextBaseline.alphabetic,
+    child: GestureDetector(
+      onTap: onTap,
+      onLongPress: onLongPress,
+      child: Text(text, style: context.linkStyle),
+    ),
+  );
 }
 
 List<InlineSpan> displayRichText(List<RichTextPart> richText) {
@@ -106,22 +167,30 @@ void _addTextRuns(BuildContext context, List<RichTextPart> parts, EntitySpanCont
     if (kind == null || full == null) {
       return '';
     }
-    parts.add(RichTextPart(
-      TextSpan(
-        text: full,
-        style: spanContext.linkStyle,
-        recognizer: spanContext.recognizer(() {
-          if (kind == '#') {
-            Navigator.pushNamed(context, routeSearch,
-                arguments: SearchArguments(1, focusInputOnOpen: false, query: full));
-          } else {
+    if (kind == '#') {
+      parts.add(RichTextPart(
+        _hashtagSpan(
+          spanContext,
+          full,
+          () => Navigator.pushNamed(context, routeSearch,
+              arguments: SearchArguments(1, focusInputOnOpen: false, query: full)),
+          () => _showTopicFollowSheet(context, full),
+        ),
+        null,
+      ));
+    } else {
+      parts.add(RichTextPart(
+        TextSpan(
+          text: full,
+          style: spanContext.linkStyle,
+          recognizer: spanContext.recognizer(() {
             Navigator.pushNamed(context, routeProfile,
                 arguments: ProfileScreenArguments.fromScreenName(full.substring(1), null));
-          }
-        }),
-      ),
-      null,
-    ));
+          }),
+        ),
+        null,
+      ));
+    }
     return kind;
   }, onNonMatch: (piece) {
     if (piece.isNotEmpty) {
@@ -167,7 +236,8 @@ List<Entity> _parseEntities(BuildContext context, Object? rawEntities) {
       entities.add(HashtagEntity(
           hashtag,
           () => Navigator.pushNamed(context, routeSearch,
-              arguments: SearchArguments(1, focusInputOnOpen: false, query: '#${hashtag.text}'))));
+              arguments: SearchArguments(1, focusInputOnOpen: false, query: '#${hashtag.text}')),
+          () => _showTopicFollowSheet(context, '#${hashtag.text}')));
     }
 
     // A ticker opens its own screen: the chart, and the posts about it.

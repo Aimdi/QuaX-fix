@@ -16,6 +16,7 @@ import 'package:xta/status.dart';
 import 'package:xta/tweet/_ExpandableTweetText.dart';
 import 'package:xta/tweet/_card.dart';
 import 'package:xta/tweet/_media.dart';
+import 'package:xta/tweet/thread_rail.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/saved/liked_tweet_model.dart';
 import 'package:xta/tweet/article_link_card.dart';
@@ -97,22 +98,18 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   // (translate / show original) rather than on every build of the tile.
   List<InlineSpan> _displaySpans = const [];
 
-  // Everything below derives from [tweet] alone, which never changes for a
-  // given State (a changed post gets a new key, hence a new State), so each is
-  // computed once on first use instead of on every build.
-
   /// The post actually shown: a retweet displays the post it carries.
-  late final TweetWithCard _displayedTweet = tweet.retweetedStatusWithCard ?? tweet;
+  TweetWithCard get _displayedTweet => tweet.retweetedStatusWithCard ?? tweet;
 
   /// A link to a long-form X article, which carries nothing a preview could be
   /// built from and so rendered as a bare truncated URL.
-  late final String? _articleLink = _displayedTweet.article != null
+  String? get _articleLink => _displayedTweet.article != null
       ? null
       : firstArticleLink(_displayedTweet.entities?.urls?.map((e) => e.expandedUrl) ?? const []);
 
   /// When the retweet happened, for the "X retweeted" banner. Relative dates
   /// are pinned at first display here, exactly as [Timestamp] pins its own.
-  late final String? _retweetRelativeDate =
+  String? get _retweetRelativeDate =>
       tweet.retweetedStatusWithCard == null || tweet.createdAt == null ? null : createRelativeDate(tweet.createdAt!);
 
   bool _isInitialized = false;
@@ -137,7 +134,8 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
   @override
   void didUpdateWidget(TweetTile oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.tweet.idStr != oldWidget.tweet.idStr) {
+    final sameId = widget.tweet.idStr == oldWidget.tweet.idStr;
+    if (!sameId || !identical(widget.tweet, oldWidget.tweet)) {
       clickable = widget.clickable;
       currentUsername = widget.currentUsername;
       tweet = widget.tweet;
@@ -146,9 +144,11 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       isQuotedTweet = widget.isQuotedTweet;
       addSeparator = widget.addSeparator;
       isBirdwatchQuote = widget.isBirdwatchQuote;
-      _translationStatus = TranslationStatus.original;
-      disposeRichTextParts(_translatedParts);
-      _translatedParts = [];
+      if (!sameId) {
+        _translationStatus = TranslationStatus.original;
+        disposeRichTextParts(_translatedParts);
+        _translatedParts = [];
+      }
       _initializeTweetParts();
     }
   }
@@ -189,7 +189,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     // Get the text to display from the actual tweet, i.e. the retweet if there is one, otherwise we end up with "RT @" crap in our text
     var actualTweet = _displayedTweet;
     // get the longest tweet between legacy (still used most of the time) and noteText (mostly ny premium users?)
-    var tweetTextFinal = actualTweet.noteText ?? actualTweet.fullText ?? actualTweet.text!;
+    var tweetTextFinal = actualTweet.noteText ?? actualTweet.fullText ?? actualTweet.text ?? '';
     var entitiesFinal = actualTweet.noteEntities ?? actualTweet.entities;
 
     List<RichTextPart> tweetParts = buildRichText(context, tweetTextFinal, entitiesFinal);
@@ -403,6 +403,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         username: tweet.user!.screenName!,
         initialMediaIndex: widget.initialMediaIndex,
         tweetId: tweet.idStr,
+        tweet: tweet,
       );
     }
 
@@ -544,11 +545,15 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
       );
     }
 
-    // Only create the tweet content if the tweet contains text
+    // Only create the tweet content if the tweet contains text. X often omits
+    // display_text_range on reshaped payloads — treat null as "has text".
     Widget content = Container();
 
-    if (tweet.displayTextRange![1] != 0) {
-      content = Container(
+    final textEnd = tweet.displayTextRange?.elementAtOrNull(1);
+    if (textEnd == null || textEnd != 0) {
+      content = DefaultTextStyle.merge(
+          style: theme.textTheme.bodyLarge ?? theme.textTheme.bodyMedium,
+          child: Container(
           // Fill the width so both RTL and LTR text are displayed correctly
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -561,7 +566,7 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
               maxLines:
                   PrefService.of(context, listen: false).get(alwaysShowFullTweetContents) ? null : kTweetTextMaxLines,
             ),
-          ));
+          )));
     }
 
     final locale = _effectiveLocale();
@@ -682,7 +687,10 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
               Flexible(
                   child: Text(tweet.user!.name!,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.w700))),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ))),
               if (tweet.user!.verified ?? false) const SizedBox(width: 4),
               if (tweet.user!.verified ?? false)
                 Icon(Icons.verified, size: 18, color: Theme.of(context).colorScheme.primary)
@@ -691,17 +699,21 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
         ),
     ]);
 
+    final metaStyle = theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant);
+
     final subtitleRow = Row(
       mainAxisAlignment: hideAuthorInformation ? MainAxisAlignment.end : MainAxisAlignment.spaceBetween,
       children: [
         // Twitter name
         if (!hideAuthorInformation) ...[
-          Flexible(child: Text('@${tweet.user!.screenName!}', overflow: TextOverflow.ellipsis)),
+          Flexible(
+              child: Text('@${tweet.user!.screenName!}',
+                  overflow: TextOverflow.ellipsis, style: metaStyle)),
           const SizedBox(width: 4),
         ],
         if (createdAt != null)
           DefaultTextStyle(
-              style: theme.textTheme.bodySmall!,
+              style: metaStyle ?? theme.textTheme.bodySmall!,
               child: Timestamp(
                   timestamp: createdAt,
                   absoluteTimestamp: prefs.get(optionUseAbsoluteTimestamp),
@@ -783,8 +795,17 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    DefaultTextStyle.merge(style: theme.textTheme.bodyLarge, child: titleRow),
-                                    DefaultTextStyle.merge(style: theme.textTheme.bodyMedium, child: subtitleRow),
+                                    DefaultTextStyle.merge(
+                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          color: theme.colorScheme.onSurfaceVariant,
+                                        ),
+                                        child: titleRow),
+                                    DefaultTextStyle.merge(
+                                        style: theme.textTheme.labelMedium?.copyWith(
+                                          color: theme.colorScheme.onSurfaceVariant,
+                                        ),
+                                        child: subtitleRow),
                                   ],
                                 ),
                               ),
@@ -834,53 +855,14 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
 
   Widget _buildThreadBody(ThemeData theme, Widget avatar, Widget header, List<Widget> bodyChildren,
       {required bool indentBody, required VoidCallback onTapProfile}) {
-    const railLeft = 16.0;
-    const topGap = 10.0;
-    const avatarSize = 48.0;
-    const lineWidth = 2.0;
-    const lineX = railLeft + avatarSize / 2 - lineWidth / 2;
-    const avatarCenterY = topGap + avatarSize / 2;
-    const bodyIndent = railLeft + avatarSize;
-    final lineColor = theme.colorScheme.outlineVariant;
-    Widget lineSeg() => Container(width: lineWidth, color: lineColor);
-
-    return Stack(
-      children: [
-        if (widget.threadConnectTop)
-          Positioned(left: lineX, top: 0, height: avatarCenterY, child: lineSeg()),
-        if (widget.threadConnectBottom)
-          Positioned(left: lineX, top: avatarCenterY, bottom: 0, child: lineSeg()),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(width: railLeft),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: topGap),
-                    SizedBox(
-                      width: avatarSize,
-                      height: avatarSize,
-                      child: GestureDetector(
-                          behavior: HitTestBehavior.opaque, onTap: onTapProfile, child: avatar),
-                    ),
-                  ],
-                ),
-                Expanded(child: header),
-              ],
-            ),
-            if (indentBody)
-              Padding(
-                padding: const EdgeInsets.only(left: bodyIndent),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: bodyChildren),
-              ),
-            if (!indentBody) ...bodyChildren,
-          ],
-        ),
-      ],
+    return ThreadRailBody(
+      connectTop: widget.threadConnectTop,
+      connectBottom: widget.threadConnectBottom,
+      indentBody: indentBody,
+      avatar: avatar,
+      header: header,
+      bodyChildren: bodyChildren,
+      onTapProfile: onTapProfile,
     );
   }
 }

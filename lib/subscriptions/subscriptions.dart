@@ -1,8 +1,10 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:pref/pref.dart';
-import 'package:xta/home/edge_swipe.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
+import 'package:xta/group/subscription_pack.dart';
+import 'package:xta/home/edge_swipe.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/subscriptions/_cleanup.dart';
 import 'package:xta/subscriptions/_groups.dart';
@@ -55,6 +57,38 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
 
   void _importSubscriptions() {
     Navigator.push(context, MaterialPageRoute(builder: (_) => const SubscriptionImportScreen()));
+  }
+
+  void _importPack() async {
+    final groupsModel = context.read<GroupsModel>();
+    final subscriptionsModel = context.read<SubscriptionsModel>();
+    final picked = await FilePicker.pickFile(
+      type: FileType.custom,
+      allowedExtensions: const ['json'],
+    );
+    if (!mounted || picked == null) {
+      return;
+    }
+
+    final l10n = L10n.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final bytes = await picked.readAsBytes();
+      if (!mounted) {
+        return;
+      }
+      final pack = decodeSubscriptionPack(String.fromCharCodes(bytes));
+      final count = await importSubscriptionPack(pack, groupsModel, subscriptionsModel);
+      if (!mounted) {
+        return;
+      }
+      messenger.showSnackBar(SnackBar(content: Text(l10n.subscription_pack_imported(pack.name, count))));
+    } on FormatException {
+      if (!mounted) {
+        return;
+      }
+      messenger.showSnackBar(SnackBar(content: Text(l10n.subscription_pack_invalid)));
+    }
   }
 
   void _findBroken() {
@@ -119,6 +153,8 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
                   context.read<GroupsModel>().toggleOrderSubscriptionGroupsAscending();
                 case _SubscriptionsMenuAction.importSubscriptions:
                   _importSubscriptions();
+                case _SubscriptionsMenuAction.importPack:
+                  _importPack();
                 case _SubscriptionsMenuAction.findBroken:
                   _findBroken();
                 case _SubscriptionsMenuAction.sortSubsByName:
@@ -131,10 +167,18 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
                   context.read<SubscriptionsModel>().toggleOrderSubscriptionsAscending();
                 case _SubscriptionsMenuAction.settings:
                   Navigator.pushNamed(context, routeSettings);
+                case _SubscriptionsMenuAction.antennas:
+                  Navigator.pushNamed(context, routeAntennas);
+                case _SubscriptionsMenuAction.openDeck:
+                  Navigator.pushNamed(context, routeDeck);
               }
             },
             itemBuilder: (context) => [
               if (_onGroups) ...[
+                PopupMenuItem(
+                  value: _SubscriptionsMenuAction.importPack,
+                  child: Text(l10n.subscription_pack_import),
+                ),
                 PopupMenuItem(
                   value: _SubscriptionsMenuAction.importList,
                   child: Text(l10n.import_list_as_group),
@@ -197,6 +241,15 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
               ],
               const PopupMenuDivider(),
               PopupMenuItem(
+                value: _SubscriptionsMenuAction.antennas,
+                child: Text(l10n.antenna_title),
+              ),
+              if (_onGroups)
+                PopupMenuItem(
+                  value: _SubscriptionsMenuAction.openDeck,
+                  child: Text(l10n.deck_title),
+                ),
+              PopupMenuItem(
                 value: _SubscriptionsMenuAction.settings,
                 child: Text(l10n.settings),
               ),
@@ -222,6 +275,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> with SingleTi
 
 enum _SubscriptionsMenuAction {
   createGroup,
+  importPack,
   importList,
   sortGroupsByName,
   sortGroupsByDate,
@@ -235,5 +289,7 @@ enum _SubscriptionsMenuAction {
   sortSubsByUsername,
   sortSubsByDate,
   toggleSubsOrder,
+  antennas,
+  openDeck,
   settings,
 }

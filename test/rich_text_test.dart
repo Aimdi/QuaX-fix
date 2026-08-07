@@ -17,7 +17,48 @@ Future<List<RichTextPart>> _build(WidgetTester tester, String text, Object? enti
   return parts;
 }
 
-String _textOf(RichTextPart part) => part.plainText ?? (part.entity as TextSpan).text ?? '';
+String _textOf(RichTextPart part) {
+  if (part.plainText != null) {
+    return part.plainText!;
+  }
+  final span = part.entity;
+  if (span is TextSpan) {
+    return span.text ?? '';
+  }
+  if (span is WidgetSpan) {
+    return _widgetSpanText(span);
+  }
+  return '';
+}
+
+String _widgetSpanText(WidgetSpan span) {
+  final child = span.child;
+  if (child is Text) {
+    return child.data ?? '';
+  }
+  if (child is GestureDetector && child.child is Text) {
+    return (child.child as Text).data ?? '';
+  }
+  return '';
+}
+
+void _expectTappableAccentSpan(RichTextPart part) {
+  final span = part.entity;
+  if (span is TextSpan) {
+    expect(span.recognizer, isA<TapGestureRecognizer>());
+    expect(span.style?.color, isNot(Colors.blue));
+    return;
+  }
+  if (span is WidgetSpan) {
+    final detector = span.child;
+    expect(detector, isA<GestureDetector>());
+    final text = (detector as GestureDetector).child as Text;
+    expect((detector).onTap, isNotNull);
+    expect(text.style?.color, isNot(Colors.blue));
+    return;
+  }
+  fail('expected a tappable span');
+}
 
 void main() {
   group('a post with entities', () {
@@ -53,11 +94,10 @@ void main() {
 
     testWidgets('every entity span is tappable and wears the theme accent, not blue', (tester) async {
       final parts = await _build(tester, text, entities);
-      final spans = parts.where((p) => p.entity != null).map((p) => p.entity as TextSpan);
+      final spans = parts.where((p) => p.entity != null);
 
-      for (final span in spans) {
-        expect(span.recognizer, isA<TapGestureRecognizer>());
-        expect(span.style?.color, isNot(Colors.blue));
+      for (final part in spans) {
+        _expectTappableAccentSpan(part);
       }
     });
   });
@@ -97,7 +137,7 @@ void main() {
   });
 
   group('media in the text', () {
-    testWidgets("the t.co link a picture leaves in the text renders as nothing", (tester) async {
+    testWidgets('the t.co link a picture leaves in the text renders as nothing', (tester) async {
       final parts = await _build(
         tester,
         'look https://t.co/pic',

@@ -6,21 +6,21 @@ import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:xta/home/edge_swipe.dart';
+import 'package:xta/client/client.dart';
 import 'package:xta/constants.dart';
+import 'package:xta/home/edge_swipe.dart';
 import 'package:xta/generated/l10n.dart';
-import 'package:xta/profile/profile.dart';
 import 'package:xta/tweet/_photo.dart';
 import 'package:xta/tweet/media_strip.dart';
 import 'package:xta/tweet/_video.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/tweet/sensitive_media_gate.dart';
 import 'package:xta/ui/errors.dart';
 import 'package:xta/ui/x_look_theme.dart';
 import 'package:xta/utils/downloads.dart';
 import 'package:xta/utils/media_quality.dart';
 import 'package:path/path.dart' as path;
 import 'package:pref/pref.dart';
-import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
@@ -31,6 +31,7 @@ class _TweetMediaItem extends StatefulWidget {
   final Media media;
   final String username;
   final String? tweetId;
+  final TweetWithCard? tweet;
 
   /// How a photo fills its box. Cards in the strip are sized for it; the older
   /// full-width pager shows the whole picture instead.
@@ -47,6 +48,7 @@ class _TweetMediaItem extends StatefulWidget {
       required this.media,
       required this.username,
       this.tweetId,
+      this.tweet,
       this.fit = BoxFit.contain,
       this.showCounter = true});
 
@@ -91,6 +93,19 @@ class _TweetMediaItemState extends State<_TweetMediaItem> {
     }
   }
 
+  void _showAltTextDialog(BuildContext context, String description) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(L10n.of(dialogContext).alt_text_title),
+        content: Text(description),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(dialogContext), child: Text(L10n.of(dialogContext).ok)),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var prefs = PrefService.of(context, listen: false);
@@ -126,24 +141,55 @@ class _TweetMediaItemState extends State<_TweetMediaItem> {
       );
     }
 
+    final altText = widget.tweet?.altTextForMedia(widget.media);
+
+    Widget content;
     // If there's only one item in this media collection, don't show the page counter
     if (widget.total == 1 || !widget.showCounter) {
-      return media;
+      content = media;
+    } else {
+      content = Stack(
+        children: [
+          Center(child: media),
+          Positioned(
+            right: 0,
+            child: Container(
+              alignment: Alignment.topRight,
+              color: Colors.black38,
+              margin: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
+              child: Text('${widget.index} / ${widget.total}'),
+            ),
+          )
+        ],
+      );
+    }
+
+    if (altText == null) {
+      return content;
     }
 
     return Stack(
       children: [
-        Center(child: media),
+        content,
         Positioned(
-          right: 0,
-          child: Container(
-            alignment: Alignment.topRight,
-            color: Colors.black38,
-            margin: const EdgeInsets.all(8),
-            padding: const EdgeInsets.all(8),
-            child: Text('${widget.index} / ${widget.total}'),
+          left: 8,
+          bottom: 8,
+          child: GestureDetector(
+            onLongPress: () => _showAltTextDialog(context, altText),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                L10n.of(context).alt_text_badge,
+                style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
+              ),
+            ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -183,6 +229,7 @@ class TweetMedia extends StatefulWidget {
   final int initialMediaIndex;
   // Used (with the media index) to cache/reuse video controllers across screens.
   final String? tweetId;
+  final TweetWithCard? tweet;
 
   const TweetMedia(
       {super.key,
@@ -190,7 +237,8 @@ class TweetMedia extends StatefulWidget {
       required this.media,
       required this.username,
       this.initialMediaIndex = 0,
-      this.tweetId});
+      this.tweetId,
+      this.tweet});
 
   @override
   State<TweetMedia> createState() => _TweetMediaState();
@@ -227,75 +275,68 @@ class _TweetMediaState extends State<TweetMedia> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TweetContextState>(builder: (context, model, child) {
-      if (model.hideSensitive && (widget.sensitive ?? false)) {
-        return Card(
-          child: Center(
-              child: EmojiErrorWidget(
-            emoji: '🍆🙈🍆',
-            message: L10n.current.possibly_sensitive,
-            errorMessage: L10n.current.possibly_sensitive_tweet,
-            retryText: L10n.current.yes_please,
-            onRetry: () async => model.setHideSensitive(false),
-          )),
-        );
-      }
+    return SensitiveMediaGate(
+      sensitive: widget.sensitive ?? false,
+      errorMessage: L10n.current.possibly_sensitive_tweet,
+      child: _buildMedia(context),
+    );
+  }
 
-      final tokens = XLookTokens.maybeOf(context);
-      final radius = tokens?.mediaRadius ?? kTweetMediaRadius;
+  Widget _buildMedia(BuildContext context) {
+    final tokens = XLookTokens.maybeOf(context);
+    final radius = tokens?.mediaRadius ?? kTweetMediaRadius;
 
-      if (widget.media.length == 1) {
-        return RepaintBoundary(
-          child: Container(
-            margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
-            child: AspectRatio(
-              aspectRatio: singleMediaAspect(_aspects().single),
-              child: _card(context, 0, fit: BoxFit.contain, showCounter: false),
-            ),
-          ),
-        );
-      }
-
+    if (widget.media.length == 1) {
       return RepaintBoundary(
-        // No right margin: the row runs off the edge of the screen, which is
-        // what says there is more of it than fits.
         child: Container(
-          margin: const EdgeInsets.only(top: 8, left: 16),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final layout = mediaStripLayout(width: constraints.maxWidth, aspects: _aspects());
-              _placeAt(layout);
-
-              return SizedBox(
-                height: layout.height,
-                // The row owns horizontal drags that start on it, so without
-                // this a swipe over a post's media could not reach the home
-                // page view.
-                child: edgeSwipeToChangeHomePage(
-                  context,
-                  ListView.separated(
-                    controller: _controller,
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.only(right: 16),
-                    itemCount: widget.media.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: kMediaCardGap),
-                    itemBuilder: (context, index) => SizedBox(
-                      width: layout.widths[index],
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(radius),
-                        child: _card(context, index, fit: BoxFit.cover, showCounter: false),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
+          margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
+          child: AspectRatio(
+            aspectRatio: singleMediaAspect(_aspects().single),
+            child: _card(context, 0, fit: BoxFit.contain, showCounter: false),
           ),
         ),
       );
-    });
+    }
+
+    return RepaintBoundary(
+      // No right margin: the row runs off the edge of the screen, which is
+      // what says there is more of it than fits.
+      child: Container(
+        margin: const EdgeInsets.only(top: 8, left: 16),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final layout = mediaStripLayout(width: constraints.maxWidth, aspects: _aspects());
+            _placeAt(layout);
+
+            return SizedBox(
+              height: layout.height,
+              // The row owns horizontal drags that start on it, so without
+              // this a swipe over a post's media could not reach the home
+              // page view.
+              child: edgeSwipeToChangeHomePage(
+                context,
+                ListView.separated(
+                  controller: _controller,
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.only(right: 16),
+                  itemCount: widget.media.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: kMediaCardGap),
+                  itemBuilder: (context, index) => SizedBox(
+                    width: layout.widths[index],
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(radius),
+                      child: _card(context, index, fit: BoxFit.cover, showCounter: false),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   /// The aspect ratio of every item, for the row to size itself from.
@@ -322,7 +363,26 @@ class _TweetMediaState extends State<TweetMedia> {
                       media: widget.media,
                       username: widget.username,
                       tweetId: widget.tweetId))),
-      onLongPress: item.type == 'photo' ? () => downloadMediaItem(context, item, widget.username) : null,
+      onLongPress: item.type == 'photo'
+          ? () {
+              final alt = widget.tweet?.altTextForMedia(item);
+              if (alt != null) {
+                showDialog<void>(
+                  context: context,
+                  builder: (dialogContext) => AlertDialog(
+                    title: Text(L10n.of(dialogContext).alt_text_title),
+                    content: Text(alt),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.pop(dialogContext), child: Text(L10n.of(dialogContext).ok)),
+                    ],
+                  ),
+                );
+              } else {
+                downloadMediaItem(context, item, widget.username);
+              }
+            }
+          : null,
       child: _TweetMediaItem(
         media: item,
         index: index + 1,
@@ -330,6 +390,7 @@ class _TweetMediaState extends State<TweetMedia> {
         total: widget.media.length,
         username: widget.username,
         tweetId: widget.tweetId,
+        tweet: widget.tweet,
         fit: fit,
         showCounter: showCounter,
       ),

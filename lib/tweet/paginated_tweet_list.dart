@@ -5,8 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:xta/client/client.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/group/feed_refresh_controller.dart';
+import 'package:xta/tweet/boost_run_carousel.dart';
+import 'package:xta/tweet/boost_runs.dart';
 import 'package:xta/tweet/cached_tweet_list.dart';
 import 'package:xta/tweet/conversation.dart';
+import 'package:xta/tweet/folded_chain.dart';
 import 'package:xta/tweet/interleaved_items.dart';
 import 'package:xta/tweet/tweet_skeleton.dart';
 import 'package:xta/ui/caught_up_divider.dart';
@@ -218,6 +221,9 @@ class PaginatedTweetList extends StatefulWidget {
   /// Posts from somewhere other than X, slotted among the chains by date.
   final List<InterleavedItem> interleaved;
 
+  /// Chain ids that should render folded behind a one-line reason.
+  final Map<String, String> foldReasons;
+
   const PaginatedTweetList({
     super.key,
     required this.feed,
@@ -234,6 +240,7 @@ class PaginatedTweetList extends StatefulWidget {
     this.isSeen,
     this.caughtUpDividerKey,
     this.interleaved = const [],
+    this.foldReasons = const {},
   });
 
   @override
@@ -317,8 +324,29 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
 
   // Keyed by chain id so a prepending refresh shifts elements instead of
   // re-associating every visible tile with a different chain by index.
-  Widget _buildChain(BuildContext context, TweetChain chain) => TweetConversation(
-      key: ValueKey(chain.id), id: chain.id, tweets: chain.tweets, username: widget.username, isPinned: chain.isPinned);
+  Widget _buildChain(BuildContext context, TweetChain chain) {
+    final reason = widget.foldReasons[chain.id];
+    if (reason != null) {
+      return FoldedChain(key: ValueKey('fold-${chain.id}'), chain: chain, reason: reason, username: widget.username);
+    }
+    return TweetConversation(
+        key: ValueKey(chain.id),
+        id: chain.id,
+        tweets: chain.tweets,
+        username: widget.username,
+        isPinned: chain.isPinned);
+  }
+
+  Widget _buildChainAt(BuildContext context, List<TweetChain> loaded, int index) {
+    final runLength = boostRunLengthAt(loaded, index);
+    if (runLength > 0) {
+      return BoostRunCarousel(chains: loaded.sublist(index, index + runLength), username: widget.username);
+    }
+    if (isContinuationOfBoostRun(loaded, index)) {
+      return const SizedBox.shrink();
+    }
+    return _buildChain(context, loaded[index]);
+  }
 
   // The caught-up boundary and the interleaved buckets are both O(loaded
   // history), and the list builder runs on every paging notification — so they
@@ -501,7 +529,7 @@ class _PaginatedTweetListState extends State<PaginatedTweetList> {
           cacheExtent: 600,
           builderDelegate: PagedChildBuilderDelegate(
             itemBuilder: (context, chain, index) {
-              final conversation = _buildChain(context, chain);
+              final conversation = _buildChainAt(context, loaded, index);
               final above = index < buckets.length ? buckets[index] : const <InterleavedItem>[];
               // Anything older than every chain loaded so far rides along with
               // the last one, so it is on screen rather than waiting for a page

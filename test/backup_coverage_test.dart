@@ -63,6 +63,8 @@ void main() {
         blueskySubscriptions: const [],
         mastodonSubscriptions: const [],
         redditLocalVotes: const [],
+        profileNotes: const [],
+        antennas: const [],
         subscriptionGroups: const [],
         subscriptionGroupMembers: const [],
         searchGroupMembers: const [],

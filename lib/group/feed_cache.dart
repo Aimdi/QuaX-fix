@@ -39,8 +39,8 @@ List<TweetChain> dedupeChainsById(List<TweetChain> chains) {
 
 List<TweetChain> sortChainsNewestFirst(List<TweetChain> chains) {
   return chains.sorted((a, b) {
-    var aCreatedAt = a.tweets[0].createdAt;
-    var bCreatedAt = b.tweets[0].createdAt;
+    var aCreatedAt = a.tweets.firstOrNull?.createdAt;
+    var bCreatedAt = b.tweets.firstOrNull?.createdAt;
 
     if (aCreatedAt == null || bCreatedAt == null) {
       return 0;

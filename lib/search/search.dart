@@ -165,6 +165,11 @@ class _ResultsScreenState extends State<_ResultsScreen> with SingleTickerProvide
             leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
             trailing: [
               IconButton(
+                icon: const Icon(Icons.sensors),
+                tooltip: L10n.of(context).antenna_title,
+                onPressed: () => Navigator.pushNamed(context, routeAntennas),
+              ),
+              IconButton(
                 icon: const Icon(Icons.tune),
                 tooltip: L10n.of(context).advanced_search,
                 onPressed: () async {
@@ -208,7 +213,7 @@ class _ResultsScreenState extends State<_ResultsScreen> with SingleTickerProvide
       body: MultiProvider(
         providers: [
           ChangeNotifierProvider<TweetContextState>(
-              create: (_) => TweetContextState(prefs.get(optionTweetsHideSensitive))),
+              create: (_) => TweetContextState.fromPrefs(prefs)),
           ChangeNotifierProvider<VideoContextState>(
               create: (_) => VideoContextState(prefs.get(optionMediaDefaultMute))),
         ],

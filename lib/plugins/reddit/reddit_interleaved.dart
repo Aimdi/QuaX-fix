@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
+import 'package:xta/ui/provenance_accent.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_post_card.dart';
 import 'package:xta/plugins/reddit/reddit_post_source.dart';
@@ -54,9 +55,15 @@ Future<List<InterleavedItem>> loadRedditInterleaved(
   return redditInterleavedItems(posts);
 }
 
-/// Posts as dated items. One with no date is dropped rather than guessed at:
-/// there is nowhere in a chronological feed to put it.
+/// Posts as dated items, each wearing the Reddit provenance accent so a mixed
+/// timeline shows where the card came from. One with no date is dropped rather
+/// than guessed at: there is nowhere in a chronological feed to put it.
 List<InterleavedItem> redditInterleavedItems(Iterable<RedditPost> posts) => [
   for (final post in posts)
-    if (post.createdAt case final date?) (date: date, build: (context) => RedditPostCard(post: post)),
+    if (post.createdAt case final date?)
+      provenanceInterleavedItem(
+        date: date,
+        pluginId: pluginIdReddit,
+        build: (_) => RedditPostCard(post: post),
+      ),
 ];

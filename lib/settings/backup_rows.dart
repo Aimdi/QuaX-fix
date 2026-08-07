@@ -111,3 +111,6 @@ Future<List<MastodonSubscription>> readMastodonSubscriptions() =>
     _readRows(tableMastodonSubscription, MastodonSubscription.fromMap);
 
 Future<List<RedditLocalVote>> readRedditLocalVotes() => _readRows(tableRedditLocalVote, RedditLocalVote.fromMap);
+Future<List<ProfileNote>> readProfileNotes() => _readRows(tableProfileNote, ProfileNote.fromMap);
+
+Future<List<Antenna>> readAntennas() => _readRows(tableAntenna, Antenna.fromMap);

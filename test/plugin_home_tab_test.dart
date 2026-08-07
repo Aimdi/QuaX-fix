@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pref/pref.dart';
 import 'package:xta/constants.dart';
@@ -22,7 +22,7 @@ class _TablessPlugin extends XtaPlugin {
   PluginCategory get category => PluginCategory.reading;
 
   @override
-  Color get brandColor => const Color(0xFF000000);
+  Color get brandColor => const Color(0xFF808080);
 
   @override
   String title(BuildContext context) => 'Tabless';

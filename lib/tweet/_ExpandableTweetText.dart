@@ -67,6 +67,24 @@ class ExpandableTweetTextState extends State<ExpandableTweetText> {
       // One line past the cap is all it takes to know the text overflows.
       maxLines: maxLines + 1,
     );
+
+    // A WidgetSpan in the text — an alt-text badge, an inline chip — has no
+    // intrinsic size a bare TextPainter could know; laying out without
+    // declaring one is a null-check crash inside WidgetSpan.build, which took
+    // the whole timeline down the first time a post carried one. For counting
+    // lines, a glyph-sized box is the right stand-in: these spans sit inline
+    // and scale with the text around them.
+    final placeholders = _placeholderCount(widget.textSpans);
+    if (placeholders > 0) {
+      final side = scaler.scale(style.fontSize ?? 14);
+      painter.setPlaceholderDimensions(
+        List.filled(
+          placeholders,
+          PlaceholderDimensions(size: Size.square(side), alignment: PlaceholderAlignment.middle),
+        ),
+      );
+    }
+
     painter.layout(maxWidth: maxWidth);
     final truncated = painter.computeLineMetrics().length > maxLines;
     painter.dispose();
@@ -76,6 +94,20 @@ class ExpandableTweetTextState extends State<ExpandableTweetText> {
     _memoScaler = scaler;
     _memoTruncated = truncated;
     return truncated;
+  }
+
+  /// How many spans in the tree want a placeholder box, however deep they sit.
+  static int _placeholderCount(List<InlineSpan> spans) {
+    var count = 0;
+    for (final span in spans) {
+      span.visitChildren((child) {
+        if (child is PlaceholderSpan) {
+          count++;
+        }
+        return true;
+      });
+    }
+    return count;
   }
 
   bool _isExpanded = false;
@@ -115,12 +147,7 @@ class ExpandableTweetTextState extends State<ExpandableTweetText> {
                   return const LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black,
-                      Colors.black,
-                      Colors.black,
-                      Colors.transparent,
-                    ],
+                    colors: [Colors.black, Colors.black, Colors.black, Colors.transparent],
                     stops: [0.0, 0.6, 0.8, 1.0],
                   ).createShader(bounds);
                 },

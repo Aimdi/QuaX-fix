@@ -1,60 +1,37 @@
 ## XTA
 
 A read-only fork of [QuaX](https://github.com/Teskann/QuaX). Same idea — read X
-without an account of X's choosing, keep what you follow on your own device —
-with the plugins, feeds and fixes below on top.
+without posting, keep what you follow on your own device — with the plugins and
+fixes below on top. Nothing here adds compose, reply, quote, or like-on-X.
 
 ### What's new
 
-**A feed you can finish.** Catch-up mode, per feed and off until you turn it
-on, shows what arrived since you last read and then stops, instead of scrolling
-on forever. When it cannot see all the way back to where you were — X only lets
-the app page so far — it says so rather than telling you you are done. Reaching
-the end is also the only thing that moves your reading position now; it used to
-drift whenever the list happened to sit near the top.
+**Calmer reading.** Thread replies draw a connector from avatar to avatar and
+stop indenting after two levels with “Continue thread”. Consecutive reposts
+collapse into one horizontal row. Calm mode hides engagement counts without
+zen’s other caps. Sensitive media can remember “always show”. Groups show their
+mark, colour and member count. Mixed Reddit/Substack cards get a thin brand
+strip so origins stay glanceable.
 
-**Posts when the network is not there.** A feed that fails to load no longer
-throws away the posts already on your phone. You get them, with a line saying
-how old they are and why the refresh failed — rate limited, no working account,
-or simply offline — and a retry.
+**Your filters.** Quiet accounts (cap how many posts someone can dump into a
+load), language hide/fold, and muted keywords that can expire or fold. Antennas
+listen for keywords as their own feeds. Long-press a hashtag to follow it as a
+topic search. Optional: subscription packs, a multi-column Deck, private profile
+notes, and searchable notes on saved posts.
 
-**More places to read, still nothing to post.** Bluesky via the public AppView,
-Mastodon through a home instance you choose, an optional private Pixiv following
-feed (refresh token; hidden until you ask for private plugins), and Threads that
-can use a pasted browser session or Bearer when you want Following without
-RSSHub — guest pages and your own proxies stay as fallbacks. Substack got RSS
-fallback, unread/free/podcast filters, public Notes discovery, and article
-caching. The plugin store groups things by purpose and shows each plugin with a
-brand mark.
+**Pixiv.** Sign in with Pixiv in the app (browser login, same idea as Pixez) —
+no more pasting a refresh token unless you want to. Still read-only following.
 
-**Stocks, Reddit.** The Stocks tab is closer to a StockTwits-style watchlist
-feed. Reddit comment threads, For You refresh, and listing “Load more” share one
-read session and fall back when OAuth is not enough.
-
-**Mutes that stay muted.** Muted words, the content filter and the like and
-repost thresholds used to apply only while a group was sorted one particular
-way. They are the group's rules now, whatever it is sorted by.
+**Alt text.** When X sends it, media shows an ALT badge; long-press to read it.
 
 ### Fixed
 
-**Backups were losing things quietly.** Followed subreddits, followed Substack
-publications, saved searches' group membership and the per-account
-hide-reposts and hide-replies settings were all missing from an export. Backups
-carry them now. Older backups still import exactly as they did.
-
-**Saved and liked posts** showed as neither until you had opened the Saved tab
-once. Also: deleting one account no longer leaves the row beneath it in a
-strange state; a tall screenshot beside ordinary photos no longer stretches the
-whole post; and pulling to refresh one feed no longer discards every other
-feed's cached posts.
-
-### Faster
-
-Startup no longer decodes a week of cached posts before drawing anything, and
-no longer builds the video engine and every plugin for a reader who opens
-neither. Images decode at the size they are drawn at. Scrolling stopped laying
-out each post's text twice, and stopped rebuilding a whole post when you
-bookmark it.
+Timeline “Oops” crashes from missing `display_text_range` and media-only posts,
+interleaved feed layout crashes, wrong caught-up restore after leaving a group,
+Popular feeds scrambled by quiet-account caps, fold filters not sticking across
+pages, and Pixiv load-more failing when the access token expires. Language
+filter no longer saves mid-typing or offers Hide with an empty list. Always-show
+sensitive media can be turned off again in Settings.
 
 ---
 

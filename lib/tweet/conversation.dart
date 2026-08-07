@@ -43,7 +43,7 @@ class _TweetConversationState extends State<TweetConversation> {
     }
 
     var tiles = <Widget>[];
-    var tweets = widget.tweets.sorted((a, b) => a.idStr!.compareTo(b.idStr!)).toList(growable: false);
+    var tweets = widget.tweets.sorted((a, b) => (a.idStr ?? '').compareTo(b.idStr ?? '')).toList(growable: false);
 
     for (var i = 0; i < tweets.length; i++) {
       tiles.add(TweetTile(

@@ -87,7 +87,7 @@ class GroupModel extends Store<SubscriptionGroupGet> {
             contentFilter: group['content_filter'] as String? ?? contentFilterDefault,
             minLikes: (group['min_likes'] as int?) ?? 0,
             minRetweets: (group['min_retweets'] as int?) ?? 0,
-            mutedKeywords: parseMutedKeywords(group['muted_keywords'] as String?));
+            mutedKeywords: parseMutedKeywordsStored(group['muted_keywords'] as String?));
       }
 
       // A group's feed is its own members plus everything nested inside it, so
@@ -132,7 +132,7 @@ class GroupModel extends Store<SubscriptionGroupGet> {
           contentFilter: group['content_filter'] as String? ?? contentFilterDefault,
           minLikes: (group['min_likes'] as int?) ?? 0,
           minRetweets: (group['min_retweets'] as int?) ?? 0,
-          mutedKeywords: parseMutedKeywords(group['muted_keywords'] as String?));
+          mutedKeywords: parseMutedKeywordsStored(group['muted_keywords'] as String?));
     });
   }
 
@@ -183,8 +183,8 @@ class GroupModel extends Store<SubscriptionGroupGet> {
     update(state.copyWith(minRetweets: value < 0 ? 0 : value));
   }
 
-  Future<void> setSubscriptionGroupMutedKeywords(List<String> keywords) async {
-    await _updateCustomRule('muted_keywords', keywords.isEmpty ? null : joinMutedKeywords(keywords));
+  Future<void> setSubscriptionGroupMutedKeywords(List<MutedKeyword> keywords) async {
+    await _updateCustomRule('muted_keywords', keywords.isEmpty ? null : encodeMutedKeywordsStored(keywords));
     update(state.copyWith(mutedKeywords: keywords));
   }
 

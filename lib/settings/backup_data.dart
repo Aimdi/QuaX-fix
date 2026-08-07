@@ -45,6 +45,8 @@ enum BackupCategory {
   readPositions,
   upvotes,
   accounts,
+  profileNotes,
+  antennas,
 }
 
 class SettingsData {
@@ -71,6 +73,8 @@ class SettingsData {
   final List<UserFeedFilter>? replyFilters;
   final List<FeedReadPositionRow>? feedReadPositions;
   final List<Account>? accounts;
+  final List<ProfileNote>? profileNotes;
+  final List<Antenna>? antennas;
 
   SettingsData({
     this.formatVersion = backupFormatVersion,
@@ -96,6 +100,8 @@ class SettingsData {
     this.replyFilters,
     this.feedReadPositions,
     this.accounts,
+    this.profileNotes,
+    this.antennas,
   });
 
   factory SettingsData.fromJson(Map<String, dynamic> json) {
@@ -123,6 +129,8 @@ class SettingsData {
       replyFilters: _rows(json['replyFilters'], UserFeedFilter.fromMap),
       feedReadPositions: _rows(json['feedReadPositions'], FeedReadPositionRow.fromMap),
       accounts: _rows(json['accounts'], Account.fromMap),
+      profileNotes: _rows(json['profileNotes'], ProfileNote.fromMap),
+      antennas: _rows(json['antennas'], Antenna.fromMap),
     );
   }
 
@@ -151,6 +159,8 @@ class SettingsData {
       'replyFilters': _maps(replyFilters),
       'feedReadPositions': _maps(feedReadPositions),
       'accounts': _maps(accounts),
+      'profileNotes': _maps(profileNotes),
+      'antennas': _maps(antennas),
     };
   }
 }
@@ -189,6 +199,8 @@ Map<BackupCategory, int> backupCounts(SettingsData data) {
     BackupCategory.readPositions: data.feedReadPositions?.length,
     BackupCategory.upvotes: data.redditLocalVotes?.length,
     BackupCategory.accounts: data.accounts?.length,
+    BackupCategory.profileNotes: data.profileNotes?.length,
+    BackupCategory.antennas: data.antennas?.length,
   };
 
   return Map.fromEntries(
@@ -229,6 +241,8 @@ Map<String, List<ToMappable>> backupTables(SettingsData data, {required bool inc
     tableRetweetFilter: data.retweetFilters,
     tableReplyFilter: data.replyFilters,
     tableAccounts: data.accounts,
+    tableProfileNote: data.profileNotes,
+    tableAntenna: data.antennas,
     if (includeReadPositions) tableFeedReadPosition: data.feedReadPositions,
   };
 

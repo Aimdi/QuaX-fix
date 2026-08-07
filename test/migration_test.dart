@@ -31,7 +31,25 @@ void main() {
     final tables = (await db.query('sqlite_master', columns: ['name'], where: "type = 'table'"))
         .map((row) => row['name'] as String)
         .toSet();
-    expect(tables, containsAll([tableAccounts, tableSubscription, tableSubscriptionGroup, tableSavedTweet]));
+    expect(
+      tables,
+      containsAll([
+        tableAccounts,
+        tableSubscription,
+        tableSubscriptionGroup,
+        tableSavedTweet,
+        tableProfileNote,
+        tableAntenna,
+      ]),
+    );
+
+    final savedCols =
+        (await db.rawQuery('PRAGMA table_info($tableSavedTweet)')).map((row) => row['name'] as String).toSet();
+    expect(savedCols, contains('note'));
+
+    final subCols =
+        (await db.rawQuery('PRAGMA table_info($tableSubscription)')).map((row) => row['name'] as String).toSet();
+    expect(subCols, contains('max_posts_per_load'));
 
     final accountCols =
         (await db.rawQuery('PRAGMA table_info($tableAccounts)')).map((row) => row['name'] as String).toSet();

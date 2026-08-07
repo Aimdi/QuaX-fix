@@ -154,6 +154,8 @@ Future<SettingsData> collectBackup(BuildContext context, {required bool includeA
     replyFilters: await readReplyFilters(),
     feedReadPositions: await readFeedReadPositions(),
     accounts: includeAccounts ? await getAccounts() : null,
+    profileNotes: await readProfileNotes(),
+    antennas: await readAntennas(),
   );
 }
 

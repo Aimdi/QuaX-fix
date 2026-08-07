@@ -321,6 +321,8 @@ const themeColors = {
 };
 
 const optionTweetsHideSensitive = 'tweets.hide_sensitive';
+/// Once true, sensitive-media gates stay open across sessions (Bluesky-style).
+const optionAlwaysShowSensitiveMedia = 'tweets.always_show_sensitive_media';
 
 const optionSavedShowAllTab = 'saved.show_all_tab';
 const optionSavedShowUnfiledTab = 'saved.show_unfiled_tab';
@@ -351,6 +353,14 @@ const optionTickerChart = 'other.ticker_chart';
 
 const optionZenMode = 'other.zen_mode';
 const optionZenModePageCap = 'other.zen_mode_page_cap';
+/// Hide engagement counts (likes, reposts, views, replies) without zen's other caps.
+const optionCalmMode = 'other.calm_mode';
+/// CSV of language prefixes the reader wants (`en,fr,ja`).
+const optionFeedLanguages = 'feed.languages';
+/// `off` / `hide` / `fold` — what to do with posts outside [optionFeedLanguages].
+const optionFeedLanguageAction = 'feed.language_action';
+/// CSV of group ids pinned as deck columns on wide screens.
+const optionDeckGroupIds = 'home.deck_group_ids';
 const optionFeedReadingPosition = 'feed.reading_position';
 // Catch-up ("finish the feed") mode is per feed: the group id is appended to
 // this prefix by `feedCatchUpModeKey`. Off unless a feed opts in.
@@ -516,3 +526,6 @@ const routeSettingsHome = '/settings/home';
 const routeQuotes = '/quotes';
 const routeTicker = '/ticker';
 const routeStatus = '/status';
+const routeAntennas = '/antennas';
+const routeAntennaFeed = '/antenna';
+const routeDeck = '/deck';
