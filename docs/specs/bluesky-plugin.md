@@ -44,14 +44,7 @@ translated. This plugin talks to Bluesky's documented public AppView at
 
 ## Not implemented
 
-- Compose, like, repost, follow-on-Bluesky, DMs, or any write to Bluesky.
-<<<<<<< HEAD
-- Creating / editing lists on Bluesky, starter packs, or video embeds beyond
-  what a card can ignore safely.
-- Interleaving Bluesky posts into the X home / group feeds.
-=======
-- Notifications, lists, starter packs, or video embeds beyond what a card can
-  ignore safely.
+- Compose, like-on-Bluesky, repost, follow-on-Bluesky, DMs, or any write to Bluesky.
+- Creating / editing lists on Bluesky, starter packs, notifications, or video
+  embeds beyond what a card can ignore safely.
 - Interleaving Bluesky posts into the X home / Following feed (groups only).
-- Local likes library (Threads has this; Bluesky does not yet).
->>>>>>> origin/cursor/bluesky-in-groups-bfa2

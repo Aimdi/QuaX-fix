@@ -6,11 +6,8 @@ import 'package:pref/pref.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
-<<<<<<< HEAD
-import 'package:xta/plugins/bluesky/bluesky_likes_store.dart';
-=======
 import 'package:xta/plugins/bluesky/bluesky_butterfly_icon.dart';
->>>>>>> origin/cursor/bluesky-in-groups-bfa2
+import 'package:xta/plugins/bluesky/bluesky_likes_store.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_profile_screen.dart';
 import 'package:xta/plugins/bluesky/bluesky_thread_screen.dart';
