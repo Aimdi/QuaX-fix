@@ -4,48 +4,32 @@ A read-only fork of [QuaX](https://github.com/Teskann/QuaX). Same idea — read 
 without posting, keep what you follow on your own device — with the plugins and
 fixes below on top. Nothing here adds compose, reply, quote, or like-on-X.
 
-### X replies that actually show up
+### X replies that keep loading
 
-**Status screens keep offering more replies** when TweetDetail returns a thin
-first page. Show-more cursors nested in conversation modules are parsed, the
-thread cache remembers them, and a clear retry path replaces the old empty
-silence under a non-zero reply count.
+**Follow-up TweetDetail pages that only append via TimelineAddToModule now show
+up as replies.** New tweets under a repeated conversationthread id are kept,
+show-more on a parent-only first page is followed automatically, and zen mode
+keeps paging while replies are collapsed.
 
-### Quotes you can expand
+### Expand compact Reposts
 
-**“Show more” on a quoted post expands the text** instead of opening the quote.
-The quotes footer always stays tappable, and the quotes list no longer folds
-results into a single misleading thread.
+**Consecutive reposts stay as the small horizontal row by default.** Expand
+turns that run into full timeline posts in place; Collapse puts the cards back.
 
-### Bluesky threads in the app
+### Bluesky: import, lists, likes, groups
 
-**Open posts as in-app threads** with ancestors and replies. Cards show counts,
-reposts, quotes, and link cards. People search finds accounts; profiles page
-further with the author-feed cursor. Still public AppView only — no Bluesky
-login, no writes.
+**Import following from a public handle and import a public list** into local
+subscriptions. Follower and following counts on a profile are tappable.
+**Device-only likes** get a Liked tab (never written to Bluesky). **Bluesky
+accounts can sit in groups**, with a blue butterfly badge so they stay distinct
+from X posts.
 
-### Threads closer to the app
+### Faster Pixiv and safer Threads loads
 
-**Repost chrome, verified badges, linkified captions**, always-on engagement
-icons (local likes stay on device), a Following-strip add control, and a clearer
-thread screen with indented replies.
-
-### Faster Pixiv gallery
-
-**Decode caps, better thumbs, soft refresh, earlier paging**, parallel detail
-loads, and keep-alive tabs so Ranking and Bookmarks keep scroll position and
-warm images — Pixez-oriented speed without copying Pixez.
-
-### Mastodon replies without search
-
-**Reply threads load even when public search resolve is blocked** (401). The
-client uses the status id in the URL, then rediscovers via open instances when
-needed.
-
-### Plugin store categories that scale
-
-**Social, Communities, Newsletters, Art, Markets, Bookmarks, Media** replace the
-old catch-all Reading bucket so ten built-ins are easier to scan.
+**Pixiv refreshes tokens once under concurrency**, pages earlier, and stops
+spinners that never ended. **Threads** shares profile HTML fetches, caps decode
+work, and keeps guest GraphQL from hammering Meta when a cookie session is
+cooling down.
 
 ---
 
