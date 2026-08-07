@@ -457,3 +457,39 @@ void _collectReplies(Json replies, List<BlueskyPost> out, {required int depth}) 
     _collectReplies(reply['replies'], out, depth: depth + 1);
   }
 }
+
+/// One page of `app.bsky.graph.getFollows`.
+class BlueskyFollowsPage {
+  final List<BlueskyProfile> follows;
+  final String? cursor;
+
+  const BlueskyFollowsPage({required this.follows, this.cursor});
+}
+
+/// One page of `app.bsky.graph.getFollowers`.
+class BlueskyFollowersPage {
+  final List<BlueskyProfile> followers;
+  final String? cursor;
+
+  const BlueskyFollowersPage({required this.followers, this.cursor});
+}
+
+BlueskyFollowsPage parseBlueskyFollowsPage(Object? json) {
+  final root = Json(json);
+  return BlueskyFollowsPage(
+    follows: [
+      for (final follow in root['follows'].list) BlueskyProfile.fromJson(follow.raw),
+    ].where((p) => p.handle.isNotEmpty || p.did.isNotEmpty).toList(growable: false),
+    cursor: root['cursor'].string,
+  );
+}
+
+BlueskyFollowersPage parseBlueskyFollowersPage(Object? json) {
+  final root = Json(json);
+  return BlueskyFollowersPage(
+    followers: [
+      for (final follower in root['followers'].list) BlueskyProfile.fromJson(follower.raw),
+    ].where((p) => p.handle.isNotEmpty || p.did.isNotEmpty).toList(growable: false),
+    cursor: root['cursor'].string,
+  );
+}

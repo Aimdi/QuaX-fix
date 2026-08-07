@@ -273,4 +273,28 @@ void main() {
       expect(profile.toAccount().actor, 'did:plc:abc');
     });
   });
+
+  group('graph page parsers', () {
+    test('parseBlueskyFollowsPage reads follows and cursor', () {
+      final page = parseBlueskyFollowsPage({
+        'cursor': 'next',
+        'follows': [
+          {'did': 'did:plc:1', 'handle': 'one.bsky.social', 'displayName': 'One'},
+        ],
+      });
+      expect(page.cursor, 'next');
+      expect(page.follows.single.handle, 'one.bsky.social');
+    });
+
+    test('parseBlueskyFollowersPage reads followers and cursor', () {
+      final page = parseBlueskyFollowersPage({
+        'cursor': 'c2',
+        'followers': [
+          {'did': 'did:plc:2', 'handle': 'two.bsky.social'},
+        ],
+      });
+      expect(page.cursor, 'c2');
+      expect(page.followers.single.handle, 'two.bsky.social');
+    });
+  });
 }

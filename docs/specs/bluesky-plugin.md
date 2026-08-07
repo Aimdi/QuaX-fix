@@ -22,6 +22,8 @@ translated. This plugin talks to Bluesky's documented public AppView at
 - Local follows in SQLite (`bluesky_subscription`), merged into one newest-first
   timeline with per-account isolation.
 - Profile screen with Follow / Unfollow and cursor pagination.
+- Tappable follower / following counts open a paginated public graph list
+  (`app.bsky.graph.getFollowers` / `getFollows`); rows open that profile.
 - In-app thread screen (ancestors + replies); browser open is opt-in.
 - Post cards with engagement counts, author → profile, repost chrome, quote
   embeds, and external link cards.
