@@ -63,25 +63,27 @@ class PixivAuth {
   }) async {
     late final http.Response response;
     try {
-      response = await httpClient.post(
-        Uri.parse(authTokenUrl),
-        headers: {
-          'User-Agent': 'PixivAndroidApp/5.0.234 (Android 11; Pixel 5)',
-          'App-OS': 'android',
-          'App-OS-Version': '11',
-          'App-Version': '5.0.234',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: {
-          'client_id': clientId,
-          'client_secret': clientSecret,
-          'grant_type': 'authorization_code',
-          'code': code,
-          'code_verifier': codeVerifier,
-          'redirect_uri': redirectUri,
-          'include_policy': 'true',
-        },
-      );
+      response = await httpClient
+          .post(
+            Uri.parse(authTokenUrl),
+            headers: {
+              'User-Agent': 'PixivAndroidApp/5.0.234 (Android 11; Pixel 5)',
+              'App-OS': 'android',
+              'App-OS-Version': '11',
+              'App-Version': '5.0.234',
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: {
+              'client_id': clientId,
+              'client_secret': clientSecret,
+              'grant_type': 'authorization_code',
+              'code': code,
+              'code_verifier': codeVerifier,
+              'redirect_uri': redirectUri,
+              'include_policy': 'true',
+            },
+          )
+          .timeout(const Duration(seconds: 15));
     } catch (e) {
       throw PixivException(PixivErrorKind.network, '$e');
     }

@@ -71,5 +71,42 @@ void main() {
       expect(store.state.map((e) => e.id), [1, 2]);
       expect(store.error, isNull);
     });
+
+    test('soft refresh failure keeps prior tiles', () async {
+      var fail = false;
+      final store = PixivIllustListStore(({nextUrl}) async {
+        if (fail) {
+          throw PixivException(PixivErrorKind.network, 'boom');
+        }
+        return PixivIllustPage(illusts: [_illust(1)]);
+      });
+
+      await store.refresh();
+      fail = true;
+      await store.refresh();
+      expect(store.state.single.id, 1);
+      expect(store.error, isNull);
+    });
+
+    test('skips fully filtered pages until something visible remains', () async {
+      var page = 0;
+      final store = PixivIllustListStore(
+        ({nextUrl}) async {
+          page++;
+          if (page == 1) {
+            return PixivIllustPage(
+              illusts: [_illust(1)],
+              nextUrl: 'https://example/next',
+            );
+          }
+          return PixivIllustPage(illusts: [_illust(2)]);
+        },
+        filter: (illusts) => illusts.where((e) => e.id != 1).toList(),
+      );
+
+      await store.refresh();
+      expect(store.state.map((e) => e.id), [2]);
+      expect(page, 2);
+    });
   });
 }

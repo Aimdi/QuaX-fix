@@ -46,9 +46,13 @@ class _PixivUserScreenState extends State<PixivUserScreen> {
     final client = context.read<PixivClient>();
     final mute = context.read<PixivMuteStore>();
     try {
-      final user = await client.userDetail(widget.userId);
-      final page = await client.userIllusts(widget.userId);
+      final results = await Future.wait([
+        client.userDetail(widget.userId),
+        client.userIllusts(widget.userId),
+      ]);
       if (mounted) {
+        final user = results[0] as PixivUser;
+        final page = results[1] as PixivIllustPage;
         setState(() {
           _user = user;
           _illusts = mute.filter(page.illusts);

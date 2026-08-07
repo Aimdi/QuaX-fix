@@ -98,21 +98,25 @@ class _PixivSearchScreenState extends State<PixivSearchScreen>
     });
     await context.read<PixivSearchHistoryStore>().add(word);
     if (!mounted) return;
-    await _illusts.refresh();
+    // Start users while illusts refresh; always clear the users spinner (a soft
+    // refresh throw used to leave `_usersLoading` stuck forever).
+    final usersFuture = client.searchUsers(word);
     try {
-      final page = await client.searchUsers(word);
+      await _illusts.refresh();
       if (!mounted) return;
+      final page = await usersFuture;
       setState(() {
         _users = page.users;
         _usersNext = page.nextUrl;
-        _usersLoading = false;
+        _usersError = null;
       });
     } catch (e) {
       if (!mounted) return;
-      setState(() {
-        _usersError = e;
-        _usersLoading = false;
-      });
+      setState(() => _usersError = e);
+    } finally {
+      if (mounted) {
+        setState(() => _usersLoading = false);
+      }
     }
   }
 

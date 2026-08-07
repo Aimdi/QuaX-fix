@@ -7,6 +7,12 @@ typedef PixivIllustPageLoader =
 typedef PixivIllustListFilter =
     List<PixivIllust> Function(List<PixivIllust> illusts);
 
+/// How many consecutive fully-filtered pages to skip before giving up.
+///
+/// R18 / mute filters can zero out an API page while `next_url` remains —
+/// without advancing, the grid shows empty and never scrolls into `loadMore`.
+const pixivEmptyPageAdvanceLimit = 5;
+
 /// Paginated illust list — following, ranking, bookmarks, search, related.
 class PixivIllustListStore extends Store<List<PixivIllust>> {
   PixivIllustPageLoader _loader;
@@ -30,16 +36,21 @@ class PixivIllustListStore extends Store<List<PixivIllust>> {
   /// (Pixez-style soft refresh — no decode waterfall from a blank spinner).
   Future<void> refresh() async {
     if (state.isNotEmpty) {
-      final page = await _loader();
-      _nextUrl = page.nextUrl;
-      update(_applyFilter(page.illusts));
+      try {
+        final page = await _loadVisiblePage();
+        _nextUrl = page.nextUrl;
+        update(page.illusts);
+      } catch (_) {
+        // Keep the healthy grid — soft refresh must never blank or stick.
+        update(state);
+      }
       return;
     }
 
     await execute(() async {
-      final page = await _loader();
+      final page = await _loadVisiblePage();
       _nextUrl = page.nextUrl;
-      return _applyFilter(page.illusts);
+      return page.illusts;
     });
   }
 
@@ -50,9 +61,9 @@ class PixivIllustListStore extends Store<List<PixivIllust>> {
     _loadingMore = true;
     update(state);
     try {
-      final page = await _loader(nextUrl: _nextUrl);
+      final page = await _loadVisiblePage(nextUrl: _nextUrl);
       _nextUrl = page.nextUrl;
-      update(mergePixivIllusts(state, _applyFilter(page.illusts)));
+      update(mergePixivIllusts(state, page.illusts));
     } catch (e) {
       // Keep a healthy grid — only first-page failures become full errors.
       if (state.isEmpty) {
@@ -66,6 +77,28 @@ class PixivIllustListStore extends Store<List<PixivIllust>> {
         update(state);
       }
     }
+  }
+
+  /// Fetches until a page has visible illusts, or pagination ends.
+  Future<PixivIllustPage> _loadVisiblePage({String? nextUrl}) async {
+    var cursor = nextUrl;
+    for (var attempt = 0; attempt < pixivEmptyPageAdvanceLimit; attempt++) {
+      final page = cursor == null || cursor.isEmpty
+          ? await _loader()
+          : await _loader(nextUrl: cursor);
+      final visible = _applyFilter(page.illusts);
+      final exhausted = page.nextUrl == null || page.nextUrl!.isEmpty;
+      if (visible.isNotEmpty || exhausted) {
+        return PixivIllustPage(illusts: visible, nextUrl: page.nextUrl);
+      }
+      cursor = page.nextUrl;
+    }
+
+    final page = await _loader(nextUrl: cursor);
+    return PixivIllustPage(
+      illusts: _applyFilter(page.illusts),
+      nextUrl: page.nextUrl,
+    );
   }
 
   List<PixivIllust> _applyFilter(List<PixivIllust> illusts) {
