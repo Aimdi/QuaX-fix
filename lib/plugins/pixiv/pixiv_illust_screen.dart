@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/pixiv/pixiv_client.dart';
 import 'package:xta/plugins/pixiv/pixiv_grid.dart';
+import 'package:xta/plugins/pixiv/pixiv_mute_store.dart';
 import 'package:xta/plugins/pixiv/pixiv_models.dart';
 import 'package:xta/plugins/pixiv/pixiv_search_screen.dart';
 import 'package:xta/plugins/pixiv/pixiv_settings.dart';
@@ -46,13 +47,14 @@ class _PixivIllustScreenState extends State<PixivIllustScreen> {
     });
 
     final client = context.read<PixivClient>();
+    final mute = context.read<PixivMuteStore>();
     try {
       final detail = await client.illustDetail(_illust.id);
       final related = await client.related(_illust.id);
       if (!mounted) return;
       setState(() {
         _illust = detail;
-        _related = related.illusts;
+        _related = mute.filter(related.illusts);
         _loadingDetail = false;
       });
     } catch (e) {
@@ -72,12 +74,19 @@ class _PixivIllustScreenState extends State<PixivIllustScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_illust.title.isEmpty ? l10n.plugin_pixiv_title : _illust.title),
+        title: Text(
+          _illust.title.isEmpty ? l10n.plugin_pixiv_title : _illust.title,
+        ),
         actions: [
           IconButton(
             tooltip: l10n.plugin_pixiv_open_on_pixiv,
             onPressed: () => openUri(context, _illust.url),
             icon: const Icon(Icons.open_in_new),
+          ),
+          IconButton(
+            tooltip: l10n.plugin_pixiv_mute_illust,
+            onPressed: _showMuteSheet,
+            icon: const Icon(Icons.volume_off_outlined),
           ),
         ],
       ),
@@ -124,7 +133,9 @@ class _PixivIllustScreenState extends State<PixivIllustScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: Text(
                     l10n.plugin_pixiv_related,
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
@@ -138,7 +149,8 @@ class _PixivIllustScreenState extends State<PixivIllustScreen> {
                     childAspectRatio: 0.72,
                   ),
                   delegate: SliverChildBuilderDelegate(
-                    (context, index) => PixivIllustTile(illust: _related[index]),
+                    (context, index) =>
+                        PixivIllustTile(illust: _related[index]),
                     childCount: _related.length,
                   ),
                 ),
@@ -188,7 +200,9 @@ class _PixivIllustScreenState extends State<PixivIllustScreen> {
           InkWell(
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => PixivUserScreen(userId: _illust.userId)),
+              MaterialPageRoute(
+                builder: (_) => PixivUserScreen(userId: _illust.userId),
+              ),
             ),
             child: Row(
               children: [
@@ -213,8 +227,18 @@ class _PixivIllustScreenState extends State<PixivIllustScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(_illust.userName, style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w700)),
-                      Text('@${_illust.userAccount}', style: theme.textTheme.bodySmall!.copyWith(color: muted)),
+                      Text(
+                        _illust.userName,
+                        style: theme.textTheme.titleSmall!.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        '@${_illust.userAccount}',
+                        style: theme.textTheme.bodySmall!.copyWith(
+                          color: muted,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -223,24 +247,46 @@ class _PixivIllustScreenState extends State<PixivIllustScreen> {
           ),
           if (_illust.title.isNotEmpty) ...[
             const SizedBox(height: 14),
-            Text(_illust.title, style: theme.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w800)),
+            Text(
+              _illust.title,
+              style: theme.textTheme.titleLarge!.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
           ],
           const SizedBox(height: 8),
           Wrap(
             spacing: 12,
             runSpacing: 4,
             children: [
-              _stat(Icons.favorite, _pixivDetailCount.format(_illust.totalBookmarks)),
-              _stat(Icons.visibility_outlined, _pixivDetailCount.format(_illust.totalViews)),
+              _stat(
+                Icons.favorite,
+                _pixivDetailCount.format(_illust.totalBookmarks),
+              ),
+              _stat(
+                Icons.visibility_outlined,
+                _pixivDetailCount.format(_illust.totalViews),
+              ),
               if (_illust.createdAt != null)
-                Text(createCompactDate(_illust.createdAt!), style: theme.textTheme.bodySmall!.copyWith(color: muted)),
+                Text(
+                  createCompactDate(_illust.createdAt!),
+                  style: theme.textTheme.bodySmall!.copyWith(color: muted),
+                ),
               if (_illust.isR18)
-                Text(l10n.plugin_pixiv_r18, style: theme.textTheme.labelMedium!.copyWith(color: theme.colorScheme.error)),
+                Text(
+                  l10n.plugin_pixiv_r18,
+                  style: theme.textTheme.labelMedium!.copyWith(
+                    color: theme.colorScheme.error,
+                  ),
+                ),
             ],
           ),
           if (_illust.caption.isNotEmpty) ...[
             const SizedBox(height: 12),
-            Text(_illust.caption, style: theme.textTheme.bodyMedium!.copyWith(height: 1.35)),
+            Text(
+              _illust.caption,
+              style: theme.textTheme.bodyMedium!.copyWith(height: 1.35),
+            ),
           ],
           if (_illust.tags.isNotEmpty) ...[
             const SizedBox(height: 12),
@@ -253,7 +299,10 @@ class _PixivIllustScreenState extends State<PixivIllustScreen> {
                     label: Text('#${tag.displayName}'),
                     onPressed: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => PixivSearchScreen(initialQuery: tag.name)),
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            PixivSearchScreen(initialQuery: tag.name),
+                      ),
                     ),
                   ),
               ],
@@ -271,8 +320,90 @@ class _PixivIllustScreenState extends State<PixivIllustScreen> {
       children: [
         Icon(icon, size: 16, color: muted),
         const SizedBox(width: 4),
-        Text(label, style: Theme.of(context).textTheme.bodySmall!.copyWith(color: muted)),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: muted),
+        ),
       ],
     );
+  }
+
+  Future<void> _showMuteSheet() {
+    final l10n = L10n.of(context);
+    return showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.person_off_outlined),
+              title: Text(l10n.plugin_pixiv_mute_author),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                _confirmMute(
+                  l10n.plugin_pixiv_mute_author,
+                  (store) => store.muteAuthor(_illust.userId),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.hide_image_outlined),
+              title: Text(l10n.plugin_pixiv_mute_illust),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                _confirmMute(
+                  l10n.plugin_pixiv_mute_illust,
+                  (store) => store.muteIllust(_illust.id),
+                );
+              },
+            ),
+            for (final tag in _illust.tags)
+              ListTile(
+                leading: const Icon(Icons.label_off_outlined),
+                title: Text(l10n.plugin_pixiv_mute_tag(tag.displayName)),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  _confirmMute(
+                    l10n.plugin_pixiv_mute_tag(tag.displayName),
+                    (store) => store.muteTag(tag.name),
+                  );
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _confirmMute(
+    String label,
+    Future<void> Function(PixivMuteStore store) mute,
+  ) async {
+    final navigator = Navigator.of(context);
+    final store = context.read<PixivMuteStore>();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(label),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(L10n.of(context).cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(label),
+          ),
+        ],
+      ),
+    );
+    if (!mounted || confirmed != true) {
+      return;
+    }
+    await mute(store);
+    if (mounted) {
+      navigator.pop();
+    }
   }
 }

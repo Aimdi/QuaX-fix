@@ -42,7 +42,8 @@ class PixivPlugin extends XtaPlugin {
   String title(BuildContext context) => L10n.of(context).plugin_pixiv_title;
 
   @override
-  String description(BuildContext context) => L10n.of(context).plugin_pixiv_description;
+  String description(BuildContext context) =>
+      L10n.of(context).plugin_pixiv_description;
 
   @override
   NavigationPage homePage(BuildContext context) {
@@ -69,6 +70,10 @@ class PixivPlugin extends XtaPlugin {
     await prefs.set(optionPluginPixivAccessExpiresAt, '');
     await prefs.set(optionPluginPixivUserId, 0);
     await prefs.set(optionPluginPixivShowR18, false);
+    await prefs.set(optionPluginPixivMutedAuthors, '[]');
+    await prefs.set(optionPluginPixivMutedTags, '[]');
+    await prefs.set(optionPluginPixivMutedIllusts, '[]');
+    await prefs.set(optionPluginPixivSearchHistory, '[]');
   }
 
   @override

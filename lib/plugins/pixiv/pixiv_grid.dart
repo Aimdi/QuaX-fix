@@ -1,9 +1,12 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/pixiv/pixiv_illust_screen.dart';
+import 'package:xta/plugins/pixiv/pixiv_mute_store.dart';
 import 'package:xta/plugins/pixiv/pixiv_models.dart';
 
 final NumberFormat _pixivCountFormat = NumberFormat.compact(locale: 'en_US');
@@ -27,6 +30,13 @@ class PixivIllustGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ScopedBuilder<PixivMuteStore, PixivMuteState>.transition(
+      store: context.read<PixivMuteStore>(),
+      onState: (context, mute) => _grid(context, mute.filter(illusts)),
+    );
+  }
+
+  Widget _grid(BuildContext context, List<PixivIllust> visibleIllusts) {
     final grid = CustomScrollView(
       controller: scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
@@ -37,8 +47,9 @@ class PixivIllustGrid extends StatelessWidget {
             crossAxisCount: 2,
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
-            childCount: illusts.length,
-            itemBuilder: (context, index) => PixivIllustTile(illust: illusts[index]),
+            childCount: visibleIllusts.length,
+            itemBuilder: (context, index) =>
+                PixivIllustTile(illust: visibleIllusts[index]),
           ),
         ),
         if (loadingMore)
@@ -95,7 +106,10 @@ class PixivIllustTile extends StatelessWidget {
                       if (state.extendedImageLoadState == LoadState.failed) {
                         return ColoredBox(
                           color: theme.colorScheme.surfaceContainerHighest,
-                          child: Icon(Icons.broken_image_outlined, color: theme.colorScheme.outline),
+                          child: Icon(
+                            Icons.broken_image_outlined,
+                            color: theme.colorScheme.outline,
+                          ),
                         );
                       }
                       return null;
@@ -105,19 +119,31 @@ class PixivIllustTile extends StatelessWidget {
                     Positioned(
                       top: 6,
                       right: 6,
-                      child: _chip(context, Icons.collections_outlined, '${illust.pageCount}'),
+                      child: _chip(
+                        context,
+                        Icons.collections_outlined,
+                        '${illust.pageCount}',
+                      ),
                     ),
                   if (illust.isUgoira)
                     Positioned(
                       top: 6,
                       left: 6,
-                      child: _chip(context, Icons.play_circle_outline, l10n.plugin_pixiv_ugoira),
+                      child: _chip(
+                        context,
+                        Icons.play_circle_outline,
+                        l10n.plugin_pixiv_ugoira,
+                      ),
                     ),
                   if (illust.isR18)
                     Positioned(
                       bottom: 6,
                       left: 6,
-                      child: _chip(context, Icons.eighteen_up_rating_outlined, l10n.plugin_pixiv_r18),
+                      child: _chip(
+                        context,
+                        Icons.eighteen_up_rating_outlined,
+                        l10n.plugin_pixiv_r18,
+                      ),
                     ),
                 ],
               ),
@@ -132,7 +158,10 @@ class PixivIllustTile extends StatelessWidget {
                       illust.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall!.copyWith(fontWeight: FontWeight.w600, height: 1.2),
+                      style: theme.textTheme.bodySmall!.copyWith(
+                        fontWeight: FontWeight.w600,
+                        height: 1.2,
+                      ),
                     ),
                   const SizedBox(height: 2),
                   Row(
@@ -142,14 +171,22 @@ class PixivIllustTile extends StatelessWidget {
                           illust.userName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                          style: theme.textTheme.labelSmall!.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
                       ),
-                      Icon(Icons.favorite, size: 12, color: theme.colorScheme.onSurfaceVariant),
+                      Icon(
+                        Icons.favorite,
+                        size: 12,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                       const SizedBox(width: 2),
                       Text(
                         _pixivCountFormat.format(illust.totalBookmarks),
-                        style: theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                        style: theme.textTheme.labelSmall!.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
@@ -175,7 +212,14 @@ class PixivIllustTile extends StatelessWidget {
           children: [
             Icon(icon, size: 12, color: Colors.white),
             const SizedBox(width: 3),
-            Text(label, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600)),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
       ),

@@ -55,7 +55,10 @@ void main() {
 
     test('following uses the access token and parses illusts', () async {
       await prefs.set(optionPluginPixivAccessToken, 'access-1');
-      await prefs.set(optionPluginPixivAccessExpiresAt, DateTime.now().add(const Duration(hours: 1)).toIso8601String());
+      await prefs.set(
+        optionPluginPixivAccessExpiresAt,
+        DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+      );
 
       final client = PixivClient(
         prefs,
@@ -71,7 +74,12 @@ void main() {
                   'caption': '',
                   'type': 'illust',
                   'image_urls': {'square_medium': 'https://i.pximg.net/a.jpg'},
-                  'user': {'id': 2, 'name': 'A', 'account': 'a', 'profile_image_urls': {}},
+                  'user': {
+                    'id': 2,
+                    'name': 'A',
+                    'account': 'a',
+                    'profile_image_urls': {},
+                  },
                   'page_count': 1,
                   'x_restrict': 0,
                   'sanity_level': 2,
@@ -92,10 +100,19 @@ void main() {
 
     test('missing refresh token is notConfigured', () async {
       await prefs.set(optionPluginPixivRefreshToken, '');
-      final client = PixivClient(prefs, httpClient: MockClient((_) async => http.Response('', 500)));
+      final client = PixivClient(
+        prefs,
+        httpClient: MockClient((_) async => http.Response('', 500)),
+      );
       await expectLater(
         client.verify(),
-        throwsA(isA<PixivException>().having((e) => e.kind, 'kind', PixivErrorKind.notConfigured)),
+        throwsA(
+          isA<PixivException>().having(
+            (e) => e.kind,
+            'kind',
+            PixivErrorKind.notConfigured,
+          ),
+        ),
       );
     });
 
@@ -104,33 +121,38 @@ void main() {
     // refresh token is refused. That is exactly what "the right token doesn't
     // connect" looks like from the outside.
     group('client time signature', () {
-      test('every request carries the time and its hash, and they agree', () async {
-        final requests = <http.Request>[];
-        final client = PixivClient(
-          prefs,
-          // A fixed instant, so the expected header values are knowable.
-          clock: () => DateTime.utc(2026, 8, 6, 1, 2, 3),
-          httpClient: MockClient((request) async {
-            requests.add(request);
-            return _json({
-              'access_token': 'access-1',
-              'expires_in': 3600,
-              'user': {'id': '123', 'name': 'Reader', 'account': 'reader'},
-            }, 200);
-          }),
-        );
+      test(
+        'every request carries the time and its hash, and they agree',
+        () async {
+          final requests = <http.Request>[];
+          final client = PixivClient(
+            prefs,
+            // A fixed instant, so the expected header values are knowable.
+            clock: () => DateTime.utc(2026, 8, 6, 1, 2, 3),
+            httpClient: MockClient((request) async {
+              requests.add(request);
+              return _json({
+                'access_token': 'access-1',
+                'expires_in': 3600,
+                'user': {'id': '123', 'name': 'Reader', 'account': 'reader'},
+              }, 200);
+            }),
+          );
 
-        await client.verify();
+          await client.verify();
 
-        final headers = requests.single.headers;
-        const time = '2026-08-06T01:02:03+00:00';
-        expect(headers['X-Client-Time'], time);
-        expect(
-          headers['X-Client-Hash'],
-          md5.convert(utf8.encode('$time${PixivClient.clientHashSalt}')).toString(),
-          reason: 'the hash must be of exactly the time string that was sent',
-        );
-      });
+          final headers = requests.single.headers;
+          const time = '2026-08-06T01:02:03+00:00';
+          expect(headers['X-Client-Time'], time);
+          expect(
+            headers['X-Client-Hash'],
+            md5
+                .convert(utf8.encode('$time${PixivClient.clientHashSalt}'))
+                .toString(),
+            reason: 'the hash must be of exactly the time string that was sent',
+          );
+        },
+      );
 
       test('the API requests are signed the same way', () async {
         await prefs.set(optionPluginPixivAccessToken, 'access-1');
@@ -154,73 +176,104 @@ void main() {
         expect(headers['X-Client-Time'], isNotNull);
         expect(
           headers['X-Client-Hash'],
-          md5.convert(utf8.encode('${headers['X-Client-Time']}${PixivClient.clientHashSalt}')).toString(),
+          md5
+              .convert(
+                utf8.encode(
+                  '${headers['X-Client-Time']}${PixivClient.clientHashSalt}',
+                ),
+              )
+              .toString(),
         );
       });
     });
 
-    test('ranking and search hit the expected paths', () async {
-      await prefs.set(optionPluginPixivAccessToken, 'access-1');
-      await prefs.set(
-        optionPluginPixivAccessExpiresAt,
-        DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
-      );
+    test(
+      'ranking and search hit the expected paths and query parameters',
+      () async {
+        await prefs.set(optionPluginPixivAccessToken, 'access-1');
+        await prefs.set(
+          optionPluginPixivAccessExpiresAt,
+          DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+        );
 
-      final paths = <String>[];
-      final client = PixivClient(
-        prefs,
-        httpClient: MockClient((request) async {
-          paths.add(request.url.path);
-          if (request.url.path.contains('search/user')) {
-            return _json({
-              'user_previews': [
-                {
+        final requests = <http.Request>[];
+        final client = PixivClient(
+          prefs,
+          httpClient: MockClient((request) async {
+            requests.add(request);
+            if (request.url.path.contains('search/user')) {
+              return _json({
+                'user_previews': [
+                  {
+                    'user': {
+                      'id': 9,
+                      'name': 'N',
+                      'account': 'n',
+                      'comment': '',
+                      'profile_image_urls': {},
+                    },
+                  },
+                ],
+              }, 200);
+            }
+            if (request.url.path.contains('illust/detail')) {
+              return _json({
+                'illust': {
+                  'id': 5,
+                  'title': 'T',
+                  'caption': '',
+                  'type': 'illust',
+                  'image_urls': {'square_medium': 'https://i.pximg.net/a.jpg'},
                   'user': {
-                    'id': 9,
-                    'name': 'N',
-                    'account': 'n',
-                    'comment': '',
+                    'id': 1,
+                    'name': 'A',
+                    'account': 'a',
                     'profile_image_urls': {},
                   },
+                  'page_count': 1,
+                  'x_restrict': 0,
+                  'sanity_level': 2,
                 },
-              ],
-            }, 200);
-          }
-          if (request.url.path.contains('illust/detail')) {
-            return _json({
-              'illust': {
-                'id': 5,
-                'title': 'T',
-                'caption': '',
-                'type': 'illust',
-                'image_urls': {'square_medium': 'https://i.pximg.net/a.jpg'},
-                'user': {'id': 1, 'name': 'A', 'account': 'a', 'profile_image_urls': {}},
-                'page_count': 1,
-                'x_restrict': 0,
-                'sanity_level': 2,
-              },
-            }, 200);
-          }
-          return _json({'illusts': [], 'next_url': null}, 200);
-        }),
-      );
+              }, 200);
+            }
+            return _json({'illusts': [], 'next_url': null}, 200);
+          }),
+        );
 
-      await client.ranking(mode: 'week');
-      await client.searchIllust('cat');
-      final users = await client.searchUsers('artist');
-      final detail = await client.illustDetail(5);
-      await client.related(5);
-      await client.bookmarks(userId: 123);
+        await client.ranking(mode: 'week');
+        await client.searchIllust(
+          'cat',
+          searchTarget: 'exact_match_for_tags',
+          sort: 'popular_desc',
+        );
+        final users = await client.searchUsers('artist');
+        final detail = await client.illustDetail(5);
+        await client.related(5);
+        await client.bookmarks(userId: 123, restrict: 'private');
 
-      expect(paths, contains('/v1/illust/ranking'));
-      expect(paths, contains('/v1/search/illust'));
-      expect(paths, contains('/v1/search/user'));
-      expect(paths, contains('/v1/illust/detail'));
-      expect(paths, contains('/v2/illust/related'));
-      expect(paths, contains('/v1/user/bookmarks/illust'));
-      expect(users.users.single.id, 9);
-      expect(detail.id, 5);
-    });
+        final paths = requests.map((request) => request.url.path).toList();
+        expect(paths, contains('/v1/illust/ranking'));
+        expect(paths, contains('/v1/search/illust'));
+        expect(paths, contains('/v1/search/user'));
+        expect(paths, contains('/v1/illust/detail'));
+        expect(paths, contains('/v2/illust/related'));
+        expect(paths, contains('/v1/user/bookmarks/illust'));
+        final search = requests.singleWhere(
+          (request) => request.url.path == '/v1/search/illust',
+        );
+        expect(
+          search.url.queryParameters['search_target'],
+          'exact_match_for_tags',
+        );
+        expect(search.url.queryParameters['sort'], 'popular_desc');
+        final bookmarks = requests.singleWhere(
+          (request) => request.url.path == '/v1/user/bookmarks/illust',
+        );
+        expect(bookmarks.url.queryParameters['restrict'], 'private');
+        expect(users.users.single.id, 9);
+        expect(detail.id, 5);
+      },
+    );
 
     test('a refused token surfaces what Pixiv actually said', () async {
       final client = PixivClient(
@@ -240,12 +293,19 @@ void main() {
         throwsA(
           isA<PixivException>()
               .having((e) => e.kind, 'kind', PixivErrorKind.unauthorized)
-              .having((e) => e.message, 'message', contains('Invalid refresh token')),
+              .having(
+                (e) => e.message,
+                'message',
+                contains('Invalid refresh token'),
+              ),
         ),
       );
     });
   });
 }
 
-http.Response _json(Object body, int status) =>
-    http.Response(jsonEncode(body), status, headers: {'content-type': 'application/json'});
+http.Response _json(Object body, int status) => http.Response(
+  jsonEncode(body),
+  status,
+  headers: {'content-type': 'application/json'},
+);

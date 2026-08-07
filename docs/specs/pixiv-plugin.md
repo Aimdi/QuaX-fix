@@ -41,12 +41,13 @@ No compose, bookmark, follow, or like write-backs to Pixiv.
 
 | Feature | Detail |
 |---|---|
-| Settings | Sign in with Pixiv (WebView PKCE), sign out, advanced refresh-token paste, show R-18 toggle (off by default), test connection |
-| Home tabs | Following (`/v2/illust/follow`), Ranking (`/v1/illust/ranking`), public Bookmarks (`/v1/user/bookmarks/illust`) |
+| Settings | Sign in with Pixiv (WebView PKCE), sign out, advanced refresh-token paste, show R-18 toggle (off by default), test connection, local muted author/tag/work review |
+| Home tabs | Following (`/v2/illust/follow`), Ranking (`/v1/illust/ranking`), public/private Bookmarks (`/v1/user/bookmarks/illust`) |
 | Gallery | Pixez-style staggered grid (`flutter_staggered_grid_view`) with page-count / R-18 / ugoira chips |
-| Viewer | In-app illust screen — multi-page manga, caption, tags, bookmark/view counts, related works |
-| Search | Illusts (`/v1/search/illust`) and users (`/v1/search/user`); tag chips open search |
+| Viewer | In-app illust screen — multi-page manga, caption, tags, bookmark/view counts, related works, local mute actions |
+| Search | Illusts (`/v1/search/illust`) and users (`/v1/search/user`); recent queries; Pixiv artwork/user link open; target and sort controls; tag chips open search |
 | Profile | User detail + staggered grid of their illusts |
+| Local mute | Preference-backed author ids, tag names, and work ids filter following, ranking, bookmarks, search, related, and profile grids |
 
 ## Endpoints
 
@@ -69,3 +70,4 @@ No compose, bookmark, follow, or like write-backs to Pixiv.
 - Local download manager
 - Bookmark / follow / like **write** APIs on Pixiv
 - Comments
+- Proxy / mirror modes

@@ -6,6 +6,7 @@ import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/pixiv/pixiv_client.dart';
 import 'package:xta/plugins/pixiv/pixiv_grid.dart';
+import 'package:xta/plugins/pixiv/pixiv_mute_store.dart';
 import 'package:xta/plugins/pixiv/pixiv_models.dart';
 import 'package:xta/plugins/pixiv/pixiv_search_screen.dart';
 import 'package:xta/plugins/pixiv/pixiv_settings.dart';
@@ -22,14 +23,23 @@ class PixivScreen extends StatefulWidget {
   State<PixivScreen> createState() => _PixivScreenState();
 }
 
-class _PixivScreenState extends State<PixivScreen> with SingleTickerProviderStateMixin {
+class _PixivScreenState extends State<PixivScreen>
+    with SingleTickerProviderStateMixin {
   late final TabController _tabs;
   late final PixivIllustListStore _ranking;
   late final PixivIllustListStore _bookmarks;
   var _signingIn = false;
   var _rankingMode = 'day';
+  var _bookmarksRestrict = 'public';
 
-  static const _rankingModes = ['day', 'week', 'month', 'day_male', 'day_female', 'week_rookie'];
+  static const _rankingModes = [
+    'day',
+    'week',
+    'month',
+    'day_male',
+    'day_female',
+    'week_rookie',
+  ];
 
   @override
   void initState() {
@@ -39,24 +49,46 @@ class _PixivScreenState extends State<PixivScreen> with SingleTickerProviderStat
       if (_tabs.indexIsChanging) return;
       _ensureTabLoaded(_tabs.index);
     });
-    _ranking = PixivIllustListStore(({nextUrl}) => context.read<PixivClient>().ranking(mode: _rankingMode, nextUrl: nextUrl));
-    _bookmarks = PixivIllustListStore(({nextUrl}) async {
+    final mute = context.read<PixivMuteStore>();
+    _ranking = PixivIllustListStore(
+      ({nextUrl}) => context.read<PixivClient>().ranking(
+        mode: _rankingMode,
+        nextUrl: nextUrl,
+      ),
+      filter: mute.filter,
+    );
+    _bookmarks = PixivIllustListStore(
+      _bookmarksLoader(_bookmarksRestrict),
+      filter: mute.filter,
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      await mute.load();
+      if (!mounted) return;
+      final prefs = PrefService.of(context, listen: false);
+      final hasToken = (prefs.get<String>(optionPluginPixivRefreshToken) ?? '')
+          .trim()
+          .isNotEmpty;
+      if (hasToken) {
+        context.read<PixivFeedStore>().refresh();
+      }
+    });
+  }
+
+  PixivIllustPageLoader _bookmarksLoader(String restrict) {
+    return ({nextUrl}) async {
       final client = context.read<PixivClient>();
       var userId = client.storedUserId;
       if (userId == null) {
         final user = await client.verify();
         userId = user.id;
       }
-      return client.bookmarks(userId: userId, nextUrl: nextUrl);
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final prefs = PrefService.of(context, listen: false);
-      final hasToken = (prefs.get<String>(optionPluginPixivRefreshToken) ?? '').trim().isNotEmpty;
-      if (hasToken) {
-        context.read<PixivFeedStore>().refresh();
-      }
-    });
+      return client.bookmarks(
+        userId: userId,
+        restrict: restrict,
+        nextUrl: nextUrl,
+      );
+    };
   }
 
   @override
@@ -69,7 +101,9 @@ class _PixivScreenState extends State<PixivScreen> with SingleTickerProviderStat
 
   void _ensureTabLoaded(int index) {
     final prefs = PrefService.of(context, listen: false);
-    if ((prefs.get<String>(optionPluginPixivRefreshToken) ?? '').trim().isEmpty) {
+    if ((prefs.get<String>(optionPluginPixivRefreshToken) ?? '')
+        .trim()
+        .isEmpty) {
       return;
     }
     switch (index) {
@@ -91,8 +125,18 @@ class _PixivScreenState extends State<PixivScreen> with SingleTickerProviderStat
   Future<void> _changeRankingMode(String mode) async {
     if (mode == _rankingMode) return;
     setState(() => _rankingMode = mode);
-    _ranking.useLoader(({nextUrl}) => context.read<PixivClient>().ranking(mode: mode, nextUrl: nextUrl));
+    _ranking.useLoader(
+      ({nextUrl}) =>
+          context.read<PixivClient>().ranking(mode: mode, nextUrl: nextUrl),
+    );
     await _ranking.refresh();
+  }
+
+  Future<void> _changeBookmarksRestrict(String restrict) async {
+    if (restrict == _bookmarksRestrict) return;
+    setState(() => _bookmarksRestrict = restrict);
+    _bookmarks.useLoader(_bookmarksLoader(restrict));
+    await _bookmarks.refresh();
   }
 
   String _rankingLabel(L10n l10n, String mode) => switch (mode) {
@@ -108,7 +152,9 @@ class _PixivScreenState extends State<PixivScreen> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
     final prefs = PrefService.of(context);
-    final hasToken = (prefs.get<String>(optionPluginPixivRefreshToken) ?? '').trim().isNotEmpty;
+    final hasToken = (prefs.get<String>(optionPluginPixivRefreshToken) ?? '')
+        .trim()
+        .isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -118,16 +164,23 @@ class _PixivScreenState extends State<PixivScreen> with SingleTickerProviderStat
             IconButton(
               icon: const Icon(Icons.search),
               tooltip: l10n.search,
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PixivSearchScreen())),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PixivSearchScreen()),
+              ),
             ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),
             tooltip: l10n.settings,
             onPressed: () async {
               final feed = context.read<PixivFeedStore>();
-              await Navigator.push(context, MaterialPageRoute(builder: (_) => const PixivSettingsScreen()));
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PixivSettingsScreen()),
+              );
               if (!mounted) return;
               await feed.refresh();
+              if (!mounted) return;
               _ensureTabLoaded(_tabs.index);
             },
           ),
@@ -148,9 +201,12 @@ class _PixivScreenState extends State<PixivScreen> with SingleTickerProviderStat
           : TabBarView(
               controller: _tabs,
               children: [
-                _feedTab(store: context.read<PixivFeedStore>(), empty: l10n.plugin_pixiv_empty),
+                _feedTab(
+                  store: context.read<PixivFeedStore>(),
+                  empty: l10n.plugin_pixiv_empty,
+                ),
                 _rankingTab(l10n),
-                _feedTab(store: _bookmarks, empty: l10n.plugin_pixiv_bookmarks_empty),
+                _bookmarksTab(l10n),
               ],
             ),
     );
@@ -182,7 +238,11 @@ class _PixivScreenState extends State<PixivScreen> with SingleTickerProviderStat
                       }
                     },
               child: _signingIn
-                  ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
                   : Text(l10n.plugin_pixiv_sign_in),
             ),
           ],
@@ -212,12 +272,51 @@ class _PixivScreenState extends State<PixivScreen> with SingleTickerProviderStat
             ],
           ),
         ),
-        Expanded(child: _feedTab(store: _ranking, empty: l10n.plugin_pixiv_ranking_empty)),
+        Expanded(
+          child: _feedTab(
+            store: _ranking,
+            empty: l10n.plugin_pixiv_ranking_empty,
+          ),
+        ),
       ],
     );
   }
 
-  Widget _feedTab({required PixivIllustListStore store, required String empty}) {
+  Widget _bookmarksTab(L10n l10n) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
+          child: Row(
+            children: [
+              ChoiceChip(
+                label: Text(l10n.plugin_pixiv_bookmarks_public),
+                selected: _bookmarksRestrict == 'public',
+                onSelected: (_) => _changeBookmarksRestrict('public'),
+              ),
+              const SizedBox(width: 8),
+              ChoiceChip(
+                label: Text(l10n.plugin_pixiv_bookmarks_private),
+                selected: _bookmarksRestrict == 'private',
+                onSelected: (_) => _changeBookmarksRestrict('private'),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: _feedTab(
+            store: _bookmarks,
+            empty: l10n.plugin_pixiv_bookmarks_empty,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _feedTab({
+    required PixivIllustListStore store,
+    required String empty,
+  }) {
     final l10n = L10n.of(context);
     return ScopedBuilder<PixivIllustListStore, List<PixivIllust>>.transition(
       store: store,
@@ -250,7 +349,9 @@ class _PixivScreenState extends State<PixivScreen> with SingleTickerProviderStat
           },
           child: PixivIllustGrid(
             illusts: illusts,
-            scrollController: store == context.read<PixivFeedStore>() ? widget.scrollController : null,
+            scrollController: store == context.read<PixivFeedStore>()
+                ? widget.scrollController
+                : null,
             onRefresh: store.refresh,
             loadingMore: store.loadingMore,
           ),
