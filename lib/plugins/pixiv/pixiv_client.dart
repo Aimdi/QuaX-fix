@@ -43,11 +43,15 @@ class PixivClient {
   final BasePrefService prefs;
   final DateTime Function() clock;
 
+  /// Coalesces concurrent refresh calls — opening Following + Ranking used to
+  /// stampede the token endpoint and stack several 15s timeouts.
+  Future<PixivAuthUser>? _refreshInFlight;
+
   PixivClient(this.prefs, {http.Client? httpClient, DateTime Function()? clock})
     : httpClient = httpClient ?? http.Client(),
       clock = clock ?? DateTime.now;
 
-  static const _timeout = Duration(seconds: 25);
+  static const _timeout = Duration(seconds: 15);
   static const _apiBase = 'https://app-api.pixiv.net';
   static const _userAgent = 'PixivAndroidApp/5.0.234 (Android 11; Pixel 5)';
 
@@ -167,6 +171,23 @@ class PixivClient {
 
   /// Exchanges the refresh token; stores access token + expiry; returns the user.
   Future<PixivAuthUser> refreshAccessToken() async {
+    final inFlight = _refreshInFlight;
+    if (inFlight != null) {
+      return inFlight;
+    }
+
+    final started = _refreshAccessTokenBody();
+    _refreshInFlight = started;
+    try {
+      return await started;
+    } finally {
+      if (identical(_refreshInFlight, started)) {
+        _refreshInFlight = null;
+      }
+    }
+  }
+
+  Future<PixivAuthUser> _refreshAccessTokenBody() async {
     if (_refreshToken.isEmpty) {
       throw PixivException(PixivErrorKind.notConfigured, 'no refresh token');
     }
@@ -233,6 +254,25 @@ class PixivClient {
     }
     await refreshAccessToken();
     return (prefs.get<String>(optionPluginPixivAccessToken) ?? '').trim();
+  }
+
+  /// Warms a usable access token without forcing a refresh when one is still valid.
+  Future<void> ensureAccessToken() async {
+    await _accessToken();
+  }
+
+  /// User id for bookmarks — prefers the stored id, refreshes only when missing.
+  Future<int> ensureUserId() async {
+    await _accessToken();
+    final existing = storedUserId;
+    if (existing != null) {
+      return existing;
+    }
+    final user = await refreshAccessToken();
+    if (user.id == 0) {
+      throw PixivException(PixivErrorKind.badResponse, 'token user has no id');
+    }
+    return user.id;
   }
 
   /// Confirms the refresh token still works.

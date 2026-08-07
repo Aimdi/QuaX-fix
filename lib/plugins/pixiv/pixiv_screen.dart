@@ -73,7 +73,10 @@ class _PixivScreenState extends State<PixivScreen>
           .trim()
           .isNotEmpty;
       if (hasToken) {
-        context.read<PixivFeedStore>().refresh();
+        // Warm the token once so the first feed call does not serialise behind
+        // a cold refresh, and concurrent tab loads share one in-flight refresh.
+        unawaited(context.read<PixivClient>().ensureAccessToken());
+        unawaited(context.read<PixivFeedStore>().refresh());
       }
     });
   }
@@ -81,11 +84,9 @@ class _PixivScreenState extends State<PixivScreen>
   PixivIllustPageLoader _bookmarksLoader(String restrict) {
     return ({nextUrl}) async {
       final client = context.read<PixivClient>();
-      var userId = client.storedUserId;
-      if (userId == null) {
-        final user = await client.verify();
-        userId = user.id;
-      }
+      // Prefer the stored id — verify() always hits the token endpoint and made
+      // the Bookmarks tab feel like it loaded forever on every open.
+      final userId = await client.ensureUserId();
       return client.bookmarks(
         userId: userId,
         restrict: restrict,

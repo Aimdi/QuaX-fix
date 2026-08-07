@@ -18,6 +18,9 @@ galleries smooth — **no code copied**.
 6. **Illust open** — parallel detail + related; Hero from tile; seed stays up.
 7. **Tabs** — keep-alive so Ranking/Bookmarks don’t drop scroll/decodes.
 8. **Mute rebuilds** — drop animated `.transition` on the grid mute builder.
+9. **No forever spinners** — image `timeLimit`, token refresh single-flight,
+   bookmarks without forced `verify()`, parallel search/user loads, skip fully
+   filtered empty pages so R18/mute cannot leave a blank feed.
 
 ## Out of scope
 
