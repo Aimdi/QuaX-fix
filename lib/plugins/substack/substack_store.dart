@@ -126,6 +126,56 @@ class SubstackReadStore extends Store<Set<String>> {
   bool isRead(String id) => state.contains(id);
 }
 
+/// Hearts that stay on this device — Substack is never told (like Threads likes).
+class SubstackLikesStore extends Store<List<SubstackPost>> {
+  final BasePrefService prefs;
+
+  SubstackLikesStore(this.prefs) : super(const []);
+
+  Future<void> load() async {
+    await execute(() async => SubstackPost.listFromPrefs(prefs.get(optionPluginSubstackLikedPosts)));
+  }
+
+  bool isLiked(String id) => state.any((p) => p.id == id);
+
+  Future<void> toggle(SubstackPost post) async {
+    if (post.id.isEmpty) return;
+    await execute(() async {
+      final next = isLiked(post.id)
+          ? state.where((p) => p.id != post.id).toList()
+          : [post, ...state.where((p) => p.id != post.id)];
+      final capped = next.take(substackLikedPostsCap).toList();
+      await prefs.set(optionPluginSubstackLikedPosts, SubstackPost.listToPrefs(capped));
+      return capped;
+    });
+  }
+}
+
+/// Bookmarks that stay on this device — the Substack-app Save stand-in.
+class SubstackSavedStore extends Store<List<SubstackPost>> {
+  final BasePrefService prefs;
+
+  SubstackSavedStore(this.prefs) : super(const []);
+
+  Future<void> load() async {
+    await execute(() async => SubstackPost.listFromPrefs(prefs.get(optionPluginSubstackSavedPosts)));
+  }
+
+  bool isSaved(String id) => state.any((p) => p.id == id);
+
+  Future<void> toggle(SubstackPost post) async {
+    if (post.id.isEmpty) return;
+    await execute(() async {
+      final next = isSaved(post.id)
+          ? state.where((p) => p.id != post.id).toList()
+          : [post, ...state.where((p) => p.id != post.id)];
+      final capped = next.take(substackSavedPostsCap).toList();
+      await prefs.set(optionPluginSubstackSavedPosts, SubstackPost.listToPrefs(capped));
+      return capped;
+    });
+  }
+}
+
 class SubstackFeedStore extends Store<SubstackFeedSnapshot> {
   final SubstackClient client;
   final SubstackPublicationsStore publications;
@@ -138,6 +188,9 @@ class SubstackFeedStore extends Store<SubstackFeedSnapshot> {
   SubstackFeedStore(this.client, this.publications) : super(const SubstackFeedSnapshot());
 
   SubstackFeedFilter get filter => _filter;
+
+  /// Unfiltered merged posts (Home chips / Inbox read from this).
+  List<SubstackPost> get allPosts => _allPosts;
 
   Future<void> refresh() async {
     _offset = 0;

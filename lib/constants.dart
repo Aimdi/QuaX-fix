@@ -155,8 +155,12 @@ const optionPluginSubstackEnabled = 'plugin.substack.enabled';
 const optionPluginSubstackShowTab = 'plugin.substack.show_tab';
 const optionPluginSubstackPublications = 'plugin.substack.publications';
 const optionPluginSubstackReadIds = 'plugin.substack.read_ids';
+const optionPluginSubstackLikedPosts = 'plugin.substack.liked_posts';
+const optionPluginSubstackSavedPosts = 'plugin.substack.saved_posts';
 const substackFeedPageSize = 8;
 const substackReadIdsCap = 400;
+const substackLikedPostsCap = 400;
+const substackSavedPostsCap = 200;
 
 /// Threads — public guest reads by default; optional session / RSSHub / Xy.
 ///

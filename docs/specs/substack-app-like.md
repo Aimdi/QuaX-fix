@@ -21,9 +21,13 @@ shell, not a generic list bolted onto XTA.
 4. **Publication page hero** — logo, name, optional description, Follow.
 5. **Mark all read** — app-bar action on Home when there are unread posts.
 
+## Follow-up (internal substitutes)
+
+See `docs/specs/substack-internal-substitutes.md`: Inbox + Library tabs,
+local like/save, in-app Notes reader. Still no Substack login or write APIs.
+
 ## Out of scope
 
-- Inbox / Profile tabs (need Substack account)
-- Personalized Following Notes
-- Compose / react / restack
+- Personalized Following Notes (session)
+- Compose / react / restack **to Substack**
 - DB schema for description (fetch on open is enough)

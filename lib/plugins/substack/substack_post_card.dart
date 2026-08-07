@@ -79,10 +79,8 @@ class SubstackPostCard extends StatelessWidget {
                           ),
                         ),
                       ],
-                      if ((post.reactionCount ?? 0) > 0 || (post.commentCount ?? 0) > 0) ...[
-                        const SizedBox(height: 10),
-                        _counts(context),
-                      ],
+                      const SizedBox(height: 10),
+                      _counts(context),
                     ],
                   ),
                 ),
@@ -158,21 +156,66 @@ class SubstackPostCard extends StatelessWidget {
     final theme = Theme.of(context);
     final muted = theme.colorScheme.onSurfaceVariant;
     final style = theme.textTheme.bodySmall!.copyWith(color: muted);
+    final likes = context.read<SubstackLikesStore>();
+    final saved = context.read<SubstackSavedStore>();
 
-    return Row(
-      children: [
-        if ((post.reactionCount ?? 0) > 0) ...[
-          Icon(Icons.favorite_outline, size: 15, color: muted),
-          const SizedBox(width: 4),
-          Text('${post.reactionCount}', style: style),
-        ],
-        if ((post.reactionCount ?? 0) > 0 && (post.commentCount ?? 0) > 0) const SizedBox(width: 14),
-        if ((post.commentCount ?? 0) > 0) ...[
-          Icon(Icons.mode_comment_outlined, size: 15, color: muted),
-          const SizedBox(width: 4),
-          Text('${post.commentCount}', style: style),
-        ],
-      ],
+    return ScopedBuilder<SubstackLikesStore, List<SubstackPost>>(
+      store: likes,
+      onState: (context, liked) {
+        final isLiked = liked.any((p) => p.id == post.id);
+        final remote = post.reactionCount ?? 0;
+        final shown = remote + (isLiked ? 1 : 0);
+
+        return ScopedBuilder<SubstackSavedStore, List<SubstackPost>>(
+          store: saved,
+          onState: (context, savedPosts) {
+            final isSaved = savedPosts.any((p) => p.id == post.id);
+            return Row(
+              children: [
+                InkWell(
+                  onTap: () => likes.toggle(post),
+                  borderRadius: BorderRadius.circular(16),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    child: Row(
+                      children: [
+                        Icon(
+                          isLiked ? Icons.favorite : Icons.favorite_outline,
+                          size: 16,
+                          color: isLiked ? theme.colorScheme.primary : muted,
+                        ),
+                        if (shown > 0) ...[
+                          const SizedBox(width: 4),
+                          Text('$shown', style: style),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                InkWell(
+                  onTap: () => saved.toggle(post),
+                  borderRadius: BorderRadius.circular(16),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    child: Icon(
+                      isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                      size: 16,
+                      color: isSaved ? theme.colorScheme.primary : muted,
+                    ),
+                  ),
+                ),
+                if ((post.commentCount ?? 0) > 0) ...[
+                  const SizedBox(width: 14),
+                  Icon(Icons.mode_comment_outlined, size: 15, color: muted),
+                  const SizedBox(width: 4),
+                  Text('${post.commentCount}', style: style),
+                ],
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
