@@ -89,6 +89,7 @@ class _StatusScreenState extends State<_StatusScreen> {
   final _scrollController = AutoScrollController();
 
   final _seenAlready = <String>{};
+  final _seenTweetIds = <String>{};
   bool _firstLoadStarted = false;
 
   /// Set once paging ends while X is still withholding replies behind its
@@ -217,7 +218,10 @@ class _StatusScreenState extends State<_StatusScreen> {
   }
 
   bool _shouldCacheThread(TweetStatus result) {
-    if (TimelineParser.hasRepliesOrShowMore(result, widget.id)) {
+    // Cache when the page is usable offline: visible replies, or a show-more
+    // cursor we can follow. A bare bottom cursor is not enough — that would
+    // stick a focal-only preview for the cache window.
+    if (TimelineParser.hasVisibleReplies(result, widget.id) || result.cursorShowMore != null) {
       return true;
     }
     final count = _replyCountOn(result) ?? widget.initialTweet?.replyCount ?? 0;
@@ -236,30 +240,71 @@ class _StatusScreenState extends State<_StatusScreen> {
   }
 
   Future<CursorPage<String, TweetChain>> _fetchPage(String? cursor) async {
+    if (cursor == null) {
+      _seenAlready.clear();
+      _seenTweetIds.clear();
+    }
+
     var result = cursor == null ? await _fetchFirstPage() : await Twitter.getTweet(widget.id, cursor: cursor);
 
-    // Cursor didn't advance on a later page -> nothing new, drop the page.
+    // Cursor didn't advance and there are no new tweets -> stop. Still accept
+    // the page when TimelineAddToModule appended replies under a repeated
+    // bottom cursor (X does that on follow-up TweetDetail pages).
     if (cursor != null && result.cursorBottom == cursor) {
-      return (items: const <TweetChain>[], nextCursor: null);
+      final hasNew = result.chains.any(
+        (c) => c.tweets.any((t) => t.idStr != null && t.idStr!.isNotEmpty && !_seenTweetIds.contains(t.idStr)),
+      );
+      if (!hasNew) {
+        return (items: const <TweetChain>[], nextCursor: null);
+      }
     }
 
-    // Twitter sometimes sends the original replies with all pages, so we need to manually exclude ones that we've already seen
-    var chains = result.chains.skipWhile((element) => _seenAlready.contains(element.id)).toList();
-
-    for (var chain in chains) {
+    // X often resends earlier replies on later pages — drop tweets we already
+    // have. Follow-up `TimelineAddToModule` pages also append *new* tweets under
+    // an already-seen conversationthread id; those must still be kept (with a
+    // unique chain id so list keys stay unique).
+    final chains = <TweetChain>[];
+    for (final chain in result.chains) {
+      final fresh = chain.tweets.where((t) {
+        final id = t.idStr;
+        return id != null && id.isNotEmpty && !_seenTweetIds.contains(id);
+      }).toList();
+      if (fresh.isEmpty) {
+        continue;
+      }
+      final chainId = _seenAlready.contains(chain.id) ? '${chain.id}-${fresh.first.idStr}' : chain.id;
+      chains.add(TweetChain(id: chainId, tweets: fresh, isPinned: chain.isPinned));
       _seenAlready.add(chain.id);
+      _seenAlready.add(chainId);
+      for (final tweet in fresh) {
+        _seenTweetIds.add(tweet.idStr!);
+      }
     }
+
+    final expected = _replyCountOn(result) ?? widget.initialTweet?.replyCount ?? 0;
+    final visibleReplies = TimelineParser.hasVisibleReplies(result, widget.id);
 
     // On the first page (null cursor), anchor the view on the opened tweet.
     if (cursor == null) {
       _scrollToFocalTweet(chains);
-      final expected = _replyCountOn(result) ?? widget.initialTweet?.replyCount ?? 0;
-      _repliesMissing = expected > 0 && !TimelineParser.hasRepliesOrShowMore(result, widget.id);
+      _repliesMissing = expected > 0 && !visibleReplies && result.cursorShowMore == null && result.cursorBottom == null;
+    } else if (visibleReplies) {
+      // A later page (or show-more follow-up) delivered replies — drop retry.
+      _repliesMissing = false;
     }
 
     // No new tweets returned, or the cursor doesn't advance -> stop pagination.
-    final next = result.cursorBottom;
-    final stop = chains.isEmpty || next == null || next == cursor;
+    var next = result.cursorBottom;
+    var stop = chains.isEmpty || next == null || next == cursor;
+
+    // First page withheld every reply behind show-more: follow that cursor as
+    // the next page so the reader is not stuck on a blank thread with a count.
+    if (cursor == null && !visibleReplies && expected > 0 && result.cursorShowMore != null) {
+      next = result.cursorShowMore;
+      stop = false;
+      _showMoreCursor = null;
+      return (items: chains, nextCursor: next);
+    }
 
     // Only offer the prompt where the thread actually ends, and never offer the
     // cursor we just followed — otherwise the button reloads the same replies.
@@ -284,6 +329,7 @@ class _StatusScreenState extends State<_StatusScreen> {
       _showMoreCursor = null;
       _bypassThreadCache = true;
       _seenAlready.clear();
+      _seenTweetIds.clear();
       _firstLoadStarted = false;
     });
     _pagingController.refresh();
@@ -388,8 +434,18 @@ class _StatusScreenState extends State<_StatusScreen> {
   // Zen mode: only the opened post (and the posts above it in the thread) are
   // shown; the replies below stay hidden until deliberately revealed.
   Widget _buildZenConversation(BuildContext context, List<TweetChain> chains) {
+    // Keep paging while replies are collapsed — otherwise a first page that only
+    // carries the focal post + a bottom/show-more cursor never loads replies
+    // until the reader reveals (and even then only after another scroll).
+    final paging = _pagingController.value;
+    if (paging.hasNextPage) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _pagingController.fetchNextPage();
+      });
+    }
+
     if (chains.isEmpty) {
-      final error = pagingErrorOf(_pagingController.value);
+      final error = pagingErrorOf(paging);
       if (error != null) {
         return FullPageErrorWidget(
           error: error.error,
@@ -398,7 +454,7 @@ class _StatusScreenState extends State<_StatusScreen> {
           onRetry: _pagingController.fetchNextPage,
         );
       }
-      if (_pagingController.value.status == PagingStatus.noItemsFound) {
+      if (paging.status == PagingStatus.noItemsFound) {
         return Center(child: Text(L10n.of(context).could_not_find_any_tweets_by_this_user));
       }
       return const Center(child: CircularProgressIndicator());

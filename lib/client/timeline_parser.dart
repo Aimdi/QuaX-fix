@@ -84,20 +84,35 @@ class TimelineParser {
     final items = entry?['content']?['items'] as List<dynamic>? ?? const [];
 
     return items
-        .where((item) => !skipPromoted || isNotPromoted(item))
-        .where((item) => item?['item']?['itemContent']?['itemType'] == 'TimelineTweet')
+        .where((item) => !skipPromoted || (item is Map && isNotPromoted(Map<String, dynamic>.from(item))))
+        .where(_isConversationTweetItem)
         .where(_carriesResult)
         .map(_conversationTweet)
         .toList();
+  }
+
+  /// TimelineTweet items, or items that omitted `itemType` but still carry a
+  /// tweet result — X has shipped both shapes inside conversation modules.
+  static bool _isConversationTweetItem(dynamic item) {
+    if (item is! Map) {
+      return false;
+    }
+    final itemType = item['item']?['itemContent']?['itemType'] as String?;
+    if (itemType == null) {
+      return _carriesResult(item);
+    }
+    return itemType == 'TimelineTweet';
   }
 
   /// Whether X answered for this position at all. An entry with no `result` is a
   /// shape we do not recognise rather than a reply being withheld, so it stays
   /// skipped — matching how `tweet-` entries are already treated.
   static bool _carriesResult(dynamic item) {
-    final results = item?['item']?['itemContent']?['tweet_results'];
-
-    return results is Map<String, dynamic> && results.containsKey('result');
+    if (item is! Map) {
+      return false;
+    }
+    final map = _asStringKeyedMap(item['item']?['itemContent']?['tweet_results']);
+    return map != null && map.containsKey('result');
   }
 
   /// A reply X refused to give us still occupies a position in the thread, so it
@@ -150,11 +165,12 @@ class TimelineParser {
         }
       }
 
-      if (entryId.startsWith('cursor-bottom') || entryId.startsWith('cursor-showMore')) {
-        // TODO: Use as the "next page" cursor
+      final entryIdLower = entryId.toLowerCase();
+      if (entryIdLower.startsWith('cursor-bottom') || entryIdLower.contains('showmore')) {
+        // Handled by getCursor / getShowMoreCursor — not chains.
       }
 
-      if (entryId.startsWith('conversationthread')) {
+      if (entryIdLower.startsWith('conversationthread')) {
         final tweets = _conversationTweets(entry, skipPromoted: true);
         // Modules that only carry a nested show-more cursor (no TimelineTweet
         // items) used to become empty chains and hide the prompt — skip them.
@@ -163,7 +179,7 @@ class TimelineParser {
         }
         replies.add(
           TweetChain(
-            id: entryId.replaceFirst('conversationthread-', ''),
+            id: entryId.replaceFirst(RegExp(r'^conversationthread-', caseSensitive: false), ''),
             tweets: tweets,
             isPinned: false,
           ),
@@ -172,6 +188,77 @@ class TimelineParser {
     }
 
     return replies;
+  }
+
+  /// Replies delivered on a later TweetDetail page via `TimelineAddToModule`.
+  ///
+  /// Follow-up pages often omit a fresh `TimelineAddEntries` list and only append
+  /// module items (`conversationthread-…-tweet-…`). Ignoring those left the
+  /// status screen stuck on the focal post after the first page.
+  static List<TweetChain> chainsFromModuleItems(List<dynamic> moduleItems) {
+    final byThread = <String, List<TweetWithCard>>{};
+
+    for (final item in moduleItems) {
+      if (!_isConversationTweetItem(item) || !_carriesResult(item)) {
+        continue;
+      }
+      final entryId = (item is Map ? item['entryId'] as String? : null) ?? '';
+      final entryIdLower = entryId.toLowerCase();
+      // Prefer the conversation-thread id when X uses the usual module shape;
+      // fall back to the tweet id so a bare `tweet-…` module item is not dropped.
+      final threadId = entryIdLower.startsWith('conversationthread') && entryIdLower.contains('-tweet-')
+          ? _moduleThreadId(entryId)
+          : (_itemTweetId(item) ?? entryId);
+      if (threadId.isEmpty) {
+        continue;
+      }
+      byThread.putIfAbsent(threadId, () => []).add(_conversationTweet(item));
+    }
+
+    return [
+      for (final entry in byThread.entries) TweetChain(id: entry.key, tweets: entry.value, isPinned: false),
+    ];
+  }
+
+  /// `conversationthread-{thread}-tweet-{id}` → `{thread}`.
+  static String _moduleThreadId(String entryId) {
+    final match = RegExp(r'^conversationthread-(.+?)-tweet-', caseSensitive: false).firstMatch(entryId);
+    return match?.group(1) ?? entryId;
+  }
+
+  /// Show-more cursors nested in `TimelineAddToModule` items (same shapes as
+  /// [getShowMoreCursor]'s nested scan).
+  static String? getShowMoreCursorFromModuleItems(List<dynamic> moduleItems) {
+    return _moduleItemCursor(moduleItems, (id) => id.toLowerCase().contains('showmore'));
+  }
+
+  /// Bottom / next-page cursors nested in `TimelineAddToModule` (later pages
+  /// sometimes advance the cursor here instead of via `TimelineAddEntries`).
+  static String? getBottomCursorFromModuleItems(List<dynamic> moduleItems) {
+    return _moduleItemCursor(
+      moduleItems,
+      (id) {
+        final lower = id.toLowerCase();
+        return lower.contains('cursor-bottom') || lower.endsWith('-bottom') || lower.contains('cursorbottom');
+      },
+    );
+  }
+
+  static String? _moduleItemCursor(List<dynamic> moduleItems, bool Function(String entryId) matchId) {
+    for (final item in moduleItems) {
+      final itemMap = _asStringKeyedMap(item);
+      final id = itemMap?['entryId'] as String?;
+      if (id == null || !matchId(id)) {
+        continue;
+      }
+      final itemInner = _asStringKeyedMap(itemMap?['item']);
+      final nested =
+          _cursorValue(itemInner?['itemContent']) ?? _cursorValue(itemInner) ?? _cursorValue(itemMap?['content']);
+      if (nested != null) {
+        return nested;
+      }
+    }
+    return null;
   }
 
   static List<TweetChain> createTweets(List<dynamic> addEntries, [bool isPinned = false]) {
@@ -305,17 +392,38 @@ class TimelineParser {
     return null;
   }
 
+  /// Whether [status] already shows replies under [focalTweetId].
+  ///
+  /// Counts tweets that appear after the focal post — either later in the same
+  /// chain (self-thread / stacked replies) or in subsequent chains. Ancestors
+  /// above the focal post do not count.
+  static bool hasVisibleReplies(TweetStatus status, String focalTweetId) {
+    var seenFocal = false;
+    for (final chain in status.chains) {
+      for (final tweet in chain.tweets) {
+        if (!seenFocal) {
+          if (tweet.idStr == focalTweetId) {
+            seenFocal = true;
+          }
+          continue;
+        }
+        if (tweet.idStr != null && tweet.idStr!.isNotEmpty) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   /// Whether [status] already shows replies under [focalTweetId], or still has
-  /// a show-more cursor that can load them. Used to avoid caching a focal-only
-  /// page that would hide replies on the next open.
+  /// a cursor (show-more or bottom) that can load them. Used to avoid caching a
+  /// focal-only page that would hide replies on the next open — and to decide
+  /// whether the status screen should offer retry.
   static bool hasRepliesOrShowMore(TweetStatus status, String focalTweetId) {
-    if (status.cursorShowMore != null) {
+    if (status.cursorShowMore != null || status.cursorBottom != null) {
       return true;
     }
-
-    final focalIndex = status.chains.indexWhere((c) => c.tweets.any((t) => t.idStr == focalTweetId));
-    final afterFocal = focalIndex < 0 ? status.chains : status.chains.skip(focalIndex + 1);
-    return afterFocal.any((c) => c.tweets.isNotEmpty);
+    return hasVisibleReplies(status, focalTweetId);
   }
 
   /// The three shapes a cursor entry's `content` has taken across X's revisions.
