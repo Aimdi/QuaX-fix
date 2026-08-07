@@ -41,9 +41,12 @@ No write scopes; local follow + local upvote stay on-device.
 | Subreddit / user listing screens | Yes |
 | Comments / thread screen | Yes (HTML scrape; `more` stubs still skipped) |
 | Search (posts / subreddits / users) | Yes |
-| Sort UI (hot / new / top / rising / controversial) | Yes |
-| Media galleries, flairs, NSFW blur | Yes (JSON path richer than scrape) |
+| Discovery feeds | Yes — Following / Popular / All |
+| Sort UI (hot / new / top / rising / controversial) | Yes, including `t=` windows for top / controversial |
+| Media galleries, flairs, NSFW / spoiler gates | Yes (JSON path richer than scrape) |
+| NSFW display preference | Yes — hide / tap-to-show / always show |
 | Local-only upvote | Yes |
+| Local-only saved posts | Yes — pref snapshots capped on-device |
 | Optional sign-in + client id | Yes |
 | Home / group interleave | Yes (opt-in; uses shared read session) |
 | Plugin store / tab / settings | Yes |
@@ -65,11 +68,9 @@ publicly.
 
 - Comment `more` expansion / collapse / markdown
 - Search / user posts / icons still scrape publicly (OAuth wiring follow-up)
-- Top/controversial time window (`t=`)
-- Scrape/OAuth media parity; gallery pager; NSFW show/hide/blur choice
-  (same-file preview/i.redd.it width variants are collapsed — no more
-  low+high double display)
-- User profile beyond submitted posts; local saved Reddit posts
+- Scrape/OAuth media parity; gallery pager (same-file preview/i.redd.it width
+  variants are collapsed — no more low+high double display)
+- User profile beyond submitted posts
 - Followed-tab (`RedditFeedStore`) pagination — listing screens paginate via
   `after`; the merged followed feed still loads first pages only
 

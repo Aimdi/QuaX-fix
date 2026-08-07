@@ -25,13 +25,18 @@ const double kRedditGalleryAspectRatio = 1;
 /// The shape of the tile that stands in for content nobody has asked to see.
 const double kRedditSensitiveAspectRatio = 4 / 3;
 
+enum RedditSensitiveGateKind { nsfw, spoiler }
+
 /// A shape that is safe to lay a card out around.
 ///
 /// Reddit reports a size for its own videos and nothing else, so [reported] is
 /// usually null. Whatever arrives is bounded at both ends: a 9:21 phone
 /// recording is not allowed to take three screens, and a 32:9 panorama is not
 /// allowed to become a hairline.
-double redditMediaAspectRatio(double? reported, {double fallback = kRedditMediaMaxAspectRatio}) {
+double redditMediaAspectRatio(
+  double? reported, {
+  double fallback = kRedditMediaMaxAspectRatio,
+}) {
   if (reported == null || !reported.isFinite || reported <= 0) {
     return fallback;
   }
@@ -55,14 +60,23 @@ class RedditMediaFrame extends StatelessWidget {
   final double maxHeight;
   final Widget child;
 
-  const RedditMediaFrame({super.key, this.aspectRatio, this.maxHeight = kRedditMediaMaxHeight, required this.child});
+  const RedditMediaFrame({
+    super.key,
+    this.aspectRatio,
+    this.maxHeight = kRedditMediaMaxHeight,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
     final painted = Stack(
       fit: StackFit.passthrough,
       children: [
-        Positioned.fill(child: ColoredBox(color: Theme.of(context).colorScheme.surfaceContainerHighest)),
+        Positioned.fill(
+          child: ColoredBox(
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          ),
+        ),
         child,
       ],
     );
@@ -74,7 +88,10 @@ class RedditMediaFrame extends StatelessWidget {
       child: ratio != null
           ? AspectRatio(aspectRatio: ratio, child: painted)
           : ConstrainedBox(
-              constraints: BoxConstraints(minHeight: kRedditMediaMinHeight, maxHeight: maxHeight),
+              constraints: BoxConstraints(
+                minHeight: kRedditMediaMinHeight,
+                maxHeight: maxHeight,
+              ),
               // The width is taken rather than asked for: an opened post lays
               // its column out left-aligned, and without this a portrait photo
               // would shrink to a narrow strip there while filling the card in
@@ -94,6 +111,8 @@ class RedditSensitiveGate extends StatefulWidget {
   /// Whether the post is marked over-18.
   final bool sensitive;
 
+  final RedditSensitiveGateKind kind;
+
   /// The post this stands in front of. A feed recycles its cards, and the
   /// reveal must not survive being handed a different post.
   final String revealKey;
@@ -108,6 +127,7 @@ class RedditSensitiveGate extends StatefulWidget {
     required this.sensitive,
     required this.revealKey,
     required this.child,
+    this.kind = RedditSensitiveGateKind.nsfw,
     this.aspectRatio = kRedditSensitiveAspectRatio,
   });
 
@@ -123,7 +143,8 @@ class _RedditSensitiveGateState extends State<RedditSensitiveGate> {
     super.didUpdateWidget(old);
     // Same element, different post: carrying "shown" across that took the
     // cover off a picture nobody had asked to see.
-    if (old.revealKey != widget.revealKey || old.sensitive != widget.sensitive) {
+    if (old.revealKey != widget.revealKey ||
+        old.sensitive != widget.sensitive) {
       _revealed = !widget.sensitive;
     }
   }
@@ -162,13 +183,19 @@ class _RedditSensitiveGateState extends State<RedditSensitiveGate> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.visibility_off_outlined, color: theme.colorScheme.onSurfaceVariant),
+                        Icon(_icon, color: theme.colorScheme.onSurfaceVariant),
                         const SizedBox(height: 8),
-                        Text(l10n.possibly_sensitive, textAlign: TextAlign.center, style: theme.textTheme.titleSmall),
                         Text(
-                          l10n.tap_to_show_getMediaType_item_type(l10n.media),
+                          _label(l10n),
                           textAlign: TextAlign.center,
-                          style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                          style: theme.textTheme.titleSmall,
+                        ),
+                        Text(
+                          _description(l10n),
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodySmall!.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
                       ],
                     ),
@@ -181,4 +208,21 @@ class _RedditSensitiveGateState extends State<RedditSensitiveGate> {
       ),
     );
   }
+
+  IconData get _icon => switch (widget.kind) {
+    RedditSensitiveGateKind.nsfw => Icons.visibility_off_outlined,
+    RedditSensitiveGateKind.spoiler => Icons.warning_amber_outlined,
+  };
+
+  String _label(L10n l10n) => switch (widget.kind) {
+    RedditSensitiveGateKind.nsfw => l10n.possibly_sensitive,
+    RedditSensitiveGateKind.spoiler => l10n.plugin_reddit_spoiler,
+  };
+
+  String _description(L10n l10n) => switch (widget.kind) {
+    RedditSensitiveGateKind.nsfw => l10n.tap_to_show_getMediaType_item_type(
+      l10n.media,
+    ),
+    RedditSensitiveGateKind.spoiler => l10n.plugin_reddit_tap_to_show_spoiler,
+  };
 }

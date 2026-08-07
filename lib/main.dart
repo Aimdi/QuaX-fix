@@ -4,7 +4,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:flutter/foundation.dart' show LicenseEntryWithLineBreaks, LicenseRegistry, kReleaseMode;
+import 'package:flutter/foundation.dart'
+    show LicenseEntryWithLineBreaks, LicenseRegistry, kReleaseMode;
 import 'package:flutter/cupertino.dart' show CupertinoLocalizations;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -101,7 +102,9 @@ Future checkForUpdates(BuildContext context) async {
   client.userAgent =
       "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36";
 
-  final request = await client.getUrl(Uri.parse('https://api.github.com/repos/$githubRepo/releases/latest'));
+  final request = await client.getUrl(
+    Uri.parse('https://api.github.com/repos/$githubRepo/releases/latest'),
+  );
   final response = await request.close();
 
   if (response.statusCode == 200) {
@@ -124,7 +127,10 @@ Future checkForUpdates(BuildContext context) async {
               title: Text(L10n.of(context).an_update_for_fritter_is_available),
               content: Text(L10n.of(context).view_version_on_github(latestTag)),
               actions: [
-                TextButton(child: Text(L10n.of(context).dismiss), onPressed: () => Navigator.of(context).pop()),
+                TextButton(
+                  child: Text(L10n.of(context).dismiss),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
                 TextButton(
                   child: Text(L10n.of(context).view_on_github),
                   onPressed: () async {
@@ -157,7 +163,10 @@ Future checkForAccounts(BuildContext context) async {
           actions: [
             // A way out that is not signing in. The app does try as a guest, so
             // dismissing this is a real choice rather than a refusal to start.
-            TextButton(child: Text(L10n.of(context).cancel), onPressed: () => Navigator.of(context).pop()),
+            TextButton(
+              child: Text(L10n.of(context).cancel),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
             TextButton(
               child: Text(L10n.of(context).import_backup),
               onPressed: () async {
@@ -171,7 +180,12 @@ Future checkForAccounts(BuildContext context) async {
               child: Text(L10n.of(context).login),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const TwitterLoginWebview()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const TwitterLoginWebview(),
+                  ),
+                );
               },
             ),
           ],
@@ -278,7 +292,9 @@ Future<void> _migrateMediaQualityPrefs(BasePrefService prefs) async {
   final previous = prefs.get<String>(optionImageQuality);
   final disabled = previous == 'disabled';
   // The old "disabled" value carried no real quality, so fall back to Maximum.
-  final quality = disabled ? MediaQuality.large.stored : (previous ?? MediaQuality.medium.stored);
+  final quality = disabled
+      ? MediaQuality.large.stored
+      : (previous ?? MediaQuality.medium.stored);
 
   await prefs.set(optionMediaDisableAutoload, disabled);
   await prefs.set(optionImageQuality, quality);
@@ -316,27 +332,31 @@ const List<LocalizationsDelegate<dynamic>> xtaLocalizationsDelegates = [
 /// `MaterialLocalizations.of` with nothing to return and every Scaffold threw
 /// "No MaterialLocalizations found". The app's own strings stay translated;
 /// only the framework's own widget strings fall back to English.
-class _EnglishMaterialFallback extends LocalizationsDelegate<MaterialLocalizations> {
+class _EnglishMaterialFallback
+    extends LocalizationsDelegate<MaterialLocalizations> {
   const _EnglishMaterialFallback();
 
   @override
   bool isSupported(Locale locale) => true;
 
   @override
-  Future<MaterialLocalizations> load(Locale locale) => GlobalMaterialLocalizations.delegate.load(const Locale('en'));
+  Future<MaterialLocalizations> load(Locale locale) =>
+      GlobalMaterialLocalizations.delegate.load(const Locale('en'));
 
   @override
   bool shouldReload(_EnglishMaterialFallback old) => false;
 }
 
-class _EnglishCupertinoFallback extends LocalizationsDelegate<CupertinoLocalizations> {
+class _EnglishCupertinoFallback
+    extends LocalizationsDelegate<CupertinoLocalizations> {
   const _EnglishCupertinoFallback();
 
   @override
   bool isSupported(Locale locale) => true;
 
   @override
-  Future<CupertinoLocalizations> load(Locale locale) => GlobalCupertinoLocalizations.delegate.load(const Locale('en'));
+  Future<CupertinoLocalizations> load(Locale locale) =>
+      GlobalCupertinoLocalizations.delegate.load(const Locale('en'));
 
   @override
   bool shouldReload(_EnglishCupertinoFallback old) => false;
@@ -461,6 +481,10 @@ Future<void> main() async {
       optionPluginThreadsInHomeFeed: false,
       optionPluginRedditShowTab: false,
       optionPluginRedditSort: redditSortHot,
+      optionPluginRedditTimeFilter: redditTimeFilterDay,
+      optionPluginRedditFeedMode: redditFeedModeFollowing,
+      optionPluginRedditNsfwMode: redditNsfwModeTap,
+      optionPluginRedditSavedPosts: '[]',
       optionPluginRedditSource: redditSourceAuto,
       optionPluginRedditSubreddits: '[]',
       optionPluginRedditRefreshToken: '',
@@ -577,8 +601,14 @@ Future<void> main() async {
     // body via KeyedSubtree, the inner feed reads fresh controllers from the
     // cache. LinkedHashMap iterates in insertion order, and registering here
     // (before any shell exists) guarantees we win.
-    groupsModel.addReloadListener('FeedSessionCache', feedSessionCache.invalidateAll);
-    subscriptionsModel.addReloadListener('FeedSessionCache', feedSessionCache.invalidateAll);
+    groupsModel.addReloadListener(
+      'FeedSessionCache',
+      feedSessionCache.invalidateAll,
+    );
+    subscriptionsModel.addReloadListener(
+      'FeedSessionCache',
+      feedSessionCache.invalidateAll,
+    );
 
     var trendLocationModel = UserTrendLocationModel(prefService);
 
@@ -590,7 +620,13 @@ Future<void> main() async {
     final redditAuth = RedditAuth();
     final redditSubreddits = RedditSubredditsStore(prefService);
     final redditVotes = RedditVotesStore();
-    final redditFeed = RedditFeedStore(redditClient, redditSubreddits, prefService, auth: redditAuth);
+    final redditSaved = RedditSavedStore(prefService);
+    final redditFeed = RedditFeedStore(
+      redditClient,
+      redditSubreddits,
+      prefService,
+      auth: redditAuth,
+    );
     final stocksWatchlist = StocksWatchlistStore();
     final speech = SpeechStore();
     final podcast = PodcastStore();
@@ -602,13 +638,22 @@ Future<void> main() async {
     final threadsApi = ThreadsApi();
     final threadsAccounts = ThreadsAccountsStore();
     final threadsLikes = ThreadsLikesStore();
-    final threadsFeed = ThreadsFeedStore(threadsClient, threadsDirect, prefService, threadsAccounts);
+    final threadsFeed = ThreadsFeedStore(
+      threadsClient,
+      threadsDirect,
+      prefService,
+      threadsAccounts,
+    );
     final blueskyClient = BlueskyClient();
     final blueskyAccounts = BlueskyAccountsStore();
     final blueskyFeed = BlueskyFeedStore(blueskyClient, blueskyAccounts);
     final mastodonClient = MastodonClient();
     final mastodonAccounts = MastodonAccountsStore();
-    final mastodonFeed = MastodonFeedStore(mastodonClient, prefService, mastodonAccounts);
+    final mastodonFeed = MastodonFeedStore(
+      mastodonClient,
+      prefService,
+      mastodonAccounts,
+    );
     final pixivClient = PixivClient(prefService);
     final pixivFeed = PixivFeedStore(pixivClient);
 
@@ -627,6 +672,7 @@ Future<void> main() async {
     if (prefService.get<bool>(optionPluginRedditEnabled) == true) {
       await redditSubreddits.load();
       unawaited(redditVotes.load());
+      unawaited(redditSaved.load());
     }
 
     await Future.wait([
@@ -636,12 +682,16 @@ Future<void> main() async {
         substackPublications.load(),
         substackRead.load(),
       ],
-      if (prefService.get<bool>(optionPluginStocksEnabled) == true) stocksWatchlist.load(),
-      if (prefService.get<bool>(optionPluginThreadsEnabled) == true) threadsAccounts.load(),
+      if (prefService.get<bool>(optionPluginStocksEnabled) == true)
+        stocksWatchlist.load(),
+      if (prefService.get<bool>(optionPluginThreadsEnabled) == true)
+        threadsAccounts.load(),
       // Local likes are tiny and used wherever a Threads card paints (tab or home).
       threadsLikes.load(),
-      if (prefService.get<bool>(optionPluginBlueskyEnabled) == true) blueskyAccounts.load(),
-      if (prefService.get<bool>(optionPluginMastodonEnabled) == true) mastodonAccounts.load(),
+      if (prefService.get<bool>(optionPluginBlueskyEnabled) == true)
+        blueskyAccounts.load(),
+      if (prefService.get<bool>(optionPluginMastodonEnabled) == true)
+        mastodonAccounts.load(),
     ]);
 
     runApp(
@@ -651,7 +701,9 @@ Future<void> main() async {
           providers: [
             Provider(create: (context) => groupsModel),
             Provider(create: (context) => feedSessionCache),
-            Provider(create: (context) => VideoControllerPool(maxSize: kVideoPoolSize)),
+            Provider(
+              create: (context) => VideoControllerPool(maxSize: kVideoPoolSize),
+            ),
             Provider(create: (context) => homeModel),
             ChangeNotifierProvider(create: (context) => importDataModel),
             Provider(create: (context) => subscriptionsModel),
@@ -670,19 +722,39 @@ Future<void> main() async {
             Provider(create: (_) => redditClient),
             Provider(create: (_) => redditIcons),
             Provider(create: (_) => redditVotes),
+            Provider(create: (_) => redditSaved),
             Provider(create: (_) => redditAuth),
             Provider(create: (_) => redditSubreddits),
             Provider(create: (_) => redditFeed),
             Provider(create: (_) => stocksWatchlist),
             Provider(create: (_) => speech),
             Provider(create: (_) => CombinedGroupsStore()),
-            Provider(create: (_) => FeedTabStore(feedTabFromId(prefService.get<String>(optionHomeDefaultFeedTab)))),
+            Provider(
+              create: (_) => FeedTabStore(
+                feedTabFromId(
+                  prefService.get<String>(optionHomeDefaultFeedTab),
+                ),
+              ),
+            ),
             Provider(create: (_) => HomeAccountFilterStore(prefService)),
             Provider(create: (_) => substackClient),
             Provider(create: (_) => substackPublications),
-            Provider(create: (context) => SubstackFeedStore(context.read<SubstackClient>(), substackPublications)),
-            Provider(create: (context) => SubstackAddPublicationStore(context.read<SubstackClient>())),
-            Provider(create: (context) => SubstackNotesStore(context.read<SubstackClient>(), substackPublications)),
+            Provider(
+              create: (context) => SubstackFeedStore(
+                context.read<SubstackClient>(),
+                substackPublications,
+              ),
+            ),
+            Provider(
+              create: (context) =>
+                  SubstackAddPublicationStore(context.read<SubstackClient>()),
+            ),
+            Provider(
+              create: (context) => SubstackNotesStore(
+                context.read<SubstackClient>(),
+                substackPublications,
+              ),
+            ),
             Provider(create: (_) => substackRead),
             Provider(create: (_) => threadsClient),
             Provider(create: (_) => threadsDirect),
@@ -698,7 +770,10 @@ Future<void> main() async {
             Provider(create: (_) => mastodonFeed),
             Provider(create: (_) => pixivClient),
             Provider(create: (_) => pixivFeed),
-            ChangeNotifierProvider(create: (_) => VideoContextState(prefService.get(optionMediaDefaultMute))),
+            ChangeNotifierProvider(
+              create: (_) =>
+                  VideoContextState(prefService.get(optionMediaDefaultMute)),
+            ),
           ],
           child: FritterApp(),
         ),
@@ -710,7 +785,9 @@ Future<void> main() async {
     // earliest a player can be built is a feed tile that has already fetched its
     // stream urls and been scrolled into view, which is several async hops after
     // this callback has run.
-    WidgetsBinding.instance.addPostFrameCallback((_) => MediaKit.ensureInitialized());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => MediaKit.ensureInitialized(),
+    );
   } catch (e, stackTrace) {
     log('Unable to start Fritter', error: e, stackTrace: stackTrace);
   }
@@ -724,7 +801,8 @@ class FritterApp extends StatefulWidget {
 }
 
 class _FritterAppState extends State<FritterApp> {
-  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>(); // NEW: Navigator key
+  final GlobalKey<NavigatorState> _navigatorKey =
+      GlobalKey<NavigatorState>(); // NEW: Navigator key
 
   String _xLookBackground = xLookBackgroundSystem;
   String _xLookAccent = xLookAccentBlue;
@@ -752,7 +830,10 @@ class _FritterAppState extends State<FritterApp> {
         } else {
           if (splitLocale[1].length == 4) {
             // 4 characters -> unicode_script_subtag
-            _locale = Locale.fromSubtags(languageCode: splitLocale[0], scriptCode: splitLocale[1]);
+            _locale = Locale.fromSubtags(
+              languageCode: splitLocale[0],
+              scriptCode: splitLocale[1],
+            );
           } else {
             // Other than 4 characters -> unicode_region_subtag (country)
             _locale = Locale(splitLocale[0], splitLocale[1]);
@@ -766,7 +847,10 @@ class _FritterAppState extends State<FritterApp> {
     // background; the retired presets have no equivalent and land on System.
     final storedPreset = prefService.get<String>(optionThemePreset);
     if (storedPreset != null && storedPreset != themePresetNone) {
-      prefService.set(optionXLookBackground, xLookBackgroundForPreset(storedPreset));
+      prefService.set(
+        optionXLookBackground,
+        xLookBackgroundForPreset(storedPreset),
+      );
       prefService.set(optionThemePreset, themePresetNone);
     }
 
@@ -805,7 +889,9 @@ class _FritterAppState extends State<FritterApp> {
       // Re-read rather than only rebuild: the value is held in a field, so a
       // rebuild alone would keep showing the answer from before the change —
       // including the one the reset above makes on this very launch.
-      setState(() => _checkUpdates = prefService.get(optionShouldCheckForUpdates));
+      setState(
+        () => _checkUpdates = prefService.get(optionShouldCheckForUpdates),
+      );
     });
 
     prefService.addKeyListener(optionLocale, () {
@@ -847,7 +933,8 @@ class _FritterAppState extends State<FritterApp> {
 
     prefService.addKeyListener(optionTextScaleFactor, () {
       setState(() {
-        _textScaleFactor = prefService.get<double?>(optionTextScaleFactor) ?? 1.0;
+        _textScaleFactor =
+            prefService.get<double?>(optionTextScaleFactor) ?? 1.0;
       });
     });
   }
@@ -863,12 +950,16 @@ class _FritterAppState extends State<FritterApp> {
           )
         : null;
 
-    final systemOverlayStyle = SystemUiOverlayStyle.dark.copyWith(systemNavigationBarColor: Colors.transparent);
+    final systemOverlayStyle = SystemUiOverlayStyle.dark.copyWith(
+      systemNavigationBarColor: Colors.transparent,
+    );
     SystemChrome.setSystemUIOverlayStyle(systemOverlayStyle);
     final systemScaleFactor = MediaQuery.textScalerOf(context).scale(1.0);
 
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(_textScaleFactor * systemScaleFactor)),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: TextScaler.linear(_textScaleFactor * systemScaleFactor),
+      ),
       child: DynamicColorBuilder(
         builder: (lightDynamic, darkDynamic) {
           return Portal(
@@ -880,8 +971,14 @@ class _FritterAppState extends State<FritterApp> {
                 supportedLocales: L10n.delegate.supportedLocales,
                 locale: _locale,
                 title: 'XTA',
-                theme: xLookThemeData(xLookTokensFor(xLookBackgroundLight, _xLookAccent), pageTransitions),
-                darkTheme: xLookThemeData(xLookDarkTokensFor(_xLookBackground, _xLookAccent), pageTransitions),
+                theme: xLookThemeData(
+                  xLookTokensFor(xLookBackgroundLight, _xLookAccent),
+                  pageTransitions,
+                ),
+                darkTheme: xLookThemeData(
+                  xLookDarkTokensFor(_xLookBackground, _xLookAccent),
+                  pageTransitions,
+                ),
                 themeMode: xLookThemeModeFor(_xLookBackground),
                 initialRoute: '/',
                 routes: {
@@ -891,7 +988,8 @@ class _FritterAppState extends State<FritterApp> {
                   routeSearch: (context) => const ResultsScreen(),
                   routeSavedFolders: (context) => const SavedFoldersScreen(),
                   routeSettings: (context) => const SettingsScreen(),
-                  routeSettingsExport: (context) => const SettingsExportScreen(),
+                  routeSettingsExport: (context) =>
+                      const SettingsExportScreen(),
                   routeSettingsHome: (context) => const SettingsHomeFragment(),
                   routeQuotes: (context) => const QuotesScreen(),
                   routeTicker: (context) => const TickerScreen(),
@@ -917,11 +1015,12 @@ class _FritterAppState extends State<FritterApp> {
                   }
 
                   // Replace the default red screen of death with a slightly friendlier one
-                  ErrorWidget.builder = (FlutterErrorDetails details) => FullPageErrorWidget(
-                    error: details.exception,
-                    stackTrace: details.stack,
-                    prefix: L10n.of(context).something_broke_in_fritter,
-                  );
+                  ErrorWidget.builder = (FlutterErrorDetails details) =>
+                      FullPageErrorWidget(
+                        error: details.exception,
+                        stackTrace: details.stack,
+                        prefix: L10n.of(context).something_broke_in_fritter,
+                      );
 
                   // Reading aloud outlives the article it started in, so the
                   // way to stop it has to be reachable from wherever the reader
@@ -957,8 +1056,15 @@ class _DefaultPageState extends State<DefaultPage> {
       return;
     }
     switch (parsed) {
-      case ProfileUriInfo(screenName: final screenName, profileTabIndex: final tab):
-        Navigator.pushNamed(context, routeProfile, arguments: ProfileScreenArguments.fromScreenName(screenName, tab));
+      case ProfileUriInfo(
+        screenName: final screenName,
+        profileTabIndex: final tab,
+      ):
+        Navigator.pushNamed(
+          context,
+          routeProfile,
+          arguments: ProfileScreenArguments.fromScreenName(screenName, tab),
+        );
         return;
       case PostUriInfo(screenName: final screenName, id: final id):
         Navigator.pushNamed(
@@ -968,7 +1074,12 @@ class _DefaultPageState extends State<DefaultPage> {
         );
         return;
       case ListUriInfo(id: final id):
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ListImportScreen(initialListId: id)));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ListImportScreen(initialListId: id),
+          ),
+        );
         return;
       case UnknownResult():
         showDialog(
@@ -981,7 +1092,8 @@ class _DefaultPageState extends State<DefaultPage> {
               actions: [
                 TextButton(
                   child: Text(L10n.of(context).report),
-                  onPressed: () => openUri(context, 'https://github.com/$githubRepo/issues'),
+                  onPressed: () =>
+                      openUri(context, 'https://github.com/$githubRepo/issues'),
                 ),
                 TextButton(
                   child: Text(L10n.of(context).open_in_browser),
@@ -1045,7 +1157,11 @@ class _DefaultPageState extends State<DefaultPage> {
         log.warning('Unable to handle an incoming link', err, stackTrace);
 
         if (mounted) {
-          showSnackBar(context, icon: '🔗', message: L10n.of(context).unable_to_open_link);
+          showSnackBar(
+            context,
+            icon: '🔗',
+            message: L10n.of(context).unable_to_open_link,
+          );
         }
       },
     );
@@ -1077,8 +1193,14 @@ class _DefaultPageState extends State<DefaultPage> {
             title: Text(L10n.current.are_you_sure),
             content: Text(L10n.current.confirm_close_fritter),
             actions: [
-              TextButton(child: Text(L10n.current.no), onPressed: () => Navigator.pop(c, false)),
-              TextButton(child: Text(L10n.current.yes), onPressed: () => Navigator.pop(c, true)),
+              TextButton(
+                child: Text(L10n.current.no),
+                onPressed: () => Navigator.pop(c, false),
+              ),
+              TextButton(
+                child: Text(L10n.current.yes),
+                onPressed: () => Navigator.pop(c, true),
+              ),
             ],
           ),
         );

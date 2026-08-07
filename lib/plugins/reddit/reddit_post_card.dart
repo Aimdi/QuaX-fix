@@ -29,10 +29,17 @@ class RedditPostCard extends StatelessWidget {
   /// Set in a mixed timeline so the card says where it came from.
   final bool showSourceBadge;
 
-  const RedditPostCard({super.key, required this.post, this.showSourceBadge = true});
+  const RedditPostCard({
+    super.key,
+    required this.post,
+    this.showSourceBadge = true,
+  });
 
   void _open(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => RedditThreadScreen(post: post)));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => RedditThreadScreen(post: post)),
+    );
   }
 
   @override
@@ -62,10 +69,9 @@ class RedditPostCard extends StatelessWidget {
                       post.selfText!,
                       maxLines: 4,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
                 RedditPostMedia(post: post),
@@ -86,7 +92,10 @@ class RedditPostCard extends StatelessWidget {
         post.title,
         maxLines: 6,
         overflow: TextOverflow.ellipsis,
-        style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700, height: 1.25),
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+          fontWeight: FontWeight.w700,
+          height: 1.25,
+        ),
       ),
     );
   }
@@ -112,7 +121,10 @@ class _RedditPostHeader extends StatelessWidget {
           // and a tap on either goes straight there rather than into a menu.
           GestureDetector(
             onTap: () => _openSubreddit(context),
-            child: RedditSubredditAvatar(subreddit: post.subreddit, size: kRedditAvatarSize),
+            child: RedditSubredditAvatar(
+              subreddit: post.subreddit,
+              size: kRedditAvatarSize,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -127,13 +139,18 @@ class _RedditPostHeader extends StatelessWidget {
                         child: Text(
                           'r/${post.subreddit}',
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800),
+                          style: theme.textTheme.titleSmall!.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
                     ),
                     if (date != null) ...[
                       const SizedBox(width: 6),
-                      Text('· ${createRelativeDate(date)}', style: theme.textTheme.bodySmall),
+                      Text(
+                        '· ${createRelativeDate(date)}',
+                        style: theme.textTheme.bodySmall,
+                      ),
                     ],
                   ],
                 ),
@@ -149,7 +166,9 @@ class _RedditPostHeader extends StatelessWidget {
   void _openSubreddit(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => RedditListingScreen.subreddit(post.subreddit)),
+      MaterialPageRoute(
+        builder: (_) => RedditListingScreen.subreddit(post.subreddit),
+      ),
     );
   }
 
@@ -158,7 +177,9 @@ class _RedditPostHeader extends StatelessWidget {
     final author = post.author;
 
     return DefaultTextStyle.merge(
-      style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+      style: theme.textTheme.bodySmall!.copyWith(
+        color: theme.colorScheme.onSurfaceVariant,
+      ),
       child: Row(
         children: [
           // A deleted account has no name to show; the row simply starts with
@@ -176,7 +197,17 @@ class _RedditPostHeader extends StatelessWidget {
           ],
           if (post.over18) ...[
             const SizedBox(width: 6),
-            _RedditBadge(label: L10n.of(context).plugin_reddit_nsfw, tint: theme.colorScheme.error),
+            _RedditBadge(
+              label: L10n.of(context).plugin_reddit_nsfw,
+              tint: theme.colorScheme.error,
+            ),
+          ],
+          if (post.spoiler) ...[
+            const SizedBox(width: 6),
+            _RedditBadge(
+              label: L10n.of(context).plugin_reddit_spoiler,
+              tint: theme.colorScheme.tertiary,
+            ),
           ],
         ],
       ),
@@ -205,7 +236,10 @@ class _RedditPostFooter extends StatelessWidget {
             style: footerButtonStyle,
             onPressed: onComments,
             icon: Icon(Icons.mode_comment_outlined, size: 18, color: muted),
-            label: Text('${post.commentCount}', style: theme.textTheme.bodySmall!.copyWith(color: muted)),
+            label: Text(
+              '${post.commentCount}',
+              style: theme.textTheme.bodySmall!.copyWith(color: muted),
+            ),
           ),
           const Spacer(),
           IconButton(
@@ -217,7 +251,6 @@ class _RedditPostFooter extends StatelessWidget {
       ),
     );
   }
-
 }
 
 /// The upvote, kept on the device the way X likes are: Reddit is never told,
@@ -243,10 +276,17 @@ class _UpvoteButton extends StatelessWidget {
         return TextButton.icon(
           style: footerButtonStyle,
           onPressed: () => votes.toggle(post.id),
-          icon: Icon(upvoted ? Icons.arrow_circle_up : Icons.arrow_upward, size: 18, color: color),
+          icon: Icon(
+            upvoted ? Icons.arrow_circle_up : Icons.arrow_upward,
+            size: 18,
+            color: color,
+          ),
           label: Text(
             '${post.score + (upvoted ? 1 : 0)}',
-            style: theme.textTheme.bodySmall!.copyWith(color: color, fontWeight: upvoted ? FontWeight.w700 : null),
+            style: theme.textTheme.bodySmall!.copyWith(
+              color: color,
+              fontWeight: upvoted ? FontWeight.w700 : null,
+            ),
           ),
         );
       },
@@ -277,7 +317,9 @@ class _RedditFlair extends StatelessWidget {
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.labelMedium!.copyWith(color: theme.colorScheme.onSecondaryContainer),
+            style: theme.textTheme.labelMedium!.copyWith(
+              color: theme.colorScheme.onSecondaryContainer,
+            ),
           ),
         ),
       ),
@@ -301,7 +343,10 @@ class _RedditBadge extends StatelessWidget {
         border: Border.all(color: tint ?? theme.colorScheme.outline),
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Text(label, style: theme.textTheme.labelSmall!.copyWith(color: tint)),
+      child: Text(
+        label,
+        style: theme.textTheme.labelSmall!.copyWith(color: tint),
+      ),
     );
   }
 }

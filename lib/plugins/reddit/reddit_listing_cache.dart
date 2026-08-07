@@ -8,7 +8,11 @@ import 'package:xta/plugins/reddit/reddit_client.dart';
 /// the same page and shows as much of it as it has room for, which is what lets
 /// the timeline's ten posts and the tab's fifteen be one request rather than
 /// two.
-typedef RedditListingKey = ({String subreddit, RedditSort sort});
+typedef RedditListingKey = ({
+  String subreddit,
+  RedditSort sort,
+  RedditTimeFilter? timeFilter,
+});
 
 /// How long a listing is handed out again before it is fetched afresh.
 ///
@@ -89,7 +93,10 @@ class RedditListingCache {
     // and reports it, this only needs to know one happened so the subreddit is
     // left alone for a while instead of being asked again by every surface.
     unawaited(
-      entry.future.then((_) => entry.settle(_now(), failed: false), onError: (_) => entry.settle(_now(), failed: true)),
+      entry.future.then(
+        (_) => entry.settle(_now(), failed: false),
+        onError: (_) => entry.settle(_now(), failed: true),
+      ),
     );
 
     return entry.future;
@@ -141,7 +148,11 @@ class _Entry {
 
   /// A request still in flight is never stale: joining it is the whole point,
   /// so three surfaces mounting at once make one request between them.
-  bool isStaleAt(DateTime now, {required Duration ttl, required Duration failureTtl}) {
+  bool isStaleAt(
+    DateTime now, {
+    required Duration ttl,
+    required Duration failureTtl,
+  }) {
     final settledAt = _settledAt;
     if (settledAt == null) {
       return false;

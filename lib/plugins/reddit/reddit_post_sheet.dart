@@ -23,7 +23,8 @@ Future<void> openRedditPostSheet(BuildContext context, RedditPost post) {
 }
 
 /// The public URL of a post, which is what gets shared and opened outside.
-String redditPostUrl(RedditPost post) => 'https://www.reddit.com${post.permalink}';
+String redditPostUrl(RedditPost post) =>
+    'https://www.reddit.com${post.permalink}';
 
 class _RedditPostSheet extends StatelessWidget {
   final RedditPost post;
@@ -46,7 +47,9 @@ class _RedditPostSheet extends StatelessWidget {
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
+            style: theme.textTheme.titleMedium!.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         if (author != null)
@@ -58,9 +61,11 @@ class _RedditPostSheet extends StatelessWidget {
         _RedditSheetAction(
           icon: Icons.travel_explore,
           label: 'r/${post.subreddit}',
-          onTap: () => _push(context, RedditListingScreen.subreddit(post.subreddit)),
+          onTap: () =>
+              _push(context, RedditListingScreen.subreddit(post.subreddit)),
         ),
         _RedditFollowAction(subreddit: post.subreddit),
+        _RedditSaveAction(post: post),
         _RedditSheetAction(
           icon: Icons.open_in_new,
           label: l10n.open_in_browser,
@@ -76,7 +81,7 @@ class _RedditPostSheet extends StatelessWidget {
           label: l10n.share_link,
           onTap: () {
             Navigator.pop(context);
-            Share.share(redditPostUrl(post));
+            SharePlus.instance.share(ShareParams(text: redditPostUrl(post)));
           },
         ),
         const SizedBox(height: 8),
@@ -90,6 +95,34 @@ class _RedditPostSheet extends StatelessWidget {
     final navigator = Navigator.of(context);
     navigator.pop();
     navigator.push(MaterialPageRoute(builder: (_) => screen));
+  }
+}
+
+class _RedditSaveAction extends StatelessWidget {
+  final RedditPost post;
+
+  const _RedditSaveAction({required this.post});
+
+  @override
+  Widget build(BuildContext context) {
+    final saved = context.read<RedditSavedStore>();
+    final l10n = L10n.of(context);
+
+    return ScopedBuilder<RedditSavedStore, List<RedditPost>>(
+      store: saved,
+      onState: (context, posts) {
+        final isSaved = saved.isSaved(post);
+        return _RedditSheetAction(
+          icon: isSaved ? Icons.bookmark : Icons.bookmark_border,
+          label: isSaved ? l10n.action_unsave_post : l10n.action_save_post,
+          onTap: () async {
+            final navigator = Navigator.of(context);
+            await saved.toggle(post);
+            navigator.pop();
+          },
+        );
+      },
+    );
   }
 }
 
@@ -128,7 +161,11 @@ class _RedditSheetAction extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const _RedditSheetAction({required this.icon, required this.label, required this.onTap});
+  const _RedditSheetAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

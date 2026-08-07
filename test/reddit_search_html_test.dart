@@ -43,18 +43,24 @@ void main() {
       expect(post.createdAt, DateTime.parse('2026-07-01T10:00:00Z').toLocal());
     });
 
-    test('a page rendered as a listing is read by the listing parser instead', () {
-      final post = parseSearchPosts(_page(_listingPost)).single;
+    test(
+      'a page rendered as a listing is read by the listing parser instead',
+      () {
+        final post = parseSearchPosts(_page(_listingPost)).single;
 
-      expect(post.id, 'zzz');
-      expect(post.title, 'From a listing');
-    });
+        expect(post.id, 'zzz');
+        expect(post.title, 'From a listing');
+      },
+    );
 
     test('the id survives a result with no data-fullname', () {
       final withoutId = _searchPost.replaceAll('data-fullname="t3_abc123"', '');
 
-      expect(parseSearchPosts(_page(withoutId)).single.id, 'abc123',
-          reason: 'the comments path carries it');
+      expect(
+        parseSearchPosts(_page(withoutId)).single.id,
+        'abc123',
+        reason: 'the comments path carries it',
+      );
     });
 
     test('a score with a comma is still a number', () {
@@ -63,8 +69,20 @@ void main() {
       expect(parseSearchPosts(_page(busy)).single.score, 1234);
     });
 
+    test('a spoiler result carries the flag', () {
+      final spoiled = _searchPost.replaceFirst(
+        'search-result-link',
+        'search-result-link spoiler',
+      );
+
+      expect(parseSearchPosts(_page(spoiled)).single.spoiler, isTrue);
+    });
+
     test('a result with no title is skipped rather than guessed at', () {
-      expect(parseSearchPosts(_page('<div class="search-result-link"></div>')), isEmpty);
+      expect(
+        parseSearchPosts(_page('<div class="search-result-link"></div>')),
+        isEmpty,
+      );
       expect(parseSearchPosts('not html at all'), isEmpty);
       expect(parseSearchPosts(''), isEmpty);
     });
@@ -94,7 +112,12 @@ void main() {
     });
 
     test('an entry with no name is skipped', () {
-      expect(parseSubredditResults(_page('<div class="search-result-subreddit"></div>')), isEmpty);
+      expect(
+        parseSubredditResults(
+          _page('<div class="search-result-subreddit"></div>'),
+        ),
+        isEmpty,
+      );
     });
   });
 
