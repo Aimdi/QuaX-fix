@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:pref/pref.dart';
@@ -6,6 +8,7 @@ import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/pixiv/pixiv_client.dart';
 import 'package:xta/plugins/pixiv/pixiv_grid.dart';
+import 'package:xta/plugins/pixiv/pixiv_image.dart';
 import 'package:xta/plugins/pixiv/pixiv_mute_store.dart';
 import 'package:xta/plugins/pixiv/pixiv_models.dart';
 import 'package:xta/plugins/pixiv/pixiv_search_screen.dart';
@@ -201,12 +204,14 @@ class _PixivScreenState extends State<PixivScreen>
           : TabBarView(
               controller: _tabs,
               children: [
-                _feedTab(
-                  store: context.read<PixivFeedStore>(),
-                  empty: l10n.plugin_pixiv_empty,
+                _KeepAlive(
+                  child: _feedTab(
+                    store: context.read<PixivFeedStore>(),
+                    empty: l10n.plugin_pixiv_empty,
+                  ),
                 ),
-                _rankingTab(l10n),
-                _bookmarksTab(l10n),
+                _KeepAlive(child: _rankingTab(l10n)),
+                _KeepAlive(child: _bookmarksTab(l10n)),
               ],
             ),
     );
@@ -318,18 +323,29 @@ class _PixivScreenState extends State<PixivScreen>
     required String empty,
   }) {
     final l10n = L10n.of(context);
-    return ScopedBuilder<PixivIllustListStore, List<PixivIllust>>.transition(
+    return ScopedBuilder<PixivIllustListStore, List<PixivIllust>>(
       store: store,
-      onLoading: (_) => const Center(child: CircularProgressIndicator()),
-      onError: (context, error) => Padding(
-        padding: const EdgeInsets.all(24),
-        child: FullPageErrorWidget(
-          error: error,
-          stackTrace: null,
-          prefix: pixivErrorMessage(l10n, error ?? Exception()),
-          onRetry: store.refresh,
-        ),
-      ),
+      onLoading: (context) {
+        // Soft refresh keeps prior tiles; only the first load blanks the tab.
+        if (store.state.isNotEmpty) {
+          return _illustList(context, store, store.state);
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
+      onError: (context, error) {
+        if (store.state.isNotEmpty) {
+          return _illustList(context, store, store.state);
+        }
+        return Padding(
+          padding: const EdgeInsets.all(24),
+          child: FullPageErrorWidget(
+            error: error,
+            stackTrace: null,
+            prefix: pixivErrorMessage(l10n, error ?? Exception()),
+            onRetry: store.refresh,
+          ),
+        );
+      },
       onState: (context, illusts) {
         if (illusts.isEmpty) {
           return Center(
@@ -339,24 +355,98 @@ class _PixivScreenState extends State<PixivScreen>
             ),
           );
         }
-
-        return NotificationListener<ScrollNotification>(
-          onNotification: (n) {
-            if (n.metrics.pixels > n.metrics.maxScrollExtent - 400) {
-              store.loadMore();
-            }
-            return false;
-          },
-          child: PixivIllustGrid(
-            illusts: illusts,
-            scrollController: store == context.read<PixivFeedStore>()
-                ? widget.scrollController
-                : null,
-            onRefresh: store.refresh,
-            loadingMore: store.loadingMore,
-          ),
-        );
+        return _illustList(context, store, illusts);
       },
     );
+  }
+
+  Widget _illustList(
+    BuildContext context,
+    PixivIllustListStore store,
+    List<PixivIllust> illusts,
+  ) {
+    return _ThumbPrefetch(
+      illusts: illusts,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (n) {
+          // Prefetch the next API page well before the footer — Pixez-style.
+          if (n.metrics.pixels > n.metrics.maxScrollExtent - 1400) {
+            store.loadMore();
+          }
+          return false;
+        },
+        child: PixivIllustGrid(
+          illusts: illusts,
+          scrollController: store == context.read<PixivFeedStore>()
+              ? widget.scrollController
+              : null,
+          onRefresh: store.refresh,
+          loadingMore: store.loadingMore,
+        ),
+      ),
+    );
+  }
+}
+
+/// Prefetches thumbs only when the list grows — not on every mute/loading tick.
+class _ThumbPrefetch extends StatefulWidget {
+  final List<PixivIllust> illusts;
+  final Widget child;
+
+  const _ThumbPrefetch({required this.illusts, required this.child});
+
+  @override
+  State<_ThumbPrefetch> createState() => _ThumbPrefetchState();
+}
+
+class _ThumbPrefetchState extends State<_ThumbPrefetch> {
+  var _lastCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _maybePrefetch());
+  }
+
+  @override
+  void didUpdateWidget(covariant _ThumbPrefetch oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.illusts.length != oldWidget.illusts.length) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _maybePrefetch());
+    }
+  }
+
+  void _maybePrefetch() {
+    if (!mounted || widget.illusts.length <= _lastCount) {
+      return;
+    }
+    final from = _lastCount;
+    _lastCount = widget.illusts.length;
+    unawaited(prefetchPixivThumbs(context, widget.illusts.skip(from)));
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
+
+/// Keeps each Pixiv tab's scroll offset and decoded thumbs warm.
+class _KeepAlive extends StatefulWidget {
+  final Widget child;
+
+  const _KeepAlive({required this.child});
+
+  @override
+  State<_KeepAlive> createState() => _KeepAliveState();
+}
+
+class _KeepAliveState extends State<_KeepAlive>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }

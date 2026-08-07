@@ -26,7 +26,16 @@ class PixivIllustListStore extends Store<List<PixivIllust>> {
     _nextUrl = null;
   }
 
+  /// First load shows the store loading state; later pulls keep the grid up
+  /// (Pixez-style soft refresh — no decode waterfall from a blank spinner).
   Future<void> refresh() async {
+    if (state.isNotEmpty) {
+      final page = await _loader();
+      _nextUrl = page.nextUrl;
+      update(_applyFilter(page.illusts));
+      return;
+    }
+
     await execute(() async {
       final page = await _loader();
       _nextUrl = page.nextUrl;
@@ -39,20 +48,45 @@ class PixivIllustListStore extends Store<List<PixivIllust>> {
       return;
     }
     _loadingMore = true;
+    update(state);
     try {
       final page = await _loader(nextUrl: _nextUrl);
       _nextUrl = page.nextUrl;
-      update([...state, ..._applyFilter(page.illusts)]);
+      update(mergePixivIllusts(state, _applyFilter(page.illusts)));
     } catch (e) {
-      setError(e);
+      // Keep a healthy grid — only first-page failures become full errors.
+      if (state.isEmpty) {
+        setError(e);
+      } else {
+        update(state);
+      }
     } finally {
       _loadingMore = false;
+      if (state.isNotEmpty) {
+        update(state);
+      }
     }
   }
 
   List<PixivIllust> _applyFilter(List<PixivIllust> illusts) {
     return filter == null ? illusts : filter!(illusts);
   }
+}
+
+/// Append [incoming] skipping ids already in [existing].
+List<PixivIllust> mergePixivIllusts(
+  List<PixivIllust> existing,
+  List<PixivIllust> incoming,
+) {
+  if (incoming.isEmpty) {
+    return existing;
+  }
+  final seen = {for (final illust in existing) illust.id};
+  return [
+    ...existing,
+    for (final illust in incoming)
+      if (seen.add(illust.id)) illust,
+  ];
 }
 
 /// Following-timeline store kept for the plugin home tab and uninstall wipe.

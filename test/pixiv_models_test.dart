@@ -54,7 +54,7 @@ void main() {
       expect(posts.first.userName, 'Artist');
       expect(posts.first.pageCount, 2);
       expect(posts.first.url, 'https://www.pixiv.net/artworks/42');
-      expect(posts.first.thumbnailUrl, contains('cat.jpg'));
+      expect(posts.first.thumbnailUrl, contains('540x540'));
       expect(posts.first.caption, 'meow');
     });
 
@@ -98,7 +98,8 @@ void main() {
       expect(illust.width, 800);
       expect(illust.height, 1200);
       expect(illust.aspectRatio, closeTo(800 / 1200, 0.001));
-      expect(illust.pageUrls, ['https://i.pximg.net/p0.jpg', 'https://i.pximg.net/p1.jpg']);
+      // Prefer large over original so the viewer stays light (Pixez-style).
+      expect(illust.pageUrls, ['https://i.pximg.net/l0.jpg', 'https://i.pximg.net/p1.jpg']);
       expect(illust.viewerUrls, hasLength(2));
       expect(illust.tags.map((t) => t.displayName), ['cat', 'オリジナル']);
       expect(illust.isManga, isTrue);

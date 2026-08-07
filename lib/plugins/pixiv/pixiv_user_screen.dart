@@ -1,4 +1,3 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/pixiv/pixiv_client.dart';
 import 'package:xta/plugins/pixiv/pixiv_grid.dart';
+import 'package:xta/plugins/pixiv/pixiv_image.dart';
 import 'package:xta/plugins/pixiv/pixiv_mute_store.dart';
 import 'package:xta/plugins/pixiv/pixiv_models.dart';
 import 'package:xta/plugins/pixiv/pixiv_settings.dart';
@@ -160,18 +160,23 @@ class _PixivUserScreenState extends State<PixivUserScreen> {
                                 size: 64,
                                 accent: theme.colorScheme.primary,
                               )
-                            : ExtendedImage.network(
-                                avatar,
+                            : SizedBox(
                                 width: 64,
                                 height: 64,
-                                fit: BoxFit.cover,
-                                headers: pixivImageHeaders,
-                                cacheWidth:
-                                    (64 *
-                                            MediaQuery.devicePixelRatioOf(
-                                              context,
-                                            ))
-                                        .ceil(),
+                                child: PixivNetworkImage(
+                                  url: avatar,
+                                  fit: BoxFit.cover,
+                                  cacheWidth: (64 *
+                                          MediaQuery.devicePixelRatioOf(
+                                            context,
+                                          ))
+                                      .ceil(),
+                                  cacheHeight: (64 *
+                                          MediaQuery.devicePixelRatioOf(
+                                            context,
+                                          ))
+                                      .ceil(),
+                                ),
                               ),
                       ),
                       const SizedBox(width: 14),

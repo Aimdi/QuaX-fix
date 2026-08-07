@@ -163,10 +163,12 @@ bool pixivIsR18(Json illust) {
   return xRestrict > 0 || sanity >= 6;
 }
 
+/// Waterfall thumb — prefer aspect-preserving `medium` (Pixez-style), not the
+/// cropped `square_medium` Pixiv also sends.
 String? _firstImageUrl(Json illust) {
   final urls = illust['image_urls'];
-  return urls['square_medium'].string ??
-      urls['medium'].string ??
+  return urls['medium'].string ??
+      urls['square_medium'].string ??
       urls['large'].string ??
       illust['meta_single_page']['original_image_url'].string;
 }
@@ -177,9 +179,10 @@ String? _largeImageUrl(Json illust) {
       _firstImageUrl(illust);
 }
 
+/// Viewer page — prefer `large` over multi‑MB `original` for browse speed.
 String? _pageImageUrl(Json page) {
   final urls = page['image_urls'];
-  return urls['original'].string ?? urls['large'].string ?? urls['medium'].string ?? urls['square_medium'].string;
+  return urls['large'].string ?? urls['medium'].string ?? urls['original'].string ?? urls['square_medium'].string;
 }
 
 List<String> _pageUrlsOf(Json illust) {
@@ -191,7 +194,7 @@ List<String> _pageUrlsOf(Json illust) {
     ];
   }
 
-  final single = illust['meta_single_page']['original_image_url'].string ?? _largeImageUrl(illust);
+  final single = _largeImageUrl(illust) ?? illust['meta_single_page']['original_image_url'].string;
   return single == null || single.isEmpty ? const [] : [single];
 }
 
