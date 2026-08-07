@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
+import 'package:xta/tweet/tweet.dart' show tweetCardColor;
 import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/ui/dates.dart';
 import 'package:xta/utils/urls.dart';
@@ -31,24 +32,36 @@ class ThreadsPostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // The same shape a tweet has: avatar down the left, everything else in a
+    // column beside it, so a Threads post sitting in a mixed timeline reads as
+    // one of the row rather than a differently-built card.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         tweetFlatCard(
-          color: theme.cardColor,
+          color: tweetCardColor(context),
           child: InkWell(
             onTap: () => _open(context),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Column(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _header(context),
-                  if (post.text.isNotEmpty) ...[
-                    const SizedBox(height: 6),
-                    Text(post.text, style: theme.textTheme.bodyMedium),
-                  ],
-                  if (post.hasMedia) ...[const SizedBox(height: 10), _media(context)],
+                  _avatar(context, 44),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _header(context),
+                        if (post.text.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Text(post.text, style: theme.textTheme.bodyMedium),
+                        ],
+                        if (post.hasMedia) ...[const SizedBox(height: 10), _media(context)],
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -59,48 +72,58 @@ class ThreadsPostCard extends StatelessWidget {
     );
   }
 
-  Widget _header(BuildContext context) {
+  Widget _avatar(BuildContext context, double size) {
     final theme = Theme.of(context);
     final avatar = post.avatarUrl;
-    final date = post.publishedAt;
 
-    return Row(
+    return ClipOval(
+      child: avatar == null
+          ? FallbackAvatar(
+              seed: post.handle,
+              displayName: post.authorName,
+              size: size,
+              accent: theme.colorScheme.primary,
+            )
+          : ExtendedImage.network(
+              avatar,
+              width: size,
+              height: size,
+              fit: BoxFit.cover,
+              cacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).ceil(),
+            ),
+    );
+  }
+
+  /// Name, then handle and time on a quieter line beneath it — the two-line
+  /// author block a tweet uses, rather than name and handle crowded onto one.
+  Widget _header(BuildContext context) {
+    final theme = Theme.of(context);
+    final date = post.publishedAt;
+    final metaStyle = theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ClipOval(
-          child: avatar == null
-              ? FallbackAvatar(
-                  seed: post.handle,
-                  displayName: post.authorName,
-                  size: 32,
-                  accent: theme.colorScheme.primary,
-                )
-              : ExtendedImage.network(
-                  avatar,
-                  width: 32,
-                  height: 32,
-                  fit: BoxFit.cover,
-                  cacheWidth: (32 * MediaQuery.devicePixelRatioOf(context)).ceil(),
-                ),
+        Row(
+          children: [
+            Flexible(
+              child: Text(
+                post.authorName,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ),
+            if (showSourceBadge) ...[const SizedBox(width: 6), _badge(context, L10n.of(context).plugin_threads_title)],
+          ],
         ),
-        const SizedBox(width: 8),
-        Flexible(
-          child: Text(
-            post.authorName,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.w700),
-          ),
+        Row(
+          children: [
+            Flexible(
+              child: Text('@${post.handle}', overflow: TextOverflow.ellipsis, style: metaStyle),
+            ),
+            if (date != null) ...[Text(' · ', style: metaStyle), Text(createCompactDate(date), style: metaStyle)],
+          ],
         ),
-        const SizedBox(width: 4),
-        Flexible(
-          child: Text(
-            '@${post.handle}',
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
-          ),
-        ),
-        if (showSourceBadge) ...[const SizedBox(width: 6), _badge(context, L10n.of(context).plugin_threads_title)],
-        const Spacer(),
-        if (date != null) Text(createCompactDate(date), style: theme.textTheme.bodySmall),
       ],
     );
   }
