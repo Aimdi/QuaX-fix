@@ -225,7 +225,55 @@ ThreadsProfile? threadsProfileFromGuestHtml(String html, String handle) {
   );
 }
 
+/// One Meta post object → [ThreadsPost], including pure reposts.
+///
+/// A repost often has an empty outer caption; the original lives under
+/// `text_post_app_info.share_info.reposted_post`. Skipping those empty shells
+/// is why followed accounts' reposts never showed up.
 ThreadsPost? threadsPostFromApi(Json post) {
+  if (!post.exists) return null;
+
+  final reposted = post['text_post_app_info']['share_info']['reposted_post'];
+  if (reposted.exists) {
+    return _threadsRepostFromApi(outer: post, inner: reposted);
+  }
+  return _threadsOriginalFromApi(post);
+}
+
+ThreadsPost? _threadsRepostFromApi({required Json outer, required Json inner}) {
+  final original = _threadsOriginalFromApi(inner);
+  if (original == null) {
+    return null;
+  }
+
+  final user = outer['user'];
+  final reposter = (user['username'].string ?? '').trim().toLowerCase();
+  if (reposter.isEmpty) {
+    return null;
+  }
+  final reposterName = (user['full_name'].string ?? '').trim();
+  final outerPk = outer['pk'].string ?? outer['id'].string ?? original.id;
+  final taken = outer['taken_at'].integer;
+
+  return ThreadsPost(
+    id: outerPk,
+    handle: original.handle,
+    authorName: original.authorName,
+    avatarUrl: original.avatarUrl,
+    text: original.text,
+    images: original.images,
+    publishedAt: taken == null ? original.publishedAt : DateTime.fromMillisecondsSinceEpoch(taken * 1000, isUtc: true).toLocal(),
+    url: original.url,
+    likeCount: original.likeCount,
+    replyCount: original.replyCount,
+    repostCount: original.repostCount,
+    linkCard: original.linkCard,
+    repostedByHandle: reposter,
+    repostedByName: reposterName.isEmpty ? reposter : reposterName,
+  );
+}
+
+ThreadsPost? _threadsOriginalFromApi(Json post) {
   if (!post.exists) return null;
   final user = post['user'];
   final handle = (user['username'].string ?? '').trim().toLowerCase();
@@ -316,7 +364,12 @@ void _collectSsrPosts(Object? node, String handle, List<ThreadsPost> out, Set<St
     final items = node['thread_items'];
     if (items is List && items.isNotEmpty) {
       final post = threadsPostFromApi(Json(items.first is Map ? (items.first as Map)['post'] : null));
-      if (post != null && (post.handle == handle || handle.isEmpty) && seen.add(post.id)) {
+      // Reposts keep the original author on [ThreadsPost.handle]; the profile
+      // owner is [repostedByHandle]. Match either so SSR profile scrapes keep them.
+      final matches = handle.isEmpty ||
+          post?.handle == handle ||
+          post?.repostedByHandle == handle;
+      if (post != null && matches && seen.add(post.id)) {
         out.add(post);
       }
     }

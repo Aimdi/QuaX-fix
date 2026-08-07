@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Цей профіль закритий: публічно лише те, що він каже про себе.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} зробив(ла) репост",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Додайте облікові записи Threads, щоб читати їхні публічні дописи — без входу. Cookies, Bearer, RSSHub і Xy нижче необов’язкові.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Перевірити з'єднання",

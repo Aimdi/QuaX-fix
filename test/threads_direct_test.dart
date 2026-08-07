@@ -109,6 +109,79 @@ void main() {
       expect(posts.first.linkCard?.title, 'A story');
       expect(posts.first.linkCard?.url, 'https://example.org/story');
     });
+
+    test('unwraps share_info.reposted_post and keeps the reposter', () {
+      final posts = parseThreadsApiFeed({
+        'threads': [
+          {
+            'thread_items': [
+              {
+                'post': {
+                  'pk': '99',
+                  'code': 'outerCode',
+                  'caption': {'text': ''},
+                  'taken_at': 1700000000,
+                  'like_count': 1,
+                  'user': {
+                    'username': 'zuck',
+                    'full_name': 'Mark Zuckerberg',
+                    'profile_pic_url': 'https://cdn.example/zuck.jpg',
+                  },
+                  'text_post_app_info': {
+                    'direct_reply_count': 0,
+                    'repost_count': 0,
+                    'share_info': {
+                      'reposted_post': {
+                        'pk': '55',
+                        'code': 'innerCode',
+                        'caption': {'text': 'original from meta'},
+                        'taken_at': 1699990000,
+                        'like_count': 42,
+                        'user': {
+                          'username': 'meta',
+                          'full_name': 'Meta',
+                          'profile_pic_url': 'https://cdn.example/meta.jpg',
+                        },
+                        'text_post_app_info': {
+                          'direct_reply_count': 3,
+                          'repost_count': 7,
+                          'quote_count': 1,
+                        },
+                        'image_versions2': {
+                          'candidates': [
+                            {'url': 'https://cdn.example/inner.jpg', 'width': 640},
+                          ],
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+
+      expect(posts, hasLength(1));
+      final post = posts.first;
+      expect(post.isRepost, isTrue);
+      expect(post.id, '99');
+      expect(post.handle, 'meta');
+      expect(post.authorName, 'Meta');
+      expect(post.text, 'original from meta');
+      expect(post.repostedByHandle, 'zuck');
+      expect(post.repostedByName, 'Mark Zuckerberg');
+      expect(post.likeCount, 42);
+      expect(post.replyCount, 3);
+      expect(post.repostCount, 7);
+      expect(post.images.single, 'https://cdn.example/inner.jpg');
+      expect(post.url, 'https://www.threads.com/@meta/post/innerCode');
+      // Timing reflects when the profile reposted, not the original.
+      expect(
+        post.publishedAt,
+        DateTime.fromMillisecondsSinceEpoch(1700000000 * 1000, isUtc: true).toLocal(),
+      );
+    });
   });
 
   group('parseThreadsSsrHtml', () {
@@ -140,6 +213,50 @@ void main() {
       final posts = parseThreadsSsrHtml(html, 'zuck');
       expect(posts, hasLength(1));
       expect(posts.first.text, 'from ssr');
+    });
+
+    test('keeps reposts when matching the reposter handle', () {
+      final blob = jsonEncode({
+        'require': [
+          [
+            'RelayPrefetchedStreamCache',
+            'next',
+            [
+              null,
+              {
+                'thread_items': [
+                  {
+                    'post': {
+                      'pk': '99',
+                      'code': 'outer',
+                      'caption': {'text': ''},
+                      'taken_at': 1700000000,
+                      'user': {'username': 'zuck', 'full_name': 'Mark'},
+                      'text_post_app_info': {
+                        'share_info': {
+                          'reposted_post': {
+                            'pk': '55',
+                            'code': 'inner',
+                            'caption': {'text': 'from someone else'},
+                            'user': {'username': 'meta', 'full_name': 'Meta'},
+                          },
+                        },
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          ],
+        ],
+      });
+      final html = '<html><script type="application/json" data-sjs>$blob</script></html>';
+      final posts = parseThreadsSsrHtml(html, 'zuck');
+      expect(posts, hasLength(1));
+      expect(posts.first.isRepost, isTrue);
+      expect(posts.first.handle, 'meta');
+      expect(posts.first.repostedByHandle, 'zuck');
+      expect(posts.first.text, 'from someone else');
     });
   });
 

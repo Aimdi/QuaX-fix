@@ -35,6 +35,11 @@ and `link_preview_attachment`. Cards show reply/repost counts when present, a
 large link preview when present, and a local like heart (`threads_local_like`).
 The shown like total is Meta’s count plus one when liked on-device.
 
+Pure **reposts** arrive as an empty outer shell with the original under
+`text_post_app_info.share_info.reposted_post`. Parsers unwrap that, keep the
+original author/content, and mark `repostedByHandle` so cards show
+“{name} reposted” and SSR profile scrapes still match the profile owner.
+
 ## Feed priority
 
 1. Local Accounts non-empty → merge those handles via:

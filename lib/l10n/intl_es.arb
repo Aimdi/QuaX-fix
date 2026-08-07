@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Este perfil es privado: solo es público lo que dice de sí mismo.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} ha republicado",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Añade cuentas de Threads para leer sus publicaciones públicas — sin iniciar sesión. Cookies, Bearer, RSSHub y Xy abajo son opcionales.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Probar la conexión",

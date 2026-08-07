@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "यह प्रोफ़ाइल निजी है; सार्वजनिक केवल वही है जो यह अपने बारे में कहती है।",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} ने रीपोस्ट किया",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Threads खाते जोड़ें और उनकी सार्वजनिक पोस्ट बिना लॉगिन पढ़ें। नीचे Cookie, Bearer, RSSHub और Xy वैकल्पिक हैं।",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "कनेक्शन जाँचें",

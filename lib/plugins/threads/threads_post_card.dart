@@ -121,12 +121,30 @@ class ThreadsPostCard extends StatelessWidget {
 
   Widget _header(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = L10n.of(context);
     final date = post.publishedAt;
-    final metaStyle = theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant);
+    final muted = theme.colorScheme.onSurfaceVariant;
+    final metaStyle = theme.textTheme.bodySmall!.copyWith(color: muted);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (post.isRepost) ...[
+          Row(
+            children: [
+              Icon(Icons.repeat, size: 14, color: muted),
+              const SizedBox(width: 4),
+              Flexible(
+                child: Text(
+                  l10n.plugin_threads_reposted(post.reposterDisplayName),
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.labelSmall!.copyWith(color: muted, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+        ],
         Row(
           children: [
             Flexible(
@@ -136,7 +154,7 @@ class ThreadsPostCard extends StatelessWidget {
                 style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800),
               ),
             ),
-            if (showSourceBadge) ...[const SizedBox(width: 6), _badge(context, L10n.of(context).plugin_threads_title)],
+            if (showSourceBadge) ...[const SizedBox(width: 6), _badge(context, l10n.plugin_threads_title)],
           ],
         ),
         Row(

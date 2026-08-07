@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Tento profil je soukromý – veřejné je jen to, co o sobě uvádí.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} přeposlal(a)",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Přidejte účty Threads a čtěte jejich veřejné příspěvky — bez přihlášení. Cookies, Bearer, RSSHub a Xy níže jsou volitelné.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Otestovat připojení",

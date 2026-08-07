@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Dit profiel is privé; alleen wat het over zichzelf zegt is openbaar.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} heeft opnieuw geplaatst",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Voeg Threads-accounts toe om hun openbare posts te lezen — zonder inloggen. Cookies, Bearer, RSSHub en Xy hieronder zijn optioneel.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Verbinding testen",

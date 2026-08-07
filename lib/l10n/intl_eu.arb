@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Profil hau pribatua da; publikoa bere buruaz dioena baino ez da.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name}(e)k birbidali du",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Gehitu Threads kontuak haien mezu publikoak irakurtzeko — saioa hasi gabe. Beheko cookieak, Bearer, RSSHub eta Xy aukerakoak dira.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Probatu konexioa",

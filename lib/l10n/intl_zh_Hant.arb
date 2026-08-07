@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "此個人檔案為私密，公開的只有其自我介紹。",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} 轉發了",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "新增 Threads 帳號即可閱讀其公開貼文——無需登入。下方的 Cookie、Bearer、RSSHub 與 Xy 皆為選用。",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "測試連線",

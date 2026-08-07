@@ -1307,6 +1307,14 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Гэты профіль прыватны: публічна толькі тое, што ён кажа пра сябе.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_reposted": "{name} зрабіў(ла) рэпост",
+  "@plugin_threads_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plugin_threads_settings_intro": "Дадайце акаўнты Threads, каб чытаць іх публічныя пасты — без уваходу. Cookies, Bearer, RSSHub і Xy ніжэй неабавязковыя.",
   "@plugin_threads_settings_intro": {},
   "plugin_threads_test": "Праверыць злучэнне",
