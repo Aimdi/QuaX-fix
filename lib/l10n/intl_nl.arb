@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Dit profiel is privé; alleen wat het over zichzelf zegt is openbaar.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "Reacties",
   "plugin_threads_reposted": "{name} heeft opnieuw geplaatst",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "Je RSSHub-instantie antwoordde",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "Draad",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "Niet meer volgen",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "Feedlengte in zen-modus",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hoeveel pagina's een feed in zen-modus laadt voordat deze pauzeert.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }

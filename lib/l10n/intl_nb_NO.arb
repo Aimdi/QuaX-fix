@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Denne profilen er privat; bare det den sier om seg selv er offentlig.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "Svar",
   "plugin_threads_reposted": "{name} republiserte",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "RSSHub-instansen din svarte",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "Tråd",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "Slutt å følge",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "Feed-lengde i zen-modus",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Hvor mange sider en feed laster i zen-modus før den tar en pause.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }

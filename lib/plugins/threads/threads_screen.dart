@@ -292,7 +292,7 @@ class _HomePane extends StatelessWidget {
 
     return Column(
       children: [
-        const ThreadsFollowingStrip(),
+        ThreadsFollowingStrip(onAddAccount: onAddAccount),
         Expanded(
           child: ScopedBuilder<ThreadsFeedStore, List<ThreadsPost>>.transition(
             store: feed,
@@ -430,9 +430,12 @@ class _LikedPane extends StatelessWidget {
 /// The list used to live only in Settings, which meant the tab could show an
 /// empty feed with no way to tell whether that was because nobody was followed
 /// or because the fetch came back with nothing. A row of faces answers that
-/// before the feed loads, and each one opens the profile it belongs to.
+/// before the feed loads, and each one opens the profile it belongs to. The
+/// trailing add chip is the same action as the AppBar person-add button.
 class ThreadsFollowingStrip extends StatelessWidget {
-  const ThreadsFollowingStrip({super.key});
+  final Future<void> Function()? onAddAccount;
+
+  const ThreadsFollowingStrip({super.key, this.onAddAccount});
 
   Future<void> _confirmUnfollow(
     BuildContext context,
@@ -469,22 +472,54 @@ class ThreadsFollowingStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = L10n.of(context);
 
     return ScopedBuilder<ThreadsAccountsStore, List<ThreadsAccount>>(
       store: context.read<ThreadsAccountsStore>(),
       onState: (context, accounts) {
-        if (accounts.isEmpty) {
+        if (accounts.isEmpty && onAddAccount == null) {
           return const SizedBox.shrink();
         }
+
+        final addChip = onAddAccount == null ? 0 : 1;
 
         return SizedBox(
           height: 84,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            itemCount: accounts.length,
+            itemCount: accounts.length + addChip,
             separatorBuilder: (_, _) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
+              if (index >= accounts.length) {
+                return Tooltip(
+                  message: l10n.plugin_threads_add_account,
+                  child: InkWell(
+                    onTap: () => onAddAccount?.call(),
+                    customBorder: const CircleBorder(),
+                    child: SizedBox(
+                      width: 64,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: theme.colorScheme.outline),
+                            ),
+                            child: Icon(Icons.add, color: theme.colorScheme.primary),
+                          ),
+                          // Match the handle line under avatars so the chip sits level.
+                          const SizedBox(height: 4 + 14),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+
               final account = accounts[index];
 
               return InkWell(

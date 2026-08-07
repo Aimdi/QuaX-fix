@@ -27,6 +27,7 @@ void main() {
       ),
       repostedByHandle: 'reader',
       repostedByName: 'Reader',
+      isVerified: true,
     );
 
     final raw = ThreadsPost.listToPrefs([post]);
@@ -50,5 +51,6 @@ void main() {
     expect(restored.linkCard?.providerName, post.linkCard?.providerName);
     expect(restored.repostedByHandle, post.repostedByHandle);
     expect(restored.repostedByName, post.repostedByName);
+    expect(restored.isVerified, isTrue);
   });
 }

@@ -84,7 +84,11 @@ void main() {
                   'code': 'LiNk',
                   'like_count': 1348,
                   'caption': {'text': 'Worth a read'},
-                  'user': {'username': 'zuck', 'full_name': 'Mark'},
+                  'user': {
+                    'username': 'zuck',
+                    'full_name': 'Mark',
+                    'is_verified': true,
+                  },
                   'text_post_app_info': {
                     'direct_reply_count': 12,
                     'repost_count': 4,
@@ -107,6 +111,7 @@ void main() {
       expect(posts.first.likeCount, 1348);
       expect(posts.first.replyCount, 12);
       expect(posts.first.repostCount, 4);
+      expect(posts.first.isVerified, isTrue);
       expect(posts.first.linkCard?.title, 'A story');
       expect(posts.first.linkCard?.url, 'https://example.org/story');
     });

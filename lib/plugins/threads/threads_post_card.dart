@@ -9,6 +9,7 @@ import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/threads/threads_likes_store.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 import 'package:xta/plugins/threads/threads_profile_screen.dart';
+import 'package:xta/plugins/threads/threads_rich_text.dart';
 import 'package:xta/plugins/threads/threads_thread_screen.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
 import 'package:xta/tweet/_like_button.dart';
@@ -29,8 +30,9 @@ final NumberFormat _threadsCountFormat = NumberFormat.compact(locale: 'en_US');
 /// A Threads post as a timeline card.
 ///
 /// Shaped like the posts around it. Meta feeds can carry likes, replies,
-/// reposts and a link preview; RSSHub cannot — the engagement row only appears
-/// when at least one count was actually present.
+/// reposts and a link preview; RSSHub cannot — counts stay blank rather than
+/// inventing zeroes, but the engagement icons stay so the card still feels
+/// like the Threads app.
 class ThreadsPostCard extends StatelessWidget {
   final ThreadsPost post;
 
@@ -94,6 +96,17 @@ class ThreadsPostCard extends StatelessWidget {
     }
   }
 
+  void _openReposter(BuildContext context) {
+    final handle = post.repostedByHandle;
+    if (handle == null || handle.isEmpty) {
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => ThreadsProfileScreen(username: handle)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -107,47 +120,51 @@ class ThreadsPostCard extends StatelessWidget {
             onTap: openOnTap ? () => _open(context) : null,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  GestureDetector(
-                    onTap: () => _openAuthor(context),
-                    child: _avatar(context),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        GestureDetector(
-                          onTap: () => _openAuthor(context),
-                          behavior: HitTestBehavior.opaque,
-                          child: _header(context),
-                        ),
-                        if (post.text.isNotEmpty) ...[
-                          const SizedBox(height: 6),
-                          Text(
-                            post.text,
-                            style: theme.textTheme.bodyLarge!.copyWith(
-                              height: 1.35,
+                  if (post.isRepost) _repostLine(context),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () => _openAuthor(context),
+                        child: _avatar(context),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            GestureDetector(
+                              onTap: () => _openAuthor(context),
+                              behavior: HitTestBehavior.opaque,
+                              child: _header(context),
                             ),
-                          ),
-                        ],
-                        if (post.hasMedia) ...[
-                          const SizedBox(height: 10),
-                          _media(context),
-                        ],
-                        if (post.linkCard != null) ...[
-                          const SizedBox(height: 10),
-                          _ThreadsLinkPreview(card: post.linkCard!),
-                        ],
-                        _ThreadsEngagementRow(
-                          post: post,
-                          onOpen: () => _open(context),
-                          onOpenBrowser: () => _openBrowser(context),
+                            if (post.text.isNotEmpty) ...[
+                              const SizedBox(height: 6),
+                              ThreadsCaption(
+                                text: post.text,
+                                style: theme.textTheme.bodyLarge!.copyWith(height: 1.35),
+                              ),
+                            ],
+                            if (post.hasMedia) ...[
+                              const SizedBox(height: 10),
+                              _media(context),
+                            ],
+                            if (post.linkCard != null) ...[
+                              const SizedBox(height: 10),
+                              _ThreadsLinkPreview(card: post.linkCard!),
+                            ],
+                            _ThreadsEngagementRow(
+                              post: post,
+                              onOpen: () => _open(context),
+                              onOpenBrowser: () => _openBrowser(context),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -156,6 +173,32 @@ class ThreadsPostCard extends StatelessWidget {
         ),
         tweetHairlineDivider(context),
       ],
+    );
+  }
+
+  Widget _repostLine(BuildContext context) {
+    final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 60, bottom: 6),
+      child: GestureDetector(
+        onTap: () => _openReposter(context),
+        behavior: HitTestBehavior.opaque,
+        child: Row(
+          children: [
+            Icon(Icons.repeat, size: 14, color: muted),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                L10n.of(context).plugin_threads_reposted(post.reposterDisplayName),
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelMedium!.copyWith(color: muted),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -204,26 +247,24 @@ class ThreadsPostCard extends StatelessWidget {
                 ),
               ),
             ),
+            if (post.isVerified) ...[
+              const SizedBox(width: 4),
+              Icon(Icons.verified, size: 16, color: theme.colorScheme.primary),
+            ],
+            if (date != null) ...[
+              const SizedBox(width: 6),
+              Text('· ${createCompactDate(date)}', style: metaStyle),
+            ],
             if (showSourceBadge) ...[
               const SizedBox(width: 6),
               _badge(context, L10n.of(context).plugin_threads_title),
             ],
           ],
         ),
-        Row(
-          children: [
-            Flexible(
-              child: Text(
-                '@${post.handle}',
-                overflow: TextOverflow.ellipsis,
-                style: metaStyle,
-              ),
-            ),
-            if (date != null) ...[
-              Text(' · ', style: metaStyle),
-              Text(createCompactDate(date), style: metaStyle),
-            ],
-          ],
+        Text(
+          '@${post.handle}',
+          overflow: TextOverflow.ellipsis,
+          style: metaStyle,
         ),
       ],
     );
@@ -242,20 +283,32 @@ class ThreadsPostCard extends StatelessWidget {
     );
   }
 
+  void _openImages(BuildContext context, int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => _ThreadsImageViewer(images: post.images, initialIndex: index),
+      ),
+    );
+  }
+
   Widget _media(BuildContext context) {
     final radius = tweetMediaRadiusOf(context);
     final width = MediaQuery.sizeOf(context).width;
     final scale = MediaQuery.devicePixelRatioOf(context);
 
     if (post.images.length == 1) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(radius),
-        child: AspectRatio(
-          aspectRatio: kThreadsMediaMaxAspectRatio,
-          child: ExtendedImage.network(
-            post.images.first,
-            fit: BoxFit.cover,
-            cacheWidth: (width * scale).ceil(),
+      return GestureDetector(
+        onTap: () => _openImages(context, 0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(radius),
+          child: AspectRatio(
+            aspectRatio: kThreadsMediaMaxAspectRatio,
+            child: ExtendedImage.network(
+              post.images.first,
+              fit: BoxFit.cover,
+              cacheWidth: (width * scale).ceil(),
+            ),
           ),
         ),
       );
@@ -267,16 +320,87 @@ class ThreadsPostCard extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: post.images.length,
         separatorBuilder: (_, _) => const SizedBox(width: 6),
-        itemBuilder: (context, index) => ClipRRect(
-          borderRadius: BorderRadius.circular(radius),
-          child: ExtendedImage.network(
-            post.images[index],
-            width: 220,
-            height: 240,
-            fit: BoxFit.cover,
-            cacheWidth: (220 * scale).ceil(),
+        itemBuilder: (context, index) => GestureDetector(
+          onTap: () => _openImages(context, index),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(radius),
+            child: ExtendedImage.network(
+              post.images[index],
+              width: 220,
+              height: 240,
+              fit: BoxFit.cover,
+              cacheWidth: (220 * scale).ceil(),
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Fullscreen pager for Threads images — pinch/drag via [ExtendedImageMode.gesture].
+class _ThreadsImageViewer extends StatefulWidget {
+  final List<String> images;
+  final int initialIndex;
+
+  const _ThreadsImageViewer({required this.images, required this.initialIndex});
+
+  @override
+  State<_ThreadsImageViewer> createState() => _ThreadsImageViewerState();
+}
+
+class _ThreadsImageViewerState extends State<_ThreadsImageViewer> {
+  late final _controller = PageController(initialPage: widget.initialIndex);
+  late int _index = widget.initialIndex;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+      ),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          PageView.builder(
+            controller: _controller,
+            itemCount: widget.images.length,
+            onPageChanged: (index) => setState(() => _index = index),
+            itemBuilder: (context, index) => ExtendedImage.network(
+              widget.images[index],
+              fit: BoxFit.contain,
+              mode: ExtendedImageMode.gesture,
+              initGestureConfigHandler: (_) => GestureConfig(minScale: 1, maxScale: 4, animationMinScale: 0.8),
+            ),
+          ),
+          if (widget.images.length > 1)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (var i = 0; i < widget.images.length; i++)
+                    Container(
+                      width: 6,
+                      height: 6,
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: i == _index ? Colors.white : Colors.white38,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -398,26 +522,24 @@ class _ThreadsEngagementRow extends StatelessWidget {
       padding: const EdgeInsets.only(top: 2),
       child: Row(
         children: [
-          if (post.replyCount != null)
-            TextButton.icon(
-              style: footerButtonStyle,
-              onPressed: onOpen,
-              icon: Icon(Icons.mode_comment_outlined, size: 18, color: muted),
-              label: Text(
-                metaLabel(post.replyCount),
-                style: theme.textTheme.bodySmall!.copyWith(color: muted),
-              ),
+          TextButton.icon(
+            style: footerButtonStyle,
+            onPressed: onOpen,
+            icon: Icon(Icons.mode_comment_outlined, size: 18, color: muted),
+            label: Text(
+              metaLabel(post.replyCount),
+              style: theme.textTheme.bodySmall!.copyWith(color: muted),
             ),
-          if (post.repostCount != null)
-            TextButton.icon(
-              style: footerButtonStyle,
-              onPressed: onOpen,
-              icon: Icon(Icons.repeat, size: 18, color: muted),
-              label: Text(
-                metaLabel(post.repostCount),
-                style: theme.textTheme.bodySmall!.copyWith(color: muted),
-              ),
+          ),
+          TextButton.icon(
+            style: footerButtonStyle,
+            onPressed: onOpen,
+            icon: Icon(Icons.repeat, size: 18, color: muted),
+            label: Text(
+              metaLabel(post.repostCount),
+              style: theme.textTheme.bodySmall!.copyWith(color: muted),
             ),
+          ),
           ScopedBuilder<ThreadsLikesStore, List<ThreadsPost>>(
             store: likes,
             distinct: (_) => likes.isLiked(post.id),

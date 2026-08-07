@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Bu profil gizli; yalnızca kendisi hakkında söyledikleri herkese açık.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "Yanıtlar",
   "plugin_threads_reposted": "{name} yeniden paylaştı",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "RSSHub örneğin yanıt verdi",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "Konu",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "Takibi bırak",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "Zen modunda akış uzunluğu",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zen modunda akışın duraklamadan önce kaç sayfa yükleyeceği.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }

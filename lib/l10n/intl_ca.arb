@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Aquest perfil és privat; només és públic el que diu de si mateix.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "Respostes",
   "plugin_threads_reposted": "{name} ha republicat",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "La teva instància de RSSHub ha respost",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "Fil",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "Deixa de seguir",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "Longitud del feed en mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quantes pàgines carrega el feed en mode zen abans de fer una pausa.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }

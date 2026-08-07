@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Hety profil pryvatny: publična tolki toje, što jon kaža pra siabie.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "Adkazy",
   "plugin_threads_reposted": "{name} zrabiŭ(ła) repost",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "Vaš asobnik RSSHub adkazaŭ",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "Nitka",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "Adpisacca",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "Daŭžynia stužki ŭ dzen-režymie",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolki staronak zahružaje stužka ŭ dzen-režymie pierad paŭzaj.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }

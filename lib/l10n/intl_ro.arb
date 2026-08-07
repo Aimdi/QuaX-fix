@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Acest profil e privat; public e doar ce spune despre sine.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "Răspunsuri",
   "plugin_threads_reposted": "{name} a redistribuit",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "Instanța ta RSSHub a răspuns",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "Fir",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "Nu mai urmări",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "Lungimea fluxului în modul zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Câte pagini încarcă fluxul în modul zen înainte de a se opri.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }

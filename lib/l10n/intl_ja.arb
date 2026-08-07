@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "このプロフィールは非公開です。公開されているのは自己紹介だけです。",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "返信",
   "plugin_threads_reposted": "{name}さんが再投稿しました",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "RSSHub インスタンスが応答しました",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "スレッド",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "フォロー解除",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "禅モードのフィードの長さ",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅モードでフィードが一時停止するまでに読み込むページ数。",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }
