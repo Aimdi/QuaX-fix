@@ -34,6 +34,42 @@ class BlueskyAccountsStore extends Store<List<BlueskyAccount>> {
     });
   }
 
+  /// Inserts many local follows in one write pass. Skips handles already known.
+  ///
+  /// Returns how many rows were newly written — used by the import progress UI.
+  Future<int> addMany(Iterable<BlueskyAccount> accounts) async {
+    final existing = {for (final account in state) account.handle.toLowerCase()};
+    final fresh = <BlueskyAccount>[];
+    for (final account in accounts) {
+      final handle = account.handle.trim();
+      if (handle.isEmpty) {
+        continue;
+      }
+      final key = handle.toLowerCase();
+      if (!existing.add(key)) {
+        continue;
+      }
+      fresh.add(account);
+    }
+
+    if (fresh.isEmpty) {
+      return 0;
+    }
+
+    final database = await Repository.writable();
+    final batch = database.batch();
+    for (final account in fresh) {
+      batch.insert(
+        tableBlueskySubscription,
+        subscriptionOf(account).toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    await batch.commit(noResult: true);
+    update(await _read());
+    return fresh.length;
+  }
+
   Future<void> remove(String handle) async {
     await execute(() async {
       final database = await Repository.writable();
@@ -43,7 +79,10 @@ class BlueskyAccountsStore extends Store<List<BlueskyAccount>> {
     });
   }
 
-  bool follows(String handle) => state.any((e) => e.handle == handle);
+  bool follows(String handle) {
+    final key = handle.trim().toLowerCase();
+    return state.any((e) => e.handle.toLowerCase() == key);
+  }
 }
 
 BlueskySubscription subscriptionOf(BlueskyAccount account) => BlueskySubscription(

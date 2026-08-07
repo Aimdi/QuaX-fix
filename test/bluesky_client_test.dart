@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:xta/plugins/bluesky/bluesky_client.dart';
+import 'package:xta/plugins/bluesky/bluesky_models.dart';
 
 void main() {
   group('BlueskyClient', () {
@@ -150,6 +151,71 @@ void main() {
       final thread = await client.getPostThread('at://did:plc:a/app.bsky.feed.post/focal');
       expect(thread.post.text, 'focal');
       expect(thread.replies.single.text, 'reply');
+    });
+
+    test('getFollows and getList hit the graph endpoints', () async {
+      final paths = <String>[];
+      final client = BlueskyClient(
+        httpClient: MockClient((request) async {
+          paths.add(request.url.path);
+          if (request.url.path.endsWith('getFollows')) {
+            expect(request.url.queryParameters['actor'], 'alice.bsky.social');
+            return http.Response(
+              jsonEncode({
+                'follows': [
+                  {'did': 'did:plc:1', 'handle': 'one.bsky.social'},
+                ],
+                'cursor': 'c1',
+              }),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          }
+          if (request.url.path.endsWith('getList')) {
+            expect(request.url.queryParameters['list'], 'at://did:plc:a/app.bsky.graph.list/1');
+            return http.Response(
+              jsonEncode({
+                'list': {'uri': 'at://did:plc:a/app.bsky.graph.list/1', 'name': 'Cool'},
+                'items': [
+                  {
+                    'subject': {'did': 'did:plc:2', 'handle': 'two.bsky.social'},
+                  },
+                ],
+              }),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          }
+          return http.Response('unexpected', 500);
+        }),
+      );
+
+      final follows = await client.getFollows('alice.bsky.social');
+      expect(follows.follows.single.handle, 'one.bsky.social');
+      final members = await client.getList('at://did:plc:a/app.bsky.graph.list/1');
+      expect(members.members.single.handle, 'two.bsky.social');
+      expect(paths, [
+        '/xrpc/app.bsky.graph.getFollows',
+        '/xrpc/app.bsky.graph.getList',
+      ]);
+    });
+
+    test('resolveListUri builds an AT-URI from a web list reference', () async {
+      final client = BlueskyClient(
+        httpClient: MockClient((request) async {
+          expect(request.url.path, '/xrpc/app.bsky.actor.getProfile');
+          return http.Response(
+            jsonEncode({'did': 'did:plc:owner', 'handle': 'alice.bsky.social'}),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }),
+      );
+
+      final uri = await client.resolveListUri(
+        const BlueskyListRef.web(actor: 'alice.bsky.social', rkey: '3abc'),
+      );
+      expect(uri, 'at://did:plc:owner/app.bsky.graph.list/3abc');
     });
 
     test('resolveBaseUrl is consulted per request and empty falls back', () async {

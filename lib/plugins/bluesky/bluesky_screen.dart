@@ -3,6 +3,8 @@ import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/bluesky/bluesky_client.dart';
+import 'package:xta/plugins/bluesky/bluesky_import_follows_screen.dart';
+import 'package:xta/plugins/bluesky/bluesky_import_list_screen.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_post_card.dart';
 import 'package:xta/plugins/bluesky/bluesky_profile_screen.dart';
@@ -81,6 +83,28 @@ class _BlueskyScreenState extends State<BlueskyScreen> {
             icon: const Icon(Icons.person_add_alt),
             tooltip: l10n.plugin_bluesky_add,
             onPressed: _addAccount,
+          ),
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              final page = switch (value) {
+                'following' => const BlueskyImportFollowsScreen(),
+                'list' => const BlueskyImportListScreen(),
+                _ => null,
+              };
+              if (page != null) {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'following',
+                child: Text(l10n.plugin_bluesky_import_following),
+              ),
+              PopupMenuItem(
+                value: 'list',
+                child: Text(l10n.plugin_bluesky_import_list),
+              ),
+            ],
           ),
         ],
       ),

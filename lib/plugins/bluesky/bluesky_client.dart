@@ -141,4 +141,63 @@ class BlueskyClient {
     }
     return thread;
   }
+
+  /// Public following graph for [actor] — used to import local follows only.
+  Future<BlueskyFollowsPage> getFollows(String actor, {int limit = 100, String? cursor}) async {
+    final query = <String, String>{
+      'actor': actor,
+      'limit': '$limit',
+    };
+    if (cursor != null && cursor.isNotEmpty) {
+      query['cursor'] = cursor;
+    }
+    final json = await _get(_uri('/xrpc/app.bsky.graph.getFollows', query));
+    return parseBlueskyFollowsPage(json.raw);
+  }
+
+  /// Lists created by [actor] (public metadata only).
+  Future<BlueskyListsPage> getLists(String actor, {int limit = 50, String? cursor}) async {
+    final query = <String, String>{
+      'actor': actor,
+      'limit': '$limit',
+    };
+    if (cursor != null && cursor.isNotEmpty) {
+      query['cursor'] = cursor;
+    }
+    final json = await _get(_uri('/xrpc/app.bsky.graph.getLists', query));
+    return parseBlueskyListsPage(json.raw);
+  }
+
+  /// Members of a public list identified by its AT-URI.
+  Future<BlueskyListMembersPage> getList(String listUri, {int limit = 100, String? cursor}) async {
+    final query = <String, String>{
+      'list': listUri,
+      'limit': '$limit',
+    };
+    if (cursor != null && cursor.isNotEmpty) {
+      query['cursor'] = cursor;
+    }
+    final json = await _get(_uri('/xrpc/app.bsky.graph.getList', query));
+    return parseBlueskyListMembersPage(json.raw);
+  }
+
+  /// Resolves a web list URL or AT-URI into an `at://…/app.bsky.graph.list/…`.
+  Future<String> resolveListUri(BlueskyListRef ref) async {
+    final atUri = ref.atUri?.trim();
+    if (atUri != null && atUri.isNotEmpty) {
+      return atUri;
+    }
+
+    final actor = ref.actor?.trim();
+    final rkey = ref.rkey?.trim();
+    if (actor == null || actor.isEmpty || rkey == null || rkey.isEmpty) {
+      throw BlueskyException(BlueskyErrorKind.badResponse, 'incomplete list reference');
+    }
+
+    final profile = await getProfile(actor);
+    if (profile.did.isEmpty) {
+      throw BlueskyException(BlueskyErrorKind.notFound, 'list owner missing did: $actor');
+    }
+    return 'at://${profile.did}/app.bsky.graph.list/$rkey';
+  }
 }
