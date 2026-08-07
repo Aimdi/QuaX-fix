@@ -156,6 +156,53 @@ class _ThreadsSettingsScreenState extends State<ThreadsSettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          Text(l10n.plugin_threads_settings_intro, style: theme.textTheme.bodyMedium),
+          const SizedBox(height: 16),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            secondary: const Icon(Icons.dynamic_feed_outlined),
+            title: Text(l10n.plugin_threads_in_home_feed),
+            subtitle: Text(l10n.plugin_threads_in_home_feed_description),
+            value: PrefService.of(context).get<bool>(optionPluginThreadsInHomeFeed) == true,
+            onChanged: (value) async {
+              await PrefService.of(context, listen: false).set(optionPluginThreadsInHomeFeed, value);
+              if (mounted) setState(() {});
+            },
+          ),
+          const Divider(height: 32),
+          Text(l10n.plugin_threads_accounts, style: theme.textTheme.titleSmall),
+          ScopedBuilder<ThreadsAccountsStore, List<ThreadsAccount>>(
+            store: context.read<ThreadsAccountsStore>(),
+            onState: (context, accounts) {
+              if (accounts.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(l10n.plugin_threads_no_accounts, style: theme.textTheme.bodySmall),
+                );
+              }
+              return Column(
+                children: [
+                  for (final account in accounts)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: FallbackAvatar(
+                        seed: account.handle,
+                        displayName: account.name,
+                        size: 36,
+                        accent: theme.colorScheme.primary,
+                      ),
+                      title: Text('@${account.handle}'),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        tooltip: l10n.delete,
+                        onPressed: () => _remove(account.handle),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+          const Divider(height: 32),
           Text(l10n.plugin_threads_direct_intro, style: theme.textTheme.bodyMedium),
           const SizedBox(height: 16),
           TextField(
@@ -205,8 +252,8 @@ class _ThreadsSettingsScreenState extends State<ThreadsSettingsScreen> {
             ],
           ),
           const Divider(height: 32),
-          Text(l10n.plugin_threads_settings_intro, style: theme.textTheme.bodyMedium),
-          const SizedBox(height: 16),
+          Text(l10n.plugin_threads_instance, style: theme.textTheme.titleSmall),
+          const SizedBox(height: 8),
           TextField(
             controller: _instance,
             keyboardType: TextInputType.url,
@@ -251,51 +298,6 @@ class _ThreadsSettingsScreenState extends State<ThreadsSettingsScreen> {
           Align(
             alignment: Alignment.centerLeft,
             child: FilledButton.tonal(onPressed: _testingApi ? null : _testApi, child: Text(l10n.plugin_threads_test)),
-          ),
-          const Divider(height: 32),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            secondary: const Icon(Icons.dynamic_feed_outlined),
-            title: Text(l10n.plugin_threads_in_home_feed),
-            subtitle: Text(l10n.plugin_threads_in_home_feed_description),
-            value: PrefService.of(context).get<bool>(optionPluginThreadsInHomeFeed) == true,
-            onChanged: (value) async {
-              await PrefService.of(context, listen: false).set(optionPluginThreadsInHomeFeed, value);
-              if (mounted) setState(() {});
-            },
-          ),
-          const Divider(height: 32),
-          Text(l10n.plugin_threads_accounts, style: theme.textTheme.titleSmall),
-          ScopedBuilder<ThreadsAccountsStore, List<ThreadsAccount>>(
-            store: context.read<ThreadsAccountsStore>(),
-            onState: (context, accounts) {
-              if (accounts.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Text(l10n.plugin_threads_no_accounts, style: theme.textTheme.bodySmall),
-                );
-              }
-              return Column(
-                children: [
-                  for (final account in accounts)
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: FallbackAvatar(
-                        seed: account.handle,
-                        displayName: account.name,
-                        size: 36,
-                        accent: theme.colorScheme.primary,
-                      ),
-                      title: Text('@${account.handle}'),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete_outline),
-                        tooltip: l10n.delete,
-                        onPressed: () => _remove(account.handle),
-                      ),
-                    ),
-                ],
-              );
-            },
           ),
         ],
       ),

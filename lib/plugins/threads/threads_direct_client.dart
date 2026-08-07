@@ -88,6 +88,17 @@ String? extractThreadsLsd(String html) => _lsdTokenPattern.firstMatch(html)?.gro
 String? extractThreadsUserIdFromHtml(String html, String handle) {
   final key = handle.trim().toLowerCase();
   if (key.isEmpty) return null;
+
+  // Logged-out profile pages currently embed the owner on
+  // BarcelonaProfileThreadsRoot as `props.user_id` — before any pk/username
+  // blob. Without this, guest GraphQL never starts.
+  final propsId = RegExp(
+    r'"user_id"\s*:\s*"(\d+)"',
+  ).firstMatch(html)?.group(1);
+  if (propsId != null && propsId != '0') {
+    return propsId;
+  }
+
   final escaped = RegExp.escape(key);
   final nearUsername = RegExp(
     '"username"\\s*:\\s*"$escaped".{0,480}?"pk"\\s*:\\s*"(\\d+)"',
@@ -103,15 +114,115 @@ String? extractThreadsUserIdFromHtml(String html, String handle) {
   ).firstMatch(html);
   if (nearPk != null) return nearPk.group(1);
 
-  final userIds = RegExp(r'"userID"\s*:\s*"(\d+)"').allMatches(html).map((m) => m.group(1)!).toList();
+  // Modal `userID` — ignore the logged-out stub `0`.
+  final userIds = RegExp(r'"userID"\s*:\s*"(\d+)"')
+      .allMatches(html)
+      .map((m) => m.group(1)!)
+      .where((id) => id != '0')
+      .toList();
   if (userIds.isEmpty) return null;
-  // Profile pages usually repeat the owner's id; prefer the mode.
   final counts = <String, int>{};
   for (final id in userIds) {
     counts[id] = (counts[id] ?? 0) + 1;
   }
   final ranked = counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
   return ranked.first.key;
+}
+
+String? _metaContent(String html, String name) {
+  final property = RegExp(
+    '<meta[^>]+(?:property|name)="$name"[^>]+content="([^"]*)"',
+    caseSensitive: false,
+  ).firstMatch(html)?.group(1);
+  if (property != null) {
+    return property;
+  }
+  return RegExp(
+    '<meta[^>]+content="([^"]*)"[^>]+(?:property|name)="$name"',
+    caseSensitive: false,
+  ).firstMatch(html)?.group(1);
+}
+
+String _decodeHtmlEntities(String value) => html_parser.parseFragment(value).text ?? value;
+
+/// `5.7M` / `1.4K` / `380` → an int the profile card can show.
+int? parseThreadsCompactCount(String? raw) {
+  if (raw == null) {
+    return null;
+  }
+  final match = RegExp(r'^([\d.,]+)\s*([KMB])?$', caseSensitive: false).firstMatch(raw.trim());
+  if (match == null) {
+    return null;
+  }
+  final number = double.tryParse(match.group(1)!.replaceAll(',', ''));
+  if (number == null) {
+    return null;
+  }
+  final scale = switch ((match.group(2) ?? '').toUpperCase()) {
+    'K' => 1000,
+    'M' => 1000000,
+    'B' => 1000000000,
+    _ => 1,
+  };
+  return (number * scale).round();
+}
+
+/// Public profile card from OG / meta tags on `threads.com/@handle` (no login).
+ThreadsProfile? threadsProfileFromGuestHtml(String html, String handle) {
+  final key = (normaliseThreadsHandle(handle) ?? handle).trim().toLowerCase();
+  if (key.isEmpty) {
+    return null;
+  }
+
+  final titleRaw = _metaContent(html, 'og:title') ?? _metaContent(html, 'twitter:title');
+  final descRaw = _metaContent(html, 'og:description') ?? _metaContent(html, 'description');
+  final imageRaw = _metaContent(html, 'og:image') ?? _metaContent(html, 'twitter:image');
+  if (titleRaw == null && descRaw == null && imageRaw == null) {
+    return null;
+  }
+
+  final title = titleRaw == null ? '' : _decodeHtmlEntities(titleRaw);
+  final desc = descRaw == null ? '' : _decodeHtmlEntities(descRaw);
+  final image = imageRaw == null ? '' : _decodeHtmlEntities(imageRaw).replaceAll('&amp;', '&');
+
+  final nameMatch = RegExp(r'^(.*?)\s*\(@', caseSensitive: false).firstMatch(title);
+  final displayName = (nameMatch?.group(1)?.trim().isNotEmpty ?? false) ? nameMatch!.group(1)!.trim() : key;
+
+  var followers = 0;
+  var mediaCount = 0;
+  var biography = '';
+  final parts = desc.split(RegExp(r'\s*[•·]\s*'));
+  for (final part in parts) {
+    final followersMatch = RegExp(r'^([\d.,]+[KMB]?)\s+Followers?$', caseSensitive: false).firstMatch(part.trim());
+    if (followersMatch != null) {
+      followers = parseThreadsCompactCount(followersMatch.group(1)) ?? followers;
+      continue;
+    }
+    final threadsMatch = RegExp(r'^([\d.,]+[KMB]?)\s+Threads?$', caseSensitive: false).firstMatch(part.trim());
+    if (threadsMatch != null) {
+      mediaCount = parseThreadsCompactCount(threadsMatch.group(1)) ?? mediaCount;
+      continue;
+    }
+    if (part.trim().isNotEmpty && biography.isEmpty) {
+      biography = part.trim();
+    }
+  }
+
+  final pk = extractThreadsUserIdFromHtml(html, key) ?? '';
+  return ThreadsProfile(
+    pk: pk,
+    id: pk,
+    username: key,
+    fullName: displayName,
+    isVerified: false,
+    isPrivate: false,
+    profilePicUrl: image,
+    biography: biography,
+    followerCount: followers,
+    followingCount: 0,
+    mediaCount: mediaCount,
+    externalUrl: '$_threadsWeb/@$key',
+  );
 }
 
 ThreadsPost? threadsPostFromApi(Json post) {
@@ -478,14 +589,33 @@ class ThreadsDirectClient {
   }
 
   Future<ThreadsProfile> fetchProfile(String handle) async {
-    _requireCookies();
-    final id = await resolveUserId(handle);
-    final uri = Uri.parse('$_threadsWeb/api/v1/users/$id/info/');
-    final response = await _get(uri, _cookieHeaders());
-    _throwForStatus(response, uri);
-    final profile = threadsProfileFromUserJson(Json(_decodeJson(response, uri))['user']);
+    if (hasCookies) {
+      try {
+        final id = await resolveUserId(handle);
+        final uri = Uri.parse('$_threadsWeb/api/v1/users/$id/info/');
+        final response = await _get(uri, _cookieHeaders());
+        _throwForStatus(response, uri);
+        final profile = threadsProfileFromUserJson(Json(_decodeJson(response, uri))['user']);
+        if (profile != null) {
+          return profile;
+        }
+      } on ThreadsException {
+        // Public HTML still has name / bio / avatar.
+      }
+    }
+    return fetchGuestProfile(handle);
+  }
+
+  /// Profile card from the public `threads.com/@handle` page — no login.
+  Future<ThreadsProfile> fetchGuestProfile(String handle) async {
+    final key = handle.trim().toLowerCase();
+    final htmlBody = await _fetchProfileHtml(key);
+    final profile = threadsProfileFromGuestHtml(htmlBody, key);
     if (profile == null) {
-      throw ThreadsException(ThreadsErrorKind.noSuchFeed, 'profile missing: $handle');
+      throw ThreadsException(ThreadsErrorKind.noSuchFeed, 'guest profile missing: @$key');
+    }
+    if (profile.pk.isNotEmpty) {
+      await _rememberUserId(key, profile.pk);
     }
     return profile;
   }

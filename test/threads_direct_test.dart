@@ -113,15 +113,48 @@ void main() {
       );
     });
 
-    test('extractThreadsUserIdFromHtml prefers pk near username', () {
+    test('extractThreadsUserIdFromHtml prefers props.user_id on logged-out pages', () {
+      final html =
+          r'{"props":{"initial_thread_count":4,"is_self_profile":false,"user_id":"63055343223"}}';
+      expect(extractThreadsUserIdFromHtml(html, 'zuck'), '63055343223');
+    });
+
+    test('extractThreadsUserIdFromHtml falls back to pk near username', () {
       final html = r'{"username":"zuck","full_name":"Z","pk":"63055343223"}';
       expect(extractThreadsUserIdFromHtml(html, 'zuck'), '63055343223');
       expect(extractThreadsUserIdFromHtml(html, 'instagram'), isNull);
     });
 
-    test('extractThreadsUserIdFromHtml falls back to modal userID', () {
-      final html = r'{"userID":"63404918397"}{"userID":"63404918397"}{"userID":"1"}';
+    test('extractThreadsUserIdFromHtml falls back to modal userID and ignores 0', () {
+      final html = r'{"userID":"0"}{"userID":"63404918397"}{"userID":"63404918397"}{"userID":"1"}';
       expect(extractThreadsUserIdFromHtml(html, 'anyone'), '63404918397');
+    });
+
+    test('threadsProfileFromGuestHtml reads OG title, description and image', () {
+      const html = '''
+<html><head>
+<meta property="og:title" content="Mark Zuckerberg (&#064;zuck) &#x2022; Threads, Say more" />
+<meta property="og:description" content="5.7M Followers &#x2022; 153 Threads &#x2022; Mostly MMA takes." />
+<meta property="og:image" content="https://example.org/a.jpg?x=1&amp;y=2" />
+<script>{"props":{"user_id":"63055343223"}}</script>
+</head></html>
+''';
+      final profile = threadsProfileFromGuestHtml(html, 'zuck');
+      expect(profile, isNotNull);
+      expect(profile!.username, 'zuck');
+      expect(profile.fullName, 'Mark Zuckerberg');
+      expect(profile.followerCount, 5700000);
+      expect(profile.mediaCount, 153);
+      expect(profile.biography, 'Mostly MMA takes.');
+      expect(profile.profilePicUrl, 'https://example.org/a.jpg?x=1&y=2');
+      expect(profile.pk, '63055343223');
+    });
+
+    test('parseThreadsCompactCount reads K/M suffixes', () {
+      expect(parseThreadsCompactCount('5.7M'), 5700000);
+      expect(parseThreadsCompactCount('1.4K'), 1400);
+      expect(parseThreadsCompactCount('380'), 380);
+      expect(parseThreadsCompactCount('nope'), isNull);
     });
 
     test('parseThreadsGraphqlFeed reads mediaData.threads', () {
@@ -229,7 +262,7 @@ void main() {
           if (request.method == 'GET' && request.url.path == '/@instagram') {
             return http.Response(
               r'<html><script>["LSD",[],{"token":"tok123"}]</script>'
-              r'<script>{"username":"instagram","pk":"63404918397"}</script></html>',
+              r'<script>{"props":{"is_self_profile":false,"user_id":"63404918397"}}</script></html>',
               200,
               headers: {'content-type': 'text/html'},
             );
@@ -289,13 +322,13 @@ void main() {
           if (request.url.path.contains('/text_feed/')) {
             return http.Response('{"message":"login_required","logout_reason":8}', 403);
           }
-          if (request.method == 'GET' && request.url.path == '/@instagram') {
-            return http.Response(
-              r'<html><script>["LSD",[],{"token":"tok"}]</script>'
-              r'<script>{"username":"instagram","pk":"63404918397"}</script></html>',
-              200,
-            );
-          }
+        if (request.method == 'GET' && request.url.path == '/@instagram') {
+          return http.Response(
+            r'<html><script>["LSD",[],{"token":"tok"}]</script>'
+            r'<script>{"props":{"user_id":"63404918397"}}</script></html>',
+            200,
+          );
+        }
           if (request.method == 'POST' && request.url.path == '/api/graphql') {
             return http.Response(
               jsonEncode({
