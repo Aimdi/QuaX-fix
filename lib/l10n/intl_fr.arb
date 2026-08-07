@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Ce profil est privé : seul ce qu'il dit de lui-même est public.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "Réponses",
   "plugin_threads_reposted": "{name} a republicé",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "Votre instance RSSHub a répondu",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "Fil",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "Ne plus suivre",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "Longueur du fil en mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Nombre de pages chargées par le fil en mode zen avant de faire une pause.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }

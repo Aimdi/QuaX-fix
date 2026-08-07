@@ -270,6 +270,7 @@ ThreadsPost? _threadsRepostFromApi({required Json outer, required Json inner}) {
     linkCard: original.linkCard,
     repostedByHandle: reposter,
     repostedByName: reposterName.isEmpty ? reposter : reposterName,
+    isVerified: original.isVerified,
   );
 }
 
@@ -301,6 +302,7 @@ ThreadsPost? _threadsOriginalFromApi(Json post) {
     replyCount: tpi['direct_reply_count'].integer,
     repostCount: tpi['repost_count'].integer,
     linkCard: linkCard,
+    isVerified: user['is_verified'].boolean ?? false,
   );
 }
 

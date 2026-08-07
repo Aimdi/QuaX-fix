@@ -5,6 +5,7 @@ import 'package:xta/plugins/threads/threads_direct_client.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 import 'package:xta/plugins/threads/threads_post_card.dart';
 import 'package:xta/plugins/threads/threads_profile_screen.dart';
+import 'package:xta/tweet/threaded_conversation.dart';
 import 'package:xta/ui/errors.dart';
 import 'package:xta/utils/urls.dart';
 
@@ -105,7 +106,7 @@ class _ThreadsThreadScreenState extends State<ThreadsThreadScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.plugin_threads_title),
+        title: Text(l10n.plugin_threads_thread),
         actions: [
           if (_status.url != null)
             IconButton(
@@ -147,15 +148,33 @@ class _ThreadsThreadScreenState extends State<ThreadsThreadScreen> {
               prefix: threadsApiErrorMessage(l10n, _error!),
               onRetry: _load,
             ),
+          )
+        else if (_replies.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: Text(
+              l10n.plugin_threads_replies,
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
           ),
-        for (final reply in _replies)
-          ThreadsPostCard(
-            post: reply,
-            showSourceBadge: false,
-            onOpen: () => _openPost(reply),
-            onAuthorTap: () => _openProfile(reply.handle),
-            onOpenBrowser: reply.url == null ? null : () => openUri(context, reply.url!),
-          ),
+          for (var i = 0; i < _replies.length; i++)
+            ThreadIndent(
+              depth: 1,
+              connectTop: true,
+              connectBottom: i < _replies.length - 1,
+              child: ThreadsPostCard(
+                post: _replies[i],
+                showSourceBadge: false,
+                onOpen: () => _openPost(_replies[i]),
+                onAuthorTap: () => _openProfile(_replies[i].handle),
+                onOpenBrowser: _replies[i].url == null
+                    ? null
+                    : () => openUri(context, _replies[i].url!),
+              ),
+            ),
+        ],
       ],
     );
   }

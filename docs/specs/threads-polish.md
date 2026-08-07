@@ -13,6 +13,12 @@ repost unwrap (#88).
 4. **Following strip** — real avatars when known; long-press unfollow.
 5. **Empty states** — CTA to add / look up an account.
 
+## Later polish
+
+Card chrome closer to the official app (repost line, always-on engagement,
+thread rails, linkified captions, verified badges, image viewer, strip add
+chip) is in `docs/specs/threads-app-like.md`.
+
 ## Out of scope
 
 - Compose / reply / like-on-Meta / follow-on-Meta

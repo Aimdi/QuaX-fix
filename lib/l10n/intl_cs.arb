@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Tento profil je soukromý – veřejné je jen to, co o sobě uvádí.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "Odpovědi",
   "plugin_threads_reposted": "{name} přeposlal(a)",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "Vaše instance RSSHub odpověděla",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "Vlákno",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "Přestat sledovat",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "Délka kanálu v zen režimu",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolik stránek kanál v zen režimu načte, než se pozastaví.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }

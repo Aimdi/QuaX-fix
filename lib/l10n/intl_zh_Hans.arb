@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "该资料为私密，公开的只有其自我介绍。",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "回复",
   "plugin_threads_reposted": "{name} 转发了",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "你的 RSSHub 实例已响应",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "串文",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "取消关注",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "禅模式信息流长度",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }

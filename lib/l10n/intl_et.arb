@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "See profiil on privaatne; avalik on vaid see, mida ta enda kohta ütleb.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "Vastused",
   "plugin_threads_reposted": "{name} postitas uuesti",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "Sinu RSSHub vastas",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "Lõim",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "Lõpeta jälgimine",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "Voo pikkus Zen-režiimis",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Mitu lehte voog Zen-režiimis enne pausi laadib.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }

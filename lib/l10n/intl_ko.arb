@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "이 프로필은 비공개입니다. 자기소개만 공개됩니다.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "답글",
   "plugin_threads_reposted": "{name} 님이 리포스트함",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "RSSHub 인스턴스가 응답했습니다",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "스레드",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "팔로우 취소",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "젠 모드 피드 길이",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "젠 모드에서 피드가 일시 중지되기 전에 불러올 페이지 수입니다.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }

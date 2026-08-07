@@ -75,6 +75,9 @@ class ThreadsPost {
   final String? repostedByHandle;
   final String? repostedByName;
 
+  /// Meta `user.is_verified` when the payload carried it.
+  final bool isVerified;
+
   const ThreadsPost({
     required this.id,
     required this.handle,
@@ -90,6 +93,7 @@ class ThreadsPost {
     this.linkCard,
     this.repostedByHandle,
     this.repostedByName,
+    this.isVerified = false,
   });
 
   bool get hasMedia => images.isNotEmpty;
@@ -123,6 +127,7 @@ class ThreadsPost {
     'linkCard': linkCard?.toJson(),
     'repostedByHandle': repostedByHandle,
     'repostedByName': repostedByName,
+    'isVerified': isVerified,
   };
 
   factory ThreadsPost.fromSnapshot(Object? raw) {
@@ -156,6 +161,7 @@ class ThreadsPost {
       linkCard: linkCard == null || linkCard.url.isEmpty ? null : linkCard,
       repostedByHandle: json['repostedByHandle'] as String?,
       repostedByName: json['repostedByName'] as String?,
+      isVerified: json['isVerified'] as bool? ?? false,
     );
   }
 

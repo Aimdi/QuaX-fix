@@ -1499,6 +1499,7 @@
   "@plugin_threads_not_configured": {},
   "plugin_threads_profile_private": "Hồ sơ này ở chế độ riêng tư; chỉ phần tự giới thiệu là công khai.",
   "@plugin_threads_profile_private": {},
+  "plugin_threads_replies": "Trả lời",
   "plugin_threads_reposted": "{name} đã đăng lại",
   "@plugin_threads_reposted": {
     "placeholders": {
@@ -1513,6 +1514,7 @@
   "@plugin_threads_test": {},
   "plugin_threads_test_ok": "Máy chủ RSSHub của bạn đã phản hồi",
   "@plugin_threads_test_ok": {},
+  "plugin_threads_thread": "Chủ đề",
   "plugin_threads_title": "Threads",
   "@plugin_threads_title": {},
   "plugin_threads_unfollow": "Bỏ theo dõi",
@@ -1964,5 +1966,7 @@
   "zen_mode_page_cap": "Độ dài bảng tin ở chế độ zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Số trang bảng tin tải ở chế độ zen trước khi tạm dừng.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_threads_replies": {},
+  "@plugin_threads_thread": {}
 }
