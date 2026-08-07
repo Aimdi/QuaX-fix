@@ -11,14 +11,13 @@ Approach inspired by public clients such as
 ## Why
 
 RSSHub + Xy never touch Meta from the phone, but they need a self-hosted
-proxy and cannot show a real Following feed. Guest GraphQL `doc_id`s rotate.
-A pasted web session can:
+proxy and cannot show a real Following feed. A pasted web session can:
 
 | Credential | Host | What it unlocks |
 |---|---|---|
 | Cookies (`sessionid`, `csrftoken`, `ds_user_id`, `mid`, `ig_did`) | `www.threads.com` | Profile lookup, per-user threads |
-| Bearer `IGT:2:…` (+ user id / device id) | `i.instagram.com` | Home / Following timeline |
-| None | `www.threads.com` HTML | Guest SSR scrape of public profiles (iPhone Safari UA) |
+| Bearer `IGT:2:…` (+ user id / device id) | `i.instagram.com` | Home / Following timeline (when no local Accounts) |
+| None | `www.threads.com` | Guest GraphQL profile threads + SSR fallback |
 
 ## Auth UX
 
@@ -26,7 +25,7 @@ Settings section **Direct session** (above RSSHub):
 
 1. Paste a `Cookie` header (or `name=value; …` string) exported from a logged-in
    Threads browser tab.
-2. Optionally paste Bearer `IGT:2:…` for the Following feed.
+2. Optionally paste Bearer `IGT:2:…` for the Following feed when Accounts is empty.
 3. **Test session** hits `current_user` (cookies) and/or a short timeline
    (Bearer).
 4. Secrets stored under `*_token` keys / `secretPrefKeys` — never exported.
@@ -35,24 +34,28 @@ No in-app password / Bloks login. No like, follow, repost, or compose.
 
 ## Feed priority
 
-1. Bearer configured → Following timeline
+1. Local Accounts non-empty → merge those handles via:
+   - cookies → `GET /api/v1/text_feed/{id}/profile/`
+   - else RSSHub instance → JSON Feed
+   - else guest: profile HTML → LSD + user id →
+     `POST /api/graphql` `BarcelonaProfileThreadsTabQuery`
+     (`doc_id` in `threadsGuestProfileThreadsDocId`), SSR `thread_items` fallback
+2. Else Bearer configured → Following timeline
    (`GET /api/v1/feed/text_post_app_timeline/?pagination_source=text_post_feed_following`)
-2. Else cookies → merge local follows via
-   `GET /api/v1/text_feed/{id}/profile/`
-3. Else RSSHub instance → existing JSON Feed path
-4. Else local follows → guest SSR of `https://www.threads.com/@handle`
-5. Else → not configured
+3. Else cookies/RSSHub with no Accounts → empty list
+4. Else → not configured
 
 ## Throttle & risk
 
 - ≥2s between private API calls; stop that credential set for 30 minutes on
   `429`, “Please wait…”, or `login_required` / `logout_reason: 8`.
 - Sessions may die; accounts may be checkpointed. Documented in settings copy.
+- Guest GraphQL `doc_id`s can rotate; SSR remains the fallback.
 
 ## MVP
 
 - Cookie + Bearer paste, test, clear
-- Following feed (Bearer) and/or merged follows (cookies / SSR / RSSHub)
+- Following feed (Bearer, no Accounts) and/or merged follows (cookies / guest GraphQL / SSR / RSSHub)
 - Profile lookup prefers cookies when set, else Xy
 - Unit tests with `MockClient` fixtures (no live credentials)
 
@@ -60,5 +63,4 @@ No in-app password / Bloks login. No like, follow, repost, or compose.
 
 - In-app login WebView
 - Write actions
-- GraphQL `doc_id` chasing as primary path
 - Video carousel playback beyond image URLs already on cards

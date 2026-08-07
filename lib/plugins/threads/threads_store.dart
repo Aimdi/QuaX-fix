@@ -84,19 +84,23 @@ class ThreadsFeedStore extends Store<List<ThreadsPost>> {
   /// Reads the best available source (see docs/specs/threads-direct.md).
   Future<void> refresh({bool force = false}) async {
     await execute(() async {
+      final handles = accounts.state.map((e) => e.handle).toList(growable: false);
+
+      // Followed Accounts always win: a pasted Bearer used to short-circuit to
+      // Following and never load the Accounts list, which looked like an empty
+      // plugin when the reader had only added people to follow.
+      if (handles.isNotEmpty) {
+        return postsFor(handles, forceRefresh: force);
+      }
+
       if (direct.hasBearer) {
         return await direct.fetchFollowingTimeline();
       }
 
-      final handles = accounts.state.map((e) => e.handle).toList(growable: false);
-      if (handles.isEmpty) {
-        if (direct.hasCookies || _instance.trim().isNotEmpty) {
-          return const <ThreadsPost>[];
-        }
-        throw ThreadsException(ThreadsErrorKind.notConfigured, 'no accounts or session');
+      if (direct.hasCookies || _instance.trim().isNotEmpty) {
+        return const <ThreadsPost>[];
       }
-
-      return postsFor(handles, forceRefresh: force);
+      throw ThreadsException(ThreadsErrorKind.notConfigured, 'no accounts or session');
     });
   }
 

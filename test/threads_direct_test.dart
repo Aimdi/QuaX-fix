@@ -104,6 +104,53 @@ void main() {
     });
   });
 
+  group('guest GraphQL helpers', () {
+    test('extractThreadsLsd reads the LSD token blob', () {
+      expect(extractThreadsLsd('nope'), isNull);
+      expect(
+        extractThreadsLsd(r'prefix["LSD",[],{"token":"AbC_12-x"}]suffix'),
+        'AbC_12-x',
+      );
+    });
+
+    test('extractThreadsUserIdFromHtml prefers pk near username', () {
+      final html = r'{"username":"zuck","full_name":"Z","pk":"63055343223"}';
+      expect(extractThreadsUserIdFromHtml(html, 'zuck'), '63055343223');
+      expect(extractThreadsUserIdFromHtml(html, 'instagram'), isNull);
+    });
+
+    test('extractThreadsUserIdFromHtml falls back to modal userID', () {
+      final html = r'{"userID":"63404918397"}{"userID":"63404918397"}{"userID":"1"}';
+      expect(extractThreadsUserIdFromHtml(html, 'anyone'), '63404918397');
+    });
+
+    test('parseThreadsGraphqlFeed reads mediaData.threads', () {
+      final posts = parseThreadsGraphqlFeed({
+        'data': {
+          'mediaData': {
+            'threads': [
+              {
+                'thread_items': [
+                  {
+                    'post': {
+                      'pk': '42',
+                      'code': 'Cd',
+                      'caption': {'text': 'from gql'},
+                      'user': {'username': 'instagram', 'full_name': 'IG'},
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      });
+      expect(posts, hasLength(1));
+      expect(posts.first.text, 'from gql');
+      expect(posts.first.handle, 'instagram');
+    });
+  });
+
   group('ThreadsDirectClient', () {
     late PrefServiceCache prefs;
 
@@ -169,6 +216,95 @@ void main() {
         () => client.currentUser(),
         throwsA(isA<ThreadsException>().having((e) => e.kind, 'kind', ThreadsErrorKind.sessionSuspended)),
       );
+    });
+
+    test('fetchGuestAccount uses GraphQL after reading LSD and user id from HTML', () async {
+      var sawGraphql = false;
+      final client = ThreadsDirectClient(
+        prefs,
+        minGap: Duration.zero,
+        httpClient: MockClient((request) async {
+          if (request.method == 'GET' && request.url.path == '/@instagram') {
+            return http.Response(
+              r'<html><script>["LSD",[],{"token":"tok123"}]</script>'
+              r'<script>{"username":"instagram","pk":"63404918397"}</script></html>',
+              200,
+              headers: {'content-type': 'text/html'},
+            );
+          }
+          if (request.method == 'POST' && request.url.path == '/api/graphql') {
+            sawGraphql = true;
+            expect(request.headers['X-FB-LSD'], 'tok123');
+            expect(request.headers['X-IG-App-ID'], '238260118697367');
+            expect(request.body, contains('doc_id=$threadsGuestProfileThreadsDocId'));
+            expect(request.body, contains('63404918397'));
+            return http.Response(
+              jsonEncode({
+                'data': {
+                  'mediaData': {
+                    'threads': [
+                      {
+                        'thread_items': [
+                          {
+                            'post': {
+                              'pk': '99',
+                              'code': 'Gg',
+                              'caption': {'text': 'guest gql post'},
+                              'user': {'username': 'instagram', 'full_name': 'Instagram'},
+                            },
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              }),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          }
+          return http.Response('unexpected ${request.method} ${request.url}', 500);
+        }),
+      );
+
+      final posts = await client.fetchGuestAccount('instagram');
+      expect(sawGraphql, isTrue);
+      expect(posts, hasLength(1));
+      expect(posts.first.text, 'guest gql post');
+      expect(prefs.get<String>(optionPluginThreadsUserIds), contains('63404918397'));
+    });
+
+    test('fetchGuestAccount falls back to SSR when GraphQL returns empty', () async {
+      final blob = jsonEncode({
+        'thread_items': [
+          {
+            'post': {
+              'pk': '7',
+              'code': 'Ss',
+              'caption': {'text': 'ssr fallback'},
+              'user': {'username': 'zuck', 'full_name': 'Z'},
+            },
+          },
+        ],
+      });
+      final client = ThreadsDirectClient(
+        prefs,
+        minGap: Duration.zero,
+        httpClient: MockClient((request) async {
+          if (request.method == 'GET') {
+            return http.Response(
+              '<html><script type="application/json" data-sjs>$blob</script>'
+              r'<script>["LSD",[],{"token":"t"}]</script>'
+              r'<script>{"username":"zuck","pk":"63055343223"}</script></html>',
+              200,
+            );
+          }
+          return http.Response(jsonEncode({'data': {'mediaData': {'threads': []}}}), 200);
+        }),
+      );
+
+      final posts = await client.fetchGuestAccount('zuck');
+      expect(posts.first.text, 'ssr fallback');
     });
   });
 }
