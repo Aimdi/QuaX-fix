@@ -37,6 +37,7 @@ import 'package:xta/profile/profile.dart';
 import 'package:xta/plugins/substack/substack_client.dart';
 import 'package:xta/plugins/substack/substack_store.dart';
 import 'package:xta/plugins/bluesky/bluesky_client.dart';
+import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_store.dart';
 import 'package:xta/plugins/mastodon/mastodon_client.dart';
 import 'package:xta/plugins/mastodon/mastodon_store.dart';
@@ -476,6 +477,7 @@ Future<void> main() async {
       optionPluginSubstackReadIds: '[]',
       optionPluginBlueskyEnabled: false,
       optionPluginBlueskyShowTab: true,
+      optionPluginBlueskyInstance: kBlueskyDefaultAppView,
       optionPluginMastodonEnabled: false,
       optionPluginMastodonShowTab: true,
       optionPluginMastodonInstance: '',
@@ -603,7 +605,9 @@ Future<void> main() async {
     final threadsAccounts = ThreadsAccountsStore();
     final threadsLikes = ThreadsLikesStore();
     final threadsFeed = ThreadsFeedStore(threadsClient, threadsDirect, prefService, threadsAccounts);
-    final blueskyClient = BlueskyClient();
+    final blueskyClient = BlueskyClient(
+      resolveBaseUrl: () => prefService.get<String>(optionPluginBlueskyInstance) ?? kBlueskyDefaultAppView,
+    );
     final blueskyAccounts = BlueskyAccountsStore();
     final blueskyFeed = BlueskyFeedStore(blueskyClient, blueskyAccounts);
     final mastodonClient = MastodonClient();

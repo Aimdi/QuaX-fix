@@ -2,6 +2,27 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 
 void main() {
+  group('normaliseBlueskyAppView', () {
+    test('accepts bare hosts and trims trailing slashes', () {
+      expect(normaliseBlueskyAppView('public.api.bsky.app'), 'https://public.api.bsky.app');
+      expect(normaliseBlueskyAppView('https://public.api.bsky.app/'), 'https://public.api.bsky.app');
+      expect(normaliseBlueskyAppView('  https://example.org  '), 'https://example.org');
+    });
+
+    test('refuses empty or non-http values', () {
+      expect(normaliseBlueskyAppView(''), isNull);
+      expect(normaliseBlueskyAppView('ftp://example.org'), isNull);
+      expect(normaliseBlueskyAppView('not a url'), isNull);
+    });
+
+    test('blueskyAppViewFromPrefs falls back to the working default', () {
+      expect(blueskyAppViewFromPrefs(null), kBlueskyDefaultAppView);
+      expect(blueskyAppViewFromPrefs(''), kBlueskyDefaultAppView);
+      expect(blueskyAppViewFromPrefs('ftp://nope'), kBlueskyDefaultAppView);
+      expect(blueskyAppViewFromPrefs('https://my.appview.example'), 'https://my.appview.example');
+    });
+  });
+
   group('normaliseBlueskyHandle', () {
     test('accepts bare handles, @handles and profile URLs', () {
       expect(normaliseBlueskyHandle('alice.bsky.social'), 'alice.bsky.social');

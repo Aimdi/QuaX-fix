@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "利用可能",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "アカウント",
   "plugin_bluesky_add": "アカウントを追加",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "公開 AppView 経由で Bluesky アカウントを読む — Bluesky へのログインは不要",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "ハンドルまたは DID（@ なし）",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "デフォルト: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "例: https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "Bluesky のハンドルではありません",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "プロフィールを検索",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "まだアカウントがありません",
   "plugin_bluesky_no_posts": "まだ読むものがありません",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "設定なしで読めます — 公開 AppView が最初から入っています。自前のときだけ変えてください。Bluesky ログインは不要です。",
+  "plugin_bluesky_test": "AppView をテスト",
+  "plugin_bluesky_test_ok": "AppView が応答しました",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "フォロー解除",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "デフォルトを使う",
   "plugin_catalogue_cached": "最後に取得できた一覧を表示しています",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "プラグイン一覧を取得できませんでした",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "禅モードのフィードの長さ",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅モードでフィードが一時停止するまでに読み込むページ数。",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

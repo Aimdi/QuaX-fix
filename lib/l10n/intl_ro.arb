@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "Disponibile",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "Conturi",
   "plugin_bluesky_add": "Adaugă cont",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Citește conturi Bluesky prin AppView public — fără autentificare pe Bluesky",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Handle sau DID, fără @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Implicit: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "De exemplu https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "Acesta nu este un handle Bluesky",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "Caută un profil",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "Niciun cont încă",
   "plugin_bluesky_no_posts": "Nimic de citit deocamdată",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "Citirea funcționează fără configurare — AppView-ul public e deja completat. Schimbă-l doar dacă ai unul propriu. Nu e nevoie de cont Bluesky.",
+  "plugin_bluesky_test": "Testează AppView",
+  "plugin_bluesky_test_ok": "AppView-ul tău a răspuns",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "Nu mai urmări",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "Folosește implicitul",
   "plugin_catalogue_cached": "Se afișează ultima listă primită",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "Lista de pluginuri nu a putut fi preluată",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "Lungimea fluxului în modul zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Câte pagini încarcă fluxul în modul zen înainte de a se opri.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

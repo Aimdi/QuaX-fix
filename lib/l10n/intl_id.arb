@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "Tersedia",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "Akun",
   "plugin_bluesky_add": "Tambah akun",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Baca akun Bluesky lewat AppView publik — tanpa masuk ke Bluesky",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Handle atau DID, tanpa @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Default: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Contoh https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "Itu bukan handle Bluesky",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "Cari profil",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "Belum ada akun",
   "plugin_bluesky_no_posts": "Belum ada yang dibaca",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "Membaca langsung jalan — AppView publik sudah terisi. Ubah hanya jika Anda punya sendiri. Login Bluesky tidak diperlukan.",
+  "plugin_bluesky_test": "Uji AppView",
+  "plugin_bluesky_test_ok": "AppView Anda menjawab",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "Berhenti mengikuti",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "Pakai default",
   "plugin_catalogue_cached": "Menampilkan daftar terakhir yang diterima",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "Daftar plugin tidak bisa diambil",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "Panjang beranda di mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Berapa banyak halaman yang dimuat beranda di mode zen sebelum berhenti sejenak.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

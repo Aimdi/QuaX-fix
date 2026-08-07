@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "Disponibles",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "Comptes",
   "plugin_bluesky_add": "Ajouter un compte",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Lire des comptes Bluesky via l’AppView public — sans compte Bluesky",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Identifiant ou DID, sans le @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Par défaut : {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Par exemple https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "Ce n’est pas un identifiant Bluesky",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "Chercher un profil",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "Aucun compte pour l’instant",
   "plugin_bluesky_no_posts": "Rien à lire pour l’instant",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "La lecture fonctionne sans configuration — l’AppView public est déjà renseigné. Ne le changez que si vous en hébergez un. Aucun compte Bluesky n’est requis.",
+  "plugin_bluesky_test": "Tester l’AppView",
+  "plugin_bluesky_test_ok": "Votre AppView a répondu",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "Ne plus suivre",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "Utiliser la valeur par défaut",
   "plugin_catalogue_cached": "La dernière liste reçue est affichée",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "Impossible de récupérer la liste des extensions",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "Longueur du fil en mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Nombre de pages chargées par le fil en mode zen avant de faire une pause.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

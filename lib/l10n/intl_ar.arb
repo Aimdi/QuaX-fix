@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "متاحة",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "الحسابات",
   "plugin_bluesky_add": "إضافة حساب",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "اقرأ حسابات Bluesky عبر واجهة AppView العامة — دون تسجيل الدخول إلى Bluesky",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "المعرّف أو DID، بدون @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "الافتراضي: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "مثلًا https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "هذا ليس معرّف Bluesky صالحًا",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "البحث عن ملف شخصي",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "لا حسابات بعد",
   "plugin_bluesky_no_posts": "لا شيء للقراءة بعد",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "القراءة تعمل بلا إعداد — AppView العام مُعبَّأ مسبقًا. غيّره فقط إن كنت تشغّل خادمك. لا يلزم تسجيل دخول إلى Bluesky.",
+  "plugin_bluesky_test": "اختبار AppView",
+  "plugin_bluesky_test_ok": "استجاب AppView",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "إلغاء المتابعة",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "استخدم الافتراضي",
   "plugin_catalogue_cached": "يتم عرض آخر قائمة تم جلبها",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "تعذّر جلب قائمة الإضافات",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "طول الخلاصة في وضع الهدوء",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "عدد الصفحات التي تحمّلها الخلاصة في وضع الهدوء قبل التوقف.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

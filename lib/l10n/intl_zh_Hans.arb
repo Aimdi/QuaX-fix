@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "可用",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "账号",
   "plugin_bluesky_add": "添加账号",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "通过公共 AppView 阅读 Bluesky 账号 — 无需登录 Bluesky",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "句柄或 DID，不含 @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "默认：{url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "例如 https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "这不是 Bluesky 句柄",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "查找个人资料",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "还没有账号",
   "plugin_bluesky_no_posts": "暂无可读内容",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "无需配置即可阅读 — 公共 AppView 已填好。只有自建时才改。不需要登录 Bluesky。",
+  "plugin_bluesky_test": "测试 AppView",
+  "plugin_bluesky_test_ok": "你的 AppView 已响应",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "取消关注",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "使用默认",
   "plugin_catalogue_cached": "正在显示上次获取到的列表",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "无法获取插件列表",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "禅模式信息流长度",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

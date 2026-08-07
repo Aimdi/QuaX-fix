@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "Доступные",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "Аккаунты",
   "plugin_bluesky_add": "Добавить аккаунт",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Читайте аккаунты Bluesky через публичный AppView — без входа в Bluesky",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Хэндл или DID, без @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "По умолчанию: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Например https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "Это не хэндл Bluesky",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "Найти профиль",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "Пока нет аккаунтов",
   "plugin_bluesky_no_posts": "Пока нечего читать",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "Чтение работает без настройки — публичный AppView уже заполнен. Меняйте только при своём. Вход в Bluesky не нужен.",
+  "plugin_bluesky_test": "Проверить AppView",
+  "plugin_bluesky_test_ok": "Ваш AppView ответил",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "Отписаться",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "Использовать по умолчанию",
   "plugin_catalogue_cached": "Показан последний полученный список",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "Не удалось получить список плагинов",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "Длина ленты в дзен-режиме",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Сколько страниц загружает лента в дзен-режиме перед паузой.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

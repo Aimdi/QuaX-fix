@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "Disponeblaj",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "Kontoj",
   "plugin_bluesky_add": "Aldoni konton",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Legu Bluesky-kontojn per la publika AppView — sen ensaluti al Bluesky",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Uzulnomo aŭ DID, sen @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Defaŭlte: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Ekzemple https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "Tio ne estas Bluesky-uzulnomo",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "Serĉi profilon",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "Ankoraŭ neniuj kontoj",
   "plugin_bluesky_no_posts": "Ankoraŭ nenio legebla",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "Legado funkcias sen agordo — la publika AppView jam estas plenigita. Ŝanĝu nur se vi havas propran. Bluesky-ensaluto ne necesas.",
+  "plugin_bluesky_test": "Testi AppView",
+  "plugin_bluesky_test_ok": "Via AppView respondis",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "Malsekvi",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "Uzi defaŭltan",
   "plugin_catalogue_cached": "Montriĝas la lasta ricevita listo",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "Ne eblis akiri la liston de kromprogramoj",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "Longo de la fluo en zena reĝimo",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kiom da paĝoj la fluo ŝargas en zena reĝimo antaŭ ol paŭzi.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

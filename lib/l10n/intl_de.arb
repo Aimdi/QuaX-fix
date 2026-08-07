@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "Verfügbar",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "Konten",
   "plugin_bluesky_add": "Konto hinzufügen",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Bluesky-Konten über die öffentliche AppView lesen — ohne Bluesky-Anmeldung",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Handle oder DID, ohne @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Standard: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Zum Beispiel https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "Das ist kein Bluesky-Handle",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "Profil nachschlagen",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "Noch keine Konten",
   "plugin_bluesky_no_posts": "Noch nichts zu lesen",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "Lesen funktioniert ohne Einrichtung — die öffentliche AppView ist schon eingetragen. Ändere sie nur, wenn du eine eigene betreibst. Kein Bluesky-Login nötig.",
+  "plugin_bluesky_test": "AppView testen",
+  "plugin_bluesky_test_ok": "Deine AppView hat geantwortet",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "Entfolgen",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "Standard verwenden",
   "plugin_catalogue_cached": "Angezeigt wird die zuletzt geladene Liste",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "Die Plugin-Liste konnte nicht geladen werden",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "Feed-Länge im Zen-Modus",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Wie viele Seiten ein Feed im Zen-Modus lädt, bevor er pausiert.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

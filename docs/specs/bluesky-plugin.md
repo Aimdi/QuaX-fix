@@ -12,7 +12,7 @@ account — without taking on Skylib's licence.
 Skylib was consulted only for the *approach*: keep follows on the device and
 read public content without logging into Bluesky. None of its code is copied or
 translated. This plugin talks to Bluesky's documented public AppView at
-`https://public.api.bsky.app` and is written fresh in Dart.
+`https://public.api.bsky.app` by default and is written fresh in Dart.
 
 ## What is implemented (MVP)
 
@@ -22,12 +22,13 @@ translated. This plugin talks to Bluesky's documented public AppView at
 - Local follows in SQLite (`bluesky_subscription`), merged into one newest-first
   timeline with per-account isolation.
 - Profile screen with Follow / Unfollow; post cards that open `bsky.app` URLs.
-- Home tab when the plugin is enabled; no settings screen (no instance, no
-  credentials).
+- Home tab when the plugin is enabled.
+- Settings with a working default AppView (`kBlueskyDefaultAppView` /
+  `https://public.api.bsky.app`). Empty or invalid values fall back to that
+  default; readers can point at another AppView and test it.
 
 ## Not implemented
 
 - Compose, like, repost, follow-on-Bluesky, DMs, or any write to Bluesky.
-- Custom AppView / PDS instance selection.
 - Notifications, lists, starter packs, or video embeds beyond what a card can
   ignore safely.

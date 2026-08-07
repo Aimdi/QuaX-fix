@@ -202,6 +202,9 @@ const pluginIdBluesky = 'bluesky';
 const optionPluginBlueskyEnabled = 'plugin.bluesky.enabled';
 const optionPluginBlueskyShowTab = 'plugin.bluesky.show_tab';
 
+/// Bluesky AppView base URL. Empty falls back to [kBlueskyDefaultAppView].
+const optionPluginBlueskyInstance = 'plugin.bluesky.instance';
+
 /// How many posts one account contributes to the merged Bluesky feed.
 const blueskyPostsPerAccount = 20;
 

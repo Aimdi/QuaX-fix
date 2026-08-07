@@ -114,5 +114,34 @@ void main() {
       expect(actors.first.handle, 'one.bsky.social');
       expect(actors.last.displayName, 'two.bsky.social');
     });
+
+    test('resolveBaseUrl is consulted per request and empty falls back', () async {
+      var next = '';
+      final client = BlueskyClient(
+        resolveBaseUrl: () => next,
+        httpClient: MockClient((request) async {
+          expect(request.url.host, 'public.api.bsky.app');
+          return http.Response(
+            jsonEncode({'did': 'did:plc:z', 'handle': 'bsky.app'}),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }),
+      );
+      await client.verify();
+      next = 'https://custom.appview.test';
+      final custom = BlueskyClient(
+        resolveBaseUrl: () => next,
+        httpClient: MockClient((request) async {
+          expect(request.url.host, 'custom.appview.test');
+          return http.Response(
+            jsonEncode({'did': 'did:plc:z', 'handle': 'bsky.app'}),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }),
+      );
+      await custom.verify();
+    });
   });
 }

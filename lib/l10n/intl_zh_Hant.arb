@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "可用",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "帳號",
   "plugin_bluesky_add": "新增帳號",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "透過公開 AppView 閱讀 Bluesky 帳號 — 無需登入 Bluesky",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "帳號或 DID，不含 @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "預設：{url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "例如 https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "這不是 Bluesky 帳號",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "查詢個人資料",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "尚無帳號",
   "plugin_bluesky_no_posts": "尚無可讀內容",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "無需設定即可閱讀 — 公共 AppView 已填好。只有自建時才改。不需要登入 Bluesky。",
+  "plugin_bluesky_test": "測試 AppView",
+  "plugin_bluesky_test_ok": "你的 AppView 已回應",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "取消追蹤",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "使用預設",
   "plugin_catalogue_cached": "正在顯示上次取得的清單",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "無法取得外掛清單",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "禪模式時間軸長度",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禪模式下時間軸暫停前載入的頁數。",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

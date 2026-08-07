@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "Có sẵn",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "Tài khoản",
   "plugin_bluesky_add": "Thêm tài khoản",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Đọc tài khoản Bluesky qua AppView công khai — không cần đăng nhập Bluesky",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Handle hoặc DID, không có @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Mặc định: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Ví dụ https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "Đó không phải handle Bluesky",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "Tìm hồ sơ",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "Chưa có tài khoản",
   "plugin_bluesky_no_posts": "Chưa có gì để đọc",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "Đọc được ngay không cần cấu hình — AppView công khai đã điền sẵn. Chỉ đổi khi bạn tự chạy. Không cần đăng nhập Bluesky.",
+  "plugin_bluesky_test": "Thử AppView",
+  "plugin_bluesky_test_ok": "AppView của bạn đã phản hồi",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "Bỏ theo dõi",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "Dùng mặc định",
   "plugin_catalogue_cached": "Đang hiển thị danh sách nhận được gần nhất",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "Không lấy được danh sách plugin",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "Độ dài bảng tin ở chế độ zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Số trang bảng tin tải ở chế độ zen trước khi tạm dừng.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

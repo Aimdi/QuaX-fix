@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "Dostępne",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "Konta",
   "plugin_bluesky_add": "Dodaj konto",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Czytaj konta Bluesky przez publiczny AppView — bez logowania do Bluesky",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Handle lub DID, bez @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Domyślnie: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Na przykład https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "To nie jest handle Bluesky",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "Wyszukaj profil",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "Brak kont",
   "plugin_bluesky_no_posts": "Na razie nie ma nic do czytania",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "Czytanie działa bez konfiguracji — publiczny AppView jest już wpisany. Zmień tylko przy własnym. Logowanie do Bluesky nie jest potrzebne.",
+  "plugin_bluesky_test": "Testuj AppView",
+  "plugin_bluesky_test_ok": "Twój AppView odpowiedział",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "Przestań obserwować",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "Użyj domyślnego",
   "plugin_catalogue_cached": "Wyświetlana jest ostatnia pobrana lista",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "Nie udało się pobrać listy wtyczek",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "Długość kanału w trybie zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Ile stron kanał wczytuje w trybie zen, zanim się zatrzyma.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }

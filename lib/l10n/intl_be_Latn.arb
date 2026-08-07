@@ -735,6 +735,7 @@
   "@please_note_that_the_method_fritter_uses_to_import_subscriptions_is_heavily_rate_limited_by_twitter_so_this_may_fail_if_you_have_a_lot_of_followed_accounts": {},
   "plugin_available": "Dastupnyja",
   "@plugin_available": {},
+  "plugin_bluesky_accounts": "Akaŭnty",
   "plugin_bluesky_add": "Dadac ulikovy zapis",
   "@plugin_bluesky_add": {},
   "plugin_bluesky_description": "Cytajcie ulikovyja zapisy Bluesky praz publichny AppView — biez uvachodu u Bluesky",
@@ -753,16 +754,31 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Hendl abo DID, biez @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_instance": "AppView",
+  "plugin_bluesky_instance_default": "Pradvyznačana: {url}",
+  "@plugin_bluesky_instance_default": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_instance_hint": "Naprykład https://public.api.bsky.app",
   "plugin_bluesky_invalid_handle": "Heta nie hendl Bluesky",
   "@plugin_bluesky_invalid_handle": {},
   "plugin_bluesky_lookup": "Znajsci profil",
   "@plugin_bluesky_lookup": {},
+  "plugin_bluesky_no_accounts": "Pakul niama akaŭntaŭ",
   "plugin_bluesky_no_posts": "Pakul niama čaho cytac",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_settings_intro": "Čytannie pracuje biez nalady — publičny AppView užo zapoŭnieny. Zmianiajcie tolki kali majecie ŭlasny. Uvachod u Bluesky nie patrebny.",
+  "plugin_bluesky_test": "Pravieryć AppView",
+  "plugin_bluesky_test_ok": "Vaš AppView adkazaŭ",
   "plugin_bluesky_title": "Bluesky",
   "@plugin_bluesky_title": {},
   "plugin_bluesky_unfollow": "Adpisacca",
   "@plugin_bluesky_unfollow": {},
+  "plugin_bluesky_use_default": "Uziać pradvyznačany",
   "plugin_catalogue_cached": "Pakazvajecca apošni atrymany spis",
   "@plugin_catalogue_cached": {},
   "plugin_catalogue_unavailable": "Nie ŭdalosia atrymać spis plahinaŭ",
@@ -1762,5 +1778,13 @@
   "zen_mode_page_cap": "Daŭžynia stužki ŭ dzen-režymie",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Kolki staronak zahružaje stužka ŭ dzen-režymie pierad paŭzaj.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_accounts": {},
+  "@plugin_bluesky_instance": {},
+  "@plugin_bluesky_instance_hint": {},
+  "@plugin_bluesky_no_accounts": {},
+  "@plugin_bluesky_settings_intro": {},
+  "@plugin_bluesky_test": {},
+  "@plugin_bluesky_test_ok": {},
+  "@plugin_bluesky_use_default": {}
 }
