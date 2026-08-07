@@ -30,7 +30,7 @@ class MastodonPlugin extends XtaPlugin {
   IconData get icon => Icons.public;
 
   @override
-  PluginCategory get category => PluginCategory.reading;
+  PluginCategory get category => PluginCategory.social;
 
   @override
   Color get brandColor => const Color(0xFF6364FF);

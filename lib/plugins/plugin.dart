@@ -11,7 +11,7 @@ abstract class XtaPlugin {
   String get enabledPrefKey;
   IconData get icon;
 
-  /// Store grouping (reading, markets, bookmarks, media).
+  /// Store grouping (social, communities, newsletters, art, …).
   PluginCategory get category;
 
   /// Accent for the store / tab mark — the colour people associate with the
