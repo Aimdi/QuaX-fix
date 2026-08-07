@@ -39,6 +39,7 @@ import 'package:xta/profile/profile.dart';
 import 'package:xta/plugins/substack/substack_client.dart';
 import 'package:xta/plugins/substack/substack_store.dart';
 import 'package:xta/plugins/bluesky/bluesky_client.dart';
+import 'package:xta/plugins/bluesky/bluesky_likes_store.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_store.dart';
 import 'package:xta/plugins/mastodon/mastodon_client.dart';
@@ -507,6 +508,7 @@ Future<void> main() async {
       optionPluginBlueskyEnabled: false,
       optionPluginBlueskyShowTab: true,
       optionPluginBlueskyInstance: kBlueskyDefaultAppView,
+      optionPluginBlueskyLikedPosts: '[]',
       optionPluginMastodonEnabled: false,
       optionPluginMastodonShowTab: true,
       optionPluginMastodonInstance: '',
@@ -663,6 +665,7 @@ Future<void> main() async {
       resolveBaseUrl: () => prefService.get<String>(optionPluginBlueskyInstance) ?? kBlueskyDefaultAppView,
     );
     final blueskyAccounts = BlueskyAccountsStore();
+    final blueskyLikes = BlueskyLikesStore(prefService);
     final blueskyFeed = BlueskyFeedStore(blueskyClient, blueskyAccounts);
     final mastodonClient = MastodonClient();
     final mastodonAccounts = MastodonAccountsStore();
@@ -709,6 +712,8 @@ Future<void> main() async {
         threadsAccounts.load(),
       // Local likes are tiny and used wherever a Threads card paints (tab or home).
       threadsLikes.load(),
+      // Same for Bluesky — hearts can paint on cards outside the Bluesky tab.
+      blueskyLikes.load(),
       if (prefService.get<bool>(optionPluginBlueskyEnabled) == true)
         blueskyAccounts.load(),
       if (prefService.get<bool>(optionPluginMastodonEnabled) == true)
@@ -792,6 +797,7 @@ Future<void> main() async {
             Provider(create: (_) => threadsFeed),
             Provider(create: (_) => blueskyClient),
             Provider(create: (_) => blueskyAccounts),
+            Provider(create: (_) => blueskyLikes),
             Provider(create: (_) => blueskyFeed),
             Provider(create: (_) => mastodonClient),
             Provider(create: (_) => mastodonAccounts),

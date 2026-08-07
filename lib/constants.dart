@@ -240,6 +240,10 @@ const optionPluginBlueskyShowTab = 'plugin.bluesky.show_tab';
 /// Bluesky AppView base URL. Empty falls back to [kBlueskyDefaultAppView].
 const optionPluginBlueskyInstance = 'plugin.bluesky.instance';
 
+/// Snapshots of locally liked Bluesky posts (JSON list). Ids live in SQLite.
+const optionPluginBlueskyLikedPosts = 'plugin.bluesky.liked_posts';
+const blueskyLikedPostsCap = 400;
+
 /// How many posts one account contributes to the merged Bluesky feed.
 const blueskyPostsPerAccount = 20;
 

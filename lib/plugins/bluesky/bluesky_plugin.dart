@@ -5,6 +5,7 @@ import 'package:xta/constants.dart';
 import 'package:xta/database/repository.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/home/home_screen.dart';
+import 'package:xta/plugins/bluesky/bluesky_likes_store.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_screen.dart';
 import 'package:xta/plugins/bluesky/bluesky_settings.dart';
@@ -62,18 +63,24 @@ class BlueskyPlugin extends XtaPlugin {
   Widget? settingsScreen(BuildContext context) => const BlueskySettingsScreen();
 
   @override
-  List<String> get tables => const [tableBlueskySubscription];
+  List<String> get tables => const [
+        tableBlueskySubscription,
+        tableBlueskyLocalLike,
+      ];
 
   @override
   Future<void> resetPreferences(BasePrefService prefs) async {
     await prefs.set(optionPluginBlueskyInstance, kBlueskyDefaultAppView);
+    await prefs.set(optionPluginBlueskyLikedPosts, '[]');
   }
 
   @override
   Future<void> forgetLoadedData(BuildContext context) async {
     final accounts = context.read<BlueskyAccountsStore>();
+    final likes = context.read<BlueskyLikesStore>();
     final feed = context.read<BlueskyFeedStore>();
     await accounts.load();
+    await likes.load();
     await feed.refresh();
   }
 }

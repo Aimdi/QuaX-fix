@@ -1,13 +1,17 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
 import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
+import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
+import 'package:xta/plugins/bluesky/bluesky_likes_store.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_profile_screen.dart';
 import 'package:xta/plugins/bluesky/bluesky_thread_screen.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
+import 'package:xta/tweet/_like_button.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/tweet/tweet_footer.dart';
 import 'package:xta/ui/dates.dart';
@@ -401,6 +405,7 @@ class _BlueskyLinkPreview extends StatelessWidget {
   }
 }
 
+/// Replies / reposts from the AppView; likes are local (never sent to Bluesky).
 class _BlueskyEngagementRow extends StatelessWidget {
   final BlueskyPost post;
   final VoidCallback onOpen;
@@ -418,6 +423,7 @@ class _BlueskyEngagementRow extends StatelessWidget {
     final muted = theme.colorScheme.onSurfaceVariant;
     final prefs = PrefService.of(context, listen: false);
     final hideCounts = prefs.get(optionZenMode) == true || prefs.get(optionCalmMode) == true;
+    final likes = context.read<BlueskyLikesStore>();
 
     String label(int count) => hideCounts ? '' : _blueskyCountFormat.format(count);
 
@@ -437,11 +443,25 @@ class _BlueskyEngagementRow extends StatelessWidget {
             icon: Icon(Icons.repeat, size: 18, color: muted),
             label: Text(label(post.repostCount), style: theme.textTheme.bodySmall!.copyWith(color: muted)),
           ),
-          TextButton.icon(
-            style: footerButtonStyle,
-            onPressed: onOpen,
-            icon: Icon(Icons.favorite_border, size: 18, color: muted),
-            label: Text(label(post.likeCount), style: theme.textTheme.bodySmall!.copyWith(color: muted)),
+          ScopedBuilder<BlueskyLikesStore, List<BlueskyPost>>(
+            store: likes,
+            distinct: (_) => likes.isLiked(post.uri),
+            onState: (context, state) {
+              final isLiked = likes.isLiked(post.uri);
+              final shown = post.likeCount + (isLiked ? 1 : 0);
+              return LikeButton(
+                isLiked: isLiked,
+                label: hideCounts ? '' : _blueskyCountFormat.format(shown),
+                color: isLiked ? theme.colorScheme.primary : muted,
+                onPressed: () async {
+                  final wasLiked = isLiked;
+                  await likes.toggle(post);
+                  if (!wasLiked && context.mounted) {
+                    maybeShowLikeToast(context);
+                  }
+                },
+              );
+            },
           ),
           const Spacer(),
           IconButton(

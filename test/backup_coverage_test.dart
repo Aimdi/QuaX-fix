@@ -64,6 +64,7 @@ void main() {
         mastodonSubscriptions: const [],
         redditLocalVotes: const [],
         threadsLocalLikes: const [],
+        blueskyLocalLikes: const [],
         profileNotes: const [],
         antennas: const [],
         subscriptionGroups: const [],
@@ -104,6 +105,7 @@ void main() {
         ],
         redditLocalVotes: [RedditLocalVote(id: 'abc123')],
         threadsLocalLikes: [ThreadsLocalLike(id: 't_like_1')],
+        blueskyLocalLikes: [BlueskyLocalLike(id: 'at://did:plc:a/app.bsky.feed.post/1')],
       ),
       includeReadPositions: false,
     );
@@ -115,6 +117,7 @@ void main() {
     expect((await database.query(tableThreadsSubscription)).single['name'], 'Reader');
     expect((await database.query(tableRedditLocalVote)).single['id'], 'abc123');
     expect((await database.query(tableThreadsLocalLike)).single['id'], 't_like_1');
+    expect((await database.query(tableBlueskyLocalLike)).single['id'], 'at://did:plc:a/app.bsky.feed.post/1');
   });
 
   test('nothing is excluded that no longer exists', () async {

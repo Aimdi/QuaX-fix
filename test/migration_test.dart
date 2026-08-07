@@ -41,6 +41,7 @@ void main() {
         tableProfileNote,
         tableAntenna,
         tableThreadsLocalLike,
+        tableBlueskyLocalLike,
       ]),
     );
 

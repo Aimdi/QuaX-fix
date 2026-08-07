@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:xta/utils/json.dart';
 
 /// A link card carried by `app.bsky.embed.external`.
@@ -15,6 +17,23 @@ class BlueskyLinkCard {
   });
 
   bool get hasImage => imageUrl != null && imageUrl!.isNotEmpty;
+
+  Map<String, dynamic> toJson() => {
+        'url': url,
+        'title': title,
+        'description': description,
+        'imageUrl': imageUrl,
+      };
+
+  factory BlueskyLinkCard.fromSnapshot(Object? raw) {
+    final json = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
+    return BlueskyLinkCard(
+      url: json['url'] as String? ?? '',
+      title: json['title'] as String?,
+      description: json['description'] as String?,
+      imageUrl: json['imageUrl'] as String?,
+    );
+  }
 }
 
 /// One Bluesky post, as much of it as a public feed view carries.
@@ -71,7 +90,82 @@ class BlueskyPost {
   bool get isRepost => repostedByHandle != null && repostedByHandle!.isNotEmpty;
   bool get hasQuote => quotedPost != null;
   bool get hasLinkCard => linkCard != null;
+
+  Map<String, dynamic> toJson() => {
+        'uri': uri,
+        'cid': cid,
+        'handle': handle,
+        'did': did,
+        'authorName': authorName,
+        'avatarUrl': avatarUrl,
+        'text': text,
+        'images': images,
+        'publishedAt': publishedAt?.toIso8601String(),
+        'url': url,
+        'replyCount': replyCount,
+        'repostCount': repostCount,
+        'likeCount': likeCount,
+        'quoteCount': quoteCount,
+        'repostedByName': repostedByName,
+        'repostedByHandle': repostedByHandle,
+        'quotedPost': quotedPost?.toJson(),
+        'linkCard': linkCard?.toJson(),
+      };
+
+  factory BlueskyPost.fromSnapshot(Object? raw) {
+    final json = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
+    final handle = json['handle'] as String? ?? '';
+    final linkRaw = json['linkCard'];
+    final linkCard = linkRaw == null ? null : BlueskyLinkCard.fromSnapshot(linkRaw);
+    final quoteRaw = json['quotedPost'];
+    final quoted = quoteRaw == null ? null : BlueskyPost.fromSnapshot(quoteRaw);
+
+    return BlueskyPost(
+      uri: json['uri'] as String? ?? '',
+      cid: json['cid'] as String? ?? '',
+      handle: handle,
+      did: json['did'] as String? ?? '',
+      authorName: json['authorName'] as String? ?? handle,
+      avatarUrl: json['avatarUrl'] as String?,
+      text: json['text'] as String? ?? '',
+      images: (json['images'] as List?)?.whereType<String>().toList(growable: false) ?? const [],
+      publishedAt: DateTime.tryParse(json['publishedAt'] as String? ?? '')?.toLocal(),
+      url: json['url'] as String? ?? '',
+      replyCount: _snapshotCount(json['replyCount']),
+      repostCount: _snapshotCount(json['repostCount']),
+      likeCount: _snapshotCount(json['likeCount']),
+      quoteCount: _snapshotCount(json['quoteCount']),
+      repostedByName: json['repostedByName'] as String?,
+      repostedByHandle: json['repostedByHandle'] as String?,
+      quotedPost: quoted == null || quoted.uri.isEmpty ? null : quoted,
+      linkCard: linkCard == null || linkCard.url.isEmpty ? null : linkCard,
+    );
+  }
+
+  static List<BlueskyPost> listFromPrefs(String? raw) {
+    if (raw == null || raw.isEmpty) {
+      return const [];
+    }
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) {
+        return const [];
+      }
+      return decoded
+          .whereType<Map>()
+          .map((e) => BlueskyPost.fromSnapshot(Map<String, dynamic>.from(e)))
+          .where((e) => e.uri.isNotEmpty)
+          .toList(growable: false);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static String listToPrefs(List<BlueskyPost> posts) =>
+      jsonEncode(posts.map((e) => e.toJson()).toList());
 }
+
+int _snapshotCount(Object? value) => value is num ? value.toInt() : 0;
 
 /// Ancestors (root → parent), the focal post, and reply descendants.
 class BlueskyThread {

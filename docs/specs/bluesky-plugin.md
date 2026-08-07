@@ -32,6 +32,8 @@ translated. This plugin talks to Bluesky's documented public AppView at
 - **Import following** from a public handle (`app.bsky.graph.getFollows`) and
   **import list** from a public list URL / AT-URI (`getList`) — both write only
   to local `bluesky_subscription`, never to Bluesky.
+- Local likes library (device-only hearts; never written to Bluesky), with a
+  Liked tab next to Home — same pattern as Threads.
 - Home tab when the plugin is enabled.
 - Settings with a working default AppView (`kBlueskyDefaultAppView` /
   `https://public.api.bsky.app`). Empty or invalid values fall back to that
@@ -43,4 +45,3 @@ translated. This plugin talks to Bluesky's documented public AppView at
 - Creating / editing lists on Bluesky, starter packs, or video embeds beyond
   what a card can ignore safely.
 - Interleaving Bluesky posts into the X home / group feeds.
-- Local likes library (Threads has this; Bluesky does not yet).
