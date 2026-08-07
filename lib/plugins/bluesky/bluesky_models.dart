@@ -457,3 +457,130 @@ void _collectReplies(Json replies, List<BlueskyPost> out, {required int depth}) 
     _collectReplies(reply['replies'], out, depth: depth + 1);
   }
 }
+
+/// One page of `app.bsky.graph.getFollows`.
+class BlueskyFollowsPage {
+  final List<BlueskyProfile> follows;
+  final String? cursor;
+
+  const BlueskyFollowsPage({required this.follows, this.cursor});
+}
+
+/// Metadata for a public Bluesky list (`app.bsky.graph.defs#listView`).
+class BlueskyListInfo {
+  final String uri;
+  final String name;
+  final int itemCount;
+
+  const BlueskyListInfo({
+    required this.uri,
+    required this.name,
+    this.itemCount = 0,
+  });
+
+  factory BlueskyListInfo.fromJson(Object? json) {
+    final data = Json(json);
+    return BlueskyListInfo(
+      uri: data['uri'].string?.trim() ?? '',
+      name: data['name'].string?.trim() ?? '',
+      itemCount: data['listItemCount'].integer ?? 0,
+    );
+  }
+}
+
+/// One page of lists created by an actor.
+class BlueskyListsPage {
+  final List<BlueskyListInfo> lists;
+  final String? cursor;
+
+  const BlueskyListsPage({required this.lists, this.cursor});
+}
+
+/// One page of list members from `app.bsky.graph.getList`.
+class BlueskyListMembersPage {
+  final BlueskyListInfo? list;
+  final List<BlueskyProfile> members;
+  final String? cursor;
+
+  const BlueskyListMembersPage({
+    required this.members,
+    this.list,
+    this.cursor,
+  });
+}
+
+/// A list identified by AT-URI, or by profile + rkey from a bsky.app URL.
+class BlueskyListRef {
+  final String? atUri;
+  final String? actor;
+  final String? rkey;
+
+  const BlueskyListRef.atUri(this.atUri)
+      : actor = null,
+        rkey = null;
+
+  const BlueskyListRef.web({required this.actor, required this.rkey}) : atUri = null;
+}
+
+/// Parses a public list URL or `at://…/app.bsky.graph.list/…` URI.
+BlueskyListRef? parseBlueskyListRef(String input) {
+  final value = input.trim();
+  if (value.isEmpty) {
+    return null;
+  }
+
+  if (value.startsWith('at://') && value.contains('/app.bsky.graph.list/')) {
+    return BlueskyListRef.atUri(value);
+  }
+
+  final uri = Uri.tryParse(value);
+  if (uri == null || (uri.host != 'bsky.app' && uri.host != 'www.bsky.app')) {
+    return null;
+  }
+
+  final segments = uri.pathSegments.where((e) => e.isNotEmpty).toList();
+  if (segments.length >= 4 && segments[0] == 'profile' && segments[2] == 'lists') {
+    final actor = segments[1].trim();
+    final rkey = segments[3].trim();
+    if (actor.isEmpty || rkey.isEmpty) {
+      return null;
+    }
+    return BlueskyListRef.web(actor: actor, rkey: rkey);
+  }
+
+  return null;
+}
+
+BlueskyFollowsPage parseBlueskyFollowsPage(Object? json) {
+  final root = Json(json);
+  return BlueskyFollowsPage(
+    follows: [
+      for (final follow in root['follows'].list) BlueskyProfile.fromJson(follow.raw),
+    ],
+    cursor: root['cursor'].string,
+  );
+}
+
+BlueskyListsPage parseBlueskyListsPage(Object? json) {
+  final root = Json(json);
+  return BlueskyListsPage(
+    lists: [
+      for (final list in root['lists'].list)
+        if (BlueskyListInfo.fromJson(list.raw).uri.isNotEmpty) BlueskyListInfo.fromJson(list.raw),
+    ],
+    cursor: root['cursor'].string,
+  );
+}
+
+BlueskyListMembersPage parseBlueskyListMembersPage(Object? json) {
+  final root = Json(json);
+  final listRaw = root['list'].raw;
+  return BlueskyListMembersPage(
+    list: listRaw == null ? null : BlueskyListInfo.fromJson(listRaw),
+    members: [
+      for (final item in root['items'].list)
+        BlueskyProfile.fromJson(item['subject'].raw),
+    ].where((p) => p.handle.isNotEmpty || p.did.isNotEmpty).toList(growable: false),
+    cursor: root['cursor'].string,
+  );
+}

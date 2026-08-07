@@ -273,4 +273,42 @@ void main() {
       expect(profile.toAccount().actor, 'did:plc:abc');
     });
   });
+
+  group('parseBlueskyListRef', () {
+    test('reads bsky.app list URLs and AT-URIs', () {
+      final web = parseBlueskyListRef('https://bsky.app/profile/alice.bsky.social/lists/3abc');
+      expect(web?.actor, 'alice.bsky.social');
+      expect(web?.rkey, '3abc');
+
+      final at = parseBlueskyListRef('at://did:plc:abc/app.bsky.graph.list/3abc');
+      expect(at?.atUri, 'at://did:plc:abc/app.bsky.graph.list/3abc');
+      expect(parseBlueskyListRef('https://bsky.app/profile/alice.bsky.social'), isNull);
+    });
+  });
+
+  group('graph page parsers', () {
+    test('parseBlueskyFollowsPage reads follows and cursor', () {
+      final page = parseBlueskyFollowsPage({
+        'cursor': 'next',
+        'follows': [
+          {'did': 'did:plc:1', 'handle': 'one.bsky.social', 'displayName': 'One'},
+        ],
+      });
+      expect(page.cursor, 'next');
+      expect(page.follows.single.handle, 'one.bsky.social');
+    });
+
+    test('parseBlueskyListMembersPage reads subjects', () {
+      final page = parseBlueskyListMembersPage({
+        'list': {'uri': 'at://did:plc:a/app.bsky.graph.list/1', 'name': 'Cool', 'listItemCount': 2},
+        'items': [
+          {
+            'subject': {'did': 'did:plc:1', 'handle': 'one.bsky.social'},
+          },
+        ],
+      });
+      expect(page.list?.name, 'Cool');
+      expect(page.members.single.handle, 'one.bsky.social');
+    });
+  });
 }

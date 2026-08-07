@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/bluesky/bluesky_client.dart';
+import 'package:xta/plugins/bluesky/bluesky_import_follows_screen.dart';
+import 'package:xta/plugins/bluesky/bluesky_import_list_screen.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_profile_screen.dart';
 import 'package:xta/plugins/bluesky/bluesky_store.dart';
@@ -126,6 +128,25 @@ class _BlueskySettingsScreenState extends State<BlueskySettingsScreen> {
             ],
           ),
           const SizedBox(height: 28),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.cloud_download_outlined),
+            title: Text(l10n.plugin_bluesky_import_following),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const BlueskyImportFollowsScreen()),
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.list_alt_outlined),
+            title: Text(l10n.plugin_bluesky_import_list),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const BlueskyImportListScreen()),
+            ),
+          ),
+          const SizedBox(height: 16),
           Text(l10n.plugin_bluesky_accounts, style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),
           ScopedBuilder<BlueskyAccountsStore, List<BlueskyAccount>>(
