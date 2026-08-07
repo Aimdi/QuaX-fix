@@ -8,6 +8,7 @@ import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/threads/threads_likes_store.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
+import 'package:xta/plugins/threads/threads_profile_screen.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
 import 'package:xta/tweet/_like_button.dart';
 import 'package:xta/tweet/tweet.dart' show tweetCardColor;
@@ -44,6 +45,13 @@ class ThreadsPostCard extends StatelessWidget {
     }
   }
 
+  void _openAuthor(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => ThreadsProfileScreen(username: post.handle)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -60,13 +68,20 @@ class ThreadsPostCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _avatar(context),
+                  GestureDetector(
+                    onTap: () => _openAuthor(context),
+                    child: _avatar(context),
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        _header(context),
+                        GestureDetector(
+                          onTap: () => _openAuthor(context),
+                          behavior: HitTestBehavior.opaque,
+                          child: _header(context),
+                        ),
                         if (post.text.isNotEmpty) ...[
                           const SizedBox(height: 6),
                           Text(

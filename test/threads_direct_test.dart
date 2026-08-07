@@ -7,6 +7,7 @@ import 'package:pref/pref.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
 import 'package:xta/plugins/threads/threads_direct_client.dart';
+import 'package:xta/plugins/threads/threads_models.dart';
 
 void main() {
   group('parseThreadsCookieHeader', () {
@@ -167,6 +168,23 @@ void main() {
     test('extractThreadsUserIdFromHtml falls back to modal userID and ignores 0', () {
       final html = r'{"userID":"0"}{"userID":"63404918397"}{"userID":"63404918397"}{"userID":"1"}';
       expect(extractThreadsUserIdFromHtml(html, 'anyone'), '63404918397');
+    });
+
+    test('threadsProfileFromPosts builds a card when OG scrape is empty', () {
+      final profile = threadsProfileFromPosts('zuck', [
+        const ThreadsPost(
+          id: '1',
+          handle: 'zuck',
+          authorName: 'Mark',
+          text: 'hi',
+          avatarUrl: 'https://example.org/a.jpg',
+        ),
+      ]);
+      expect(profile, isNotNull);
+      expect(profile!.username, 'zuck');
+      expect(profile.fullName, 'Mark');
+      expect(profile.profilePicUrl, 'https://example.org/a.jpg');
+      expect(threadsProfileFromPosts('nobody', const []), isNull);
     });
 
     test('threadsProfileFromGuestHtml reads OG title, description and image', () {
