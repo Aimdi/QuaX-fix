@@ -23,11 +23,25 @@ a merged newest-first timeline of every locally followed acct’s public statuse
 | Account lookup | `GET /api/v1/accounts/lookup?acct=` |
 | Account statuses | `GET /api/v1/accounts/:id/statuses` |
 | Account by id | `GET /api/v1/accounts/:id` |
-| Resolve status URL | `GET /api/v2/search?q=&resolve=true&type=statuses` |
 | Status | `GET /api/v1/statuses/:id` |
 | Status context | `GET /api/v1/statuses/:id/context` |
+| Resolve status URL (optional) | `GET /api/v2/search?q=&resolve=true&type=statuses` — often 401 without login; not required |
 
 No OAuth app registration. No write methods.
+
+## Thread / replies without search
+
+Opening a post walks [mastodonInstanceCandidates] (origin → reader’s instances →
+built-in defaults). On each candidate the client locates the status without
+depending on authenticated search:
+
+1. `GET /statuses/:id` using the snowflake in the public URL (and the card’s id)
+2. Soft search resolve when the instance still allows it
+3. `accounts/lookup` + recent `accounts/:id/statuses`, match `url`, then `context`
+
+So an origin that blocks public search (or a card whose id is from another
+host) can still show replies via that origin’s status API, or via any open
+instance that has already federated the author.
 
 ## Card UI
 

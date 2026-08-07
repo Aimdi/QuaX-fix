@@ -41,6 +41,41 @@ void main() {
     });
   });
 
+  group('mastodonStatusIdFromUrl', () {
+    test('reads /@user/id and /users/user/statuses/id', () {
+      expect(mastodonStatusIdFromUrl('https://flipboard.social/@newsguyusa/117055372780611166'),
+          '117055372780611166');
+      expect(
+        mastodonStatusIdFromUrl('https://fosstodon.org/users/mariatta/statuses/117055260382620938'),
+        '117055260382620938',
+      );
+    });
+
+    test('ignores profile URLs and junk', () {
+      expect(mastodonStatusIdFromUrl('https://flipboard.social/@newsguyusa'), isNull);
+      expect(mastodonStatusIdFromUrl('not a url'), isNull);
+    });
+  });
+
+  group('sameMastodonStatusUrl', () {
+    test('treats trailing slashes and host case as the same post', () {
+      expect(
+        sameMastodonStatusUrl(
+          'https://Flipboard.social/@newsguyusa/117055372780611166/',
+          'https://flipboard.social/@newsguyusa/117055372780611166',
+        ),
+        isTrue,
+      );
+      expect(
+        sameMastodonStatusUrl(
+          'https://flipboard.social/@newsguyusa/1',
+          'https://flipboard.social/@newsguyusa/2',
+        ),
+        isFalse,
+      );
+    });
+  });
+
   group('parseMastodonStatuses', () {
     test('reads text, author, images, counts, link card and unwraps a boost', () {
       final posts = parseMastodonStatuses([

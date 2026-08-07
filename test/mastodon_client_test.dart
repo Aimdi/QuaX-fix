@@ -194,5 +194,147 @@ void main() {
         throwsA(isA<MastodonException>().having((e) => e.kind, 'kind', MastodonErrorKind.rateLimited)),
       );
     });
+
+    test('fetchThread on origin skips a search 401 and uses the URL snowflake', () async {
+      final client = MastodonClient(
+        httpClient: MockClient((request) async {
+          final path = request.url.path;
+          if (path == '/api/v2/search') {
+            return http.Response('{"error":"Search queries that resolve remote resources are not allowed"}', 401);
+          }
+          if (path == '/api/v1/statuses/22') {
+            return http.Response(jsonEncode(_statusJson(id: '22', url: 'https://other.social/@b/22', text: 'Root')), 200,
+                headers: {'content-type': 'application/json'});
+          }
+          if (path == '/api/v1/statuses/22/context') {
+            return http.Response(
+              jsonEncode({
+                'ancestors': [],
+                'descendants': [_statusJson(id: '23', url: 'https://other.social/@c/23', text: 'Reply', username: 'c')],
+              }),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          }
+          return http.Response('unexpected ${request.url}', 500);
+        }),
+      );
+
+      // Card id is from a *different* host; the public URL still carries origin's id.
+      final seed = MastodonPost(
+        id: '999',
+        acct: 'b@other.social',
+        authorName: 'B',
+        text: 'Root',
+        url: 'https://other.social/@b/22',
+      );
+      final thread = await client.fetchThread('https://other.social', seed);
+      expect(thread.status.id, '22');
+      expect(thread.descendants.single.text, 'Reply');
+    });
+
+    test('fetchThreadAnywhere rediscovers a remote post via account statuses when search is closed', () async {
+      final asked = <String>[];
+      final client = MastodonClient(
+        httpClient: MockClient((request) async {
+          asked.add('${request.url.host}${request.url.path}');
+          final host = request.url.host;
+          final path = request.url.path;
+
+          if (host == 'closed.social') {
+            if (path == '/api/v2/search') {
+              return http.Response('nope', 401);
+            }
+            return http.Response('gone', 404);
+          }
+
+          if (path == '/api/v2/search') {
+            return http.Response('nope', 401);
+          }
+          if (path == '/api/v1/accounts/lookup') {
+            return http.Response(
+              jsonEncode({
+                'id': '7',
+                'username': 'b',
+                'acct': 'b@closed.social',
+                'display_name': 'B',
+                'note': '',
+                'url': 'https://closed.social/@b',
+              }),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          }
+          if (path == '/api/v1/accounts/7/statuses') {
+            return http.Response(
+              jsonEncode([
+                _statusJson(id: '100', url: 'https://closed.social/@b/22', text: 'Root', acct: 'b@closed.social'),
+              ]),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          }
+          if (path == '/api/v1/statuses/100/context') {
+            return http.Response(
+              jsonEncode({
+                'ancestors': [],
+                'descendants': [
+                  _statusJson(id: '101', url: 'https://closed.social/@c/101', text: 'Via open', username: 'c'),
+                ],
+              }),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          }
+          // Direct status ids from the seed are meaningless on the proxy.
+          if (path.startsWith('/api/v1/statuses/')) {
+            return http.Response('missing', 404);
+          }
+          return http.Response('unexpected ${request.url}', 500);
+        }),
+      );
+
+      final seed = MastodonPost(
+        id: '22',
+        acct: 'b@closed.social',
+        authorName: 'B',
+        text: 'Root',
+        url: 'https://closed.social/@b/22',
+      );
+      final thread = await client.fetchThreadAnywhere([
+        'https://closed.social',
+        'https://open.social',
+      ], seed);
+
+      expect(thread.status.id, '100');
+      expect(thread.descendants.single.text, 'Via open');
+      expect(asked.any((e) => e.startsWith('closed.social')), isTrue);
+      expect(asked.any((e) => e.startsWith('open.social')), isTrue);
+    });
   });
+}
+
+Map<String, dynamic> _statusJson({
+  required String id,
+  required String url,
+  required String text,
+  String username = 'b',
+  String? acct,
+}) {
+  return {
+    'id': id,
+    'created_at': '2026-08-01T09:00:00.000Z',
+    'content': '<p>$text</p>',
+    'url': url,
+    'replies_count': 1,
+    'account': {
+      'id': '2',
+      'username': username,
+      'acct': acct ?? username,
+      'display_name': username.toUpperCase(),
+      'note': '',
+      'url': 'https://example.social/@$username',
+    },
+    'media_attachments': [],
+  };
 }
