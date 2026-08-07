@@ -112,4 +112,55 @@ void main() {
     expect(guestGraphql, isTrue);
     expect(store.state.map((p) => p.text), ['from guest']);
   });
+
+  test('soft refresh failure keeps prior posts on screen', () async {
+    final prefs = PrefServiceCache(cache: {
+      optionPluginThreadsDirectCookies: '',
+      optionPluginThreadsDirectBearer: '',
+      optionPluginThreadsDirectDeviceId: 'device-1',
+      optionPluginThreadsInstance: '',
+      optionPluginThreadsUserIds: '{}',
+      optionPluginThreadsDirectCooldownUntil: '',
+    });
+
+    var fail = false;
+    final direct = ThreadsDirectClient(
+      prefs,
+      minGap: Duration.zero,
+      httpClient: MockClient((request) async {
+        if (fail) {
+          return http.Response('down', 500);
+        }
+        if (request.method == 'GET' && request.url.path == '/@instagram') {
+          return http.Response(
+            r'<html><script>["LSD",[],{"token":"tok"}]</script>'
+            r'<script>{"props":{"user_id":"63404918397"}}</script></html>',
+            200,
+          );
+        }
+        if (request.method == 'POST' && request.url.path == '/api/graphql') {
+          return http.Response(
+            '''{"data":{"mediaData":{"threads":[{"thread_items":[{"post":{"pk":"1","code":"c","caption":{"text":"kept"},"user":{"username":"instagram","full_name":"IG"}}}]}]}}}''',
+            200,
+          );
+        }
+        return http.Response('unexpected ${request.url}', 500);
+      }),
+    );
+
+    final store = ThreadsFeedStore(
+      ThreadsClient(httpClient: MockClient((_) async => http.Response('[]', 404))),
+      direct,
+      prefs,
+      _AccountsStub([const ThreadsAccount(handle: 'instagram', name: 'instagram')]),
+    );
+
+    await store.refresh(force: true);
+    expect(store.state.single.text, 'kept');
+
+    fail = true;
+    await store.refresh(force: true);
+    expect(store.state.single.text, 'kept');
+    expect(store.error, isNull);
+  });
 }

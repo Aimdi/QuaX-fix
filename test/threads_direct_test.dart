@@ -542,6 +542,61 @@ void main() {
       expect(prefs.get<String>(optionPluginThreadsUserIds), contains('63404918397'));
     });
 
+    test('profile + posts for one handle share a single HTML GET', () async {
+      var htmlHits = 0;
+      final client = ThreadsDirectClient(
+        prefs,
+        minGap: Duration.zero,
+        httpClient: MockClient((request) async {
+          if (request.method == 'GET' && request.url.path == '/@instagram') {
+            htmlHits++;
+            await Future<void>.delayed(const Duration(milliseconds: 40));
+            return http.Response(
+              r'<html><script>["LSD",[],{"token":"tok"}]</script>'
+              r'<meta property="og:title" content="Instagram (@instagram)"/>'
+              r'<script>{"props":{"user_id":"63404918397"}}</script></html>',
+              200,
+              headers: {'content-type': 'text/html'},
+            );
+          }
+          if (request.method == 'POST' && request.url.path == '/api/graphql') {
+            return http.Response(
+              jsonEncode({
+                'data': {
+                  'mediaData': {
+                    'threads': [
+                      {
+                        'thread_items': [
+                          {
+                            'post': {
+                              'pk': '1',
+                              'code': 'c',
+                              'caption': {'text': 'hi'},
+                              'user': {'username': 'instagram', 'full_name': 'IG'},
+                            },
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              }),
+              200,
+              headers: {'content-type': 'application/json'},
+            );
+          }
+          return http.Response('unexpected ${request.url}', 500);
+        }),
+      );
+
+      await Future.wait([
+        client.fetchGuestProfile('instagram'),
+        client.fetchGuestAccount('instagram'),
+      ]);
+
+      expect(htmlHits, 1, reason: 'dedupe cuts Meta traffic; it must not double it');
+    });
+
     test('fetchUserThreads falls back to guest GraphQL when cookies are refused', () async {
       await prefs.set(
         optionPluginThreadsDirectCookies,

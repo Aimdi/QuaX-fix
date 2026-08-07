@@ -1,10 +1,10 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
 import 'package:xta/plugins/threads/threads_direct_client.dart';
+import 'package:xta/plugins/threads/threads_image.dart';
 import 'package:xta/plugins/threads/threads_likes_store.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 import 'package:xta/plugins/threads/threads_post_card.dart';
@@ -296,8 +296,17 @@ class _HomePane extends StatelessWidget {
         Expanded(
           child: ScopedBuilder<ThreadsFeedStore, List<ThreadsPost>>.transition(
             store: feed,
-            onLoading: (_) => const Center(child: CircularProgressIndicator()),
+            onLoading: (_) {
+              // Soft refresh must not blank a healthy feed into a forever spinner.
+              if (feed.state.isNotEmpty) {
+                return _feed(context, l10n, feed.state);
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
             onError: (context, error) {
+              if (feed.state.isNotEmpty) {
+                return _feed(context, l10n, feed.state);
+              }
               final notConfigured =
                   error is ThreadsException &&
                   error.kind == ThreadsErrorKind.notConfigured;
@@ -576,7 +585,7 @@ class _FollowingAvatar extends StatelessWidget {
     }
 
     return ClipOval(
-      child: ExtendedImage.network(
+      child: ThreadsNetworkImage(
         avatarUrl,
         width: size,
         height: size,

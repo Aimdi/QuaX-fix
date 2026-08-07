@@ -1,4 +1,3 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pref/pref.dart';
@@ -8,6 +7,7 @@ import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/threads/threads_api.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
 import 'package:xta/plugins/threads/threads_direct_client.dart';
+import 'package:xta/plugins/threads/threads_image.dart';
 import 'package:xta/plugins/threads/threads_models.dart';
 import 'package:xta/plugins/threads/threads_post_card.dart';
 import 'package:xta/plugins/threads/threads_settings.dart';
@@ -65,18 +65,23 @@ class _ThreadsProfileScreenState extends State<ThreadsProfileScreen> {
     });
   }
 
-  Future<void> _load() async {
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
+  Future<void> _load({bool forceRefresh = false}) async {
+    final keepContent = _profile != null || _posts.isNotEmpty;
+    if (!keepContent) {
+      setState(() {
+        _loading = true;
+        _error = null;
+      });
+    }
 
     final handle = _handle;
     if (handle.isEmpty) {
-      setState(() {
-        _error = ThreadsException(ThreadsErrorKind.noSuchFeed, 'empty handle');
-        _loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _error = ThreadsException(ThreadsErrorKind.noSuchFeed, 'empty handle');
+          _loading = false;
+        });
+      }
       return;
     }
 
@@ -87,9 +92,10 @@ class _ThreadsProfileScreenState extends State<ThreadsProfileScreen> {
     final apiBase = prefs.get<String>(optionPluginThreadsApiBase) ?? kThreadsApiDefaultBase;
     final apiToken = prefs.get<String>(optionPluginThreadsApiToken) ?? '';
 
-    // Header and posts are independent — a dead OG scrape must not hide posts.
+    // Header + posts for one handle: guest HTML is single-flight in the client
+    // so this is not two paced GETs. Prefer cache on first open; pull forces.
     final profileFuture = _resolveProfile(direct, api, apiBase, apiToken, handle);
-    final postsFuture = feed.postsFor([handle], forceRefresh: true);
+    final postsFuture = feed.postsFor([handle], forceRefresh: forceRefresh);
 
     ThreadsProfile? profile;
     Object? profileError;
@@ -97,38 +103,45 @@ class _ThreadsProfileScreenState extends State<ThreadsProfileScreen> {
     Object? postsError;
 
     try {
-      profile = await profileFuture;
-    } catch (e) {
-      profileError = e;
-    }
+      try {
+        profile = await profileFuture;
+      } catch (e) {
+        profileError = e;
+      }
 
-    try {
-      posts = await postsFuture;
-    } catch (e) {
-      postsError = e;
-    }
+      try {
+        posts = await postsFuture;
+      } catch (e) {
+        postsError = e;
+      }
 
-    if (!mounted) {
-      return;
-    }
+      if (!mounted) {
+        return;
+      }
 
-    profile ??= threadsProfileFromPosts(handle, posts);
+      profile ??= threadsProfileFromPosts(handle, posts);
 
-    if (profile == null && posts.isEmpty) {
+      if (profile == null && posts.isEmpty) {
+        if (!keepContent) {
+          setState(() {
+            _error = profileError ??
+                postsError ??
+                ThreadsException(ThreadsErrorKind.noSuchFeed, 'profile missing');
+          });
+        }
+        return;
+      }
+
       setState(() {
-        _error = profileError ?? postsError ?? ThreadsException(ThreadsErrorKind.noSuchFeed, 'profile missing');
-        _loading = false;
+        _profile = profile;
+        _posts = posts;
+        _error = null;
       });
-      return;
+    } finally {
+      if (mounted) {
+        setState(() => _loading = false);
+      }
     }
-
-    setState(() {
-      _profile = profile;
-      _posts = posts;
-      // Soft error only when we have nothing useful at all; otherwise show what we have.
-      _error = null;
-      _loading = false;
-    });
   }
 
   Future<ThreadsProfile?> _resolveProfile(
@@ -205,7 +218,7 @@ class _ThreadsProfileScreenState extends State<ThreadsProfileScreen> {
     final alreadyFollows = context.read<ThreadsAccountsStore>().state.any((a) => a.handle == profile.username);
 
     return RefreshIndicator(
-      onRefresh: _load,
+      onRefresh: () => _load(forceRefresh: true),
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.only(bottom: 24),
@@ -258,7 +271,7 @@ class ThreadsProfileCard extends StatelessWidget {
                       size: 64,
                       accent: theme.colorScheme.primary,
                     )
-                  : ExtendedImage.network(
+                  : ThreadsNetworkImage(
                       profile.profilePicUrl,
                       width: 64,
                       height: 64,

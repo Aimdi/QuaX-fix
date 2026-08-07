@@ -1,4 +1,5 @@
 import 'package:extended_image/extended_image.dart';
+import 'package:xta/plugins/threads/threads_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 import 'package:intl/intl.dart';
@@ -215,7 +216,7 @@ class ThreadsPostCard extends StatelessWidget {
               size: size,
               accent: theme.colorScheme.primary,
             )
-          : ExtendedImage.network(
+          : ThreadsNetworkImage(
               avatar,
               width: size,
               height: size,
@@ -304,7 +305,7 @@ class ThreadsPostCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius),
           child: AspectRatio(
             aspectRatio: kThreadsMediaMaxAspectRatio,
-            child: ExtendedImage.network(
+            child: ThreadsNetworkImage(
               post.images.first,
               fit: BoxFit.cover,
               cacheWidth: (width * scale).ceil(),
@@ -324,7 +325,7 @@ class ThreadsPostCard extends StatelessWidget {
           onTap: () => _openImages(context, index),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(radius),
-            child: ExtendedImage.network(
+            child: ThreadsNetworkImage(
               post.images[index],
               width: 220,
               height: 240,
@@ -374,7 +375,7 @@ class _ThreadsImageViewerState extends State<_ThreadsImageViewer> {
             controller: _controller,
             itemCount: widget.images.length,
             onPageChanged: (index) => setState(() => _index = index),
-            itemBuilder: (context, index) => ExtendedImage.network(
+            itemBuilder: (context, index) => ThreadsNetworkImage(
               widget.images[index],
               fit: BoxFit.contain,
               mode: ExtendedImageMode.gesture,
@@ -437,7 +438,7 @@ class _ThreadsLinkPreview extends StatelessWidget {
               if (card.hasImage)
                 AspectRatio(
                   aspectRatio: kThreadsMediaMaxAspectRatio,
-                  child: ExtendedImage.network(
+                  child: ThreadsNetworkImage(
                     card.imageUrl!,
                     fit: BoxFit.cover,
                     cacheWidth: (width * scale).ceil(),
