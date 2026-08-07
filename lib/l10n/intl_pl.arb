@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "Wybierz karty",
   "@choose_pages": {},
+  "chrome_avatar_change": "Dotknij, aby zmienić obraz w lewym górnym rogu",
+  "chrome_avatar_choose": "Wybierz z urządzenia",
+  "chrome_avatar_clear": "Użyj monogramu",
+  "chrome_avatar_description": "Obraz w lewym górnym rogu i w menu — zostaje na tym urządzeniu",
+  "chrome_avatar_error": "Nie udało się wczytać tego zdjęcia profilowego",
+  "chrome_avatar_from_account": "Użyj zdjęcia profilowego z X",
+  "chrome_avatar_title": "Twój awatar",
   "clickToShowMore": "Kliknij, aby wyświetlić więcej",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1802,5 +1809,12 @@
   "zen_mode_page_cap": "Długość kanału w trybie zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Ile stron kanał wczytuje w trybie zen, zanim się zatrzyma.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

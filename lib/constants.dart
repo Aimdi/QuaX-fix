@@ -15,6 +15,9 @@ const optionHomeDefaultFeedTab = 'home.default_feed_tab';
 /// until the reader turns them off.
 const optionHomeFeedDisabledAccountIds = 'home.feed_disabled_account_ids';
 
+/// Revision of the local chrome (upper-left) avatar. `0` = use the monogram.
+const optionChromeAvatarRevision = 'chrome.avatar_revision';
+
 /// Plugin tabs already offered to the bar once, so removing one sticks.
 const optionSeededPluginTabs = 'plugins.seeded_tabs';
 

@@ -6,6 +6,8 @@ import 'package:xta/client/login_webview.dart';
 import 'package:xta/database/entities.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/client/accounts.dart';
+import 'package:xta/home/_account_avatar.dart';
+import 'package:xta/home/chrome_avatar.dart';
 import 'package:xta/home/home_account_filter.dart';
 
 class SettingsAccountFragment extends StatefulWidget {
@@ -55,6 +57,35 @@ Future<bool> _confirmDelete(BuildContext context, Account account) async {
   return confirmed ?? false;
 }
 
+class _ChromeAvatarSettingsTile extends StatelessWidget {
+  const _ChromeAvatarSettingsTile();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+    final store = context.read<ChromeAvatarStore>();
+    return FutureBuilder<Account?>(
+      future: primaryAccount(),
+      builder: (context, snapshot) {
+        return ScopedBuilder<ChromeAvatarStore, int>(
+          store: store,
+          onState: (_, revision) {
+            return ListTile(
+              leading: ChromeAvatarMark(account: snapshot.data, size: 40),
+              title: Text(l10n.chrome_avatar_title),
+              subtitle: Text(
+                revision > 0 ? l10n.chrome_avatar_change : l10n.chrome_avatar_description,
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => showChromeAvatarSheet(context),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
 class _SettingsAccountFragment extends State<SettingsAccountFragment> {
   @override
   Widget build(BuildContext context) {
@@ -77,44 +108,50 @@ class _SettingsAccountFragment extends State<SettingsAccountFragment> {
             }
 
             final List<Account> data = snapshot.data ?? const <Account>[];
-            if (data.isEmpty) {
-              return Center(child: Text(L10n.of(context).home_feed_accounts_empty));
-            }
 
             return ScopedBuilder<HomeAccountFilterStore, Set<String>>(
               store: filter,
               onState: (_, disabled) {
                 return ListView(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Text(
-                        L10n.of(context).home_feed_accounts_description,
-                        style: TextStyle(color: Theme.of(context).disabledColor),
-                      ),
-                    ),
-                    ...data.map((account) {
-                      final enabled = isHomeAccountEnabled(account.id, disabled);
-                      return Dismissible(
-                        key: ValueKey(account.id),
-                        direction: DismissDirection.endToStart,
-                        background: const _DeleteBackground(),
-                        confirmDismiss: (_) => _confirmDelete(context, account),
-                        onDismissed: (DismissDirection direction) async {
-                          await model.deleteAccount(account.id.toString());
-                          setState(() {});
-                        },
-                        child: SwitchListTile(
-                          secondary: const Icon(Icons.account_circle),
-                          title: Text(account.screenName ?? L10n.of(context).unknown_username),
-                          subtitle: Text(L10n.of(context).home_feed_include_in_for_you),
-                          value: enabled,
-                          onChanged: (value) async {
-                            await filter.setEnabled(account.id, value, accounts: data);
-                          },
+                    const _ChromeAvatarSettingsTile(),
+                    const Divider(),
+                    if (data.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Text(L10n.of(context).home_feed_accounts_empty),
+                      )
+                    else ...[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        child: Text(
+                          L10n.of(context).home_feed_accounts_description,
+                          style: TextStyle(color: Theme.of(context).disabledColor),
                         ),
-                      );
-                    }),
+                      ),
+                      ...data.map((account) {
+                        final enabled = isHomeAccountEnabled(account.id, disabled);
+                        return Dismissible(
+                          key: ValueKey(account.id),
+                          direction: DismissDirection.endToStart,
+                          background: const _DeleteBackground(),
+                          confirmDismiss: (_) => _confirmDelete(context, account),
+                          onDismissed: (DismissDirection direction) async {
+                            await model.deleteAccount(account.id.toString());
+                            setState(() {});
+                          },
+                          child: SwitchListTile(
+                            secondary: const Icon(Icons.account_circle),
+                            title: Text(account.screenName ?? L10n.of(context).unknown_username),
+                            subtitle: Text(L10n.of(context).home_feed_include_in_for_you),
+                            value: enabled,
+                            onChanged: (value) async {
+                              await filter.setEnabled(account.id, value, accounts: data);
+                            },
+                          ),
+                        );
+                      }),
+                    ],
                   ],
                 );
               },

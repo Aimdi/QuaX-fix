@@ -26,6 +26,7 @@ import 'package:xta/group/combined_groups.dart';
 import 'package:xta/group/group_model.dart';
 import 'package:xta/group/group_screen.dart';
 import 'package:xta/home/_feed.dart';
+import 'package:xta/home/chrome_avatar.dart';
 import 'package:xta/home/home_account_filter.dart';
 import 'package:xta/home/home_model.dart';
 import 'package:xta/home/home_screen.dart';
@@ -413,6 +414,7 @@ Future<void> main() async {
       optionHomeInitialTab: 'feed',
       optionHomeDefaultFeedTab: feedTabs[0].id.name,
       optionHomeFeedDisabledAccountIds: '[]',
+      optionChromeAvatarRevision: 0,
       optionImageQuality: MediaQuality.medium.stored,
       optionMediaVideoQuality: MediaQuality.medium.stored,
       optionMediaDisableAutoload: false,
@@ -737,6 +739,7 @@ Future<void> main() async {
               ),
             ),
             Provider(create: (_) => HomeAccountFilterStore(prefService)),
+            Provider(create: (_) => ChromeAvatarStore(prefService)),
             Provider(create: (_) => substackClient),
             Provider(create: (_) => substackPublications),
             Provider(

@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "Sayfaları seçin",
   "@choose_pages": {},
+  "chrome_avatar_change": "Sol üstteki resmi değiştirmek için dokunun",
+  "chrome_avatar_choose": "Cihazdan seç",
+  "chrome_avatar_clear": "Monogram kullan",
+  "chrome_avatar_description": "Sol üstte ve menüde görünen resim — bu cihazda kalır",
+  "chrome_avatar_error": "O profil fotoğrafı yüklenemedi",
+  "chrome_avatar_from_account": "X profil fotoğrafını kullan",
+  "chrome_avatar_title": "Avatarın",
   "clickToShowMore": "Daha fazlasını görmek için tıkla",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1802,5 +1809,12 @@
   "zen_mode_page_cap": "Zen modunda akış uzunluğu",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Zen modunda akışın duraklamadan önce kaç sayfa yükleyeceği.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }

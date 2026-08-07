@@ -145,6 +145,13 @@
   "@choose_icon": {},
   "choose_pages": "Scegli le pagine",
   "@choose_pages": {},
+  "chrome_avatar_change": "Tocca per cambiare l’immagine in alto a sinistra",
+  "chrome_avatar_choose": "Scegli dal dispositivo",
+  "chrome_avatar_clear": "Usa il monogramma",
+  "chrome_avatar_description": "Immagine in alto a sinistra e nel menu — resta su questo dispositivo",
+  "chrome_avatar_error": "Impossibile caricare quella foto profilo",
+  "chrome_avatar_from_account": "Usa la foto profilo di X",
+  "chrome_avatar_title": "Il tuo avatar",
   "clickToShowMore": "Clicca per mostrare di più",
   "@clickToShowMore": {},
   "clip_note_hint": "Add a note to this saved post",
@@ -1802,5 +1809,12 @@
   "zen_mode_page_cap": "Lunghezza del feed in modalità zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quante pagine carica il feed in modalità zen prima di fermarsi.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@chrome_avatar_change": {},
+  "@chrome_avatar_choose": {},
+  "@chrome_avatar_clear": {},
+  "@chrome_avatar_description": {},
+  "@chrome_avatar_error": {},
+  "@chrome_avatar_from_account": {},
+  "@chrome_avatar_title": {}
 }
