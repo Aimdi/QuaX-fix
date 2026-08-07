@@ -1,0 +1,4 @@
+Attach signed APKs for aimdi82.
+
+Tag: aimdi82
+Commit: 90ded06 (origin/main)
