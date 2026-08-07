@@ -4,29 +4,24 @@ A read-only fork of [QuaX](https://github.com/Teskann/QuaX). Same idea — read 
 without posting, keep what you follow on your own device — with the plugins and
 fixes below on top. Nothing here adds compose, reply, quote, or like-on-X.
 
-### Threads
+### Threads posts from Accounts
 
-**Followed accounts are real subscriptions now.** They lived in a table nothing
-else read, so a Threads account couldn't join a group and its posts never
-reached the home timeline. It's a subscription like any other now: pick it into
-a group, and its posts interleave into that group's feed and — behind a setting,
-off by default — into Following and For you.
+**Followed Threads Accounts show posts again.** Guest mode was scraping HTML
+that Meta often leaves empty; it now loads the public GraphQL profile threads
+query (with HTML as a fallback). If you paste cookies and a Bearer token,
+Accounts still load first — a dead session no longer parks the whole tab for
+half an hour, and cookie failures fall back to that same public path. Bearer
+home/For You uses the current Instagram timeline parameters when you have no
+local Accounts added.
 
-**You can see who you follow.** The Threads tab shows your accounts along the
-top and names them in the empty state, so an empty feed with three accounts in
-it looks different from one with none.
+Add people under the Threads tab (local Accounts). Login alone does not create
+that list.
 
-**Threads posts look like X posts.** Same card shape as a tweet — avatar down
-the left, name and a quieter handle · time line beside it, then text and media —
-so a Threads post in a mixed timeline reads as one of the row.
+### Comments and quotes
 
-**Reading spends your session sparingly.** Meta bans sessions that behave like
-scripts, so requests now leave one at a time with a little jitter, a throttle is
-remembered past a restart, followed-account ids are looked up once instead of
-searched for every refresh, and the tab, the home timeline and every group feed
-share one cache. The safest setup is still an RSSHub instance or the guest path
-rather than a pasted session — that session is the only thing that can cost you
-the account.
+**Conversation and quote screens work again.** X had rotated the GraphQL query
+ids for TweetDetail and SearchTimeline. This build ships the new ids, and
+`endpoints.json` on main repairs older installs on the next cold start.
 
 ---
 
