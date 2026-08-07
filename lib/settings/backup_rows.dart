@@ -132,6 +132,25 @@ Future<List<RedditLocalVote>> readRedditLocalVotes() => _readRows(tableRedditLoc
 Future<List<ThreadsLocalLike>> readThreadsLocalLikes() =>
     _readRows(tableThreadsLocalLike, ThreadsLocalLike.fromMap);
 
+/// A Bluesky like that only ever existed on this device.
+///
+/// Bluesky is never told — the heart just remembers. Post bodies for the Liked
+/// library live in preferences; this table is the id set the heart uses.
+class BlueskyLocalLike with ToMappable {
+  final String id;
+
+  BlueskyLocalLike({required this.id});
+
+  factory BlueskyLocalLike.fromMap(Map<String, Object?> map) =>
+      BlueskyLocalLike(id: (map['id'] as String?) ?? '');
+
+  @override
+  Map<String, dynamic> toMap() => {'id': id};
+}
+
+Future<List<BlueskyLocalLike>> readBlueskyLocalLikes() =>
+    _readRows(tableBlueskyLocalLike, BlueskyLocalLike.fromMap);
+
 Future<List<ProfileNote>> readProfileNotes() => _readRows(tableProfileNote, ProfileNote.fromMap);
 
 Future<List<Antenna>> readAntennas() => _readRows(tableAntenna, Antenna.fromMap);

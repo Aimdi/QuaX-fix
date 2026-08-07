@@ -3,6 +3,7 @@ import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/bluesky/bluesky_client.dart';
+import 'package:xta/plugins/bluesky/bluesky_likes_store.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_post_card.dart';
 import 'package:xta/plugins/bluesky/bluesky_profile_screen.dart';
@@ -10,7 +11,7 @@ import 'package:xta/plugins/bluesky/bluesky_search_sheet.dart';
 import 'package:xta/plugins/bluesky/bluesky_store.dart';
 import 'package:xta/ui/errors.dart';
 
-/// The Bluesky tab: every locally followed account, merged newest first.
+/// The Bluesky tab: local follows feed, plus a device-only Liked library.
 class BlueskyScreen extends StatefulWidget {
   final ScrollController scrollController;
 
@@ -21,14 +22,31 @@ class BlueskyScreen extends StatefulWidget {
 }
 
 class _BlueskyScreenState extends State<BlueskyScreen> {
+  final _shell = _BlueskyShellStore();
+  final _likedScrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        context.read<BlueskyFeedStore>().refresh();
+        _loadHome();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _likedScrollController.dispose();
+    _shell.destroy();
+    super.dispose();
+  }
+
+  Future<void> _loadHome() async {
+    final likes = context.read<BlueskyLikesStore>();
+    final feed = context.read<BlueskyFeedStore>();
+    await likes.load();
+    await feed.refresh();
   }
 
   Future<void> _searchPeople() async {
@@ -84,20 +102,131 @@ class _BlueskyScreenState extends State<BlueskyScreen> {
           ),
         ],
       ),
-      body: ScopedBuilder<BlueskyFeedStore, List<BlueskyPost>>.transition(
-        store: context.read<BlueskyFeedStore>(),
-        onLoading: (_) => const Center(child: CircularProgressIndicator()),
-        onError: (context, error) => Padding(
-          padding: const EdgeInsets.all(24),
-          child: FullPageErrorWidget(
-            error: error,
-            stackTrace: null,
-            prefix: blueskyErrorMessage(l10n, error ?? Exception()),
-            onRetry: () => context.read<BlueskyFeedStore>().refresh(),
+      body: ScopedBuilder<_BlueskyShellStore, int>(
+        store: _shell,
+        onState: (context, tab) => Column(
+          children: [
+            _ShellTabs(selected: tab, onSelected: _shell.select),
+            Expanded(
+              child: IndexedStack(
+                index: tab,
+                children: [
+                  _HomePane(
+                    scrollController: widget.scrollController,
+                    onRefresh: _loadHome,
+                  ),
+                  _LikedPane(
+                    scrollController: _likedScrollController,
+                    likes: context.read<BlueskyLikesStore>(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BlueskyShellStore extends Store<int> {
+  _BlueskyShellStore() : super(0);
+
+  void select(int index) => update(index);
+}
+
+class _ShellTabs extends StatelessWidget {
+  final int selected;
+  final ValueChanged<int> onSelected;
+
+  const _ShellTabs({required this.selected, required this.onSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+
+    return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Row(
+        children: [
+          _ShellTab(
+            label: l10n.plugin_bluesky_home,
+            icon: Icons.home_outlined,
+            selected: selected == 0,
+            onTap: () => onSelected(0),
+          ),
+          _ShellTab(
+            label: l10n.plugin_bluesky_liked,
+            icon: Icons.favorite_border,
+            selected: selected == 1,
+            onTap: () => onSelected(1),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShellTab extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _ShellTab({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = selected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant;
+
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 20, color: color),
+              const SizedBox(height: 2),
+              Text(label, style: theme.textTheme.labelMedium!.copyWith(color: color)),
+            ],
           ),
         ),
-        onState: (context, posts) => _feed(context, l10n, posts),
       ),
+    );
+  }
+}
+
+class _HomePane extends StatelessWidget {
+  final ScrollController scrollController;
+  final Future<void> Function() onRefresh;
+
+  const _HomePane({required this.scrollController, required this.onRefresh});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+
+    return ScopedBuilder<BlueskyFeedStore, List<BlueskyPost>>.transition(
+      store: context.read<BlueskyFeedStore>(),
+      onLoading: (_) => const Center(child: CircularProgressIndicator()),
+      onError: (context, error) => Padding(
+        padding: const EdgeInsets.all(24),
+        child: FullPageErrorWidget(
+          error: error,
+          stackTrace: null,
+          prefix: blueskyErrorMessage(l10n, error ?? Exception()),
+          onRetry: () => context.read<BlueskyFeedStore>().refresh(),
+        ),
+      ),
+      onState: (context, posts) => _feed(context, l10n, posts),
     );
   }
 
@@ -118,12 +247,61 @@ class _BlueskyScreenState extends State<BlueskyScreen> {
     }
 
     return RefreshIndicator(
-      onRefresh: () => context.read<BlueskyFeedStore>().refresh(),
+      onRefresh: onRefresh,
       child: ListView.builder(
-        controller: widget.scrollController,
+        controller: scrollController,
         itemCount: posts.length,
         itemBuilder: (context, index) =>
             BlueskyPostCard(key: ValueKey(posts[index].uri), post: posts[index], showSourceBadge: false),
+      ),
+    );
+  }
+}
+
+class _LikedPane extends StatelessWidget {
+  final ScrollController scrollController;
+  final BlueskyLikesStore likes;
+
+  const _LikedPane({required this.scrollController, required this.likes});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context);
+    return RefreshIndicator(
+      onRefresh: likes.load,
+      child: ScopedBuilder<BlueskyLikesStore, List<BlueskyPost>>(
+        store: likes,
+        onState: (context, posts) {
+          if (posts.isEmpty) {
+            return ListView(
+              controller: scrollController,
+              padding: const EdgeInsets.fromLTRB(32, 72, 32, 32),
+              children: [
+                Icon(
+                  Icons.favorite_border,
+                  size: 52,
+                  color: Theme.of(context).colorScheme.outline,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.plugin_bluesky_liked_empty,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            );
+          }
+
+          return ListView.builder(
+            controller: scrollController,
+            itemCount: posts.length,
+            itemBuilder: (context, index) => BlueskyPostCard(
+              key: ValueKey('liked-${posts[index].uri}'),
+              post: posts[index],
+              showSourceBadge: false,
+            ),
+          );
+        },
       ),
     );
   }

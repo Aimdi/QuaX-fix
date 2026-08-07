@@ -46,6 +46,7 @@ enum BackupCategory {
   readPositions,
   upvotes,
   threadsLikes,
+  blueskyLikes,
   accounts,
   profileNotes,
   antennas,
@@ -66,6 +67,7 @@ class SettingsData {
   final List<MastodonSubscription>? mastodonSubscriptions;
   final List<RedditLocalVote>? redditLocalVotes;
   final List<ThreadsLocalLike>? threadsLocalLikes;
+  final List<BlueskyLocalLike>? blueskyLocalLikes;
   final List<SubscriptionGroup>? subscriptionGroups;
   final List<SubscriptionGroupMember>? subscriptionGroupMembers;
   final List<SearchGroupMember>? searchGroupMembers;
@@ -94,6 +96,7 @@ class SettingsData {
     this.mastodonSubscriptions,
     this.redditLocalVotes,
     this.threadsLocalLikes,
+    this.blueskyLocalLikes,
     this.subscriptionGroups,
     this.subscriptionGroupMembers,
     this.searchGroupMembers,
@@ -124,6 +127,7 @@ class SettingsData {
       mastodonSubscriptions: _rows(json['mastodonSubscriptions'], MastodonSubscription.fromMap),
       redditLocalVotes: _rows(json['redditLocalVotes'], RedditLocalVote.fromMap),
       threadsLocalLikes: _rows(json['threadsLocalLikes'], ThreadsLocalLike.fromMap),
+      blueskyLocalLikes: _rows(json['blueskyLocalLikes'], BlueskyLocalLike.fromMap),
       subscriptionGroups: _rows(json['subscriptionGroups'], SubscriptionGroup.fromMap),
       subscriptionGroupMembers: _rows(json['subscriptionGroupMembers'], SubscriptionGroupMember.fromMap),
       searchGroupMembers: _rows(json['searchGroupMembers'], SearchGroupMember.fromMap),
@@ -155,6 +159,7 @@ class SettingsData {
       'mastodonSubscriptions': _maps(mastodonSubscriptions),
       'redditLocalVotes': _maps(redditLocalVotes),
       'threadsLocalLikes': _maps(threadsLocalLikes),
+      'blueskyLocalLikes': _maps(blueskyLocalLikes),
       'subscriptionGroups': _maps(subscriptionGroups),
       'subscriptionGroupMembers': _maps(subscriptionGroupMembers),
       'searchGroupMembers': _maps(searchGroupMembers),
@@ -205,6 +210,7 @@ Map<BackupCategory, int> backupCounts(SettingsData data) {
     BackupCategory.readPositions: data.feedReadPositions?.length,
     BackupCategory.upvotes: data.redditLocalVotes?.length,
     BackupCategory.threadsLikes: data.threadsLocalLikes?.length,
+    BackupCategory.blueskyLikes: data.blueskyLocalLikes?.length,
     BackupCategory.accounts: data.accounts?.length,
     BackupCategory.profileNotes: data.profileNotes?.length,
     BackupCategory.antennas: data.antennas?.length,
@@ -240,6 +246,7 @@ Map<String, List<ToMappable>> backupTables(SettingsData data, {required bool inc
     tableMastodonSubscription: data.mastodonSubscriptions,
     tableRedditLocalVote: data.redditLocalVotes,
     tableThreadsLocalLike: data.threadsLocalLikes,
+    tableBlueskyLocalLike: data.blueskyLocalLikes,
     tableSubscriptionGroup: data.subscriptionGroups,
     tableSubscriptionGroupMember: data.subscriptionGroupMembers,
     tableSearchSubscriptionGroupMember: data.searchGroupMembers,

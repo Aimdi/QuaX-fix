@@ -769,6 +769,7 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Хэндл или DID, без @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_home": "Главная",
   "plugin_bluesky_instance": "AppView",
   "@plugin_bluesky_instance": {},
   "plugin_bluesky_instance_default": "По умолчанию: {url}",
@@ -783,6 +784,8 @@
   "@plugin_bluesky_instance_hint": {},
   "plugin_bluesky_invalid_handle": "Это не хэндл Bluesky",
   "@plugin_bluesky_invalid_handle": {},
+  "plugin_bluesky_liked": "Понравившиеся",
+  "plugin_bluesky_liked_empty": "Понравившихся постов пока нет — сердечки остаются на этом устройстве",
   "plugin_bluesky_lookup": "Найти профиль",
   "@plugin_bluesky_lookup": {},
   "plugin_bluesky_no_accounts": "Пока нет аккаунтов",
@@ -1990,5 +1993,8 @@
   "zen_mode_page_cap": "Длина ленты в дзен-режиме",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Сколько страниц загружает лента в дзен-режиме перед паузой.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_home": {},
+  "@plugin_bluesky_liked": {},
+  "@plugin_bluesky_liked_empty": {}
 }

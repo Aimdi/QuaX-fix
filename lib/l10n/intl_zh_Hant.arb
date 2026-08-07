@@ -769,6 +769,7 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "帳號或 DID，不含 @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_home": "首頁",
   "plugin_bluesky_instance": "AppView",
   "@plugin_bluesky_instance": {},
   "plugin_bluesky_instance_default": "預設：{url}",
@@ -783,6 +784,8 @@
   "@plugin_bluesky_instance_hint": {},
   "plugin_bluesky_invalid_handle": "這不是 Bluesky 帳號",
   "@plugin_bluesky_invalid_handle": {},
+  "plugin_bluesky_liked": "已喜歡",
+  "plugin_bluesky_liked_empty": "還沒有喜歡的貼文 — 愛心會留在這台裝置上",
   "plugin_bluesky_lookup": "查詢個人資料",
   "@plugin_bluesky_lookup": {},
   "plugin_bluesky_no_accounts": "尚無帳號",
@@ -1990,5 +1993,8 @@
   "zen_mode_page_cap": "禪模式時間軸長度",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禪模式下時間軸暫停前載入的頁數。",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_home": {},
+  "@plugin_bluesky_liked": {},
+  "@plugin_bluesky_liked_empty": {}
 }

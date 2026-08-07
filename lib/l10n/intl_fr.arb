@@ -769,6 +769,7 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Identifiant ou DID, sans le @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_home": "Accueil",
   "plugin_bluesky_instance": "AppView",
   "@plugin_bluesky_instance": {},
   "plugin_bluesky_instance_default": "Par défaut : {url}",
@@ -783,6 +784,8 @@
   "@plugin_bluesky_instance_hint": {},
   "plugin_bluesky_invalid_handle": "Ce n’est pas un identifiant Bluesky",
   "@plugin_bluesky_invalid_handle": {},
+  "plugin_bluesky_liked": "Aimés",
+  "plugin_bluesky_liked_empty": "Aucune publication aimée pour le moment — les cœurs restent sur cet appareil",
   "plugin_bluesky_lookup": "Chercher un profil",
   "@plugin_bluesky_lookup": {},
   "plugin_bluesky_no_accounts": "Aucun compte pour l’instant",
@@ -1990,5 +1993,8 @@
   "zen_mode_page_cap": "Longueur du fil en mode zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Nombre de pages chargées par le fil en mode zen avant de faire une pause.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_home": {},
+  "@plugin_bluesky_liked": {},
+  "@plugin_bluesky_liked_empty": {}
 }

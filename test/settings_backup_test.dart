@@ -53,6 +53,7 @@ SettingsData _full() {
     ],
     redditLocalVotes: [RedditLocalVote(id: 'abc123')],
     threadsLocalLikes: [ThreadsLocalLike(id: 't_like_1')],
+    blueskyLocalLikes: [BlueskyLocalLike(id: 'at://did:plc:a/app.bsky.feed.post/1')],
     subscriptionGroups: [
       SubscriptionGroup(id: 'g1', name: 'Feeds', icon: _icon, color: null, numberOfMembers: 1, createdAt: _createdAt),
     ],
@@ -108,6 +109,7 @@ void main() {
       expect(data.mastodonSubscriptions?.single.id, 'reader@example.social');
       expect(data.redditLocalVotes?.single.id, 'abc123');
       expect(data.threadsLocalLikes?.single.id, 't_like_1');
+      expect(data.blueskyLocalLikes?.single.id, 'at://did:plc:a/app.bsky.feed.post/1');
       expect(data.subscriptionGroups?.single.name, 'Feeds');
       expect(data.subscriptionGroupMembers?.single.profile, '1');
       expect(data.searchGroupMembers?.single.search, 'dart');
@@ -206,6 +208,7 @@ void main() {
       expect(counts[BackupCategory.readPositions], 1);
       expect(counts[BackupCategory.upvotes], 1);
       expect(counts[BackupCategory.threadsLikes], 1);
+      expect(counts[BackupCategory.blueskyLikes], 1);
       expect(counts[BackupCategory.accounts], 1);
     });
 
@@ -227,6 +230,7 @@ const _expectedTables = [
   tableMastodonSubscription,
   tableRedditLocalVote,
   tableThreadsLocalLike,
+  tableBlueskyLocalLike,
   tableSubscriptionGroup,
   tableSubscriptionGroupMember,
   tableSearchSubscriptionGroupMember,

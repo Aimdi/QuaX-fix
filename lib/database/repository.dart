@@ -28,6 +28,7 @@ const String tableRedditSubscription = 'reddit_subscription';
 const String tableImmichUpload = 'immich_upload';
 const String tableRedditLocalVote = 'reddit_local_vote';
 const String tableThreadsLocalLike = 'threads_local_like';
+const String tableBlueskyLocalLike = 'bluesky_local_like';
 const String tableStockSubscription = 'stock_subscription';
 const String tableSearchSubscriptionGroupMember = 'search_subscription_group_member';
 const String tableSubscription = 'subscription';
@@ -42,7 +43,7 @@ const String tableFeedReadPosition = 'feed_read_position';
 const String tableProfileNote = 'profile_note';
 const String tableAntenna = 'antenna';
 
-const int databaseVersion = 50;
+const int databaseVersion = 51;
 
 /// Schema migration plan from the earliest versions through [databaseVersion].
 /// Extracted so characterization tests can open a DB at an intermediate version
@@ -631,6 +632,15 @@ MigrationPlan buildMigrationPlan() => MigrationPlan({
       'CREATE TABLE IF NOT EXISTS $tableThreadsLocalLike ('
       'id VARCHAR PRIMARY KEY, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
       reverseSql: 'DROP TABLE $tableThreadsLocalLike',
+    ),
+  ],
+  51: [
+    // Same idea as Threads local likes: AT-URI ids on device, never written to
+    // Bluesky. Post bodies for the Liked library live in preferences.
+    SqlMigration(
+      'CREATE TABLE IF NOT EXISTS $tableBlueskyLocalLike ('
+      'id VARCHAR PRIMARY KEY, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)',
+      reverseSql: 'DROP TABLE $tableBlueskyLocalLike',
     ),
   ],
 });

@@ -769,6 +769,7 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Хэндл або DID, без @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_home": "Галоўная",
   "plugin_bluesky_instance": "AppView",
   "@plugin_bluesky_instance": {},
   "plugin_bluesky_instance_default": "Прадвызначана: {url}",
@@ -783,6 +784,8 @@
   "@plugin_bluesky_instance_hint": {},
   "plugin_bluesky_invalid_handle": "Гэта не хэндл Bluesky",
   "@plugin_bluesky_invalid_handle": {},
+  "plugin_bluesky_liked": "Упадабаныя",
+  "plugin_bluesky_liked_empty": "Пакуль няма ўпадабаных допісаў — сэрцайкі застаюцца на гэтай прыладзе",
   "plugin_bluesky_lookup": "Знайсці профіль",
   "@plugin_bluesky_lookup": {},
   "plugin_bluesky_no_accounts": "Пакуль няма акаўнтаў",
@@ -1990,5 +1993,8 @@
   "zen_mode_page_cap": "Даўжыня стужкі ў дзэн-рэжыме",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Колькі старонак загружае стужка ў дзэн-рэжыме перад паўзай.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_home": {},
+  "@plugin_bluesky_liked": {},
+  "@plugin_bluesky_liked_empty": {}
 }

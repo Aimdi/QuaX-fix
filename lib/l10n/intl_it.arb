@@ -769,6 +769,7 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "Handle o DID, senza @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_home": "Home",
   "plugin_bluesky_instance": "AppView",
   "@plugin_bluesky_instance": {},
   "plugin_bluesky_instance_default": "Predefinito: {url}",
@@ -783,6 +784,8 @@
   "@plugin_bluesky_instance_hint": {},
   "plugin_bluesky_invalid_handle": "Questo non è un handle Bluesky",
   "@plugin_bluesky_invalid_handle": {},
+  "plugin_bluesky_liked": "Piaciuti",
+  "plugin_bluesky_liked_empty": "Nessun post piaciuto per ora — i cuori restano su questo dispositivo",
   "plugin_bluesky_lookup": "Cerca un profilo",
   "@plugin_bluesky_lookup": {},
   "plugin_bluesky_no_accounts": "Nessun account ancora",
@@ -1990,5 +1993,8 @@
   "zen_mode_page_cap": "Lunghezza del feed in modalità zen",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "Quante pagine carica il feed in modalità zen prima di fermarsi.",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_home": {},
+  "@plugin_bluesky_liked": {},
+  "@plugin_bluesky_liked_empty": {}
 }

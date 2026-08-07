@@ -769,6 +769,7 @@
   "@plugin_bluesky_follow": {},
   "plugin_bluesky_handle_hint": "句柄或 DID，不含 @",
   "@plugin_bluesky_handle_hint": {},
+  "plugin_bluesky_home": "首页",
   "plugin_bluesky_instance": "AppView",
   "@plugin_bluesky_instance": {},
   "plugin_bluesky_instance_default": "默认：{url}",
@@ -783,6 +784,8 @@
   "@plugin_bluesky_instance_hint": {},
   "plugin_bluesky_invalid_handle": "这不是 Bluesky 句柄",
   "@plugin_bluesky_invalid_handle": {},
+  "plugin_bluesky_liked": "已喜欢",
+  "plugin_bluesky_liked_empty": "还没有喜欢的帖子 — 爱心会保留在此设备上",
   "plugin_bluesky_lookup": "查找个人资料",
   "@plugin_bluesky_lookup": {},
   "plugin_bluesky_no_accounts": "还没有账号",
@@ -1990,5 +1993,8 @@
   "zen_mode_page_cap": "禅模式信息流长度",
   "@zen_mode_page_cap": {},
   "zen_mode_page_cap_description": "禅模式下信息流暂停前加载的页数。",
-  "@zen_mode_page_cap_description": {}
+  "@zen_mode_page_cap_description": {},
+  "@plugin_bluesky_home": {},
+  "@plugin_bluesky_liked": {},
+  "@plugin_bluesky_liked_empty": {}
 }
