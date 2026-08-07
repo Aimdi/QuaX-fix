@@ -173,10 +173,12 @@ Future<TweetPageResult> loadMergedForYouPage({
   return (chains: chains, nextCursor: encodeHomeTimelineCursors(next));
 }
 
-/// Which login accounts are excluded from the merged For you timeline.
+/// Which login accounts are excluded from the merged For you HomeTimeline.
 ///
 /// Disabled accounts stay in [QuackerTwitterClient.fetch]'s rotation pool so
-/// they still raise rate limits for profiles, search, Following chunks, etc.
+/// they still raise rate limits for profiles, search, comments/quotes, and
+/// Following subscription chunks. Following's *content* still comes from local
+/// subscriptions (`inFeed`); only For you content sources are filtered here.
 class HomeAccountFilterStore extends Store<Set<String>> {
   final BasePrefService prefs;
 

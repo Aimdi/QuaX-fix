@@ -82,17 +82,28 @@ class _FeedScreenState extends State<FeedScreen> {
   /// alone: the controller survives and the indicator slides, as it should.
   int _externalTabEpoch = 0;
   FeedTabStore? _tabStore;
+  HomeAccountFilterStore? _accountFilter;
+  Set<String> _lastDisabledAccountIds = const {};
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final store = context.read<FeedTabStore>();
-    if (identical(store, _tabStore)) {
-      return;
+    if (!identical(store, _tabStore)) {
+      _tabStore = store;
+      _tab ??= store.state;
+      store.observer(onState: _onFeedChosenElsewhere);
     }
-    _tabStore = store;
-    _tab ??= store.state;
-    store.observer(onState: _onFeedChosenElsewhere);
+
+    final filter = context.read<HomeAccountFilterStore>();
+    if (!identical(filter, _accountFilter)) {
+      _accountFilter = filter;
+      _lastDisabledAccountIds = Set<String>.from(filter.state);
+      // Settings → Accounts and the manage-accounts sheet both write here.
+      // Remount For you whenever the set changes so a toggle on Following (or
+      // in Settings) does not leave a KeepAlive'd For you showing spare accounts.
+      filter.observer(onState: _onHomeAccountFilterChanged);
+    }
   }
 
   void _onFeedChosenElsewhere(FeedTab tab) {
@@ -105,10 +116,41 @@ class _FeedScreenState extends State<FeedScreen> {
     });
   }
 
+  void _onHomeAccountFilterChanged(Set<String> disabled) {
+    if (!mounted) {
+      return;
+    }
+    final same = disabled.length == _lastDisabledAccountIds.length &&
+        disabled.every(_lastDisabledAccountIds.contains);
+    if (same) {
+      return;
+    }
+    _lastDisabledAccountIds = Set<String>.from(disabled);
+    _remountForYou(scrollToTopFirst: _tab == FeedTab.foryou);
+  }
+
   @override
   void dispose() {
     _forYouFeed.dispose();
     super.dispose();
+  }
+
+  void _remountForYou({required bool scrollToTopFirst}) {
+    if (scrollToTopFirst) {
+      // Fire-and-forget: remount should not wait on the scroll animation.
+      scrollToTop(context, widget.scrollController);
+    }
+    if (!mounted) {
+      return;
+    }
+    final previous = _forYouFeed;
+    setState(() {
+      _forYouFeed = TweetFeedController();
+      _forYouEpoch++;
+    });
+    // Dispose after the remount so the outgoing ForYouTweets isn't holding a
+    // dead controller for the rest of this frame.
+    WidgetsBinding.instance.addPostFrameCallback((_) => previous.dispose());
   }
 
   Future<void> _refreshActiveTab(FeedTab tab) async {
@@ -118,14 +160,7 @@ class _FeedScreenState extends State<FeedScreen> {
     }
 
     if (tab == FeedTab.foryou) {
-      final previous = _forYouFeed;
-      setState(() {
-        _forYouFeed = TweetFeedController();
-        _forYouEpoch++;
-      });
-      // Dispose after the remount so the outgoing ForYouTweets isn't holding a
-      // dead controller for the rest of this frame.
-      WidgetsBinding.instance.addPostFrameCallback((_) => previous.dispose());
+      _remountForYou(scrollToTopFirst: false);
       return;
     }
 
@@ -181,6 +216,7 @@ class _FeedScreenState extends State<FeedScreen> {
           // live in the drawer — except on For you, whose pull gesture cannot
           // rebuild the timeline, so it keeps the explicit refresh (#168).
           final model = context.read<GroupModel>();
+          final disabledCount = _lastDisabledAccountIds.length;
           return defaultGroupActions(
             context,
             model: model,
@@ -190,16 +226,16 @@ class _FeedScreenState extends State<FeedScreen> {
             showSettings: false,
             extra: [
               IconButton(
-                icon: const Icon(Icons.manage_accounts_outlined),
-                tooltip: L10n.of(context).home_feed_accounts,
-                onPressed: () => showHomeAccountFilterSheet(
-                  context,
-                  onChanged: () {
-                    if (tab == FeedTab.foryou) {
-                      _refreshActiveTab(FeedTab.foryou);
-                    }
-                  },
+                icon: Badge(
+                  isLabelVisible: disabledCount > 0,
+                  smallSize: 8,
+                  child: Icon(
+                    disabledCount > 0 ? Icons.manage_accounts : Icons.manage_accounts_outlined,
+                  ),
                 ),
+                tooltip: L10n.of(context).home_feed_accounts,
+                // Store observer remounts For you; sheet only needs to open.
+                onPressed: () => showHomeAccountFilterSheet(context),
               ),
             ],
           );
