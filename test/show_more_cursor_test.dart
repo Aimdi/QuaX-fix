@@ -106,5 +106,103 @@ void main() {
       expect(TimelineParser.getShowMoreCursor([<String, dynamic>{}]), isNull);
       expect(TimelineParser.getShowMoreCursor(const []), isNull);
     });
+
+    test('reads a show-more cursor nested inside a conversationthread module', () {
+      final entries = [
+        {
+          'entryId': 'tweet-1',
+          'content': {
+            'itemContent': {
+              'tweet_results': {
+                'result': {
+                  'rest_id': '1',
+                  'legacy': {'id_str': '1', 'full_text': 'hello', 'reply_count': 2},
+                },
+              },
+            },
+          },
+        },
+        {
+          'entryId': 'conversationthread-9',
+          'content': {
+            'items': [
+              {
+                'entryId': 'conversationthread-9-cursor-showmore-9',
+                'item': {
+                  'itemContent': {
+                    'itemType': 'TimelineTimelineCursor',
+                    'cursorType': 'ShowMoreThreads',
+                    'value': 'SHOWMORE-NESTED',
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ];
+
+      expect(TimelineParser.getShowMoreCursor(entries), 'SHOWMORE-NESTED');
+      expect(
+        TimelineParser.createTweetChains(entries),
+        hasLength(1),
+        reason: 'a module with only a cursor must not become an empty reply chain',
+      );
+    });
+
+    test('prefers a top-level show-more cursor over a nested one', () {
+      final entries = [
+        {
+          'entryId': 'conversationthread-9',
+          'content': {
+            'items': [
+              {
+                'entryId': 'conversationthread-9-cursor-showmore-9',
+                'item': {
+                  'itemContent': {'value': 'NESTED'},
+                },
+              },
+            ],
+          },
+        },
+        {
+          'entryId': 'cursor-showMore-8',
+          'content': {'value': 'TOP'},
+        },
+      ];
+
+      expect(TimelineParser.getShowMoreCursor(entries), 'TOP');
+    });
+  });
+
+  group('TimelineParser.hasRepliesOrShowMore', () {
+    TweetChain chain(String id) => TweetChain(
+      id: id,
+      tweets: [
+        TweetWithCard()
+          ..idStr = id
+          ..fullText = 't',
+      ],
+      isPinned: false,
+    );
+
+    test('is true when a show-more cursor is present even without reply chains', () {
+      final status = TweetStatus(
+        chains: [chain('1')],
+        cursorBottom: null,
+        cursorTop: null,
+        cursorShowMore: 'X',
+      );
+      expect(TimelineParser.hasRepliesOrShowMore(status, '1'), isTrue);
+    });
+
+    test('is true when a reply chain follows the focal tweet', () {
+      final status = TweetStatus(chains: [chain('1'), chain('2')], cursorBottom: null, cursorTop: null);
+      expect(TimelineParser.hasRepliesOrShowMore(status, '1'), isTrue);
+    });
+
+    test('is false for a focal-only page with no show-more', () {
+      final status = TweetStatus(chains: [chain('1')], cursorBottom: null, cursorTop: null);
+      expect(TimelineParser.hasRepliesOrShowMore(status, '1'), isFalse);
+    });
   });
 }

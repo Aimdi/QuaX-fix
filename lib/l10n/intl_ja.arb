@@ -1869,6 +1869,8 @@
   "@unable_to_load_the_search_results": {},
   "unable_to_load_the_trends_for_widget_place_name": "{widgetPlaceName}のトレンドを読み込めませんでした",
   "@unable_to_load_the_trends_for_widget_place_name": {},
+  "unable_to_load_replies": "返信を読み込めませんでした",
+  "@unable_to_load_replies": {},
   "unable_to_load_the_tweet": "ツイートの読み込みに失敗しました",
   "@unable_to_load_the_tweet": {},
   "unable_to_load_the_tweets": "ツイートを読み込めませんでした",

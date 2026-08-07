@@ -96,6 +96,15 @@ class _StatusScreenState extends State<_StatusScreen> {
   /// replies X judged low quality, so asking for them is the reader's call.
   String? _showMoreCursor;
 
+  /// First page came back with a reply count but neither visible replies nor a
+  /// show-more cursor — usually a poisoned cache or a transient TweetDetail
+  /// omit. Offer retry instead of looking "done".
+  bool _repliesMissing = false;
+
+  /// Skip the thread cache on the next first-page fetch (after the reader taps
+  /// retry for missing replies).
+  bool _bypassThreadCache = false;
+
   @override
   void initState() {
     super.initState();
@@ -177,16 +186,25 @@ class _StatusScreenState extends State<_StatusScreen> {
     final key = TimelineCache.threadKey(widget.id);
     final cache = TimelineCache(await Repository.writable());
 
-    // The thread screen has no pull-to-refresh, so nothing here has to bypass
-    // the cache; re-entering the screen after the window expires re-fetches.
-    final cached = await cache.read(key, maxAge: threadCacheMaxAge);
-    if (cached != null) {
-      return cached;
+    if (_bypassThreadCache) {
+      _bypassThreadCache = false;
+      await cache.remove(key);
+    } else {
+      // The thread screen has no pull-to-refresh, so nothing here has to bypass
+      // the cache; re-entering the screen after the window expires re-fetches.
+      final cached = await cache.read(key, maxAge: threadCacheMaxAge);
+      if (cached != null) {
+        return cached;
+      }
     }
 
     try {
       final result = await Twitter.getTweet(widget.id);
-      await cache.write(key, result);
+      // A focal-only page with a non-zero reply count must not stick for the
+      // cache window — re-opening would look like "no replies" again.
+      if (_shouldCacheThread(result)) {
+        await cache.write(key, result);
+      }
       return result;
     } catch (e) {
       final stale = await cache.readStale(key);
@@ -196,6 +214,25 @@ class _StatusScreenState extends State<_StatusScreen> {
       log.info('Showing the cached thread for ${widget.id} after $e');
       return stale;
     }
+  }
+
+  bool _shouldCacheThread(TweetStatus result) {
+    if (TimelineParser.hasRepliesOrShowMore(result, widget.id)) {
+      return true;
+    }
+    final count = _replyCountOn(result) ?? widget.initialTweet?.replyCount ?? 0;
+    return count <= 0;
+  }
+
+  int? _replyCountOn(TweetStatus status) {
+    for (final chain in status.chains) {
+      for (final tweet in chain.tweets) {
+        if (tweet.idStr == widget.id) {
+          return tweet.replyCount;
+        }
+      }
+    }
+    return null;
   }
 
   Future<CursorPage<String, TweetChain>> _fetchPage(String? cursor) async {
@@ -216,6 +253,8 @@ class _StatusScreenState extends State<_StatusScreen> {
     // On the first page (null cursor), anchor the view on the opened tweet.
     if (cursor == null) {
       _scrollToFocalTweet(chains);
+      final expected = _replyCountOn(result) ?? widget.initialTweet?.replyCount ?? 0;
+      _repliesMissing = expected > 0 && !TimelineParser.hasRepliesOrShowMore(result, widget.id);
     }
 
     // No new tweets returned, or the cursor doesn't advance -> stop pagination.
@@ -239,22 +278,52 @@ class _StatusScreenState extends State<_StatusScreen> {
     _paging.resume(cursor);
   }
 
-  /// The end-of-thread prompt, shown only when X told us replies are withheld.
-  /// Absent that cursor this is nothing, so a thread that ends normally ends
-  /// silently, exactly as before.
-  Widget _showMoreIndicator(BuildContext context) {
-    if (_showMoreCursor == null) {
+  Future<void> _retryMissingReplies() async {
+    setState(() {
+      _repliesMissing = false;
+      _showMoreCursor = null;
+      _bypassThreadCache = true;
+      _seenAlready.clear();
+      _firstLoadStarted = false;
+    });
+    _pagingController.refresh();
+  }
+
+  /// End-of-thread actions: X's withheld-replies prompt, or a retry when the
+  /// footer claimed replies that TweetDetail never returned.
+  Widget _threadEndIndicator(BuildContext context) {
+    if (_showMoreCursor != null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        child: Center(
+          child: TextButton.icon(
+            onPressed: _loadWithheldReplies,
+            icon: const Icon(Icons.more_horiz),
+            label: Text(L10n.of(context).show_additional_replies),
+          ),
+        ),
+      );
+    }
+
+    if (!_repliesMissing) {
       return const SizedBox.shrink();
     }
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-      child: Center(
-        child: TextButton.icon(
-          onPressed: _loadWithheldReplies,
-          icon: const Icon(Icons.more_horiz),
-          label: Text(L10n.of(context).show_additional_replies),
-        ),
+      child: Column(
+        children: [
+          Text(
+            L10n.of(context).unable_to_load_replies,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Theme.of(context).hintColor),
+          ),
+          TextButton.icon(
+            onPressed: _retryMissingReplies,
+            icon: const Icon(Icons.refresh),
+            label: Text(L10n.of(context).retry),
+          ),
+        ],
       ),
     );
   }
@@ -280,7 +349,10 @@ class _StatusScreenState extends State<_StatusScreen> {
               return _buildPreview(context);
             }
             if (_conversationCameBackEmpty) {
-              return _buildPreview(context, loading: false);
+              // Still offer show-more / retry under the preview: an empty
+              // TweetDetail must not look like a finished thread when the
+              // footer already advertised replies.
+              return _buildPreview(context, loading: false, showThreadEnd: true);
             }
             return _buildConversation(context);
           },
@@ -289,7 +361,7 @@ class _StatusScreenState extends State<_StatusScreen> {
     );
   }
 
-  Widget _buildPreview(BuildContext context, {bool loading = true}) {
+  Widget _buildPreview(BuildContext context, {bool loading = true, bool showThreadEnd = false}) {
     _maybeStartFirstLoad();
     var tweet = widget.initialTweet!;
     return ListView(
@@ -308,6 +380,7 @@ class _StatusScreenState extends State<_StatusScreen> {
             padding: EdgeInsets.all(16),
             child: Center(child: CircularProgressIndicator()),
           ),
+        if (showThreadEnd) _threadEndIndicator(context),
       ],
     );
   }
@@ -429,7 +502,7 @@ class _StatusScreenState extends State<_StatusScreen> {
             ),
           );
         },
-        noMoreItemsIndicatorBuilder: _showMoreIndicator,
+        noMoreItemsIndicatorBuilder: (_) => _threadEndIndicator(context),
       ),
     );
   }
@@ -513,6 +586,6 @@ class _StatusScreenState extends State<_StatusScreen> {
       });
       return const Padding(padding: EdgeInsets.all(16), child: Center(child: CircularProgressIndicator()));
     }
-    return _showMoreIndicator(context);
+    return _threadEndIndicator(context);
   }
 }

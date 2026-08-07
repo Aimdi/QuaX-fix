@@ -1869,6 +1869,8 @@
   "@unable_to_load_the_search_results": {},
   "unable_to_load_the_trends_for_widget_place_name": "{widgetPlaceName}의 트렌드를 불러올 수 없습니다",
   "@unable_to_load_the_trends_for_widget_place_name": {},
+  "unable_to_load_replies": "답글을 불러올 수 없습니다",
+  "@unable_to_load_replies": {},
   "unable_to_load_the_tweet": "게시물을 불러올 수 없습니다",
   "@unable_to_load_the_tweet": {},
   "unable_to_load_the_tweets": "트윗을 불러올 수 없습니다",

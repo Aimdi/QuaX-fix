@@ -1869,6 +1869,8 @@
   "@unable_to_load_the_search_results": {},
   "unable_to_load_the_trends_for_widget_place_name": "{widgetPlaceName} के लिए ट्रेंड लोड नहीं किए जा सके",
   "@unable_to_load_the_trends_for_widget_place_name": {},
+  "unable_to_load_replies": "जवाब लोड नहीं हो सके",
+  "@unable_to_load_replies": {},
   "unable_to_load_the_tweet": "पोस्ट लोड नहीं की जा सकी",
   "@unable_to_load_the_tweet": {},
   "unable_to_load_the_tweets": "पोस्ट लोड नहीं की जा सकीं",
