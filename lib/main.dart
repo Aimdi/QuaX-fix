@@ -44,6 +44,7 @@ import 'package:xta/plugins/bluesky/bluesky_store.dart';
 import 'package:xta/plugins/mastodon/mastodon_client.dart';
 import 'package:xta/plugins/mastodon/mastodon_store.dart';
 import 'package:xta/plugins/pixiv/pixiv_client.dart';
+import 'package:xta/plugins/pixiv/pixiv_mute_store.dart';
 import 'package:xta/plugins/pixiv/pixiv_store.dart';
 import 'package:xta/plugins/threads/threads_api.dart';
 import 'package:xta/plugins/threads/threads_client.dart';
@@ -515,6 +516,11 @@ Future<void> main() async {
       optionPluginPixivAccessToken: '',
       optionPluginPixivAccessExpiresAt: '',
       optionPluginPixivShowR18: false,
+      optionPluginPixivUserId: 0,
+      optionPluginPixivMutedAuthors: '[]',
+      optionPluginPixivMutedTags: '[]',
+      optionPluginPixivMutedIllusts: '[]',
+      optionPluginPixivSearchHistory: '[]',
       optionPluginThreadsDirectCookies: '',
       optionPluginThreadsDirectBearer: '',
       optionPluginThreadsDirectDeviceId: '',
@@ -666,7 +672,9 @@ Future<void> main() async {
       mastodonAccounts,
     );
     final pixivClient = PixivClient(prefService);
-    final pixivFeed = PixivFeedStore(pixivClient);
+    final pixivMute = PixivMuteStore(prefService);
+    final pixivSearchHistory = PixivSearchHistoryStore(prefService);
+    final pixivFeed = PixivFeedStore(pixivClient, filter: pixivMute.filter);
 
     // Everything above only constructs; the reads all happen here. They were a
     // chain of awaits, each waiting on the last for no reason — none of them
@@ -705,6 +713,10 @@ Future<void> main() async {
         blueskyAccounts.load(),
       if (prefService.get<bool>(optionPluginMastodonEnabled) == true)
         mastodonAccounts.load(),
+      if (prefService.get<bool>(optionPluginPixivEnabled) == true) ...[
+        pixivMute.load(),
+        pixivSearchHistory.load(),
+      ],
     ]);
 
     runApp(
@@ -785,6 +797,8 @@ Future<void> main() async {
             Provider(create: (_) => mastodonAccounts),
             Provider(create: (_) => mastodonFeed),
             Provider(create: (_) => pixivClient),
+            Provider(create: (_) => pixivMute),
+            Provider(create: (_) => pixivSearchHistory),
             Provider(create: (_) => pixivFeed),
             ChangeNotifierProvider(
               create: (_) =>

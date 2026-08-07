@@ -265,7 +265,12 @@ const optionPluginPixivShowTab = 'plugin.pixiv.show_tab';
 const optionPluginPixivRefreshToken = 'plugin.pixiv.refresh_token';
 const optionPluginPixivAccessToken = 'plugin.pixiv.access_token';
 const optionPluginPixivAccessExpiresAt = 'plugin.pixiv.access_expires_at';
+const optionPluginPixivUserId = 'plugin.pixiv.user_id';
 const optionPluginPixivShowR18 = 'plugin.pixiv.show_r18';
+const optionPluginPixivMutedAuthors = 'plugin.pixiv.muted_authors';
+const optionPluginPixivMutedTags = 'plugin.pixiv.muted_tags';
+const optionPluginPixivMutedIllusts = 'plugin.pixiv.muted_illusts';
+const optionPluginPixivSearchHistory = 'plugin.pixiv.search_history';
 
 /// When true, the plugin store also lists [XtaPlugin.isPrivate] plugins that
 /// the public catalogue holds back with `available: false`.
