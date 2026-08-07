@@ -111,6 +111,18 @@ class SubstackReadStore extends Store<Set<String>> {
     });
   }
 
+  /// Marks every id in [ids] as read (newest first in the capped list).
+  Future<void> markAllRead(Iterable<String> ids) async {
+    final fresh = ids.where((id) => id.isNotEmpty && !state.contains(id)).toList();
+    if (fresh.isEmpty) return;
+    await execute(() async {
+      final next = [...fresh, ...state];
+      final capped = next.take(substackReadIdsCap).toList();
+      await prefs.set(optionPluginSubstackReadIds, readIdsToPrefs(capped));
+      return capped.toSet();
+    });
+  }
+
   bool isRead(String id) => state.contains(id);
 }
 

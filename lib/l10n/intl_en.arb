@@ -1197,10 +1197,14 @@
       }
     }
   },
+  "plugin_substack_home": "Home",
+  "@plugin_substack_home": {},
   "plugin_substack_load_error": "Unable to load Substack",
   "@plugin_substack_load_error": {},
   "plugin_substack_load_more": "Load more",
   "@plugin_substack_load_more": {},
+  "plugin_substack_mark_all_read": "Mark all as read",
+  "@plugin_substack_mark_all_read": {},
   "plugin_substack_no_comments": "No comments yet",
   "@plugin_substack_no_comments": {},
   "plugin_substack_no_content": "This post has no readable content",
