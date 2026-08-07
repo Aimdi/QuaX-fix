@@ -182,10 +182,7 @@ List<int> _readIntList(String? raw) {
     if (decoded is! List) {
       return const [];
     }
-    return [
-      for (final value in decoded)
-        if (_intFrom(value) case final id?) id,
-    ];
+    return [for (final value in decoded) ?_intFrom(value)];
   } catch (_) {
     return const [];
   }
