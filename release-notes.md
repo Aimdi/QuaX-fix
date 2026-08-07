@@ -4,44 +4,48 @@ A read-only fork of [QuaX](https://github.com/Teskann/QuaX). Same idea — read 
 without posting, keep what you follow on your own device — with the plugins and
 fixes below on top. Nothing here adds compose, reply, quote, or like-on-X.
 
-### Substack that feels like the app
+### X replies that actually show up
 
-**Home and Notes in one shell, plus Inbox and Library on device.** Cover cards
-and a publication strip sit where the Substack app puts them. Likes and saves
-stay local — never sent to Substack.
+**Status screens keep offering more replies** when TweetDetail returns a thin
+first page. Show-more cursors nested in conversation modules are parsed, the
+thread cache remembers them, and a clear retry path replaces the old empty
+silence under a non-zero reply count.
 
-### Threads you can actually browse
+### Quotes you can expand
 
-**Open threads and profiles in the app.** Profile posts load instead of an empty
-header. Reposts unwrap from share_info. A Liked library keeps hearts on your
-phone. Adding an account can enrich the strip avatar from public data.
+**“Show more” on a quoted post expands the text** instead of opening the quote.
+The quotes footer always stays tappable, and the quotes list no longer folds
+results into a single misleading thread.
 
-### Pixiv closer to Pixez
+### Bluesky threads in the app
 
-**A read-only gallery with search history and artwork IDs from URLs.** Bookmark
-public or private when you’re signed in; mute creators locally so they drop out
-of your feeds.
+**Open posts as in-app threads** with ancestors and replies. Cards show counts,
+reposts, quotes, and link cards. People search finds accounts; profiles page
+further with the author-feed cursor. Still public AppView only — no Bluesky
+login, no writes.
 
-### Reddit discovery
+### Threads closer to the app
 
-**Following, Popular, and All** with the usual `t=` time filters. Spoiler gates
-and an NSFW display preference. Saves stay on the device.
+**Repost chrome, verified badges, linkified captions**, always-on engagement
+icons (local likes stay on device), a Following-strip add control, and a clearer
+thread screen with indented replies.
 
-### Bluesky AppView that works out of the box
+### Faster Pixiv gallery
 
-**Settings ships a working default AppView** (`https://public.api.bsky.app`) so
-you’re not stuck configuring a host before the first fetch.
+**Decode caps, better thumbs, soft refresh, earlier paging**, parallel detail
+loads, and keep-alive tabs so Ranking and Bookmarks keep scroll position and
+warm images — Pixez-oriented speed without copying Pixez.
 
-### Your chrome, your avatar
+### Mastodon replies without search
 
-**Pick a custom upper-left avatar** for the home chrome instead of only the
-default icon.
+**Reply threads load even when public search resolve is blocked** (401). The
+client uses the status id in the URL, then rediscovers via open instances when
+needed.
 
-### Spare accounts and For you
+### Plugin store categories that scale
 
-**Toggling “Include in For you” remounts the For you tab** so the next load
-actually drops or restores those spare login accounts. Off still keeps them in
-rotation for profiles, search, and Following.
+**Social, Communities, Newsletters, Art, Markets, Bookmarks, Media** replace the
+old catch-all Reading bucket so ten built-ins are easier to scan.
 
 ---
 
