@@ -4,29 +4,44 @@ A read-only fork of [QuaX](https://github.com/Teskann/QuaX). Same idea — read 
 without posting, keep what you follow on your own device — with the plugins and
 fixes below on top. Nothing here adds compose, reply, quote, or like-on-X.
 
-### Spare accounts for rate limits only
+### Substack that feels like the app
 
-**Turn off login accounts you only keep for higher limits.** Settings → Accounts
-(or the manage-accounts icon on Following / For you) has an “Include in For you”
-switch. Off keeps the account in the fetch rotation for profiles, search, and
-Following chunks, but drops it from the merged For you HomeTimeline. Following
-still uses your local subscriptions.
+**Home and Notes in one shell, plus Inbox and Library on device.** Cover cards
+and a publication strip sit where the Substack app puts them. Likes and saves
+stay local — never sent to Substack.
 
-### Fediverse cards
+### Threads you can actually browse
 
-**Mastodon posts look like the rest of the timeline.** Larger layout, reply /
-boost / favourite counts, and article link previews from Mastodon’s PreviewCard.
-Still read-only — taps open the status in the browser.
+**Open threads and profiles in the app.** Profile posts load instead of an empty
+header. Reposts unwrap from share_info. A Liked library keeps hearts on your
+phone. Adding an account can enrich the strip avatar from public data.
 
-### Threads without login
+### Pixiv closer to Pixez
 
-**Add Accounts and read public posts — no cookies required.** Guest mode reads
-the same public GraphQL the website uses when you’re logged out (and profiles
-from the public page). Cookies, Bearer, RSSHub and Xy stay optional.
+**A read-only gallery with search history and artwork IDs from URLs.** Bookmark
+public or private when you’re signed in; mute creators locally so they drop out
+of your feeds.
 
-**Engagement on Threads cards:** reply and repost counts when Meta sends them,
-plus a **local** like heart (device-only, never sent to Threads). Link/article
-previews show when Meta attaches them.
+### Reddit discovery
+
+**Following, Popular, and All** with the usual `t=` time filters. Spoiler gates
+and an NSFW display preference. Saves stay on the device.
+
+### Bluesky AppView that works out of the box
+
+**Settings ships a working default AppView** (`https://public.api.bsky.app`) so
+you’re not stuck configuring a host before the first fetch.
+
+### Your chrome, your avatar
+
+**Pick a custom upper-left avatar** for the home chrome instead of only the
+default icon.
+
+### Spare accounts and For you
+
+**Toggling “Include in For you” remounts the For you tab** so the next load
+actually drops or restores those spare login accounts. Off still keeps them in
+rotation for profiles, search, and Following.
 
 ---
 
