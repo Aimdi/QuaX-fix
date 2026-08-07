@@ -26,6 +26,13 @@ a merged newest-first timeline of every locally followed acct’s public statuse
 
 No OAuth app registration. No write methods.
 
+## Card UI
+
+Public statuses render with a tweet-sized layout: avatar, body text, media,
+PreviewCard link/article preview (`card`), and a read-only engagement row
+(`replies_count` / `reblogs_count` / `favourites_count`). Taps open the status
+(or the card URL) in the browser — no write APIs.
+
 ## Not implemented
 
 - Home / notifications timelines (need a user token)
