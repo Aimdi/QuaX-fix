@@ -6,6 +6,7 @@ import 'package:xta/plugins/bluesky/bluesky_client.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
 import 'package:xta/plugins/bluesky/bluesky_post_card.dart';
 import 'package:xta/plugins/bluesky/bluesky_profile_screen.dart';
+import 'package:xta/plugins/bluesky/bluesky_search_sheet.dart';
 import 'package:xta/plugins/bluesky/bluesky_store.dart';
 import 'package:xta/ui/errors.dart';
 
@@ -30,16 +31,8 @@ class _BlueskyScreenState extends State<BlueskyScreen> {
     });
   }
 
-  Future<void> _lookUpProfile() async {
-    final actor = await showBlueskyAddAccountDialog(context, lookup: true);
-    if (actor == null || !mounted) {
-      return;
-    }
-
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => BlueskyProfileScreen(actor: actor)),
-    );
+  Future<void> _searchPeople() async {
+    await showBlueskySearchSheet(context);
     if (mounted) {
       await context.read<BlueskyFeedStore>().refresh();
     }
@@ -81,8 +74,8 @@ class _BlueskyScreenState extends State<BlueskyScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            tooltip: l10n.plugin_bluesky_lookup,
-            onPressed: _lookUpProfile,
+            tooltip: l10n.plugin_bluesky_search,
+            onPressed: _searchPeople,
           ),
           IconButton(
             icon: const Icon(Icons.person_add_alt),

@@ -1,22 +1,66 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:pref/pref.dart';
+import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/plugins/bluesky/bluesky_models.dart';
+import 'package:xta/plugins/bluesky/bluesky_profile_screen.dart';
+import 'package:xta/plugins/bluesky/bluesky_thread_screen.dart';
 import 'package:xta/subscriptions/widgets/fallback_avatar.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
+import 'package:xta/tweet/tweet_footer.dart';
 import 'package:xta/ui/dates.dart';
 import 'package:xta/utils/urls.dart';
 
-/// A Bluesky post as a timeline card.
+const double kBlueskyAvatarSize = 48;
+const double kBlueskyMediaMaxAspectRatio = 16 / 9;
+
+final NumberFormat _blueskyCountFormat = NumberFormat.compact(locale: 'en_US');
+
+/// A Bluesky post as a timeline card — avatar column, counts, quote, link card.
 class BlueskyPostCard extends StatelessWidget {
   final BlueskyPost post;
-
-  /// Set in a mixed timeline so the card says where it came from.
   final bool showSourceBadge;
+  final bool openOnTap;
+  final VoidCallback? onOpen;
+  final VoidCallback? onAuthorTap;
+  final VoidCallback? onOpenBrowser;
 
-  const BlueskyPostCard({super.key, required this.post, this.showSourceBadge = true});
+  const BlueskyPostCard({
+    super.key,
+    required this.post,
+    this.showSourceBadge = true,
+    this.openOnTap = true,
+    this.onOpen,
+    this.onAuthorTap,
+    this.onOpenBrowser,
+  });
 
-  void _open(BuildContext context) => openUri(context, post.url);
+  void _open(BuildContext context) {
+    if (onOpen != null) {
+      onOpen!();
+      return;
+    }
+    Navigator.push(context, MaterialPageRoute(builder: (_) => BlueskyThreadScreen(post: post)));
+  }
+
+  void _openAuthor(BuildContext context) {
+    if (onAuthorTap != null) {
+      onAuthorTap!();
+      return;
+    }
+    final actor = post.did.isNotEmpty ? post.did : post.handle;
+    Navigator.push(context, MaterialPageRoute(builder: (_) => BlueskyProfileScreen(actor: actor)));
+  }
+
+  void _openBrowser(BuildContext context) {
+    if (onOpenBrowser != null) {
+      onOpenBrowser!();
+      return;
+    }
+    openUri(context, post.url);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,21 +72,59 @@ class BlueskyPostCard extends StatelessWidget {
         tweetFlatCard(
           color: theme.cardColor,
           child: InkWell(
-            onTap: () => _open(context),
+            onTap: openOnTap ? () => _open(context) : null,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _header(context),
-                  if (post.text.isNotEmpty) ...[
-                    const SizedBox(height: 6),
-                    Text(post.text, style: theme.textTheme.bodyMedium),
-                  ],
-                  if (post.hasMedia) ...[
-                    const SizedBox(height: 10),
-                    _media(context),
-                  ],
+                  if (post.isRepost) _repostBanner(context),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () => _openAuthor(context),
+                        child: _avatar(context),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            GestureDetector(
+                              onTap: () => _openAuthor(context),
+                              behavior: HitTestBehavior.opaque,
+                              child: _header(context),
+                            ),
+                            if (post.text.isNotEmpty) ...[
+                              const SizedBox(height: 6),
+                              Text(
+                                post.text,
+                                style: theme.textTheme.bodyLarge!.copyWith(height: 1.35),
+                              ),
+                            ],
+                            if (post.hasMedia) ...[
+                              const SizedBox(height: 10),
+                              _media(context, post.images),
+                            ],
+                            if (post.quotedPost != null) ...[
+                              const SizedBox(height: 10),
+                              _QuotedPost(quote: post.quotedPost!),
+                            ],
+                            if (post.linkCard != null) ...[
+                              const SizedBox(height: 10),
+                              _BlueskyLinkPreview(card: post.linkCard!),
+                            ],
+                            _BlueskyEngagementRow(
+                              post: post,
+                              onOpen: () => _open(context),
+                              onOpenBrowser: () => _openBrowser(context),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -53,43 +135,91 @@ class BlueskyPostCard extends StatelessWidget {
     );
   }
 
-  Widget _header(BuildContext context) {
+  Widget _repostBanner(BuildContext context) {
+    final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
+    final name = post.repostedByName ?? post.repostedByHandle ?? '';
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8, left: 60),
+      child: Row(
+        children: [
+          Icon(Icons.repeat, size: 14, color: muted),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              L10n.of(context).plugin_bluesky_reposted(name),
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall!.copyWith(color: muted),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _avatar(BuildContext context) {
     final theme = Theme.of(context);
     final avatar = post.avatarUrl;
-    final date = post.publishedAt;
+    const size = kBlueskyAvatarSize;
 
-    return Row(
+    return ClipOval(
+      child: avatar == null
+          ? FallbackAvatar(
+              seed: post.handle,
+              displayName: post.authorName,
+              size: size,
+              accent: theme.colorScheme.primary,
+            )
+          : ExtendedImage.network(
+              avatar,
+              width: size,
+              height: size,
+              fit: BoxFit.cover,
+              cacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).ceil(),
+            ),
+    );
+  }
+
+  Widget _header(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = L10n.of(context);
+    final date = post.publishedAt;
+    final muted = theme.colorScheme.onSurfaceVariant;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ClipOval(
-          child: avatar == null
-              ? FallbackAvatar(
-                  seed: post.handle,
-                  displayName: post.authorName,
-                  size: 32,
-                  accent: theme.colorScheme.primary)
-              : ExtendedImage.network(avatar,
-                  width: 32,
-                  height: 32,
-                  fit: BoxFit.cover,
-                  cacheWidth: (32 * MediaQuery.devicePixelRatioOf(context)).ceil()),
+        Row(
+          children: [
+            Flexible(
+              child: Text(
+                post.authorName,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800),
+              ),
+            ),
+            if (date != null) ...[
+              const SizedBox(width: 6),
+              Text('· ${createRelativeDate(date)}', style: theme.textTheme.bodySmall),
+            ],
+          ],
         ),
-        const SizedBox(width: 8),
-        Flexible(
-          child: Text(post.authorName,
-              overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w700)),
+        Row(
+          children: [
+            Flexible(
+              child: Text(
+                '@${post.handle}',
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall!.copyWith(color: muted),
+              ),
+            ),
+            if (showSourceBadge) ...[
+              const SizedBox(width: 6),
+              _badge(context, l10n.plugin_bluesky_title),
+            ],
+          ],
         ),
-        const SizedBox(width: 4),
-        Flexible(
-          child: Text('@${post.handle}',
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-        ),
-        if (showSourceBadge) ...[
-          const SizedBox(width: 6),
-          _badge(context, L10n.of(context).plugin_bluesky_title),
-        ],
-        const Spacer(),
-        if (date != null) Text(createCompactDate(date), style: theme.textTheme.bodySmall),
       ],
     );
   }
@@ -107,16 +237,22 @@ class BlueskyPostCard extends StatelessWidget {
     );
   }
 
-  Widget _media(BuildContext context) {
+  Widget _media(BuildContext context, List<String> images) {
     final radius = tweetMediaRadiusOf(context);
     final width = MediaQuery.sizeOf(context).width;
     final scale = MediaQuery.devicePixelRatioOf(context);
 
-    if (post.images.length == 1) {
+    if (images.length == 1) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(radius),
-        child: ExtendedImage.network(post.images.first,
-            fit: BoxFit.cover, cacheWidth: (width * scale).ceil()),
+        child: AspectRatio(
+          aspectRatio: kBlueskyMediaMaxAspectRatio,
+          child: ExtendedImage.network(
+            images.first,
+            fit: BoxFit.cover,
+            cacheWidth: (width * scale).ceil(),
+          ),
+        ),
       );
     }
 
@@ -124,13 +260,196 @@ class BlueskyPostCard extends StatelessWidget {
       height: 220,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: post.images.length,
+        itemCount: images.length,
         separatorBuilder: (_, _) => const SizedBox(width: 6),
         itemBuilder: (context, index) => ClipRRect(
           borderRadius: BorderRadius.circular(radius),
-          child: ExtendedImage.network(post.images[index],
-              width: 200, height: 220, fit: BoxFit.cover, cacheWidth: (200 * scale).ceil()),
+          child: ExtendedImage.network(
+            images[index],
+            width: 200,
+            height: 220,
+            fit: BoxFit.cover,
+            cacheWidth: (200 * scale).ceil(),
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _QuotedPost extends StatelessWidget {
+  final BlueskyPost quote;
+
+  const _QuotedPost({required this.quote});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final radius = tweetMediaRadiusOf(context);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => BlueskyThreadScreen(post: quote)),
+        ),
+        borderRadius: BorderRadius.circular(radius),
+        child: Container(
+          decoration: quoteCardDecoration(context),
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                quote.authorName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w700),
+              ),
+              Text(
+                '@${quote.handle}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              ),
+              if (quote.text.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(quote.text, maxLines: 6, overflow: TextOverflow.ellipsis),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BlueskyLinkPreview extends StatelessWidget {
+  final BlueskyLinkCard card;
+
+  const _BlueskyLinkPreview({required this.card});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final radius = tweetMediaRadiusOf(context);
+    final host = Uri.tryParse(card.url)?.host ?? card.url;
+    final width = MediaQuery.sizeOf(context).width;
+    final scale = MediaQuery.devicePixelRatioOf(context);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => openUri(context, card.url),
+        borderRadius: BorderRadius.circular(radius),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: theme.colorScheme.outlineVariant),
+            borderRadius: BorderRadius.circular(radius),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (card.hasImage)
+                AspectRatio(
+                  aspectRatio: kBlueskyMediaMaxAspectRatio,
+                  child: ExtendedImage.network(
+                    card.imageUrl!,
+                    fit: BoxFit.cover,
+                    cacheWidth: (width * scale).ceil(),
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      host,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelSmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                    ),
+                    if (card.title != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        card.title!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w700, height: 1.25),
+                      ),
+                    ],
+                    if (card.description != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        card.description!,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BlueskyEngagementRow extends StatelessWidget {
+  final BlueskyPost post;
+  final VoidCallback onOpen;
+  final VoidCallback onOpenBrowser;
+
+  const _BlueskyEngagementRow({
+    required this.post,
+    required this.onOpen,
+    required this.onOpenBrowser,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
+    final prefs = PrefService.of(context, listen: false);
+    final hideCounts = prefs.get(optionZenMode) == true || prefs.get(optionCalmMode) == true;
+
+    String label(int count) => hideCounts ? '' : _blueskyCountFormat.format(count);
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: Row(
+        children: [
+          TextButton.icon(
+            style: footerButtonStyle,
+            onPressed: onOpen,
+            icon: Icon(Icons.mode_comment_outlined, size: 18, color: muted),
+            label: Text(label(post.replyCount), style: theme.textTheme.bodySmall!.copyWith(color: muted)),
+          ),
+          TextButton.icon(
+            style: footerButtonStyle,
+            onPressed: onOpen,
+            icon: Icon(Icons.repeat, size: 18, color: muted),
+            label: Text(label(post.repostCount), style: theme.textTheme.bodySmall!.copyWith(color: muted)),
+          ),
+          TextButton.icon(
+            style: footerButtonStyle,
+            onPressed: onOpen,
+            icon: Icon(Icons.favorite_border, size: 18, color: muted),
+            label: Text(label(post.likeCount), style: theme.textTheme.bodySmall!.copyWith(color: muted)),
+          ),
+          const Spacer(),
+          IconButton(
+            tooltip: L10n.of(context).open_in_browser,
+            onPressed: onOpenBrowser,
+            icon: Icon(Icons.open_in_new, size: 18, color: muted),
+          ),
+        ],
       ),
     );
   }

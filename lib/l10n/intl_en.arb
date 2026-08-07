@@ -795,6 +795,20 @@
   "@plugin_bluesky_no_accounts": {},
   "plugin_bluesky_no_posts": "Nothing to read yet",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_no_results": "No matching accounts",
+  "@plugin_bluesky_no_results": {},
+  "plugin_bluesky_reposted": "{name} reposted",
+  "@plugin_bluesky_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_search": "Search",
+  "@plugin_bluesky_search": {},
+  "plugin_bluesky_search_hint": "Name, handle, or profile URL",
+  "@plugin_bluesky_search_hint": {},
   "plugin_bluesky_settings_intro": "Reading works without setup — the public AppView is already filled in. Change it only if you run your own. No Bluesky login is required.",
   "@plugin_bluesky_settings_intro": {},
   "plugin_bluesky_test": "Test AppView",

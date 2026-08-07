@@ -1,5 +1,22 @@
 import 'package:xta/utils/json.dart';
 
+/// A link card carried by `app.bsky.embed.external`.
+class BlueskyLinkCard {
+  final String url;
+  final String? title;
+  final String? description;
+  final String? imageUrl;
+
+  const BlueskyLinkCard({
+    required this.url,
+    this.title,
+    this.description,
+    this.imageUrl,
+  });
+
+  bool get hasImage => imageUrl != null && imageUrl!.isNotEmpty;
+}
+
 /// One Bluesky post, as much of it as a public feed view carries.
 class BlueskyPost {
   final String uri;
@@ -15,6 +32,20 @@ class BlueskyPost {
   /// Where the post lives on bsky.app, for opening it there.
   final String url;
 
+  final int replyCount;
+  final int repostCount;
+  final int likeCount;
+  final int quoteCount;
+
+  /// When this feed item is a repost, the person who reposted it.
+  final String? repostedByName;
+  final String? repostedByHandle;
+
+  /// Nested quoted post, when the embed is a record (with or without media).
+  final BlueskyPost? quotedPost;
+
+  final BlueskyLinkCard? linkCard;
+
   const BlueskyPost({
     required this.uri,
     required this.cid,
@@ -26,9 +57,33 @@ class BlueskyPost {
     this.avatarUrl,
     this.images = const [],
     this.publishedAt,
+    this.replyCount = 0,
+    this.repostCount = 0,
+    this.likeCount = 0,
+    this.quoteCount = 0,
+    this.repostedByName,
+    this.repostedByHandle,
+    this.quotedPost,
+    this.linkCard,
   });
 
   bool get hasMedia => images.isNotEmpty;
+  bool get isRepost => repostedByHandle != null && repostedByHandle!.isNotEmpty;
+  bool get hasQuote => quotedPost != null;
+  bool get hasLinkCard => linkCard != null;
+}
+
+/// Ancestors (root → parent), the focal post, and reply descendants.
+class BlueskyThread {
+  final BlueskyPost post;
+  final List<BlueskyPost> ancestors;
+  final List<BlueskyPost> replies;
+
+  const BlueskyThread({
+    required this.post,
+    this.ancestors = const [],
+    this.replies = const [],
+  });
 }
 
 /// A Bluesky profile, as the public AppView reports it.
@@ -214,10 +269,61 @@ List<String> blueskyImagesOf(Json post) {
   return urls;
 }
 
-/// Turns one feed item's `post` object into a [BlueskyPost], or null when empty.
-BlueskyPost? blueskyPostFromFeedItem(Object? item) {
-  final root = Json(item);
-  final post = root['post'].exists ? root['post'] : root;
+BlueskyLinkCard? blueskyLinkCardOf(Json post) {
+  final external = post['embed']['external'];
+  if (!external.exists) {
+    // recordWithMedia may nest the external under media.
+    final nested = post['embed']['media']['external'];
+    if (!nested.exists) {
+      return null;
+    }
+    return _linkCardFrom(nested);
+  }
+  return _linkCardFrom(external);
+}
+
+BlueskyLinkCard? _linkCardFrom(Json external) {
+  final url = external['uri'].string?.trim();
+  if (url == null || url.isEmpty) {
+    return null;
+  }
+  final title = external['title'].string?.trim();
+  final description = external['description'].string?.trim();
+  final thumb = external['thumb'].string?.trim();
+  return BlueskyLinkCard(
+    url: url,
+    title: title == null || title.isEmpty ? null : title,
+    description: description == null || description.isEmpty ? null : description,
+    imageUrl: thumb == null || thumb.isEmpty ? null : thumb,
+  );
+}
+
+/// Quoted post from `embed.record` / `embed.recordWithMedia.record`.
+BlueskyPost? blueskyQuotedPostOf(Json post) {
+  var record = post['embed']['record'];
+  if (!record.exists) {
+    return null;
+  }
+  // recordWithMedia wraps the quote as embed.record.record.
+  if (record['record'].exists) {
+    record = record['record'];
+  }
+  final type = record['\$type'].string ?? '';
+  if (type.contains('viewNotFound') || type.contains('viewBlocked') || type.contains('viewDetached')) {
+    return null;
+  }
+  return blueskyPostFromView(record.raw, allowEmpty: true);
+}
+
+/// Turns a PostView (or embed viewRecord) into a [BlueskyPost].
+BlueskyPost? blueskyPostFromView(
+  Object? json, {
+  String? repostedByName,
+  String? repostedByHandle,
+  bool allowEmpty = false,
+  bool parseQuote = true,
+}) {
+  final post = Json(json);
   final uri = post['uri'].string;
   if (uri == null || uri.isEmpty) {
     return null;
@@ -227,9 +333,15 @@ BlueskyPost? blueskyPostFromFeedItem(Object? item) {
   final handle = author['handle'].string?.trim() ?? '';
   final did = author['did'].string ?? '';
   final name = author['displayName'].string?.trim();
-  final text = post['record']['text'].string?.trim() ?? '';
+
+  // viewRecord carries text under `value`; PostView under `record`.
+  final record = post['record'].exists ? post['record'] : post['value'];
+  final text = record['text'].string?.trim() ?? '';
   final images = blueskyImagesOf(post);
-  if (text.isEmpty && images.isEmpty) {
+  final linkCard = blueskyLinkCardOf(post);
+  final quoted = parseQuote ? blueskyQuotedPostOf(post) : null;
+
+  if (!allowEmpty && text.isEmpty && images.isEmpty && quoted == null && linkCard == null) {
     return null;
   }
 
@@ -239,6 +351,7 @@ BlueskyPost? blueskyPostFromFeedItem(Object? item) {
   }
 
   final avatar = author['avatar'].string?.trim();
+  final created = record['createdAt'].string ?? post['indexedAt'].string;
 
   return BlueskyPost(
     uri: uri,
@@ -249,8 +362,39 @@ BlueskyPost? blueskyPostFromFeedItem(Object? item) {
     avatarUrl: avatar == null || avatar.isEmpty ? null : avatar,
     text: text,
     images: images,
-    publishedAt: DateTime.tryParse(post['record']['createdAt'].string ?? '')?.toLocal(),
+    publishedAt: DateTime.tryParse(created ?? '')?.toLocal(),
     url: url,
+    replyCount: post['replyCount'].integer ?? 0,
+    repostCount: post['repostCount'].integer ?? 0,
+    likeCount: post['likeCount'].integer ?? 0,
+    quoteCount: post['quoteCount'].integer ?? 0,
+    repostedByName: repostedByName,
+    repostedByHandle: repostedByHandle,
+    quotedPost: quoted,
+    linkCard: linkCard,
+  );
+}
+
+/// Turns one feed item's `post` (+ optional repost reason) into a [BlueskyPost].
+BlueskyPost? blueskyPostFromFeedItem(Object? item) {
+  final root = Json(item);
+  final post = root['post'].exists ? root['post'] : root;
+
+  String? repostName;
+  String? repostHandle;
+  final reason = root['reason'];
+  final reasonType = reason['\$type'].string ?? '';
+  if (reasonType.contains('reasonRepost')) {
+    final by = reason['by'];
+    repostHandle = by['handle'].string?.trim();
+    final name = by['displayName'].string?.trim();
+    repostName = (name == null || name.isEmpty) ? repostHandle : name;
+  }
+
+  return blueskyPostFromView(
+    post.raw,
+    repostedByName: repostName,
+    repostedByHandle: repostHandle,
   );
 }
 
@@ -260,4 +404,56 @@ List<BlueskyPost> parseBlueskyFeed(Object? json) {
   return [
     for (final item in feed.list) ?blueskyPostFromFeedItem(item),
   ];
+}
+
+/// Flattens `getPostThread` into ancestors, focal post, and replies.
+BlueskyThread? parseBlueskyThread(Object? json) {
+  final thread = Json(json)['thread'];
+  if (!thread.exists) {
+    return null;
+  }
+
+  final focal = _threadViewPost(thread);
+  if (focal == null) {
+    return null;
+  }
+
+  final ancestors = <BlueskyPost>[];
+  var parent = thread['parent'];
+  while (parent.exists) {
+    final post = _threadViewPost(parent);
+    if (post != null) {
+      ancestors.insert(0, post);
+    }
+    parent = parent['parent'];
+  }
+
+  final replies = <BlueskyPost>[];
+  _collectReplies(thread['replies'], replies, depth: 0);
+
+  return BlueskyThread(post: focal, ancestors: ancestors, replies: replies);
+}
+
+BlueskyPost? _threadViewPost(Json node) {
+  final type = node['\$type'].string ?? '';
+  if (type.contains('notFoundPost') || type.contains('blockedPost')) {
+    return null;
+  }
+  if (!node['post'].exists) {
+    return null;
+  }
+  return blueskyPostFromView(node['post'].raw);
+}
+
+void _collectReplies(Json replies, List<BlueskyPost> out, {required int depth}) {
+  if (depth > 8) {
+    return;
+  }
+  for (final reply in replies.list) {
+    final post = _threadViewPost(reply);
+    if (post != null) {
+      out.add(post);
+    }
+    _collectReplies(reply['replies'], out, depth: depth + 1);
+  }
 }

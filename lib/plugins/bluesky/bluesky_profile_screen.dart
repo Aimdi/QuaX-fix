@@ -36,8 +36,10 @@ class BlueskyProfileScreen extends StatefulWidget {
 class _BlueskyProfileScreenState extends State<BlueskyProfileScreen> {
   BlueskyProfile? _profile;
   List<BlueskyPost> _posts = const [];
+  String? _cursor;
   Object? _error;
   bool _loading = true;
+  bool _loadingMore = false;
 
   @override
   void initState() {
@@ -49,6 +51,7 @@ class _BlueskyProfileScreenState extends State<BlueskyProfileScreen> {
     setState(() {
       _loading = true;
       _error = null;
+      _cursor = null;
     });
 
     final client = context.read<BlueskyClient>();
@@ -59,6 +62,7 @@ class _BlueskyProfileScreenState extends State<BlueskyProfileScreen> {
         setState(() {
           _profile = profile;
           _posts = feed.posts;
+          _cursor = feed.cursor;
           _loading = false;
         });
       }
@@ -68,6 +72,38 @@ class _BlueskyProfileScreenState extends State<BlueskyProfileScreen> {
           _error = e;
           _loading = false;
         });
+      }
+    }
+  }
+
+  Future<void> _loadMore() async {
+    final profile = _profile;
+    final cursor = _cursor;
+    if (profile == null || cursor == null || _loadingMore) {
+      return;
+    }
+
+    setState(() => _loadingMore = true);
+    final client = context.read<BlueskyClient>();
+    try {
+      final feed = await client.getAuthorFeed(
+        profile.did.isNotEmpty ? profile.did : profile.handle,
+        cursor: cursor,
+      );
+      if (!mounted) return;
+      final seen = _posts.map((p) => p.uri).toSet();
+      setState(() {
+        _posts = [
+          ..._posts,
+          for (final post in feed.posts)
+            if (!seen.contains(post.uri)) post,
+        ];
+        _cursor = feed.cursor;
+        _loadingMore = false;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() => _loadingMore = false);
       }
     }
   }
@@ -119,20 +155,36 @@ class _BlueskyProfileScreenState extends State<BlueskyProfileScreen> {
 
     final profile = _profile!;
     final following = context.read<BlueskyAccountsStore>().follows(profile.handle);
+    final showMore = _cursor != null;
 
-    return ListView(
-      padding: const EdgeInsets.only(bottom: 24),
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: BlueskyProfileCard(
-            profile: profile,
-            following: following,
-            onFollowToggle: () => _toggleFollow(profile),
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (showMore &&
+            !_loadingMore &&
+            notification.metrics.pixels >= notification.metrics.maxScrollExtent - 400) {
+          _loadMore();
+        }
+        return false;
+      },
+      child: ListView(
+        padding: const EdgeInsets.only(bottom: 24),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: BlueskyProfileCard(
+              profile: profile,
+              following: following,
+              onFollowToggle: () => _toggleFollow(profile),
+            ),
           ),
-        ),
-        for (final post in _posts) BlueskyPostCard(key: ValueKey(post.uri), post: post, showSourceBadge: false),
-      ],
+          for (final post in _posts) BlueskyPostCard(key: ValueKey(post.uri), post: post, showSourceBadge: false),
+          if (_loadingMore)
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+        ],
+      ),
     );
   }
 }

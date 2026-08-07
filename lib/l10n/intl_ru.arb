@@ -789,6 +789,20 @@
   "@plugin_bluesky_no_accounts": {},
   "plugin_bluesky_no_posts": "Пока нечего читать",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_no_results": "Нет подходящих аккаунтов",
+  "@plugin_bluesky_no_results": {},
+  "plugin_bluesky_reposted": "{name} сделал(а) репост",
+  "@plugin_bluesky_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_search": "Поиск",
+  "@plugin_bluesky_search": {},
+  "plugin_bluesky_search_hint": "Имя, хэндл или URL профиля",
+  "@plugin_bluesky_search_hint": {},
   "plugin_bluesky_settings_intro": "Чтение работает без настройки — публичный AppView уже заполнен. Меняйте только при своём. Вход в Bluesky не нужен.",
   "@plugin_bluesky_settings_intro": {},
   "plugin_bluesky_test": "Проверить AppView",

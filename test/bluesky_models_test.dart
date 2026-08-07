@@ -134,6 +134,123 @@ void main() {
         isEmpty,
       );
     });
+
+    test('keeps engagement counts and a repost reason', () {
+      final posts = parseBlueskyFeed({
+        'feed': [
+          {
+            'post': {
+              'uri': 'at://did:plc:abc/app.bsky.feed.post/r1',
+              'author': {'handle': 'alice.bsky.social', 'displayName': 'Alice'},
+              'record': {'text': 'Hi', 'createdAt': '2026-08-01T09:00:00.000Z'},
+              'replyCount': 2,
+              'repostCount': 3,
+              'likeCount': 4,
+              'quoteCount': 1,
+            },
+            'reason': {
+              '\$type': 'app.bsky.feed.defs#reasonRepost',
+              'by': {'handle': 'bob.bsky.social', 'displayName': 'Bob'},
+            },
+          },
+        ],
+      });
+
+      expect(posts.single.replyCount, 2);
+      expect(posts.single.likeCount, 4);
+      expect(posts.single.isRepost, isTrue);
+      expect(posts.single.repostedByName, 'Bob');
+      expect(posts.single.repostedByHandle, 'bob.bsky.social');
+    });
+
+    test('reads a quote embed and an external link card', () {
+      final posts = parseBlueskyFeed({
+        'feed': [
+          {
+            'post': {
+              'uri': 'at://did:plc:abc/app.bsky.feed.post/q1',
+              'author': {'handle': 'alice.bsky.social', 'displayName': 'Alice'},
+              'record': {'text': 'Look', 'createdAt': '2026-08-01T09:00:00.000Z'},
+              'embed': {
+                '\$type': 'app.bsky.embed.recordWithMedia#view',
+                'record': {
+                  'record': {
+                    '\$type': 'app.bsky.embed.record#viewRecord',
+                    'uri': 'at://did:plc:xyz/app.bsky.feed.post/orig',
+                    'cid': 'bafy',
+                    'author': {'handle': 'carol.bsky.social', 'displayName': 'Carol'},
+                    'value': {'text': 'Quoted body', 'createdAt': '2026-08-01T08:00:00.000Z'},
+                  },
+                },
+                'media': {
+                  '\$type': 'app.bsky.embed.external#view',
+                  'external': {
+                    'uri': 'https://example.org/story',
+                    'title': 'A story',
+                    'description': 'About things',
+                    'thumb': 'https://example.org/t.jpg',
+                  },
+                },
+              },
+            },
+          },
+        ],
+      });
+
+      expect(posts, hasLength(1));
+      expect(posts.single.quotedPost?.text, 'Quoted body');
+      expect(posts.single.quotedPost?.handle, 'carol.bsky.social');
+      expect(posts.single.linkCard?.url, 'https://example.org/story');
+      expect(posts.single.linkCard?.title, 'A story');
+    });
+  });
+
+  group('parseBlueskyThread', () {
+    test('flattens parents and nested replies', () {
+      final thread = parseBlueskyThread({
+        'thread': {
+          '\$type': 'app.bsky.feed.defs#threadViewPost',
+          'post': {
+            'uri': 'at://did:plc:a/app.bsky.feed.post/focal',
+            'author': {'handle': 'alice.bsky.social'},
+            'record': {'text': 'focal', 'createdAt': '2026-08-01T10:00:00.000Z'},
+          },
+          'parent': {
+            '\$type': 'app.bsky.feed.defs#threadViewPost',
+            'post': {
+              'uri': 'at://did:plc:a/app.bsky.feed.post/root',
+              'author': {'handle': 'alice.bsky.social'},
+              'record': {'text': 'root', 'createdAt': '2026-08-01T09:00:00.000Z'},
+            },
+          },
+          'replies': [
+            {
+              '\$type': 'app.bsky.feed.defs#threadViewPost',
+              'post': {
+                'uri': 'at://did:plc:b/app.bsky.feed.post/r1',
+                'author': {'handle': 'bob.bsky.social'},
+                'record': {'text': 'reply', 'createdAt': '2026-08-01T11:00:00.000Z'},
+              },
+              'replies': [
+                {
+                  '\$type': 'app.bsky.feed.defs#threadViewPost',
+                  'post': {
+                    'uri': 'at://did:plc:c/app.bsky.feed.post/r2',
+                    'author': {'handle': 'carol.bsky.social'},
+                    'record': {'text': 'nested', 'createdAt': '2026-08-01T12:00:00.000Z'},
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+
+      expect(thread, isNotNull);
+      expect(thread!.post.text, 'focal');
+      expect(thread.ancestors.map((p) => p.text), ['root']);
+      expect(thread.replies.map((p) => p.text), ['reply', 'nested']);
+    });
   });
 
   group('BlueskyProfile.fromJson', () {

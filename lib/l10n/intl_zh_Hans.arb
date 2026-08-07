@@ -789,6 +789,20 @@
   "@plugin_bluesky_no_accounts": {},
   "plugin_bluesky_no_posts": "暂无可读内容",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_no_results": "没有匹配的账号",
+  "@plugin_bluesky_no_results": {},
+  "plugin_bluesky_reposted": "{name} 转发了",
+  "@plugin_bluesky_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_search": "搜索",
+  "@plugin_bluesky_search": {},
+  "plugin_bluesky_search_hint": "姓名、句柄或主页链接",
+  "@plugin_bluesky_search_hint": {},
   "plugin_bluesky_settings_intro": "无需配置即可阅读 — 公共 AppView 已填好。只有自建时才改。不需要登录 Bluesky。",
   "@plugin_bluesky_settings_intro": {},
   "plugin_bluesky_test": "测试 AppView",
