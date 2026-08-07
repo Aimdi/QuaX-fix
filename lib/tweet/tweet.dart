@@ -516,14 +516,20 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
     if (!isQuotedTweet && (tweet.isQuoteStatus ?? false)) {
       Widget quotedContent;
       if (tweet.quotedStatusWithCard != null) {
-        // if we got the full tweet in the reply
-        quotedContent = TweetTile(
+        // Open the quoted post from the card chrome; its own text tap is off
+        // (isQuotedTweet) so "show more" is not fighting an open-on-tap handler.
+        final quoted = tweet.quotedStatusWithCard!;
+        quotedContent = GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => onClickOpenTweet(quoted),
+          child: TweetTile(
             clickable: true,
-            tweet: tweet.quotedStatusWithCard!,
+            tweet: quoted,
             currentUsername: currentUsername,
             addSeparator: false,
             isQuotedTweet: true,
-          );
+          ),
+        );
       } else if (tweet.quotedStatusIdStr != null) {
         // If twitter did not gave us the full tweet for some reason, we show a clickable tile to the tweet
         // There always seem to be an actual link to the quoted tweet that we can display (showing username + id)
@@ -561,7 +567,9 @@ class TweetTileState extends State<TweetTile> with SingleTickerProviderStateMixi
             text: tweetText,
             child: ExpandableTweetText(
               textSpans: _displaySpans,
-              onTap: () => !widget.tweetOpened ? onClickOpenTweet(tweet) : null,
+              // Quoted tiles open from the wrapping card GestureDetector so the
+              // expand control is never a rival for the same tap.
+              onTap: (!widget.tweetOpened && !isQuotedTweet) ? () => onClickOpenTweet(tweet) : null,
               selectable: widget.tweetOpened,
               maxLines:
                   PrefService.of(context, listen: false).get(alwaysShowFullTweetContents) ? null : kTweetTextMaxLines,

@@ -52,6 +52,70 @@ void main() {
     expect(_showMore, findsNothing);
   });
 
+  // Nested quotes used to open-on-tap from the faded text under "Show more",
+  // so tapping near the link navigated away instead of expanding.
+  testWidgets('expanding does not fire the open-on-tap callback', (tester) async {
+    var opens = 0;
+    await tester.pumpWidget(
+      _wrap(
+        ExpandableTweetText(
+          textSpans: const [TextSpan(text: _long)],
+          maxLines: 3,
+          onTap: () => opens++,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(_showMore);
+    await tester.pumpAndSettle();
+
+    expect(_showMore, findsNothing);
+    expect(opens, 0);
+  });
+
+  testWidgets('while clipped, taps on the faded text do not open the post', (tester) async {
+    var opens = 0;
+    await tester.pumpWidget(
+      _wrap(
+        ExpandableTweetText(
+          textSpans: const [TextSpan(text: _long)],
+          maxLines: 3,
+          onTap: () => opens++,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Tap the faded body, not the expand link below it.
+    final body = tester.getRect(find.byType(ShaderMask));
+    await tester.tapAt(body.center);
+    await tester.pumpAndSettle();
+
+    expect(opens, 0, reason: 'the fade zone must not steal the expand affordance');
+    expect(_showMore, findsOneWidget);
+  });
+
+  testWidgets('show more still expands under a parent open-on-tap detector', (tester) async {
+    var parentOpens = 0;
+    await tester.pumpWidget(
+      _wrap(
+        GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => parentOpens++,
+          child: const ExpandableTweetText(textSpans: [TextSpan(text: _long)], maxLines: 3),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(_showMore);
+    await tester.pumpAndSettle();
+
+    expect(_showMore, findsNothing);
+    expect(parentOpens, 0, reason: 'the expand control must win against the quote card wrapper');
+  });
+
   testWidgets('lines are counted at the painted width, not the screen width', (tester) async {
     // The regression: this fits on one line across the 800px test window but
     // needs several in the 120px column it is painted in. Measuring against

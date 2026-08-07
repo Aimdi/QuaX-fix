@@ -458,6 +458,9 @@ class Twitter {
     int limit = 20,
     String? cursor,
     String product = "Latest",
+    /// When true, posts that share a conversation id are folded into one chain.
+    /// Quotes of a post must keep [false]: each quoting post is its own hit.
+    bool mapToThreads = true,
   }) async {
     var variables = {
       "rawQuery": query,
@@ -525,6 +528,14 @@ class Twitter {
 
     var timeline = result?['data']?['search_by_raw_query']?['search_timeline'];
     if (timeline == null) {
+      // A GraphQL error used to look like "no quotes", which made the quotes
+      // screen look broken whenever SearchTimeline rejected the request.
+      final errors = result is Map ? result['errors'] : null;
+      if (errors is List && errors.isNotEmpty) {
+        final first = errors.first;
+        final message = first is Map ? (first['message'] as String? ?? 'Search failed') : 'Search failed';
+        throw Exception(message);
+      }
       return TweetStatus(chains: [], cursorBottom: null, cursorTop: null);
     }
 
@@ -532,7 +543,7 @@ class Twitter {
       return TimelineParser.createChainsFromGridModule(timeline);
     }
 
-    return TimelineParser.createUnconversationedChainsGraphql(timeline, 'tweet', [], true, includeReplies);
+    return TimelineParser.createUnconversationedChainsGraphql(timeline, 'tweet', [], mapToThreads, includeReplies);
   }
 
   static Future<List<UserWithExtra>> searchUsers(String query, {int limit = 25, String? cursor}) async {

@@ -46,7 +46,13 @@ class _QuotesScreenState extends State<_QuotesScreen> {
   }
 
   Future<TweetPageResult> _loadPage(String? cursor) async {
-    final result = await Twitter.searchTweets('quoted_tweet_id:${widget.id}', true, cursor: cursor);
+    final result = await Twitter.searchTweets(
+      'quoted_tweet_id:${widget.id}',
+      true,
+      cursor: cursor,
+      // Each quote is a separate post; folding by conversationId merges them.
+      mapToThreads: false,
+    );
     return (chains: result.chains, nextCursor: result.cursorBottom);
   }
 

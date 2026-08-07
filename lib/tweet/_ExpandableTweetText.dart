@@ -119,17 +119,22 @@ class ExpandableTweetTextState extends State<ExpandableTweetText> {
         final style = DefaultTextStyle.of(context).style;
         final clipped = !_isExpanded && _isTruncated(context, constraints.maxWidth, style);
 
+        // While the fade is up, text taps must not navigate: the faded bottom
+        // looks like part of the "show more" affordance, and on a nested quote
+        // that open-on-tap used to steal the expand gesture.
+        final openOnTap = clipped ? null : widget.onTap;
+
         final Widget text = widget.selectable
             ? SelectableText.rich(
                 TextSpan(children: widget.textSpans),
                 scrollPhysics: const NeverScrollableScrollPhysics(),
                 maxLines: clipped ? widget.maxLines : null,
                 style: style,
-                onTap: widget.onTap,
+                onTap: openOnTap,
               )
             : GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onTap: widget.onTap,
+                onTap: openOnTap,
                 child: Text.rich(
                   TextSpan(children: widget.textSpans),
                   maxLines: clipped ? widget.maxLines : null,
@@ -160,13 +165,14 @@ class ExpandableTweetTextState extends State<ExpandableTweetText> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     setState(() {
                       _isExpanded = true;
                     });
                   },
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 8, left: 2),
+                    padding: const EdgeInsets.only(top: 8, left: 2, right: 12, bottom: 4),
                     child: Text(
                       L10n.of(context).clickToShowMore,
                       style: TextStyle(

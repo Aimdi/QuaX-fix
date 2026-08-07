@@ -376,9 +376,10 @@ class TweetFooterBar extends StatelessWidget {
       margin: isArticle ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 8),
       child: LayoutBuilder(builder: (context, constraints) {
         final replyLabel = hideCounts || tweet.replyCount == null ? '' : numberFormat.format(tweet.replyCount);
-        final repostLabel = !hideCounts && tweet.retweetCount != null && tweet.quoteCount != null
-            ? numberFormat.format(tweet.retweetCount! + tweet.quoteCount!)
-            : null;
+        // Missing either count used to hide the whole quotes control. Treat a
+        // null as zero so the button still opens QuotesScreen.
+        final repostTotal = (tweet.retweetCount ?? 0) + (tweet.quoteCount ?? 0);
+        final repostLabel = hideCounts ? '' : numberFormat.format(repostTotal);
         final likeLabel = hideCounts || tweet.favoriteCount == null ? '' : numberFormat.format(tweet.favoriteCount);
         final viewsLabel = !hideCounts && tweet.viewCount != null ? numberFormat.format(tweet.viewCount) : null;
 
@@ -387,7 +388,7 @@ class TweetFooterBar extends StatelessWidget {
           available: constraints.maxWidth,
           countLabelWidths: [
             measure.of(replyLabel),
-            if (repostLabel != null) measure.of(repostLabel),
+            measure.of(repostLabel),
             measure.of(likeLabel),
           ],
           viewsLabelWidth: viewsLabel == null ? null : measure.of(viewsLabel),
@@ -409,17 +410,16 @@ class TweetFooterBar extends StatelessWidget {
             },
             child: tweetFooterTextButton(Icons.mode_comment_outlined, label(replyLabel), tint, onOpenTweet),
           ),
-          if (repostLabel != null)
-            tweetFooterTextButton(
-                Icons.repeat,
-                label(repostLabel),
-                tweet.quoteCount! > 0
-                    ? Colors.green.harmonizeWith(Theme.of(context).colorScheme.primary)
-                    : tint,
-                tweet.idStr == null
-                    ? null
-                    : () => Navigator.pushNamed(context, routeQuotes,
-                        arguments: QuotesScreenArguments(id: tweet.idStr!))),
+          tweetFooterTextButton(
+              Icons.repeat,
+              label(repostLabel),
+              (tweet.quoteCount ?? 0) > 0
+                  ? Colors.green.harmonizeWith(Theme.of(context).colorScheme.primary)
+                  : tint,
+              tweet.idStr == null
+                  ? null
+                  : () => Navigator.pushNamed(context, routeQuotes,
+                      arguments: QuotesScreenArguments(id: tweet.idStr!))),
           ScopedBuilder<LikedTweetModel, List<LikedTweet>>(
             store: likedModel,
             // Every footer on screen hears every like; only the one whose own
