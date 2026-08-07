@@ -7,6 +7,7 @@ import 'package:xta/plugins/reddit/reddit_auth.dart';
 import 'package:xta/plugins/reddit/reddit_client.dart';
 import 'package:xta/plugins/reddit/reddit_listing_cache.dart';
 import 'package:xta/plugins/reddit/reddit_post_source.dart';
+import 'package:xta/plugins/reddit/reddit_store.dart';
 
 RedditPost _post(
   String subreddit,
