@@ -125,4 +125,20 @@ class BlueskyClient {
       for (final actor in json['actors'].list) BlueskyProfile.fromJson(actor.raw),
     ];
   }
+
+  /// One post and its surrounding conversation via the public AppView.
+  Future<BlueskyThread> getPostThread(String uri, {int depth = 6, int parentHeight = 80}) async {
+    final json = await _get(
+      _uri('/xrpc/app.bsky.feed.getPostThread', {
+        'uri': uri,
+        'depth': '$depth',
+        'parentHeight': '$parentHeight',
+      }),
+    );
+    final thread = parseBlueskyThread(json.raw);
+    if (thread == null) {
+      throw BlueskyException(BlueskyErrorKind.notFound, 'thread missing for $uri');
+    }
+    return thread;
+  }
 }

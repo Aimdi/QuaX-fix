@@ -789,6 +789,20 @@
   "@plugin_bluesky_no_accounts": {},
   "plugin_bluesky_no_posts": "Ankoraŭ nenio legebla",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_no_results": "Neniuj kongruaj kontoj",
+  "@plugin_bluesky_no_results": {},
+  "plugin_bluesky_reposted": "{name} redispartigis",
+  "@plugin_bluesky_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_search": "Serĉi",
+  "@plugin_bluesky_search": {},
+  "plugin_bluesky_search_hint": "Nomo, salutnomo aŭ profila URL",
+  "@plugin_bluesky_search_hint": {},
   "plugin_bluesky_settings_intro": "Legado funkcias sen agordo — la publika AppView jam estas plenigita. Ŝanĝu nur se vi havas propran. Bluesky-ensaluto ne necesas.",
   "@plugin_bluesky_settings_intro": {},
   "plugin_bluesky_test": "Testi AppView",

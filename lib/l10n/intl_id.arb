@@ -789,6 +789,20 @@
   "@plugin_bluesky_no_accounts": {},
   "plugin_bluesky_no_posts": "Belum ada yang dibaca",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_no_results": "Tidak ada akun yang cocok",
+  "@plugin_bluesky_no_results": {},
+  "plugin_bluesky_reposted": "{name} memposting ulang",
+  "@plugin_bluesky_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_search": "Cari",
+  "@plugin_bluesky_search": {},
+  "plugin_bluesky_search_hint": "Nama, handle, atau URL profil",
+  "@plugin_bluesky_search_hint": {},
   "plugin_bluesky_settings_intro": "Membaca langsung jalan — AppView publik sudah terisi. Ubah hanya jika Anda punya sendiri. Login Bluesky tidak diperlukan.",
   "@plugin_bluesky_settings_intro": {},
   "plugin_bluesky_test": "Uji AppView",

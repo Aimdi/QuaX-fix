@@ -789,6 +789,20 @@
   "@plugin_bluesky_no_accounts": {},
   "plugin_bluesky_no_posts": "अभी पढ़ने के लिए कुछ नहीं",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_no_results": "कोई मेल खाता नहीं मिला",
+  "@plugin_bluesky_no_results": {},
+  "plugin_bluesky_reposted": "{name} ने रीपोस्ट किया",
+  "@plugin_bluesky_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_search": "खोजें",
+  "@plugin_bluesky_search": {},
+  "plugin_bluesky_search_hint": "नाम, हैंडल या प्रोफ़ाइल URL",
+  "@plugin_bluesky_search_hint": {},
   "plugin_bluesky_settings_intro": "बिना सेटअप पढ़ा जा सकता है — सार्वजनिक AppView पहले से भरा है। अपना चलाते हों तभी बदलें। Bluesky लॉगिन ज़रूरी नहीं।",
   "@plugin_bluesky_settings_intro": {},
   "plugin_bluesky_test": "AppView जाँचें",

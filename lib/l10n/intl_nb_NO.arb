@@ -789,6 +789,20 @@
   "@plugin_bluesky_no_accounts": {},
   "plugin_bluesky_no_posts": "Ingenting å lese ennå",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_no_results": "Ingen treff",
+  "@plugin_bluesky_no_results": {},
+  "plugin_bluesky_reposted": "{name} repostet",
+  "@plugin_bluesky_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_search": "Søk",
+  "@plugin_bluesky_search": {},
+  "plugin_bluesky_search_hint": "Navn, handle eller profil-URL",
+  "@plugin_bluesky_search_hint": {},
   "plugin_bluesky_settings_intro": "Lesing fungerer uten oppsett — den offentlige AppView er allerede fylt inn. Endre bare hvis du har din egen. Bluesky-innlogging trengs ikke.",
   "@plugin_bluesky_settings_intro": {},
   "plugin_bluesky_test": "Test AppView",

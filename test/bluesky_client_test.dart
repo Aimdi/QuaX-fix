@@ -115,6 +115,43 @@ void main() {
       expect(actors.last.displayName, 'two.bsky.social');
     });
 
+    test('getPostThread asks for the uri and flattens the tree', () async {
+      final client = BlueskyClient(
+        httpClient: MockClient((request) async {
+          expect(request.url.path, '/xrpc/app.bsky.feed.getPostThread');
+          expect(request.url.queryParameters['uri'], 'at://did:plc:a/app.bsky.feed.post/focal');
+          return http.Response(
+            jsonEncode({
+              'thread': {
+                '\$type': 'app.bsky.feed.defs#threadViewPost',
+                'post': {
+                  'uri': 'at://did:plc:a/app.bsky.feed.post/focal',
+                  'author': {'handle': 'alice.bsky.social'},
+                  'record': {'text': 'focal', 'createdAt': '2026-08-01T10:00:00.000Z'},
+                },
+                'replies': [
+                  {
+                    '\$type': 'app.bsky.feed.defs#threadViewPost',
+                    'post': {
+                      'uri': 'at://did:plc:b/app.bsky.feed.post/r1',
+                      'author': {'handle': 'bob.bsky.social'},
+                      'record': {'text': 'reply', 'createdAt': '2026-08-01T11:00:00.000Z'},
+                    },
+                  },
+                ],
+              },
+            }),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }),
+      );
+
+      final thread = await client.getPostThread('at://did:plc:a/app.bsky.feed.post/focal');
+      expect(thread.post.text, 'focal');
+      expect(thread.replies.single.text, 'reply');
+    });
+
     test('resolveBaseUrl is consulted per request and empty falls back', () async {
       var next = '';
       final client = BlueskyClient(

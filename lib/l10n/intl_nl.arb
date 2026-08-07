@@ -789,6 +789,20 @@
   "@plugin_bluesky_no_accounts": {},
   "plugin_bluesky_no_posts": "Nog niets te lezen",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_no_results": "Geen overeenkomende accounts",
+  "@plugin_bluesky_no_results": {},
+  "plugin_bluesky_reposted": "{name} heeft opnieuw geplaatst",
+  "@plugin_bluesky_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_search": "Zoeken",
+  "@plugin_bluesky_search": {},
+  "plugin_bluesky_search_hint": "Naam, handle of profiel-URL",
+  "@plugin_bluesky_search_hint": {},
   "plugin_bluesky_settings_intro": "Lezen werkt zonder instellingen — de openbare AppView staat al ingevuld. Wijzig alleen als je er zelf een hebt. Geen Bluesky-login nodig.",
   "@plugin_bluesky_settings_intro": {},
   "plugin_bluesky_test": "AppView testen",

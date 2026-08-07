@@ -789,6 +789,20 @@
   "@plugin_bluesky_no_accounts": {},
   "plugin_bluesky_no_posts": "Zatím není co číst",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_no_results": "Žádné odpovídající účty",
+  "@plugin_bluesky_no_results": {},
+  "plugin_bluesky_reposted": "{name} repostoval(a)",
+  "@plugin_bluesky_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_search": "Hledat",
+  "@plugin_bluesky_search": {},
+  "plugin_bluesky_search_hint": "Jméno, handle nebo URL profilu",
+  "@plugin_bluesky_search_hint": {},
   "plugin_bluesky_settings_intro": "Čtení funguje bez nastavení — veřejný AppView je už vyplněný. Měňte ho jen při vlastním. Bluesky účet není potřeba.",
   "@plugin_bluesky_settings_intro": {},
   "plugin_bluesky_test": "Otestovat AppView",

@@ -789,6 +789,20 @@
   "@plugin_bluesky_no_accounts": {},
   "plugin_bluesky_no_posts": "Aún no hay nada que leer",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_no_results": "Ninguna cuenta coincide",
+  "@plugin_bluesky_no_results": {},
+  "plugin_bluesky_reposted": "{name} republicó",
+  "@plugin_bluesky_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_search": "Buscar",
+  "@plugin_bluesky_search": {},
+  "plugin_bluesky_search_hint": "Nombre, identificador o URL del perfil",
+  "@plugin_bluesky_search_hint": {},
   "plugin_bluesky_settings_intro": "La lectura funciona sin configuración: el AppView público ya está rellenado. Cámbialo solo si tienes uno propio. No hace falta cuenta de Bluesky.",
   "@plugin_bluesky_settings_intro": {},
   "plugin_bluesky_test": "Probar AppView",

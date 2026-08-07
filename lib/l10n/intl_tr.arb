@@ -789,6 +789,20 @@
   "@plugin_bluesky_no_accounts": {},
   "plugin_bluesky_no_posts": "Henüz okunacak bir şey yok",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_no_results": "Eşleşen hesap yok",
+  "@plugin_bluesky_no_results": {},
+  "plugin_bluesky_reposted": "{name} yeniden paylaştı",
+  "@plugin_bluesky_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_search": "Ara",
+  "@plugin_bluesky_search": {},
+  "plugin_bluesky_search_hint": "Ad, kullanıcı adı veya profil URL’si",
+  "@plugin_bluesky_search_hint": {},
   "plugin_bluesky_settings_intro": "Kurulum olmadan okunur — genel AppView zaten dolu. Yalnızca kendi AppView’iniz varsa değiştirin. Bluesky girişi gerekmez.",
   "@plugin_bluesky_settings_intro": {},
   "plugin_bluesky_test": "AppView’i sına",

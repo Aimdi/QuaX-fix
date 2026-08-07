@@ -789,6 +789,20 @@
   "@plugin_bluesky_no_accounts": {},
   "plugin_bluesky_no_posts": "لا شيء للقراءة بعد",
   "@plugin_bluesky_no_posts": {},
+  "plugin_bluesky_no_results": "لا حسابات مطابقة",
+  "@plugin_bluesky_no_results": {},
+  "plugin_bluesky_reposted": "أعاد {name} النشر",
+  "@plugin_bluesky_reposted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plugin_bluesky_search": "بحث",
+  "@plugin_bluesky_search": {},
+  "plugin_bluesky_search_hint": "الاسم أو المعرّف أو رابط الملف",
+  "@plugin_bluesky_search_hint": {},
   "plugin_bluesky_settings_intro": "القراءة تعمل بلا إعداد — AppView العام مُعبَّأ مسبقًا. غيّره فقط إن كنت تشغّل خادمك. لا يلزم تسجيل دخول إلى Bluesky.",
   "@plugin_bluesky_settings_intro": {},
   "plugin_bluesky_test": "اختبار AppView",
