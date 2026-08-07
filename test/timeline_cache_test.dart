@@ -16,8 +16,8 @@ TweetChain _chain(String id, {String text = 'hello'}) => TweetChain(
   isPinned: false,
 );
 
-TweetStatus _page(List<TweetChain> chains, {String? cursorBottom}) =>
-    TweetStatus(chains: chains, cursorBottom: cursorBottom, cursorTop: null);
+TweetStatus _page(List<TweetChain> chains, {String? cursorBottom, String? cursorShowMore}) =>
+    TweetStatus(chains: chains, cursorBottom: cursorBottom, cursorTop: null, cursorShowMore: cursorShowMore);
 
 void main() {
   setUpAll(() {
@@ -114,6 +114,25 @@ void main() {
     final read = await cache().read(key, maxAge: const Duration(hours: 1));
 
     expect(read!.cursorBottom, 'CURSOR-2');
+  });
+
+  // Threads often land with only the focal post plus X's show-more cursor; if
+  // that cursor is dropped on cache hit the reader never gets a prompt.
+  test('the show-more cursor survives the round trip', () async {
+    final key = TimelineCache.threadKey('99');
+    await cache().write(key, _page([_chain('99')], cursorShowMore: 'SHOWMORE-Z'));
+
+    final read = await cache().read(key, maxAge: const Duration(hours: 1));
+
+    expect(read!.cursorShowMore, 'SHOWMORE-Z');
+  });
+
+  test('remove drops a key so the next read misses', () async {
+    final key = TimelineCache.threadKey('1');
+    await cache().write(key, _page([_chain('1')]));
+    await cache().remove(key);
+
+    expect(await cache().read(key, maxAge: const Duration(hours: 1)), isNull);
   });
 
   test('a missing key is a miss, not an error', () async {

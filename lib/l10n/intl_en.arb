@@ -1913,6 +1913,8 @@
   "@unable_to_load_the_search_results": {},
   "unable_to_load_the_trends_for_widget_place_name": "Unable to load the trends for {widgetPlaceName}",
   "@unable_to_load_the_trends_for_widget_place_name": {},
+  "unable_to_load_replies": "Couldn't load replies",
+  "@unable_to_load_replies": {},
   "unable_to_load_the_tweet": "Unable to load the post",
   "@unable_to_load_the_tweet": {},
   "unable_to_load_the_tweets": "Unable to load the posts",

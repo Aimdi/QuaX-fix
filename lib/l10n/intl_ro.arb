@@ -1871,6 +1871,8 @@
   "@unable_to_load_the_search_results": {},
   "unable_to_load_the_trends_for_widget_place_name": "Nu se pot încărca tendințele pentru {widgetPlaceName}",
   "@unable_to_load_the_trends_for_widget_place_name": {},
+  "unable_to_load_replies": "Nu s-au putut încărca răspunsurile",
+  "@unable_to_load_replies": {},
   "unable_to_load_the_tweet": "Nu se poate încărca tweet-ul",
   "@unable_to_load_the_tweet": {},
   "unable_to_load_the_tweets": "Nu se pot încărca postările",

@@ -1871,6 +1871,8 @@
   "@unable_to_load_the_search_results": {},
   "unable_to_load_the_trends_for_widget_place_name": "Невозможно загрузить актуальное для {widgetPlaceName}",
   "@unable_to_load_the_trends_for_widget_place_name": {},
+  "unable_to_load_replies": "Не удалось загрузить ответы",
+  "@unable_to_load_replies": {},
   "unable_to_load_the_tweet": "Не удаётся загрузить твит",
   "@unable_to_load_the_tweet": {},
   "unable_to_load_the_tweets": "Не удаётся загрузить твиты",

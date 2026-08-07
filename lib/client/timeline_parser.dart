@@ -155,10 +155,16 @@ class TimelineParser {
       }
 
       if (entryId.startsWith('conversationthread')) {
+        final tweets = _conversationTweets(entry, skipPromoted: true);
+        // Modules that only carry a nested show-more cursor (no TimelineTweet
+        // items) used to become empty chains and hide the prompt — skip them.
+        if (tweets.isEmpty) {
+          continue;
+        }
         replies.add(
           TweetChain(
             id: entryId.replaceFirst('conversationthread-', ''),
-            tweets: _conversationTweets(entry, skipPromoted: true),
+            tweets: tweets,
             isPinned: false,
           ),
         );
@@ -262,12 +268,54 @@ class TimelineParser {
   /// spelled this cursor several ways (`cursor-showMore`,
   /// `cursor-showmorethreads`, `…prompt`). An id we do not recognise yields
   /// null, which simply leaves the prompt unoffered.
+  ///
+  /// Top-level entries are preferred (thread-end prompt). When every reply is
+  /// withheld, X often nests the same cursor inside a `conversationthread`
+  /// module instead — those are scanned second.
   static String? getShowMoreCursor(List<dynamic> addEntries) {
-    final entry = addEntries.firstWhereOrNull(
+    final topLevel = addEntries.firstWhereOrNull(
       (e) => (e?['entryId'] as String?)?.toLowerCase().contains('showmore') ?? false,
     );
+    final topValue = topLevel == null ? null : _cursorValue(topLevel['content']);
+    if (topValue != null) {
+      return topValue;
+    }
 
-    return entry == null ? null : _cursorValue(entry['content']);
+    for (final entry in addEntries) {
+      final content = _asStringKeyedMap(entry is Map ? entry['content'] : null);
+      final items = content?['items'];
+      if (items is! List) {
+        continue;
+      }
+      for (final item in items) {
+        final itemMap = _asStringKeyedMap(item);
+        final id = itemMap?['entryId'] as String?;
+        if (id == null || !id.toLowerCase().contains('showmore')) {
+          continue;
+        }
+        final itemInner = _asStringKeyedMap(itemMap?['item']);
+        final nested =
+            _cursorValue(itemInner?['itemContent']) ?? _cursorValue(itemInner) ?? _cursorValue(itemMap?['content']);
+        if (nested != null) {
+          return nested;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /// Whether [status] already shows replies under [focalTweetId], or still has
+  /// a show-more cursor that can load them. Used to avoid caching a focal-only
+  /// page that would hide replies on the next open.
+  static bool hasRepliesOrShowMore(TweetStatus status, String focalTweetId) {
+    if (status.cursorShowMore != null) {
+      return true;
+    }
+
+    final focalIndex = status.chains.indexWhere((c) => c.tweets.any((t) => t.idStr == focalTweetId));
+    final afterFocal = focalIndex < 0 ? status.chains : status.chains.skip(focalIndex + 1);
+    return afterFocal.any((c) => c.tweets.isNotEmpty);
   }
 
   /// The three shapes a cursor entry's `content` has taken across X's revisions.

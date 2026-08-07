@@ -1871,6 +1871,8 @@
   "@unable_to_load_the_search_results": {},
   "unable_to_load_the_trends_for_widget_place_name": "Impossibile caricare le tendenze per {widgetPlaceName}",
   "@unable_to_load_the_trends_for_widget_place_name": {},
+  "unable_to_load_replies": "Impossibile caricare le risposte",
+  "@unable_to_load_replies": {},
   "unable_to_load_the_tweet": "Impossibile caricare il tweet",
   "@unable_to_load_the_tweet": {},
   "unable_to_load_the_tweets": "Impossibile caricare i tweet",

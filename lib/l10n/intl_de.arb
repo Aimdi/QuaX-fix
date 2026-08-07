@@ -1871,6 +1871,8 @@
   "@unable_to_load_the_search_results": {},
   "unable_to_load_the_trends_for_widget_place_name": "Trends für {widgetPlaceName} konnten nicht geladen werden",
   "@unable_to_load_the_trends_for_widget_place_name": {},
+  "unable_to_load_replies": "Antworten konnten nicht geladen werden",
+  "@unable_to_load_replies": {},
   "unable_to_load_the_tweet": "Der Tweet kann nicht geladen werden",
   "@unable_to_load_the_tweet": {},
   "unable_to_load_the_tweets": "Die Tweets können nicht geladen werden",
