@@ -258,9 +258,13 @@ class ThreadsDirectClient {
   final Random _jitter = Random();
 
   /// Serialises [run] behind every request already waiting, and keeps the gap.
-  Future<T> _enqueue<T>(Future<T> Function() run) {
+  ///
+  /// Guest GraphQL/SSR must not honour the cookie/Bearer cooldown: a dead
+  /// session parking the plugin for 30 minutes was also blocking the public
+  /// path that still returns posts for followed Accounts.
+  Future<T> _enqueue<T>(Future<T> Function() run, {bool respectCooldown = true}) {
     final result = _queue.then((_) async {
-      await _pace();
+      await _pace(respectCooldown: respectCooldown);
       return run();
     });
     // A failure must not poison the queue for everything behind it.
@@ -269,9 +273,11 @@ class ThreadsDirectClient {
     return result;
   }
 
-  Future<void> _pace() async {
-    if (await _coolingDown() case final until?) {
-      throw ThreadsException(ThreadsErrorKind.sessionSuspended, 'cooling down until $until');
+  Future<void> _pace({bool respectCooldown = true}) async {
+    if (respectCooldown) {
+      if (await _coolingDown() case final until?) {
+        throw ThreadsException(ThreadsErrorKind.sessionSuspended, 'cooling down until $until');
+      }
     }
 
     final last = _lastRequestAt;
@@ -318,24 +324,24 @@ class ThreadsDirectClient {
     unawaited(Future<void>.sync(() => prefs.set(optionPluginThreadsDirectCooldownUntil, until.toIso8601String())));
   }
 
-  Future<http.Response> _get(Uri uri, Map<String, String> headers) {
+  Future<http.Response> _get(Uri uri, Map<String, String> headers, {bool respectCooldown = true}) {
     return _enqueue(() async {
       try {
         return await httpClient.get(uri, headers: headers).timeout(_timeout);
       } catch (e) {
         throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: $e');
       }
-    });
+    }, respectCooldown: respectCooldown);
   }
 
-  Future<http.Response> _post(Uri uri, Map<String, String> headers, String body) {
+  Future<http.Response> _post(Uri uri, Map<String, String> headers, String body, {bool respectCooldown = true}) {
     return _enqueue(() async {
       try {
         return await httpClient.post(uri, headers: headers, body: body).timeout(_timeout);
       } catch (e) {
         throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: $e');
       }
-    });
+    }, respectCooldown: respectCooldown);
   }
 
   void _throwForStatus(http.Response response, Uri uri) {
@@ -484,22 +490,46 @@ class ThreadsDirectClient {
     return profile;
   }
 
+  /// Per-account posts with cookies, falling back to guest GraphQL/SSR.
+  ///
+  /// Readers who paste a session expect Accounts to fill from that session.
+  /// When the cookie REST path is dead (`login_required`) or returns nothing,
+  /// public GraphQL still works for public handles — so we keep showing posts
+  /// instead of a parked empty feed.
   Future<List<ThreadsPost>> fetchUserThreads(String handle, {int count = threadsPostsPerAccount}) async {
-    _requireCookies();
-    final id = await resolveUserId(handle);
-    final uri = Uri.parse('$_threadsWeb/api/v1/text_feed/$id/profile/').replace(queryParameters: {'count': '$count'});
-    final response = await _get(uri, _cookieHeaders());
-    _throwForStatus(response, uri);
-    return parseThreadsApiFeed(_decodeJson(response, uri));
+    if (hasCookies) {
+      try {
+        final id = await resolveUserId(handle);
+        final uri = Uri.parse('$_threadsWeb/api/v1/text_feed/$id/profile/').replace(queryParameters: {
+          'count': '$count',
+        });
+        final response = await _get(uri, _cookieHeaders());
+        _throwForStatus(response, uri);
+        final posts = parseThreadsApiFeed(_decodeJson(response, uri));
+        if (posts.isNotEmpty) {
+          return posts;
+        }
+      } on ThreadsException {
+        // Guest path below.
+      }
+    }
+    return fetchGuestAccount(handle);
   }
 
   Future<List<ThreadsPost>> fetchFollowingTimeline({int limit = 40}) async {
     if (!hasBearer) {
       throw ThreadsException(ThreadsErrorKind.notConfigured, 'no bearer');
     }
-    final uri = Uri.parse(
-      '$_instagramApi/api/v1/feed/text_post_app_timeline/',
-    ).replace(queryParameters: {'pagination_source': 'text_post_feed_following'});
+    // Params aligned with threads-go HomeTimeline — the old
+    // `pagination_source=text_post_feed_following` alone now 404s as HTML.
+    final deviceId = await _deviceId();
+    final uri = Uri.parse('$_instagramApi/api/v1/feed/text_post_app_timeline/').replace(queryParameters: {
+      'feed_type': 'for_you',
+      'feed_view_info': '[]',
+      'reason': 'cold_start_fetch',
+      'client_session_id': deviceId,
+      'pagination_source_module': 'feed_unit',
+    });
     final response = await _get(uri, await _bearerHeaders());
     _throwForStatus(response, uri);
     final posts = parseThreadsApiFeed(_decodeJson(response, uri));
@@ -539,16 +569,19 @@ class ThreadsDirectClient {
 
   Future<String> _fetchProfileHtml(String handle) async {
     final uri = Uri.parse('$_threadsWeb/@$handle');
-    final response = await _get(uri, {
-      'User-Agent': _safariUa,
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-      'Accept-Language': 'en-US,en;q=0.9',
-    });
+    final response = await _get(
+      uri,
+      {
+        'User-Agent': _safariUa,
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
+      respectCooldown: false,
+    );
     if (response.statusCode == 404) {
       throw ThreadsException(ThreadsErrorKind.noSuchFeed, '$uri: 404');
     }
     if (response.statusCode == 429) {
-      _armCooldown();
       throw ThreadsException(ThreadsErrorKind.throttled, '$uri: 429');
     }
     if (response.statusCode != 200) {
@@ -583,10 +616,10 @@ class ThreadsDirectClient {
         'Referer': '$_threadsWeb/@$handle',
       },
       body.entries.map((e) => '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(e.value)}').join('&'),
+      respectCooldown: false,
     );
 
     if (response.statusCode == 429) {
-      _armCooldown();
       throw ThreadsException(ThreadsErrorKind.throttled, '$uri: 429');
     }
     if (response.statusCode != 200) {

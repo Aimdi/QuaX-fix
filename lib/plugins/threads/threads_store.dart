@@ -86,18 +86,20 @@ class ThreadsFeedStore extends Store<List<ThreadsPost>> {
     await execute(() async {
       final handles = accounts.state.map((e) => e.handle).toList(growable: false);
 
-      // Followed Accounts always win: a pasted Bearer used to short-circuit to
-      // Following and never load the Accounts list, which looked like an empty
-      // plugin when the reader had only added people to follow.
+      // Local Accounts (cookies → guest GraphQL fallback). A pasted Bearer no
+      // longer hides this list — that was the empty-feed bug for readers who
+      // signed in and also followed people in the plugin.
       if (handles.isNotEmpty) {
         return postsFor(handles, forceRefresh: force);
       }
 
+      // No local Accounts: Bearer shows the Meta home/For You timeline.
       if (direct.hasBearer) {
         return await direct.fetchFollowingTimeline();
       }
 
       if (direct.hasCookies || _instance.trim().isNotEmpty) {
+        // Session alone does not invent Accounts — add handles in the tab.
         return const <ThreadsPost>[];
       }
       throw ThreadsException(ThreadsErrorKind.notConfigured, 'no accounts or session');

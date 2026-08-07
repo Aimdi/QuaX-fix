@@ -35,15 +35,19 @@ No in-app password / Bloks login. No like, follow, repost, or compose.
 ## Feed priority
 
 1. Local Accounts non-empty → merge those handles via:
-   - cookies → `GET /api/v1/text_feed/{id}/profile/`
+   - cookies → `GET /api/v1/text_feed/{id}/profile/` (on failure/empty → guest)
    - else RSSHub instance → JSON Feed
    - else guest: profile HTML → LSD + user id →
      `POST /api/graphql` `BarcelonaProfileThreadsTabQuery`
      (`doc_id` in `threadsGuestProfileThreadsDocId`), SSR `thread_items` fallback
-2. Else Bearer configured → Following timeline
-   (`GET /api/v1/feed/text_post_app_timeline/?pagination_source=text_post_feed_following`)
-3. Else cookies/RSSHub with no Accounts → empty list
+2. Else Bearer configured → Meta home/For You
+   (`GET i.instagram.com/api/v1/feed/text_post_app_timeline/` with
+   `feed_type=for_you`, `reason=cold_start_fetch`, `client_session_id`, …)
+3. Else cookies/RSSHub with no Accounts → empty list (add handles in the tab)
 4. Else → not configured
+
+Cookie/Bearer `login_required` still parks *session* calls for 30 minutes.
+Guest GraphQL/SSR ignores that cooldown so Accounts keep loading.
 
 ## Throttle & risk
 
