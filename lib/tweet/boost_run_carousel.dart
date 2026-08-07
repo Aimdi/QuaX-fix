@@ -3,37 +3,76 @@ import 'package:xta/client/client.dart';
 import 'package:xta/constants.dart';
 import 'package:xta/generated/l10n.dart';
 import 'package:xta/status.dart';
+import 'package:xta/tweet/conversation.dart';
 import 'package:xta/tweet/tweet_chrome.dart';
 import 'package:xta/user.dart';
 
 /// A horizontal row of compact boost cards for consecutive retweets.
-class BoostRunCarousel extends StatelessWidget {
+///
+/// Stays compact by default; the reader can expand the run into full timeline
+/// posts in place, then collapse it again.
+class BoostRunCarousel extends StatefulWidget {
   final List<TweetChain> chains;
   final String? username;
 
   const BoostRunCarousel({super.key, required this.chains, this.username});
 
   @override
+  State<BoostRunCarousel> createState() => _BoostRunCarouselState();
+}
+
+class _BoostRunCarouselState extends State<BoostRunCarousel> {
+  bool _expanded = false;
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final labelStyle = theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant);
+    final l10n = L10n.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: Text(L10n.of(context).boosts_row_label, style: labelStyle),
-        ),
-        SizedBox(
-          height: 88,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            itemCount: chains.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 8),
-            itemBuilder: (context, index) => _BoostCard(chain: chains[index], username: username),
+          padding: const EdgeInsets.fromLTRB(16, 8, 8, 0),
+          child: Row(
+            children: [
+              Expanded(child: Text(l10n.boosts_row_label, style: labelStyle)),
+              TextButton.icon(
+                onPressed: () => setState(() => _expanded = !_expanded),
+                style: TextButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  foregroundColor: theme.colorScheme.onSurfaceVariant,
+                  textStyle: theme.textTheme.labelSmall,
+                ),
+                icon: Icon(_expanded ? Icons.unfold_less : Icons.unfold_more, size: 18),
+                label: Text(_expanded ? l10n.collapse_reposts : l10n.expand_reposts),
+              ),
+            ],
           ),
         ),
+        if (_expanded)
+          for (final chain in widget.chains)
+            TweetConversation(
+              key: ValueKey('boost-expanded-${chain.id}'),
+              id: chain.id,
+              tweets: chain.tweets,
+              username: widget.username,
+              isPinned: chain.isPinned,
+            )
+        else
+          SizedBox(
+            height: 88,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              itemCount: widget.chains.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
+              itemBuilder: (context, index) => _BoostCard(chain: widget.chains[index], username: widget.username),
+            ),
+          ),
       ],
     );
   }
