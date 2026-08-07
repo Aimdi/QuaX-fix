@@ -82,8 +82,13 @@ Future<CachedChains> readCachedChainsForHashes(Database repository, Iterable<Str
   var chains = <TweetChain>[];
   DateTime? cachedAt;
   for (var hash in hashes) {
-    var storedChunks = await repository.query(tableFeedGroupChunk,
-        where: 'hash = ?', whereArgs: [hash], orderBy: 'created_at DESC', limit: maxCachedChunkRows);
+    var storedChunks = await repository.query(
+      tableFeedGroupChunk,
+      where: 'hash = ?',
+      whereArgs: [hash],
+      orderBy: 'created_at DESC',
+      limit: maxCachedChunkRows,
+    );
     chains.addAll(chainsFromStoredChunks(storedChunks));
     cachedAt = _newer(cachedAt, newestChunkTimestamp(storedChunks));
   }
@@ -96,8 +101,7 @@ Future<CachedChains> readCachedChainsForHashes(Database repository, Iterable<Str
 /// so it is capped hard: it only has to fill the screen the reader is waiting
 /// for, and every extra row is JSON decoded ahead of the first paint.
 Future<CachedChains> readAllCachedChains(Database repository) async {
-  var storedChunks =
-      await repository.query(tableFeedGroupChunk, orderBy: 'created_at DESC', limit: maxCachedChunkRows);
+  var storedChunks = await repository.query(tableFeedGroupChunk, orderBy: 'created_at DESC', limit: maxCachedChunkRows);
   return (
     chains: sortChainsNewestFirst(dedupeChainsById(chainsFromStoredChunks(storedChunks))),
     cachedAt: newestChunkTimestamp(storedChunks),

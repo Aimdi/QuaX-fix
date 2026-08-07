@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -170,15 +171,13 @@ class ThreadsDirectClient {
   DateTime? _lastRequestAt;
   DateTime? _cooldownUntil;
 
-  ThreadsDirectClient(
-    this.prefs, {
-    http.Client? httpClient,
-    this.minGap = const Duration(seconds: 2),
-  }) : httpClient = httpClient ?? http.Client();
+  ThreadsDirectClient(this.prefs, {http.Client? httpClient, this.minGap = const Duration(seconds: 2)})
+    : httpClient = httpClient ?? http.Client();
 
   static const _timeout = Duration(seconds: 25);
 
-  Map<String, String> get cookies => parseThreadsCookieHeader(prefs.get<String>(optionPluginThreadsDirectCookies) ?? '');
+  Map<String, String> get cookies =>
+      parseThreadsCookieHeader(prefs.get<String>(optionPluginThreadsDirectCookies) ?? '');
 
   String? get bearer => normaliseThreadsBearer(prefs.get<String>(optionPluginThreadsDirectBearer) ?? '');
 
@@ -196,29 +195,86 @@ class ThreadsDirectClient {
     return created;
   }
 
+  /// Requests leave one at a time, in order.
+  ///
+  /// [_pace] used to be awaited concurrently: two fetches both read
+  /// [_lastRequestAt], both computed the same wait, and both fired at the end
+  /// of it — so the gap between requests was never actually kept and Meta saw
+  /// bursts. A queue is what makes the gap real, and looking like one person
+  /// reading is the whole defence this plugin has.
+  Future<void> _queue = Future<void>.value();
+
+  final Random _jitter = Random();
+
+  /// Serialises [run] behind every request already waiting, and keeps the gap.
+  Future<T> _enqueue<T>(Future<T> Function() run) {
+    final result = _queue.then((_) async {
+      await _pace();
+      return run();
+    });
+    // A failure must not poison the queue for everything behind it.
+    _queue = result.then((_) {}, onError: (Object _) {});
+
+    return result;
+  }
+
   Future<void> _pace() async {
-    final now = DateTime.now();
-    if (_cooldownUntil != null && now.isBefore(_cooldownUntil!)) {
-      throw ThreadsException(ThreadsErrorKind.sessionSuspended, 'cooldown until $_cooldownUntil');
+    if (await _coolingDown() case final until?) {
+      throw ThreadsException(ThreadsErrorKind.sessionSuspended, 'cooling down until $until');
     }
-    if (_lastRequestAt != null) {
-      final wait = minGap - now.difference(_lastRequestAt!);
-      if (wait > Duration.zero) await Future<void>.delayed(wait);
+
+    final last = _lastRequestAt;
+    if (last != null) {
+      // A gap that is exactly the same every time is its own signature, so the
+      // wait is the floor plus a little noise.
+      final gap = minGap + Duration(milliseconds: _jitter.nextInt(750));
+      final wait = gap - DateTime.now().difference(last);
+      if (wait > Duration.zero) {
+        await Future<void>.delayed(wait);
+      }
     }
     _lastRequestAt = DateTime.now();
   }
 
-  void _armCooldown() {
-    _cooldownUntil = DateTime.now().add(const Duration(minutes: 30));
+  /// When the session is parked, or null when it may talk to Meta.
+  Future<DateTime?> _coolingDown() async {
+    final stored = DateTime.tryParse(prefs.get<String>(optionPluginThreadsDirectCooldownUntil) ?? '');
+    final until = stored ?? _cooldownUntil;
+    if (until == null) {
+      return null;
+    }
+    if (DateTime.now().isBefore(until)) {
+      return until;
+    }
+
+    _cooldownUntil = null;
+    if (stored != null) {
+      await prefs.set(optionPluginThreadsDirectCooldownUntil, '');
+    }
+
+    return null;
   }
 
-  Future<http.Response> _get(Uri uri, Map<String, String> headers) async {
-    await _pace();
-    try {
-      return await httpClient.get(uri, headers: headers).timeout(_timeout);
-    } catch (e) {
-      throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: $e');
-    }
+  /// Backs off after Meta says to.
+  ///
+  /// Written to preferences as well as held here: a cooldown that only lives in
+  /// memory ends the moment the reader force-quits, and coming straight back
+  /// for more is exactly what turns a throttle into a ban.
+  void _armCooldown([Duration length = const Duration(minutes: 30)]) {
+    final until = DateTime.now().add(length);
+    _cooldownUntil = until;
+    // `set` is a FutureOr, and this is called from a synchronous throw path.
+    unawaited(Future<void>.sync(() => prefs.set(optionPluginThreadsDirectCooldownUntil, until.toIso8601String())));
+  }
+
+  Future<http.Response> _get(Uri uri, Map<String, String> headers) {
+    return _enqueue(() async {
+      try {
+        return await httpClient.get(uri, headers: headers).timeout(_timeout);
+      } catch (e) {
+        throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: $e');
+      }
+    });
   }
 
   void _throwForStatus(http.Response response, Uri uri) {
@@ -268,15 +324,15 @@ class ThreadsDirectClient {
   }
 
   Future<Map<String, String>> _bearerHeaders() async => {
-        'User-Agent': _barcelonaUa,
-        'Authorization': 'Bearer ${bearer!}',
-        'Accept': '*/*',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'X-IG-App-ID': _igAppId,
-        'X-IG-Capabilities': '3brTvx0=',
-        'X-IG-Connection-Type': 'WIFI',
-        'X-IG-Device-ID': await _deviceId(),
-      };
+    'User-Agent': _barcelonaUa,
+    'Authorization': 'Bearer ${bearer!}',
+    'Accept': '*/*',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'X-IG-App-ID': _igAppId,
+    'X-IG-Capabilities': '3brTvx0=',
+    'X-IG-Connection-Type': 'WIFI',
+    'X-IG-Device-ID': await _deviceId(),
+  };
 
   /// Confirms cookies via current_user and/or Bearer via a tiny timeline fetch.
   Future<String> verify() async {
@@ -304,12 +360,37 @@ class ThreadsDirectClient {
     return profile;
   }
 
+  /// The numeric id behind [handle], remembered once it is known.
+  ///
+  /// Resolving it costs a call to Meta's *search* endpoint, so asking the same
+  /// question about the same followed accounts on every refresh both doubles
+  /// what a read costs and looks precisely like a script. An account's id does
+  /// not change, so it is worth keeping.
   Future<String> resolveUserId(String handle) async {
     _requireCookies();
-    final uri = Uri.parse('$_threadsWeb/api/v1/users/search/').replace(queryParameters: {
-      'q': handle,
-      'count': '10',
-    });
+    final key = handle.toLowerCase();
+    final known = _storedUserIds();
+    if (known[key] case final id? when id.isNotEmpty) {
+      return id;
+    }
+
+    final id = await _searchUserId(key);
+    await prefs.set(optionPluginThreadsUserIds, jsonEncode({...known, key: id}));
+
+    return id;
+  }
+
+  Map<String, String> _storedUserIds() {
+    try {
+      final decoded = jsonDecode(prefs.get<String>(optionPluginThreadsUserIds) ?? '{}');
+      return decoded is Map ? {for (final e in decoded.entries) '${e.key}': '${e.value}'} : {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  Future<String> _searchUserId(String handle) async {
+    final uri = Uri.parse('$_threadsWeb/api/v1/users/search/').replace(queryParameters: {'q': handle, 'count': '10'});
     final response = await _get(uri, _cookieHeaders());
     _throwForStatus(response, uri);
     final users = Json(_decodeJson(response, uri))['users'].list;
@@ -338,9 +419,7 @@ class ThreadsDirectClient {
   Future<List<ThreadsPost>> fetchUserThreads(String handle, {int count = threadsPostsPerAccount}) async {
     _requireCookies();
     final id = await resolveUserId(handle);
-    final uri = Uri.parse('$_threadsWeb/api/v1/text_feed/$id/profile/').replace(queryParameters: {
-      'count': '$count',
-    });
+    final uri = Uri.parse('$_threadsWeb/api/v1/text_feed/$id/profile/').replace(queryParameters: {'count': '$count'});
     final response = await _get(uri, _cookieHeaders());
     _throwForStatus(response, uri);
     return parseThreadsApiFeed(_decodeJson(response, uri));
@@ -350,9 +429,9 @@ class ThreadsDirectClient {
     if (!hasBearer) {
       throw ThreadsException(ThreadsErrorKind.notConfigured, 'no bearer');
     }
-    final uri = Uri.parse('$_instagramApi/api/v1/feed/text_post_app_timeline/').replace(queryParameters: {
-      'pagination_source': 'text_post_feed_following',
-    });
+    final uri = Uri.parse(
+      '$_instagramApi/api/v1/feed/text_post_app_timeline/',
+    ).replace(queryParameters: {'pagination_source': 'text_post_feed_following'});
     final response = await _get(uri, await _bearerHeaders());
     _throwForStatus(response, uri);
     final posts = parseThreadsApiFeed(_decodeJson(response, uri));
@@ -362,17 +441,22 @@ class ThreadsDirectClient {
   /// Public profile HTML with a mobile Safari UA — no session required.
   Future<List<ThreadsPost>> fetchGuestAccount(String handle) async {
     final uri = Uri.parse('$_threadsWeb/@$handle');
-    await _pace();
-    final http.Response response;
-    try {
-      response = await httpClient.get(uri, headers: {
-        'User-Agent': _safariUa,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
-      }).timeout(_timeout);
-    } catch (e) {
-      throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: $e');
-    }
+    final response = await _enqueue(() async {
+      try {
+        return await httpClient
+            .get(
+              uri,
+              headers: {
+                'User-Agent': _safariUa,
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.9',
+              },
+            )
+            .timeout(_timeout);
+      } catch (e) {
+        throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: $e');
+      }
+    });
     if (response.statusCode == 404) {
       throw ThreadsException(ThreadsErrorKind.noSuchFeed, '$uri: 404');
     }

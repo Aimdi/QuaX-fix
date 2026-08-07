@@ -54,16 +54,19 @@ class GroupModel extends Store<SubscriptionGroupGet> {
   final Set<String> alsoRead;
 
   GroupModel(this.id, {this.alsoRead = const {}})
-      : super(SubscriptionGroupGet(
-            id: '',
-            name: '',
-            icon: defaultGroupIcon,
-            subscriptions: [],
-            includeRetweets: false,
-            includeReplies: false,
-            popular: false,
-            custom: false,
-            contentFilter: contentFilterDefault));
+    : super(
+        SubscriptionGroupGet(
+          id: '',
+          name: '',
+          icon: defaultGroupIcon,
+          subscriptions: [],
+          includeRetweets: false,
+          includeReplies: false,
+          popular: false,
+          custom: false,
+          contentFilter: contentFilterDefault,
+        ),
+      );
 
   Future<void> loadGroup() async {
     await execute(() async {
@@ -72,22 +75,24 @@ class GroupModel extends Store<SubscriptionGroupGet> {
       var group = (await database.query(tableSubscriptionGroup, where: 'id = ?', whereArgs: [id])).first;
 
       if (id == '-1') {
-        var subscriptions =
-            (await database.query(tableSubscription)).map((e) => UserSubscription.fromMap(e)).toList(growable: false);
+        var subscriptions = (await database.query(
+          tableSubscription,
+        )).map((e) => UserSubscription.fromMap(e)).toList(growable: false);
 
         return SubscriptionGroupGet(
-            id: '-1',
-            name: 'All',
-            icon: group['icon'] as String,
-            subscriptions: subscriptions,
-            includeReplies: _includeOverride(group['include_replies']),
-            includeRetweets: _includeOverride(group['include_retweets']),
-            popular: group['popular'] == 1,
-            custom: group['custom'] == 1,
-            contentFilter: group['content_filter'] as String? ?? contentFilterDefault,
-            minLikes: (group['min_likes'] as int?) ?? 0,
-            minRetweets: (group['min_retweets'] as int?) ?? 0,
-            mutedKeywords: parseMutedKeywordsStored(group['muted_keywords'] as String?));
+          id: '-1',
+          name: 'All',
+          icon: group['icon'] as String,
+          subscriptions: subscriptions,
+          includeReplies: _includeOverride(group['include_replies']),
+          includeRetweets: _includeOverride(group['include_retweets']),
+          popular: group['popular'] == 1,
+          custom: group['custom'] == 1,
+          contentFilter: group['content_filter'] as String? ?? contentFilterDefault,
+          minLikes: (group['min_likes'] as int?) ?? 0,
+          minRetweets: (group['min_retweets'] as int?) ?? 0,
+          mutedKeywords: parseMutedKeywordsStored(group['muted_keywords'] as String?),
+        );
       }
 
       // A group's feed is its own members plus everything nested inside it, so
@@ -101,9 +106,9 @@ class GroupModel extends Store<SubscriptionGroupGet> {
       }.toList(growable: false);
       final placeholders = List.filled(ids.length, '?').join(', ');
 
-      // The four membership queries are independent of each other; issued
-      // together instead of one after another, since this runs on every shell
-      // mount and every debounced reload.
+      // The membership queries are independent of each other; issued together
+      // instead of one after another, since this runs on every shell mount and
+      // every debounced reload.
       String membership(String table) =>
           'SELECT DISTINCT s.* FROM $table s LEFT JOIN $tableSubscriptionGroupMember sgm ON sgm.profile_id = s.id WHERE sgm.group_id IN ($placeholders) ORDER BY s.id';
 
@@ -112,27 +117,36 @@ class GroupModel extends Store<SubscriptionGroupGet> {
         database.rawQuery(membership(tableSubscription), ids),
         database.rawQuery(membership(tableSubstackSubscription), ids),
         database.rawQuery(membership(tableRedditSubscription), ids),
+        database.rawQuery(membership(tableThreadsSubscription), ids),
       ]);
 
       var searchSubscriptions = rows[0].map((e) => SearchSubscription.fromMap(e)).toList(growable: false);
       var userSubscriptions = rows[1].map((e) => UserSubscription.fromMap(e)).toList(growable: false);
       var substackSubscriptions = rows[2].map((e) => SubstackSubscription.fromMap(e)).toList(growable: false);
       var redditSubscriptions = rows[3].map((e) => RedditSubscription.fromMap(e)).toList(growable: false);
+      var threadsSubscriptions = rows[4].map((e) => ThreadsSubscription.fromMap(e)).toList(growable: false);
 
       // TODO: Factory
       return SubscriptionGroupGet(
-          id: group['id'] as String,
-          name: group['name'] as String,
-          icon: group['icon'] as String,
-          subscriptions: [...userSubscriptions, ...searchSubscriptions, ...substackSubscriptions, ...redditSubscriptions],
-          includeReplies: _includeOverride(group['include_replies']),
-          includeRetweets: _includeOverride(group['include_retweets']),
-          popular: group['popular'] == 1,
-          custom: group['custom'] == 1,
-          contentFilter: group['content_filter'] as String? ?? contentFilterDefault,
-          minLikes: (group['min_likes'] as int?) ?? 0,
-          minRetweets: (group['min_retweets'] as int?) ?? 0,
-          mutedKeywords: parseMutedKeywordsStored(group['muted_keywords'] as String?));
+        id: group['id'] as String,
+        name: group['name'] as String,
+        icon: group['icon'] as String,
+        subscriptions: [
+          ...userSubscriptions,
+          ...searchSubscriptions,
+          ...substackSubscriptions,
+          ...redditSubscriptions,
+          ...threadsSubscriptions,
+        ],
+        includeReplies: _includeOverride(group['include_replies']),
+        includeRetweets: _includeOverride(group['include_retweets']),
+        popular: group['popular'] == 1,
+        custom: group['custom'] == 1,
+        contentFilter: group['content_filter'] as String? ?? contentFilterDefault,
+        minLikes: (group['min_likes'] as int?) ?? 0,
+        minRetweets: (group['min_retweets'] as int?) ?? 0,
+        mutedKeywords: parseMutedKeywordsStored(group['muted_keywords'] as String?),
+      );
     });
   }
 
@@ -142,32 +156,40 @@ class GroupModel extends Store<SubscriptionGroupGet> {
 
   Future<void> toggleSubscriptionGroupIncludeReplies(bool? value) async {
     await execute(() async {
-      (await Repository.writable())
-          .rawUpdate('UPDATE $tableSubscriptionGroup SET include_replies = ? WHERE id = ?', [value, state.id]);
+      (await Repository.writable()).rawUpdate('UPDATE $tableSubscriptionGroup SET include_replies = ? WHERE id = ?', [
+        value,
+        state.id,
+      ]);
       return state.copyWith(includeReplies: value);
     });
   }
 
   Future<void> toggleSubscriptionGroupIncludeRetweets(bool? value) async {
     await execute(() async {
-      (await Repository.writable())
-          .rawUpdate('UPDATE $tableSubscriptionGroup SET include_retweets = ? WHERE id = ?', [value, state.id]);
+      (await Repository.writable()).rawUpdate('UPDATE $tableSubscriptionGroup SET include_retweets = ? WHERE id = ?', [
+        value,
+        state.id,
+      ]);
       return state.copyWith(includeRetweets: value);
     });
   }
 
   Future<void> toggleSubscriptionGroupPopular(bool value) async {
     await execute(() async {
-      (await Repository.writable())
-          .rawUpdate('UPDATE $tableSubscriptionGroup SET popular = ?, custom = 0 WHERE id = ?', [value, state.id]);
+      (await Repository.writable()).rawUpdate(
+        'UPDATE $tableSubscriptionGroup SET popular = ?, custom = 0 WHERE id = ?',
+        [value, state.id],
+      );
       return state.copyWith(popular: value, custom: false);
     });
   }
 
   Future<void> toggleSubscriptionGroupCustom(bool value) async {
     await execute(() async {
-      (await Repository.writable())
-          .rawUpdate('UPDATE $tableSubscriptionGroup SET custom = ?, popular = 0 WHERE id = ?', [value, state.id]);
+      (await Repository.writable()).rawUpdate(
+        'UPDATE $tableSubscriptionGroup SET custom = ?, popular = 0 WHERE id = ?',
+        [value, state.id],
+      );
       return state.copyWith(custom: value, popular: false);
     });
   }
@@ -195,8 +217,10 @@ class GroupModel extends Store<SubscriptionGroupGet> {
 
   Future<void> setSubscriptionGroupContentFilter(String value) async {
     await execute(() async {
-      (await Repository.writable())
-          .rawUpdate('UPDATE $tableSubscriptionGroup SET content_filter = ? WHERE id = ?', [value, state.id]);
+      (await Repository.writable()).rawUpdate('UPDATE $tableSubscriptionGroup SET content_filter = ? WHERE id = ?', [
+        value,
+        state.id,
+      ]);
       return state.copyWith(contentFilter: value);
     });
   }
@@ -291,33 +315,34 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
     }
 
     final rows = await database.rawQuery(
-        'SELECT gm.group_id, s.id, s.name, s.screen_name, s.profile_image_url_https FROM $tableSubscriptionGroupMember gm '
-        'JOIN $tableSubscription s ON s.id = gm.profile_id '
-        'ORDER BY gm.group_id, s.screen_name COLLATE NOCASE');
+      'SELECT gm.group_id, s.id, s.name, s.screen_name, s.profile_image_url_https FROM $tableSubscriptionGroupMember gm '
+      'JOIN $tableSubscription s ON s.id = gm.profile_id '
+      'ORDER BY gm.group_id, s.screen_name COLLATE NOCASE',
+    );
 
     for (final row in rows) {
       final screenName = row['screen_name'] as String?;
       add(
-          row['group_id'] as String,
-          GroupMemberPreview(
-            id: row['id'] as String,
-            name: (row['name'] as String?) ?? screenName ?? '',
-            avatarUrl: row['profile_image_url_https'] as String?,
-          ));
+        row['group_id'] as String,
+        GroupMemberPreview(
+          id: row['id'] as String,
+          name: (row['name'] as String?) ?? screenName ?? '',
+          avatarUrl: row['profile_image_url_https'] as String?,
+        ),
+      );
     }
 
     // Subreddits are members too, and a group made only of them used to have no
     // cover at all. They come second so a mixed group still leads with faces.
     final subreddits = await database.rawQuery(
-        'SELECT gm.group_id, s.id, s.name FROM $tableSubscriptionGroupMember gm '
-        'JOIN $tableRedditSubscription s ON s.id = gm.profile_id '
-        'ORDER BY gm.group_id, s.name COLLATE NOCASE');
+      'SELECT gm.group_id, s.id, s.name FROM $tableSubscriptionGroupMember gm '
+      'JOIN $tableRedditSubscription s ON s.id = gm.profile_id '
+      'ORDER BY gm.group_id, s.name COLLATE NOCASE',
+    );
 
     for (final row in subreddits) {
       final name = row['name'] as String;
-      add(
-          row['group_id'] as String,
-          GroupMemberPreview(id: row['id'] as String, name: name, subreddit: name));
+      add(row['group_id'] as String, GroupMemberPreview(id: row['id'] as String, name: name, subreddit: name));
     }
 
     return previews;
@@ -346,14 +371,12 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
   Future<({int replies, int retweets})> countIncludeOverrides() async {
     final database = await Repository.readOnly();
     final rows = await database.rawQuery(
-        'SELECT COUNT(include_replies) AS replies, COUNT(include_retweets) AS retweets '
-        "FROM $tableSubscriptionGroup WHERE id != '-1'");
+      'SELECT COUNT(include_replies) AS replies, COUNT(include_retweets) AS retweets '
+      "FROM $tableSubscriptionGroup WHERE id != '-1'",
+    );
 
     final row = rows.isEmpty ? const <String, Object?>{} : rows.first;
-    return (
-      replies: (row['replies'] as int?) ?? 0,
-      retweets: (row['retweets'] as int?) ?? 0,
-    );
+    return (replies: (row['replies'] as int?) ?? 0, retweets: (row['retweets'] as int?) ?? 0);
   }
 
   Future<List<SubscriptionGroupMember>> listGroupMembers() async {
@@ -367,10 +390,12 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
   Future<List<String>> listGroupsForUser(String user) async {
     var database = await Repository.readOnly();
 
-    return (await database.query(tableSubscriptionGroupMember,
-            columns: ['group_id'], where: 'profile_id = ?', whereArgs: [user]))
-        .map((e) => e['group_id'] as String)
-        .toList(growable: false);
+    return (await database.query(
+      tableSubscriptionGroupMember,
+      columns: ['group_id'],
+      where: 'profile_id = ?',
+      whereArgs: [user],
+    )).map((e) => e['group_id'] as String).toList(growable: false);
   }
 
   Future saveUserGroupMembership(String user, List<String> memberships) async {
@@ -418,9 +443,11 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
       );
     }
 
-    var members = (await database.query(tableSubscriptionGroupMember, where: 'group_id = ?', whereArgs: [id]))
-        .map((e) => e['profile_id'] as String)
-        .toSet();
+    var members = (await database.query(
+      tableSubscriptionGroupMember,
+      where: 'group_id = ?',
+      whereArgs: [id],
+    )).map((e) => e['profile_id'] as String).toSet();
 
     return SubscriptionGroupEdit(
       id: group.first['id'] as String,
@@ -463,16 +490,11 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
         });
       } else {
         await database.update(
-            tableSubscriptionGroup,
-            {
-              'name': name,
-              'color': color?.toARGB32(),
-              'icon': icon,
-              'emoji': emoji,
-              'mark_style': markStyle,
-            },
-            where: 'id = ?',
-            whereArgs: [id]);
+          tableSubscriptionGroup,
+          {'name': name, 'color': color?.toARGB32(), 'icon': icon, 'emoji': emoji, 'mark_style': markStyle},
+          where: 'id = ?',
+          whereArgs: [id],
+        );
       }
 
       // Then clear out any existing subscriptions for the group and add our new set
@@ -533,9 +555,10 @@ class GroupsModel extends Store<List<SubscriptionGroup>> {
   Future<void> mergeGroups(String sourceId, String targetId) async {
     var database = await Repository.writable();
     await database.rawInsert(
-        'INSERT OR IGNORE INTO $tableSubscriptionGroupMember (group_id, profile_id) '
-        'SELECT ?, profile_id FROM $tableSubscriptionGroupMember WHERE group_id = ?',
-        [targetId, sourceId]);
+      'INSERT OR IGNORE INTO $tableSubscriptionGroupMember (group_id, profile_id) '
+      'SELECT ?, profile_id FROM $tableSubscriptionGroupMember WHERE group_id = ?',
+      [targetId, sourceId],
+    );
     await database.delete(tableSubscriptionGroupMember, where: 'group_id = ?', whereArgs: [sourceId]);
     await database.delete(tableSubscriptionGroup, where: 'id = ?', whereArgs: [sourceId]);
     await reloadGroups();

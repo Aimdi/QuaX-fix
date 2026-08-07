@@ -225,10 +225,7 @@ class _GroupFeedShellState extends State<GroupFeedShell> with AutomaticKeepAlive
                 ),
               ];
             },
-            body: KeyedSubtree(
-              key: ValueKey(_refreshCounter),
-              child: widget.bodyBuilder(context),
-            ),
+            body: KeyedSubtree(key: ValueKey(_refreshCounter), child: widget.bodyBuilder(context)),
           ),
         );
       },
@@ -299,19 +296,19 @@ List<Widget> defaultGroupActions(
   List<Widget> extra = const [],
 }) {
   return [
-    if (showMore)
-      IconButton(icon: const Icon(Icons.build_outlined), onPressed: () => showFeedSettings(context, model)),
+    if (showMore) IconButton(icon: const Icon(Icons.build_outlined), onPressed: () => showFeedSettings(context, model)),
     if (scrollToTopController != null)
       IconButton(
-          icon: const Icon(Icons.arrow_upward),
-          onPressed: () async => await scrollToTop(context, scrollToTopController)),
+        icon: const Icon(Icons.arrow_upward),
+        onPressed: () async => await scrollToTop(context, scrollToTopController),
+      ),
     if (showRefresh)
       IconButton(
-          icon: const Icon(Icons.refresh),
-          onPressed: onRefresh ?? () async => await context.read<FeedRefreshController>().refresh()),
+        icon: const Icon(Icons.refresh),
+        onPressed: onRefresh ?? () async => await context.read<FeedRefreshController>().refresh(),
+      ),
     if (showSettings)
-      IconButton(
-          icon: const Icon(Icons.settings), onPressed: () => Navigator.pushNamed(context, routeSettings)),
+      IconButton(icon: const Icon(Icons.settings), onPressed: () => Navigator.pushNamed(context, routeSettings)),
     ...extra,
   ];
 }

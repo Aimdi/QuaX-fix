@@ -39,8 +39,7 @@ class _ThreadsSettingsScreenState extends State<ThreadsSettingsScreen> {
     _cookies = TextEditingController(text: prefs.get<String>(optionPluginThreadsDirectCookies) ?? '');
     _bearer = TextEditingController(text: prefs.get<String>(optionPluginThreadsDirectBearer) ?? '');
     _instance = TextEditingController(text: prefs.get<String>(optionPluginThreadsInstance) ?? '');
-    _apiBase = TextEditingController(
-        text: prefs.get<String>(optionPluginThreadsApiBase) ?? kThreadsApiDefaultBase);
+    _apiBase = TextEditingController(text: prefs.get<String>(optionPluginThreadsApiBase) ?? kThreadsApiDefaultBase);
     _apiToken = TextEditingController(text: prefs.get<String>(optionPluginThreadsApiToken) ?? '');
   }
 
@@ -202,10 +201,7 @@ class _ThreadsSettingsScreenState extends State<ThreadsSettingsScreen> {
                 onPressed: _testingDirect ? null : _testDirect,
                 child: Text(l10n.plugin_threads_direct_test),
               ),
-              TextButton(
-                onPressed: _clearDirect,
-                child: Text(l10n.plugin_threads_direct_clear),
-              ),
+              TextButton(onPressed: _clearDirect, child: Text(l10n.plugin_threads_direct_clear)),
             ],
           ),
           const Divider(height: 32),
@@ -224,10 +220,7 @@ class _ThreadsSettingsScreenState extends State<ThreadsSettingsScreen> {
           const SizedBox(height: 12),
           Align(
             alignment: Alignment.centerLeft,
-            child: FilledButton.tonal(
-              onPressed: _testing ? null : _test,
-              child: Text(l10n.plugin_threads_test),
-            ),
+            child: FilledButton.tonal(onPressed: _testing ? null : _test, child: Text(l10n.plugin_threads_test)),
           ),
           const Divider(height: 32),
           Text(l10n.plugin_threads_api_intro, style: theme.textTheme.bodyMedium),
@@ -257,10 +250,19 @@ class _ThreadsSettingsScreenState extends State<ThreadsSettingsScreen> {
           const SizedBox(height: 12),
           Align(
             alignment: Alignment.centerLeft,
-            child: FilledButton.tonal(
-              onPressed: _testingApi ? null : _testApi,
-              child: Text(l10n.plugin_threads_test),
-            ),
+            child: FilledButton.tonal(onPressed: _testingApi ? null : _testApi, child: Text(l10n.plugin_threads_test)),
+          ),
+          const Divider(height: 32),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            secondary: const Icon(Icons.dynamic_feed_outlined),
+            title: Text(l10n.plugin_threads_in_home_feed),
+            subtitle: Text(l10n.plugin_threads_in_home_feed_description),
+            value: PrefService.of(context).get<bool>(optionPluginThreadsInHomeFeed) == true,
+            onChanged: (value) async {
+              await PrefService.of(context, listen: false).set(optionPluginThreadsInHomeFeed, value);
+              if (mounted) setState(() {});
+            },
           ),
           const Divider(height: 32),
           Text(l10n.plugin_threads_accounts, style: theme.textTheme.titleSmall),

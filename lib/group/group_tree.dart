@@ -41,10 +41,12 @@ List<String> childrenOf(String id, Map<String, String?> parentOf) =>
 List<String> topLevelGroups(Iterable<String> ids, Map<String, String?> parentOf) {
   final present = ids.toSet();
 
-  return ids.where((id) {
-    final parent = parentOf[id];
-    return parent == null || parent == id || !present.contains(parent);
-  }).toList(growable: false);
+  return ids
+      .where((id) {
+        final parent = parentOf[id];
+        return parent == null || parent == id || !present.contains(parent);
+      })
+      .toList(growable: false);
 }
 
 /// [ids] with every group placed directly under its parent, parents first.

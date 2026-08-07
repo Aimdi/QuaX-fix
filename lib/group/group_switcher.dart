@@ -18,12 +18,7 @@ class GroupSwitcherTitle extends StatelessWidget {
   final String currentGroupId;
   final ValueChanged<SubscriptionGroup> onSwitch;
 
-  const GroupSwitcherTitle({
-    super.key,
-    required this.name,
-    required this.currentGroupId,
-    required this.onSwitch,
-  });
+  const GroupSwitcherTitle({super.key, required this.name, required this.currentGroupId, required this.onSwitch});
 
   /// Opens the short menu, and does whatever it came back with.
   ///
@@ -141,8 +136,7 @@ class _NewGroupRow extends StatelessWidget {
         const Divider(),
         ListTile(
           leading: Icon(Icons.add, color: theme.colorScheme.primary),
-          title: Text(L10n.of(context).create_subscription_group,
-              style: TextStyle(color: theme.colorScheme.primary)),
+          title: Text(L10n.of(context).create_subscription_group, style: TextStyle(color: theme.colorScheme.primary)),
           onTap: onTap,
         ),
       ],
@@ -194,10 +188,12 @@ Future<void> showGroupSwitcher(
                     return _CombineHint(count: alsoRead.length, onClear: combined.clear);
                   }
                   if (index == groups.length + 1) {
-                    return _NewGroupRow(onTap: () {
-                      Navigator.pop(sheetContext);
-                      openSubscriptionGroupDialog(context, null, '', defaultGroupIcon);
-                    });
+                    return _NewGroupRow(
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        openSubscriptionGroupDialog(context, null, '', defaultGroupIcon);
+                      },
+                    );
                   }
 
                   final group = groups[index - 1];
@@ -217,8 +213,8 @@ Future<void> showGroupSwitcher(
                     trailing: isCurrent
                         ? const Icon(Icons.check)
                         : isCombined
-                            ? const Icon(Icons.playlist_add_check)
-                            : (group.pinned ? const Icon(Icons.push_pin, size: 16) : null),
+                        ? const Icon(Icons.playlist_add_check)
+                        : (group.pinned ? const Icon(Icons.push_pin, size: 16) : null),
                     selected: isCurrent || isCombined,
                     onTap: () {
                       Navigator.pop(sheetContext);

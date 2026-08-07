@@ -162,23 +162,28 @@ class _SubscriptionGroupScreenContentState extends State<SubscriptionGroupScreen
         final filteredUsers = group.id == '-1' ? group.subscriptions.where((elm) => elm.inFeed) : group.subscriptions;
         final members = filteredUsers.sorted((a, b) => a.createdAt.compareTo(b.createdAt)).toList();
 
-        // Substack publications are members of the group but they are not
-        // searched on X: they have their own source, and leaving them in a
-        // search query would put an empty clause in it.
+        // Publications, subreddits and Threads accounts are members of the group
+        // but they are not searched on X: each has its own source, and leaving
+        // one in a search query puts a dangling `OR` in it.
         final publications = members.whereType<SubstackSubscription>().toList(growable: false);
         final subreddits = members.whereType<RedditSubscription>().toList(growable: false);
-        final users =
-            members.where((e) => e is! SubstackSubscription && e is! RedditSubscription).toList(growable: false);
+        final threadsAccounts = members.whereType<ThreadsSubscription>().toList(growable: false);
+        // Named rather than subtracted: what X can search for is a closed set,
+        // so the next plugin whose members join a group cannot silently end up
+        // in a search query by not being on a list of exclusions.
+        final users = members.where((e) => e is UserSubscription || e is SearchSubscription).toList(growable: false);
 
-        var chunks = partition(users, feedChunkSize)
-            .map((e) => SubscriptionGroupFeedChunk(e, includeReplies, includeRetweets))
-            .toList();
+        var chunks = partition(
+          users,
+          feedChunkSize,
+        ).map((e) => SubscriptionGroupFeedChunk(e, includeReplies, includeRetweets)).toList();
 
         return SubscriptionGroupFeed(
           group: group,
           chunks: chunks,
           publications: publications,
           subreddits: subreddits,
+          threadsAccounts: threadsAccounts,
           includeReplies: includeReplies,
           includeRetweets: includeRetweets,
           mediaOnly: widget.mediaOnly,
@@ -218,14 +223,15 @@ class SubscriptionGroupScreen extends StatefulWidget {
   /// already uses its own feed-tab dropdown there.
   final ValueChanged<SubscriptionGroup>? onSwitchGroup;
 
-  const SubscriptionGroupScreen(
-      {super.key,
-      required this.scrollController,
-      required this.id,
-      required this.name,
-      this.actions,
-      this.cacheKey,
-      this.onSwitchGroup});
+  const SubscriptionGroupScreen({
+    super.key,
+    required this.scrollController,
+    required this.id,
+    required this.name,
+    this.actions,
+    this.cacheKey,
+    this.onSwitchGroup,
+  });
 
   @override
   State<SubscriptionGroupScreen> createState() => _SubscriptionGroupScreenState();
@@ -254,12 +260,12 @@ class _SubscriptionGroupScreenState extends State<SubscriptionGroupScreen> {
   }
 
   Widget _mediaOnlyToggle(BuildContext context) => IconButton(
-        isSelected: _mediaOnly,
-        icon: const Icon(Icons.photo_library_outlined),
-        selectedIcon: const Icon(Icons.photo_library),
-        tooltip: L10n.of(context).only_show_posts_with_media,
-        onPressed: _toggleMediaOnly,
-      );
+    isSelected: _mediaOnly,
+    icon: const Icon(Icons.photo_library_outlined),
+    selectedIcon: const Icon(Icons.photo_library),
+    tooltip: L10n.of(context).only_show_posts_with_media,
+    onPressed: _toggleMediaOnly,
+  );
 
   @override
   Widget build(BuildContext context) {

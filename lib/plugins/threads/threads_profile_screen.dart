@@ -75,10 +75,10 @@ class _ThreadsProfileScreenState extends State<ThreadsProfileScreen> {
         profile = await direct.fetchProfile(widget.username);
       } else {
         profile = await context.read<ThreadsApi>().profile(
-              prefs.get<String>(optionPluginThreadsApiBase) ?? kThreadsApiDefaultBase,
-              prefs.get<String>(optionPluginThreadsApiToken) ?? '',
-              widget.username,
-            );
+          prefs.get<String>(optionPluginThreadsApiBase) ?? kThreadsApiDefaultBase,
+          prefs.get<String>(optionPluginThreadsApiToken) ?? '',
+          widget.username,
+        );
       }
       if (mounted) {
         setState(() {
@@ -168,12 +168,15 @@ class ThreadsProfileCard extends StatelessWidget {
                       seed: profile.username,
                       displayName: profile.displayName,
                       size: 64,
-                      accent: theme.colorScheme.primary)
-                  : ExtendedImage.network(profile.profilePicUrl,
+                      accent: theme.colorScheme.primary,
+                    )
+                  : ExtendedImage.network(
+                      profile.profilePicUrl,
                       width: 64,
                       height: 64,
                       fit: BoxFit.cover,
-                      cacheWidth: (64 * MediaQuery.devicePixelRatioOf(context)).ceil()),
+                      cacheWidth: (64 * MediaQuery.devicePixelRatioOf(context)).ceil(),
+                    ),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -183,10 +186,12 @@ class ThreadsProfileCard extends StatelessWidget {
                   Row(
                     children: [
                       Flexible(
-                        child: Text(profile.displayName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700)),
+                        child: Text(
+                          profile.displayName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700),
+                        ),
                       ),
                       if (profile.isVerified) ...[
                         const SizedBox(width: 6),
@@ -198,8 +203,10 @@ class ThreadsProfileCard extends StatelessWidget {
                       ],
                     ],
                   ),
-                  Text('@${profile.username}',
-                      style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                  Text(
+                    '@${profile.username}',
+                    style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  ),
                 ],
               ),
             ),
@@ -218,10 +225,12 @@ class ThreadsProfileCard extends StatelessWidget {
                 Icon(Icons.link, size: 15, color: theme.colorScheme.onSurfaceVariant),
                 const SizedBox(width: 6),
                 Flexible(
-                  child: Text(profile.externalUrl!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: theme.colorScheme.primary)),
+                  child: Text(
+                    profile.externalUrl!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: theme.colorScheme.primary),
+                  ),
                 ),
               ],
             ),
@@ -259,9 +268,20 @@ class ThreadsProfileCard extends StatelessWidget {
   Widget _count(BuildContext context, String value, String label) {
     final theme = Theme.of(context);
 
-    return Text.rich(TextSpan(children: [
-      TextSpan(text: value, style: const TextStyle(fontWeight: FontWeight.w700)),
-      TextSpan(text: ' $label', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
-    ]), style: theme.textTheme.bodyMedium);
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+            text: value,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+          TextSpan(
+            text: ' $label',
+            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+          ),
+        ],
+      ),
+      style: theme.textTheme.bodyMedium,
+    );
   }
 }

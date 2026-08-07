@@ -42,22 +42,14 @@ class _Section extends StatelessWidget {
   final String description;
   final Widget child;
 
-  const _Section({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.child,
-  });
+  const _Section({required this.icon, required this.title, required this.description, required this.child});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(16),
-      ),
+      decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerHigh, borderRadius: BorderRadius.circular(16)),
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +69,10 @@ class _Section extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          Text(description, style: theme.textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+          Text(
+            description,
+            style: theme.textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          ),
           const SizedBox(height: 14),
           child,
         ],
@@ -192,8 +187,7 @@ class _ThresholdRow extends StatelessWidget {
               ),
             // A value from an earlier edit that is not one of the presets stays
             // visible and selected rather than silently snapping to another.
-            if (!choices.contains(value))
-              _Pill(label: '$value+', selected: true, onTap: () => onChanged(value)),
+            if (!choices.contains(value)) _Pill(label: '$value+', selected: true, onTap: () => onChanged(value)),
           ],
         ),
       ],
@@ -264,9 +258,7 @@ class _MutedKeywordsSectionState extends State<_MutedKeywordsSection> {
     final existing = widget.state.mutedKeywords.map((e) => e.term.toLowerCase()).toSet();
     final next = [
       ...widget.state.mutedKeywords,
-      ...terms
-          .where((term) => !existing.contains(term.toLowerCase()))
-          .map((term) => MutedKeyword(term: term)),
+      ...terms.where((term) => !existing.contains(term.toLowerCase())).map((term) => MutedKeyword(term: term)),
     ];
 
     _controller.clear();
@@ -316,11 +308,7 @@ class _MutedKeywordsSectionState extends State<_MutedKeywordsSection> {
                 ),
               ),
               const SizedBox(width: 8),
-              IconButton(
-                icon: const Icon(Icons.add),
-                color: Theme.of(context).colorScheme.primary,
-                onPressed: _add,
-              ),
+              IconButton(icon: const Icon(Icons.add), color: Theme.of(context).colorScheme.primary, onPressed: _add),
             ],
           ),
           if (keywords.isNotEmpty) ...[

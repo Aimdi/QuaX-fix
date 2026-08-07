@@ -92,13 +92,12 @@ class ThreadsApi {
     final uri = endpoint(base, path);
     final http.Response response;
     try {
-      response = await httpClient.get(
-        uri,
-        headers: {
-          'Accept': 'application/json',
-          if (authenticated) 'Authorization': 'Bearer ${token.trim()}',
-        },
-      ).timeout(_timeout);
+      response = await httpClient
+          .get(
+            uri,
+            headers: {'Accept': 'application/json', if (authenticated) 'Authorization': 'Bearer ${token.trim()}'},
+          )
+          .timeout(_timeout);
     } catch (e) {
       throw ThreadsApiException(ThreadsApiErrorKind.unreachable, detail: '$uri: $e');
     }

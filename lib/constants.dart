@@ -165,6 +165,9 @@ const optionPluginThreadsEnabled = 'plugin.threads.enabled';
 const optionPluginThreadsShowTab = 'plugin.threads.show_tab';
 const optionPluginThreadsInstance = 'plugin.threads.instance';
 
+/// Whether followed Threads accounts also appear in Following and For you.
+const optionPluginThreadsInHomeFeed = 'plugin.threads.in_home_feed';
+
 /// How many posts one account contributes to the merged feed.
 const threadsPostsPerAccount = 20;
 
@@ -179,6 +182,16 @@ const kThreadsApiDefaultBase = 'https://xy-threads.fly.dev';
 const optionPluginThreadsDirectCookies = 'plugin.threads.direct.cookies_token';
 const optionPluginThreadsDirectBearer = 'plugin.threads.direct.bearer_token';
 const optionPluginThreadsDirectDeviceId = 'plugin.threads.direct.device_id';
+
+/// When the direct session may talk to Meta again after being throttled or
+/// parked. Persisted rather than kept in memory: a cooldown that a restart
+/// clears is no cooldown at all, and reopening the app to immediately resume
+/// hammering is how a temporary block becomes a lost account.
+const optionPluginThreadsDirectCooldownUntil = 'plugin.threads.direct.cooldown_until';
+
+/// Handle → numeric Meta user id, so a followed account is looked up once
+/// rather than searched for again on every read.
+const optionPluginThreadsUserIds = 'plugin.threads.user_ids';
 
 /// Bluesky, read through the public AppView — local follows, no Bluesky account.
 const pluginIdBluesky = 'bluesky';
@@ -321,6 +334,7 @@ const themeColors = {
 };
 
 const optionTweetsHideSensitive = 'tweets.hide_sensitive';
+
 /// Once true, sensitive-media gates stay open across sessions (Bluesky-style).
 const optionAlwaysShowSensitiveMedia = 'tweets.always_show_sensitive_media';
 
@@ -353,12 +367,16 @@ const optionTickerChart = 'other.ticker_chart';
 
 const optionZenMode = 'other.zen_mode';
 const optionZenModePageCap = 'other.zen_mode_page_cap';
+
 /// Hide engagement counts (likes, reposts, views, replies) without zen's other caps.
 const optionCalmMode = 'other.calm_mode';
+
 /// CSV of language prefixes the reader wants (`en,fr,ja`).
 const optionFeedLanguages = 'feed.languages';
+
 /// `off` / `hide` / `fold` — what to do with posts outside [optionFeedLanguages].
 const optionFeedLanguageAction = 'feed.language_action';
+
 /// CSV of group ids pinned as deck columns on wide screens.
 const optionDeckGroupIds = 'home.deck_group_ids';
 const optionFeedReadingPosition = 'feed.reading_position';

@@ -97,11 +97,8 @@ class ThreadsProfile {
   /// profile has none.
   String get displayName => fullName.trim().isEmpty ? username : fullName.trim();
 
-  ThreadsAccount toAccount() => ThreadsAccount(
-        handle: username,
-        name: displayName,
-        avatarUrl: profilePicUrl.isEmpty ? null : profilePicUrl,
-      );
+  ThreadsAccount toAccount() =>
+      ThreadsAccount(handle: username, name: displayName, avatarUrl: profilePicUrl.isEmpty ? null : profilePicUrl);
 }
 
 /// An account the reader follows, as the plugin thinks of it.
@@ -113,11 +110,8 @@ class ThreadsAccount {
 
   const ThreadsAccount({required this.handle, required this.name, this.avatarUrl});
 
-  ThreadsAccount copyWith({String? name, String? avatarUrl}) => ThreadsAccount(
-        handle: handle,
-        name: name ?? this.name,
-        avatarUrl: avatarUrl ?? this.avatarUrl,
-      );
+  ThreadsAccount copyWith({String? name, String? avatarUrl}) =>
+      ThreadsAccount(handle: handle, name: name ?? this.name, avatarUrl: avatarUrl ?? this.avatarUrl);
 }
 
 /// A handle as the route wants it: no `@`, no URL around it, lower case.

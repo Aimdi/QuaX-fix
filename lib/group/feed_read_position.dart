@@ -15,8 +15,7 @@ const legacyFeedKeyFollowing = '-1';
 
 /// Maps a subscription-group id onto the `feed_read_position.group_id` column.
 /// The column name is historical; values are feed keys, not only group ids.
-String feedReadPositionKey(String groupId) =>
-    groupId == legacyFeedKeyFollowing ? feedKeyFollowing : groupId;
+String feedReadPositionKey(String groupId) => groupId == legacyFeedKeyFollowing ? feedKeyFollowing : groupId;
 
 /// The last chain the user is known to have read in a group feed. Compared by
 /// value (timestamp), never by presence: the chain itself may have been purged
@@ -55,15 +54,11 @@ Future<FeedReadPosition?> _queryFeedReadPosition(Database repository, String fee
 
 Future<void> writeFeedReadPosition(String feedKey, TweetChain chain) async {
   var repository = await Repository.writable();
-  await repository.insert(
-    tableFeedReadPosition,
-    {
-      'group_id': feedKey,
-      'chain_id': chain.id,
-      'chain_created_at': chain.tweets.firstOrNull?.createdAt?.toIso8601String(),
-    },
-    conflictAlgorithm: ConflictAlgorithm.replace,
-  );
+  await repository.insert(tableFeedReadPosition, {
+    'group_id': feedKey,
+    'chain_id': chain.id,
+    'chain_created_at': chain.tweets.firstOrNull?.createdAt?.toIso8601String(),
+  }, conflictAlgorithm: ConflictAlgorithm.replace);
 }
 
 /// Newest chain that carries a creation timestamp — the value we persist as

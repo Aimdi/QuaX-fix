@@ -38,10 +38,10 @@ class AllGroupsChoice extends FeedSwitcherChoice {
 const int kFeedSwitcherPinnedLimit = 5;
 
 IconData _feedIcon(FeedTab tab) => switch (tab) {
-      FeedTab.following => Icons.people_outline,
-      FeedTab.foryou => Icons.auto_awesome_outlined,
-      FeedTab.reddit => Icons.forum_outlined,
-    };
+  FeedTab.following => Icons.people_outline,
+  FeedTab.foryou => Icons.auto_awesome_outlined,
+  FeedTab.reddit => Icons.forum_outlined,
+};
 
 /// The rect of [context]'s own box, in the overlay's coordinates — where the
 /// menu should hang from.
@@ -85,11 +85,7 @@ PopupMenuItem<FeedSwitcherChoice> _row({
 /// far edge of the screen.
 ///
 /// Short by design: the feeds, the pinned groups, and a way into the rest.
-Future<FeedSwitcherChoice?> showFeedSwitcherMenu(
-  BuildContext context, {
-  FeedTab? currentTab,
-  String? currentGroupId,
-}) {
+Future<FeedSwitcherChoice?> showFeedSwitcherMenu(BuildContext context, {FeedTab? currentTab, String? currentGroupId}) {
   final position = _anchorOf(context);
   if (position == null) {
     return Future.value(null);
@@ -118,11 +114,7 @@ Future<FeedSwitcherChoice?> showFeedSwitcherMenu(
         ),
       const PopupMenuDivider(),
       for (final group in pinned)
-        _row(
-          leading: GroupMark.forGroup(group, size: 24),
-          label: group.name,
-          value: GroupJumpChoice(group),
-        ),
+        _row(leading: GroupMark.forGroup(group, size: 24), label: group.name, value: GroupJumpChoice(group)),
       // The full list is a sheet: it holds every group, and holding a row there
       // reads it alongside — neither of which fits in a menu.
       _row(

@@ -3,11 +3,7 @@
 /// Order of results matches [items]. Used by the group feed so a large
 /// subscription set (dozens of search chunks) cannot open every request at
 /// once and trip X into a cascade of 404s / rate limits.
-Future<List<T>> mapWithConcurrency<E, T>(
-  Iterable<E> items,
-  int concurrency,
-  Future<T> Function(E item) mapper,
-) async {
+Future<List<T>> mapWithConcurrency<E, T>(Iterable<E> items, int concurrency, Future<T> Function(E item) mapper) async {
   final list = items.toList(growable: false);
   if (list.isEmpty) {
     return const [];

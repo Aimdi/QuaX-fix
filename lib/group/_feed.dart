@@ -23,6 +23,7 @@ import 'package:xta/profile/media_grid/media_grid.dart';
 import 'package:xta/profile/media_grid/media_grid_items/media_grid_item.dart';
 import 'package:logging/logging.dart';
 import 'package:xta/plugins/reddit/reddit_interleaved.dart';
+import 'package:xta/plugins/threads/threads_interleaved.dart';
 import 'package:xta/plugins/substack/substack_client.dart';
 import 'package:xta/ui/provenance_accent.dart';
 import 'package:xta/plugins/substack/substack_post_card.dart';
@@ -40,6 +41,7 @@ import 'package:xta/utils/urls.dart';
 import 'package:xta/group/feed_catch_up.dart';
 import 'package:xta/tweet/catch_up_split.dart';
 import 'package:xta/group/feed_rules.dart';
+
 /// One chunk's contribution to a feed page: its chains, whether its gap-fill
 /// ran out of allowance, and whether X answered with posts from outside the
 /// chunk's own subscriptions.
@@ -81,18 +83,23 @@ class SubscriptionGroupFeed extends StatefulWidget {
   /// as the publications: their own source, their own pagination.
   final List<RedditSubscription> subreddits;
 
-  const SubscriptionGroupFeed(
-      {super.key,
-      required this.group,
-      required this.chunks,
-      required this.includeReplies,
-      required this.includeRetweets,
-      required this.mediaOnly,
-      this.cacheKey,
-      this.initialPreview,
-      this.initialPreviewCachedAt,
-      this.publications = const [],
-      this.subreddits = const []});
+  /// Threads accounts in this group, for the same reason again.
+  final List<ThreadsSubscription> threadsAccounts;
+
+  const SubscriptionGroupFeed({
+    super.key,
+    required this.group,
+    required this.chunks,
+    required this.includeReplies,
+    required this.includeRetweets,
+    required this.mediaOnly,
+    this.cacheKey,
+    this.initialPreview,
+    this.initialPreviewCachedAt,
+    this.publications = const [],
+    this.subreddits = const [],
+    this.threadsAccounts = const [],
+  });
 
   @override
   State<SubscriptionGroupFeed> createState() => _SubscriptionGroupFeedState();
@@ -146,12 +153,38 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   /// Reddit posts for this group's subreddits, newest first.
   List<InterleavedItem> _redditItems = const [];
 
+  /// Threads posts for this group's Threads accounts, newest first.
+  List<InterleavedItem> _threadsItems = const [];
+
   /// The two sources merged, rebuilt only when one of them arrives. Built in
   /// `build` it was a fresh list every frame, so nothing downstream could tell
   /// by identity that the interleave had not changed.
   List<InterleavedItem> _interleaved = const [];
 
-  void _mergeInterleaved() => _interleaved = [..._substackItems, ..._redditItems];
+  void _mergeInterleaved() => _interleaved = [..._substackItems, ..._redditItems, ..._threadsItems];
+
+  Future<void> _loadThreadsPosts() async {
+    if (widget.mediaOnly) {
+      return;
+    }
+
+    // The group's own Threads accounts, plus every followed one when this is
+    // the combined feed and the reader asked for Threads in it.
+    final handles = {
+      ...widget.threadsAccounts.map((e) => e.id),
+      if (widget.group.id == '-1') ...threadsHomeHandles(context),
+    }.toList(growable: false);
+
+    final items = await loadThreadsInterleaved(context, handles);
+    // Assigned whatever came back, empty included: an account taken out of the
+    // group has to take its posts with it.
+    if (mounted) {
+      setState(() {
+        _threadsItems = items;
+        _mergeInterleaved();
+      });
+    }
+  }
 
   Future<void> _loadRedditPosts({bool force = false}) async {
     if (widget.mediaOnly) {
@@ -196,14 +229,16 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     // All publications at once; the feed used to wait on the sum of the round
     // trips. One unreachable publication must not empty the whole feed of the
     // others, nor replace a working timeline with an error screen.
-    final fetched = await Future.wait(widget.publications.map((publication) async {
-      try {
-        return (publication, await client.fetchPosts(publicationOf(publication), limit: substackFeedPageSize));
-      } catch (e) {
-        _log.warning('Unable to load Substack posts for ${publication.id}: $e');
-        return null;
-      }
-    }));
+    final fetched = await Future.wait(
+      widget.publications.map((publication) async {
+        try {
+          return (publication, await client.fetchPosts(publicationOf(publication), limit: substackFeedPageSize));
+        } catch (e) {
+          _log.warning('Unable to load Substack posts for ${publication.id}: $e');
+          return null;
+        }
+      }),
+    );
 
     final items = <InterleavedItem>[];
     for (final (publication, posts) in fetched.nonNulls) {
@@ -212,11 +247,13 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
         if (date == null) {
           continue;
         }
-        items.add(provenanceInterleavedItem(
-          date: date,
-          pluginId: pluginIdSubstack,
-          build: (_) => SubstackPostCard(post: post, logoUrl: publication.logoUrl),
-        ));
+        items.add(
+          provenanceInterleavedItem(
+            date: date,
+            pluginId: pluginIdSubstack,
+            build: (_) => SubstackPostCard(post: post, logoUrl: publication.logoUrl),
+          ),
+        );
       }
     }
 
@@ -235,8 +272,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   /// Catch-up mode: this feed shows only what is new since the reader's last
   /// position and stops there. Per feed, off unless turned on for this one.
   bool get _catchUpEnabled =>
-      _supportsReadPosition &&
-      PrefService.of(context, listen: false).get(feedCatchUpModeKey(widget.group.id)) == true;
+      _supportsReadPosition && PrefService.of(context, listen: false).get(feedCatchUpModeKey(widget.group.id)) == true;
 
   bool get _tracksReadPosition =>
       _supportsReadPosition &&
@@ -291,6 +327,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     }
     _loadSubstackPosts();
     _loadRedditPosts();
+    _loadThreadsPosts();
   }
 
   Future<void> _loadPreview() async {
@@ -500,6 +537,9 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     if (!listEquals(oldWidget.publications, widget.publications)) {
       _loadSubstackPosts();
     }
+    if (!listEquals(oldWidget.threadsAccounts, widget.threadsAccounts)) {
+      _loadThreadsPosts();
+    }
 
     if (oldWidget.includeReplies != widget.includeReplies ||
         oldWidget.includeRetweets != widget.includeRetweets ||
@@ -540,49 +580,48 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   bool feedContainsUnrelatedTweets(TweetStatus tweets, List<Subscription> users) {
     final screenNames = users.map((e) => e.screenName).toSet();
     return tweets.chains.any(
-        (chain) => chain.tweets.any((tweet) => tweet.user != null && !screenNames.contains(tweet.user!.screenName)));
+      (chain) => chain.tweets.any((tweet) => tweet.user != null && !screenNames.contains(tweet.user!.screenName)),
+    );
   }
 
   Future<void> showUnrelatedPostsInFeedWarning() async {
     await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("⚠️ ${L10n.of(context).feed_issue_detected}"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(L10n.of(context).feed_contains_unrelated_tweets),
-                SizedBox(height: Theme.of(context).textTheme.bodyMedium!.fontSize! * 2),
-                PrefCheckbox(
-                  title: Text(
-                    L10n.of(context).never_show_again,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  pref: optionDisableWarningsForUnrelatedPostsInFeed,
-                )
-              ],
-            ),
-            actions: [
-              TextButton(
-                child: Text(L10n.of(context).more_info),
-                onPressed: () async {
-                  await openUri(context, "https://github.com/Teskann/XTA/issues/26");
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                  }
-                },
-              ),
-              TextButton(
-                child: Text(L10n.of(context).close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("⚠️ ${L10n.of(context).feed_issue_detected}"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(L10n.of(context).feed_contains_unrelated_tweets),
+              SizedBox(height: Theme.of(context).textTheme.bodyMedium!.fontSize! * 2),
+              PrefCheckbox(
+                title: Text(L10n.of(context).never_show_again, style: Theme.of(context).textTheme.bodyMedium),
+                pref: optionDisableWarningsForUnrelatedPostsInFeed,
               ),
             ],
-          );
-        });
+          ),
+          actions: [
+            TextButton(
+              child: Text(L10n.of(context).more_info),
+              onPressed: () async {
+                await openUri(context, "https://github.com/Teskann/XTA/issues/26");
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+            TextButton(
+              child: Text(L10n.of(context).close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   String _buildSearchQuery(List<Subscription> users) {
@@ -643,8 +682,12 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
 
       if (cursorKey == null) {
         // We're loading the initial content for the feed screen, so load all the chunks we already have
-        var storedChunks = await repository.query(tableFeedGroupChunk,
-            where: 'hash = ?', whereArgs: [hash], orderBy: 'created_at DESC');
+        var storedChunks = await repository.query(
+          tableFeedGroupChunk,
+          where: 'hash = ?',
+          whereArgs: [hash],
+          orderBy: 'created_at DESC',
+        );
 
         // Make sure we load any existing stored tweets from the chunk
         tweets.addAll(chainsFromStoredChunks(storedChunks));
@@ -660,8 +703,11 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
         }
       } else {
         // We're currently at the end of our current feed, so load the oldest chunk and use its cursor to load more
-        var storedChunks = await repository.query(tableFeedGroupChunk,
-            where: 'cursor_id = ? AND hash = ?', whereArgs: [int.parse(cursorKey), hash]);
+        var storedChunks = await repository.query(
+          tableFeedGroupChunk,
+          where: 'cursor_id = ? AND hash = ?',
+          whereArgs: [int.parse(cursorKey), hash],
+        );
         if (storedChunks.isNotEmpty) {
           searchCursor = storedChunks.first['cursor_bottom'] as String;
         } else {
@@ -683,7 +729,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
           'hash': hash,
           'cursor_top': result.cursorTop,
           'cursor_bottom': result.cursorBottom,
-          'response': jsonEncode(result.chains.map((e) => e.toJson()).toList())
+          'response': jsonEncode(result.chains.map((e) => e.toJson()).toList()),
         });
       }
 
@@ -710,7 +756,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
             'hash': hash,
             'cursor_top': page.cursorTop,
             'cursor_bottom': page.cursorBottom,
-            'response': jsonEncode(page.chains.map((e) => e.toJson()).toList())
+            'response': jsonEncode(page.chains.map((e) => e.toJson()).toList()),
           });
         }
       }
@@ -855,9 +901,7 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
   // Successive search windows overlap at their boundaries, so keep only media
   // entries not shown on an earlier page.
   List<MediaGridItem> _unseenMediaItems(List<TweetChain> chains) {
-    return mediaItemsFromChains(chains)
-        .where((m) => _seenMediaKeys.add('${m.tweetId}/${m.mediaIndex}'))
-        .toList();
+    return mediaItemsFromChains(chains).where((m) => _seenMediaKeys.add('${m.tweetId}/${m.mediaIndex}')).toList();
   }
 
   Widget _buildMediaGrid(BuildContext context) {
@@ -879,12 +923,11 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
     // X chunks meant a group of nothing but subreddits reported itself empty
     // before its posts were ever asked for — the list below knows how to show
     // interleaved items with no chains, but never got the chance.
-    if (widget.chunks.isEmpty && widget.publications.isEmpty && widget.subreddits.isEmpty) {
-      return Scaffold(
-        body: Center(
-          child: Text(L10n.of(context).this_group_contains_no_subscriptions),
-        ),
-      );
+    if (widget.chunks.isEmpty &&
+        widget.publications.isEmpty &&
+        widget.subreddits.isEmpty &&
+        widget.threadsAccounts.isEmpty) {
+      return Scaffold(body: Center(child: Text(L10n.of(context).this_group_contains_no_subscriptions)));
     }
 
     if (widget.mediaOnly) {
@@ -906,8 +949,9 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
             catchUpMayBeIncomplete: () => _gapCapped,
             onRefresh: () async {
               // Not awaited: the reader is waiting on X's first page, and
-              // Reddit is beside it rather than in front of it.
+              // the plugins are beside it rather than in front of it.
               unawaited(_loadRedditPosts(force: true));
+              unawaited(_loadThreadsPosts());
               // Only this group's rows. The wipe used to take the whole table
               // with it, so pulling to refresh one feed made every other feed
               // refetch its first page from the network next time it opened.
@@ -917,8 +961,11 @@ class _SubscriptionGroupFeedState extends State<SubscriptionGroupFeed> {
               }
 
               var repository = await Repository.writable();
-              await repository.delete(tableFeedGroupChunk,
-                  where: 'hash IN (${List.filled(hashes.length, '?').join(', ')})', whereArgs: hashes);
+              await repository.delete(
+                tableFeedGroupChunk,
+                where: 'hash IN (${List.filled(hashes.length, '?').join(', ')})',
+                whereArgs: hashes,
+              );
             },
             firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets_for_the_feed,
             newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,

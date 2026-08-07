@@ -155,10 +155,7 @@ Future checkForAccounts(BuildContext context) async {
           actions: [
             // A way out that is not signing in. The app does try as a guest, so
             // dismissing this is a real choice rather than a refusal to start.
-            TextButton(
-              child: Text(L10n.of(context).cancel),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+            TextButton(child: Text(L10n.of(context).cancel), onPressed: () => Navigator.of(context).pop()),
             TextButton(
               child: Text(L10n.of(context).import_backup),
               onPressed: () async {
@@ -458,6 +455,7 @@ Future<void> main() async {
       optionPluginRedditEnabled: false,
       optionPluginRedditClientId: '',
       optionPluginRedditInHomeFeed: false,
+      optionPluginThreadsInHomeFeed: false,
       optionPluginRedditShowTab: false,
       optionPluginRedditSort: redditSortHot,
       optionPluginRedditSource: redditSourceAuto,
@@ -548,8 +546,11 @@ Future<void> main() async {
   // instead. The result is cached inside TwitterHeaders; this call only warms
   // it, and a failure is already rate-limited there, so it is swallowed rather
   // than left as an unhandled async error.
-  unawaited(TwitterHeaders.getXClientTransactionIdHeader(Uri.parse('https://x.com/i/api/graphql/warmup'))
-      .catchError((Object _) => null));
+  unawaited(
+    TwitterHeaders.getXClientTransactionIdHeader(
+      Uri.parse('https://x.com/i/api/graphql/warmup'),
+    ).catchError((Object _) => null),
+  );
 
   try {
     // Run the migrations early, so models work. We also do this later on so we can display errors to the user
@@ -669,8 +670,7 @@ Future<void> main() async {
             Provider(create: (_) => stocksWatchlist),
             Provider(create: (_) => speech),
             Provider(create: (_) => CombinedGroupsStore()),
-            Provider(
-                create: (_) => FeedTabStore(feedTabFromId(prefService.get<String>(optionHomeDefaultFeedTab)))),
+            Provider(create: (_) => FeedTabStore(feedTabFromId(prefService.get<String>(optionHomeDefaultFeedTab)))),
             Provider(create: (_) => substackClient),
             Provider(create: (_) => substackPublications),
             Provider(create: (context) => SubstackFeedStore(context.read<SubstackClient>(), substackPublications)),
@@ -716,7 +716,6 @@ class FritterApp extends StatefulWidget {
 }
 
 class _FritterAppState extends State<FritterApp> {
-
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>(); // NEW: Navigator key
 
   String _xLookBackground = xLookBackgroundSystem;
@@ -809,20 +808,16 @@ class _FritterAppState extends State<FritterApp> {
 
     // Whenever the "true black" preference is toggled, apply the toggle
     prefService.addKeyListener(optionThemeTrueBlack, () {
-      setState(() {
-        });
+      setState(() {});
     });
 
     prefService.addKeyListener(optionThemeMode, () {
-      setState(() {
-        });
+      setState(() {});
     });
 
     prefService.addKeyListener(optionThemeColor, () {
-      setState(() {
-        });
+      setState(() {});
     });
-
 
     prefService.addKeyListener(optionXLookBackground, () {
       setState(() {
@@ -851,7 +846,6 @@ class _FritterAppState extends State<FritterApp> {
 
   @override
   Widget build(BuildContext context) {
-
     final PageTransitionsTheme? pageTransitions = _disableAnimations == true
         ? PageTransitionsTheme(
             builders: {

@@ -39,15 +39,11 @@ class CustomFeedRules {
   });
 
   bool get isEmpty =>
-      contentFilter == contentFilterDefault &&
-      minLikes == 0 &&
-      minRetweets == 0 &&
-      mutedKeywords.isEmpty;
+      contentFilter == contentFilterDefault && minLikes == 0 && minRetweets == 0 && mutedKeywords.isEmpty;
 
   /// Part of the feed cache key: two feeds with different rules must not share
   /// cached chunks.
-  String get cacheKey =>
-      '$contentFilter|$minLikes|$minRetweets|${encodeMutedKeywordsStored(mutedKeywords)}';
+  String get cacheKey => '$contentFilter|$minLikes|$minRetweets|${encodeMutedKeywordsStored(mutedKeywords)}';
 }
 
 /// Result of applying feed rules — chains to show plus fold reasons by chain id.
@@ -55,15 +51,10 @@ class FeedRuleOutcome {
   final List<TweetChain> chains;
   final Map<String, String> foldReasons;
 
-  const FeedRuleOutcome({
-    required this.chains,
-    this.foldReasons = const {},
-  });
+  const FeedRuleOutcome({required this.chains, this.foldReasons = const {}});
 
-  FeedRuleOutcome merge(FeedRuleOutcome other) => FeedRuleOutcome(
-        chains: other.chains,
-        foldReasons: {...foldReasons, ...other.foldReasons},
-      );
+  FeedRuleOutcome merge(FeedRuleOutcome other) =>
+      FeedRuleOutcome(chains: other.chains, foldReasons: {...foldReasons, ...other.foldReasons});
 }
 
 final RegExp _wordCharacter = RegExp(r'[\p{L}\p{N}]', unicode: true);
@@ -88,8 +79,7 @@ bool textMatchesMutedTerm(String text, String term) {
   }
 
   try {
-    return RegExp('(?<![\\p{L}\\p{N}])${RegExp.escape(lowered)}(?![\\p{L}\\p{N}])', unicode: true)
-        .hasMatch(haystack);
+    return RegExp('(?<![\\p{L}\\p{N}])${RegExp.escape(lowered)}(?![\\p{L}\\p{N}])', unicode: true).hasMatch(haystack);
   } catch (_) {
     // Some runtimes choke on unicode lookbehind; fail open to substring match
     // rather than blowing up the whole feed page.

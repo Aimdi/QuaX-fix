@@ -191,16 +191,18 @@ List<ThreadsPost> parseThreadsFeed(Json feed, String handle) {
       continue;
     }
 
-    posts.add(ThreadsPost(
-      id: id,
-      handle: handle,
-      authorName: item['authors'][0]['name'].string ?? author,
-      avatarUrl: item['authors'][0]['avatar'].string ?? avatar,
-      text: text,
-      images: images,
-      publishedAt: DateTime.tryParse(item['date_published'].string ?? '')?.toLocal(),
-      url: url,
-    ));
+    posts.add(
+      ThreadsPost(
+        id: id,
+        handle: handle,
+        authorName: item['authors'][0]['name'].string ?? author,
+        avatarUrl: item['authors'][0]['avatar'].string ?? avatar,
+        text: text,
+        images: images,
+        publishedAt: DateTime.tryParse(item['date_published'].string ?? '')?.toLocal(),
+        url: url,
+      ),
+    );
   }
 
   return posts;

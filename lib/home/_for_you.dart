@@ -6,6 +6,7 @@ import 'package:xta/client/client.dart';
 import 'package:xta/group/feed_read_position.dart';
 import 'package:xta/profile/profile.dart';
 import 'package:xta/plugins/reddit/reddit_interleaved.dart';
+import 'package:xta/plugins/threads/threads_interleaved.dart';
 import 'package:xta/tweet/interleaved_items.dart';
 import 'package:xta/tweet/paginated_tweet_list.dart';
 import 'package:xta/tweet/sensitive_media_gate.dart';
@@ -42,6 +43,15 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
   /// publishes at its own rate rather than X's.
   List<InterleavedItem> _redditItems = const [];
 
+  /// Threads posts mixed in the same way, when the reader asked for them.
+  List<InterleavedItem> _threadsItems = const [];
+
+  /// The two merged, so the list is handed one stable value rather than a
+  /// fresh concatenation every build.
+  List<InterleavedItem> _interleaved = const [];
+
+  void _mergeInterleaved() => _interleaved = [..._redditItems, ..._threadsItems];
+
   // Reading position: boundary loaded once per mount and frozen so the
   // "You're caught up" divider never moves mid-session.
   FeedReadPosition? _lastSeen;
@@ -58,7 +68,10 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
   void initState() {
     super.initState();
     widget.feed.pageCapProvider = _zenPageCap;
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadRedditPosts());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadRedditPosts();
+      _loadThreadsPosts();
+    });
   }
 
   @override
@@ -77,7 +90,20 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
     // following takes its posts with it — but only when there is something to
     // clear, rather than a rebuild per mount for the readers with none.
     if (mounted && (items.isNotEmpty || _redditItems.isNotEmpty)) {
-      setState(() => _redditItems = items);
+      setState(() {
+        _redditItems = items;
+        _mergeInterleaved();
+      });
+    }
+  }
+
+  Future<void> _loadThreadsPosts() async {
+    final items = await loadThreadsInterleaved(context, threadsHomeHandles(context));
+    if (mounted && (items.isNotEmpty || _threadsItems.isNotEmpty)) {
+      setState(() {
+        _threadsItems = items;
+        _mergeInterleaved();
+      });
     }
   }
 
@@ -239,12 +265,15 @@ class _ForYouTweetsState extends State<ForYouTweets> with AutomaticKeepAliveClie
           child: PaginatedTweetList(
             feed: widget.feed,
             loadPage: _loadTweets,
-            interleaved: _redditItems,
+            interleaved: _interleaved,
             username: user.screenName,
             // Reddit alongside X's reload rather than in front of it: a
             // pull has to reach Reddit too, or the cache would keep
             // handing back the posts already on screen.
-            onRefresh: () async => unawaited(_loadRedditPosts(force: true)),
+            onRefresh: () async {
+              unawaited(_loadRedditPosts(force: true));
+              unawaited(_loadThreadsPosts());
+            },
             firstPageErrorPrefix: L10n.of(context).unable_to_load_the_tweets,
             newPageErrorPrefix: L10n.of(context).unable_to_load_the_next_page_of_tweets,
             emptyMessage: L10n.of(context).unable_to_load_the_tweets_for_the_feed,
