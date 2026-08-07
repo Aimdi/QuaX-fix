@@ -56,6 +56,14 @@ Guest GraphQL/SSR ignores that cooldown so Accounts keep loading.
 - Sessions may die; accounts may be checkpointed. Documented in settings copy.
 - Guest GraphQL `doc_id`s can rotate; SSR remains the fallback.
 
+## Card UI
+
+Meta post JSON can include `like_count`, `text_post_app_info.direct_reply_count` /
+`repost_count`, and `link_preview_attachment` (title, image, outbound URL). The
+timeline card shows a large link/article preview when present, and a read-only
+engagement row only for counts that were actually returned (RSSHub posts omit
+them). Taps open the post or unwrapped card URL in the browser.
+
 ## MVP
 
 - Cookie + Bearer paste, test, clear

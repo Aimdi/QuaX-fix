@@ -69,6 +69,80 @@ void main() {
       expect(posts.first.url, 'https://www.threads.com/@zuck/post/AbC');
       expect(posts.first.images, ['https://example.org/p.jpg']);
       expect(posts.first.publishedAt, isNotNull);
+      expect(posts.first.linkCard, isNull);
+      expect(posts.first.likeCount, isNull);
+    });
+
+    test('reads likes, replies and a link preview attachment', () {
+      final posts = parseThreadsApiFeed({
+        'threads': [
+          {
+            'thread_items': [
+              {
+                'post': {
+                  'pk': '222',
+                  'code': 'LiNk',
+                  'like_count': 1348,
+                  'caption': {'text': 'Worth a read'},
+                  'user': {'username': 'zuck', 'full_name': 'Mark'},
+                  'text_post_app_info': {
+                    'direct_reply_count': 12,
+                    'repost_count': 4,
+                    'link_preview_attachment': {
+                      'url': 'https://l.threads.com/?u=https%3A%2F%2Fexample.org%2Fstory',
+                      'title': 'A story',
+                      'description': 'About something',
+                      'image_url': 'https://example.org/og.jpg',
+                      'display_url': 'example.org',
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+
+      expect(posts, hasLength(1));
+      expect(posts.first.likeCount, 1348);
+      expect(posts.first.replyCount, 12);
+      expect(posts.first.repostCount, 4);
+      expect(posts.first.linkCard?.title, 'A story');
+      expect(posts.first.linkCard?.url, 'https://example.org/story');
+      expect(posts.first.linkCard?.imageUrl, 'https://example.org/og.jpg');
+      expect(posts.first.linkCard?.providerName, 'example.org');
+    });
+
+    test('keeps a link-only post with no caption or images', () {
+      final posts = parseThreadsApiFeed({
+        'threads': [
+          {
+            'thread_items': [
+              {
+                'post': {
+                  'pk': '333',
+                  'code': 'Only',
+                  'caption': {'text': ''},
+                  'user': {'username': 'zuck', 'full_name': 'Mark'},
+                  'text_post_app_info': {
+                    'link_preview_attachment': {
+                      'url': 'https://news.example/a',
+                      'title': 'Headline',
+                      'image_url': 'https://news.example/c.jpg',
+                      'display_url': 'news.example',
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+
+      expect(posts, hasLength(1));
+      expect(posts.single.text, isEmpty);
+      expect(posts.single.hasMedia, isFalse);
+      expect(posts.single.linkCard?.title, 'Headline');
     });
   });
 
