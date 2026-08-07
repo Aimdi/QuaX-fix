@@ -84,19 +84,25 @@ class ThreadsFeedStore extends Store<List<ThreadsPost>> {
   /// Reads the best available source (see docs/specs/threads-direct.md).
   Future<void> refresh({bool force = false}) async {
     await execute(() async {
+      final handles = accounts.state.map((e) => e.handle).toList(growable: false);
+
+      // Local Accounts (cookies → guest GraphQL fallback). A pasted Bearer no
+      // longer hides this list — that was the empty-feed bug for readers who
+      // signed in and also followed people in the plugin.
+      if (handles.isNotEmpty) {
+        return postsFor(handles, forceRefresh: force);
+      }
+
+      // No local Accounts: Bearer shows the Meta home/For You timeline.
       if (direct.hasBearer) {
         return await direct.fetchFollowingTimeline();
       }
 
-      final handles = accounts.state.map((e) => e.handle).toList(growable: false);
-      if (handles.isEmpty) {
-        if (direct.hasCookies || _instance.trim().isNotEmpty) {
-          return const <ThreadsPost>[];
-        }
-        throw ThreadsException(ThreadsErrorKind.notConfigured, 'no accounts or session');
+      if (direct.hasCookies || _instance.trim().isNotEmpty) {
+        // Session alone does not invent Accounts — add handles in the tab.
+        return const <ThreadsPost>[];
       }
-
-      return postsFor(handles, forceRefresh: force);
+      throw ThreadsException(ThreadsErrorKind.notConfigured, 'no accounts or session');
     });
   }
 

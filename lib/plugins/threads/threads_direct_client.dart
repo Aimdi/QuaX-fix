@@ -17,6 +17,12 @@ const _barcelonaUa = 'Barcelona 289.0.0.77.109 Android';
 const _safariUa =
     'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1';
 
+/// Guest profile threads — `BarcelonaProfileThreadsTabQuery`. Rotates; if it
+/// 404s or returns empty, [fetchGuestAccount] falls back to SSR `thread_items`.
+const threadsGuestProfileThreadsDocId = '6232751443445612';
+
+final _lsdTokenPattern = RegExp(r'"LSD",\[\],\{"token":"([^"]+)"\}');
+
 /// Cookie names a browser Threads session must carry for cookie REST reads.
 const _requiredCookieKeys = ['sessionid', 'csrftoken', 'ds_user_id', 'mid', 'ig_did'];
 
@@ -61,6 +67,51 @@ List<ThreadsPost> parseThreadsApiFeed(Object? json) {
     if (post != null) posts.add(post);
   }
   return posts;
+}
+
+/// Guest GraphQL profile tab: `data.mediaData.threads` → same post shape as REST.
+List<ThreadsPost> parseThreadsGraphqlFeed(Object? json) {
+  final root = Json(json);
+  final mediaThreads = root['data']['mediaData']['threads'].list;
+  if (mediaThreads.isEmpty) {
+    return parseThreadsApiFeed(json);
+  }
+  return parseThreadsApiFeed({
+    'threads': [for (final thread in mediaThreads) thread.raw],
+  });
+}
+
+/// LSD token embedded in Threads HTML for guest GraphQL.
+String? extractThreadsLsd(String html) => _lsdTokenPattern.firstMatch(html)?.group(1);
+
+/// Numeric Threads user id for [handle] from a profile page HTML blob.
+String? extractThreadsUserIdFromHtml(String html, String handle) {
+  final key = handle.trim().toLowerCase();
+  if (key.isEmpty) return null;
+  final escaped = RegExp.escape(key);
+  final nearUsername = RegExp(
+    '"username"\\s*:\\s*"$escaped".{0,480}?"pk"\\s*:\\s*"(\\d+)"',
+    caseSensitive: false,
+    dotAll: true,
+  ).firstMatch(html);
+  if (nearUsername != null) return nearUsername.group(1);
+
+  final nearPk = RegExp(
+    '"pk"\\s*:\\s*"(\\d+)".{0,480}?"username"\\s*:\\s*"$escaped"',
+    caseSensitive: false,
+    dotAll: true,
+  ).firstMatch(html);
+  if (nearPk != null) return nearPk.group(1);
+
+  final userIds = RegExp(r'"userID"\s*:\s*"(\d+)"').allMatches(html).map((m) => m.group(1)!).toList();
+  if (userIds.isEmpty) return null;
+  // Profile pages usually repeat the owner's id; prefer the mode.
+  final counts = <String, int>{};
+  for (final id in userIds) {
+    counts[id] = (counts[id] ?? 0) + 1;
+  }
+  final ranked = counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+  return ranked.first.key;
 }
 
 ThreadsPost? threadsPostFromApi(Json post) {
@@ -207,9 +258,13 @@ class ThreadsDirectClient {
   final Random _jitter = Random();
 
   /// Serialises [run] behind every request already waiting, and keeps the gap.
-  Future<T> _enqueue<T>(Future<T> Function() run) {
+  ///
+  /// Guest GraphQL/SSR must not honour the cookie/Bearer cooldown: a dead
+  /// session parking the plugin for 30 minutes was also blocking the public
+  /// path that still returns posts for followed Accounts.
+  Future<T> _enqueue<T>(Future<T> Function() run, {bool respectCooldown = true}) {
     final result = _queue.then((_) async {
-      await _pace();
+      await _pace(respectCooldown: respectCooldown);
       return run();
     });
     // A failure must not poison the queue for everything behind it.
@@ -218,9 +273,11 @@ class ThreadsDirectClient {
     return result;
   }
 
-  Future<void> _pace() async {
-    if (await _coolingDown() case final until?) {
-      throw ThreadsException(ThreadsErrorKind.sessionSuspended, 'cooling down until $until');
+  Future<void> _pace({bool respectCooldown = true}) async {
+    if (respectCooldown) {
+      if (await _coolingDown() case final until?) {
+        throw ThreadsException(ThreadsErrorKind.sessionSuspended, 'cooling down until $until');
+      }
     }
 
     final last = _lastRequestAt;
@@ -267,14 +324,24 @@ class ThreadsDirectClient {
     unawaited(Future<void>.sync(() => prefs.set(optionPluginThreadsDirectCooldownUntil, until.toIso8601String())));
   }
 
-  Future<http.Response> _get(Uri uri, Map<String, String> headers) {
+  Future<http.Response> _get(Uri uri, Map<String, String> headers, {bool respectCooldown = true}) {
     return _enqueue(() async {
       try {
         return await httpClient.get(uri, headers: headers).timeout(_timeout);
       } catch (e) {
         throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: $e');
       }
-    });
+    }, respectCooldown: respectCooldown);
+  }
+
+  Future<http.Response> _post(Uri uri, Map<String, String> headers, String body, {bool respectCooldown = true}) {
+    return _enqueue(() async {
+      try {
+        return await httpClient.post(uri, headers: headers, body: body).timeout(_timeout);
+      } catch (e) {
+        throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: $e');
+      }
+    }, respectCooldown: respectCooldown);
   }
 
   void _throwForStatus(http.Response response, Uri uri) {
@@ -367,16 +434,15 @@ class ThreadsDirectClient {
   /// what a read costs and looks precisely like a script. An account's id does
   /// not change, so it is worth keeping.
   Future<String> resolveUserId(String handle) async {
-    _requireCookies();
     final key = handle.toLowerCase();
     final known = _storedUserIds();
     if (known[key] case final id? when id.isNotEmpty) {
       return id;
     }
 
+    _requireCookies();
     final id = await _searchUserId(key);
-    await prefs.set(optionPluginThreadsUserIds, jsonEncode({...known, key: id}));
-
+    await _rememberUserId(key, id);
     return id;
   }
 
@@ -387,6 +453,14 @@ class ThreadsDirectClient {
     } catch (_) {
       return {};
     }
+  }
+
+  Future<void> _rememberUserId(String handle, String id) async {
+    final key = handle.toLowerCase();
+    if (key.isEmpty || id.isEmpty) return;
+    final known = _storedUserIds();
+    if (known[key] == id) return;
+    await prefs.set(optionPluginThreadsUserIds, jsonEncode({...known, key: id}));
   }
 
   Future<String> _searchUserId(String handle) async {
@@ -416,47 +490,94 @@ class ThreadsDirectClient {
     return profile;
   }
 
+  /// Per-account posts with cookies, falling back to guest GraphQL/SSR.
+  ///
+  /// Readers who paste a session expect Accounts to fill from that session.
+  /// When the cookie REST path is dead (`login_required`) or returns nothing,
+  /// public GraphQL still works for public handles — so we keep showing posts
+  /// instead of a parked empty feed.
   Future<List<ThreadsPost>> fetchUserThreads(String handle, {int count = threadsPostsPerAccount}) async {
-    _requireCookies();
-    final id = await resolveUserId(handle);
-    final uri = Uri.parse('$_threadsWeb/api/v1/text_feed/$id/profile/').replace(queryParameters: {'count': '$count'});
-    final response = await _get(uri, _cookieHeaders());
-    _throwForStatus(response, uri);
-    return parseThreadsApiFeed(_decodeJson(response, uri));
+    if (hasCookies) {
+      try {
+        final id = await resolveUserId(handle);
+        final uri = Uri.parse('$_threadsWeb/api/v1/text_feed/$id/profile/').replace(queryParameters: {
+          'count': '$count',
+        });
+        final response = await _get(uri, _cookieHeaders());
+        _throwForStatus(response, uri);
+        final posts = parseThreadsApiFeed(_decodeJson(response, uri));
+        if (posts.isNotEmpty) {
+          return posts;
+        }
+      } on ThreadsException {
+        // Guest path below.
+      }
+    }
+    return fetchGuestAccount(handle);
   }
 
   Future<List<ThreadsPost>> fetchFollowingTimeline({int limit = 40}) async {
     if (!hasBearer) {
       throw ThreadsException(ThreadsErrorKind.notConfigured, 'no bearer');
     }
-    final uri = Uri.parse(
-      '$_instagramApi/api/v1/feed/text_post_app_timeline/',
-    ).replace(queryParameters: {'pagination_source': 'text_post_feed_following'});
+    // Params aligned with threads-go HomeTimeline — the old
+    // `pagination_source=text_post_feed_following` alone now 404s as HTML.
+    final deviceId = await _deviceId();
+    final uri = Uri.parse('$_instagramApi/api/v1/feed/text_post_app_timeline/').replace(queryParameters: {
+      'feed_type': 'for_you',
+      'feed_view_info': '[]',
+      'reason': 'cold_start_fetch',
+      'client_session_id': deviceId,
+      'pagination_source_module': 'feed_unit',
+    });
     final response = await _get(uri, await _bearerHeaders());
     _throwForStatus(response, uri);
     final posts = parseThreadsApiFeed(_decodeJson(response, uri));
     return posts.take(limit).toList(growable: false);
   }
 
-  /// Public profile HTML with a mobile Safari UA — no session required.
+  /// Public posts for [handle] without a session.
+  ///
+  /// Prefers guest GraphQL (`BarcelonaProfileThreadsTabQuery`) — SSR often
+  /// embeds zero `thread_items` for many profiles. HTML is still fetched once
+  /// for the LSD token + user id, and used as a fallback scrape.
   Future<List<ThreadsPost>> fetchGuestAccount(String handle) async {
-    final uri = Uri.parse('$_threadsWeb/@$handle');
-    final response = await _enqueue(() async {
+    final key = handle.trim().toLowerCase();
+    final htmlBody = await _fetchProfileHtml(key);
+    final lsd = extractThreadsLsd(htmlBody);
+    final cachedId = _storedUserIds()[key];
+    final userId = (cachedId != null && cachedId.isNotEmpty) ? cachedId : extractThreadsUserIdFromHtml(htmlBody, key);
+
+    if (lsd != null && userId != null && userId.isNotEmpty) {
+      await _rememberUserId(key, userId);
       try {
-        return await httpClient
-            .get(
-              uri,
-              headers: {
-                'User-Agent': _safariUa,
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.9',
-              },
-            )
-            .timeout(_timeout);
-      } catch (e) {
-        throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: $e');
+        final posts = await _fetchGuestGraphqlThreads(handle: key, userId: userId, lsd: lsd);
+        if (posts.isNotEmpty) {
+          return posts;
+        }
+      } on ThreadsException {
+        // Fall through to SSR — doc_id rotation / transient GraphQL failures.
       }
-    });
+    }
+
+    final posts = parseThreadsSsrHtml(htmlBody, key);
+    if (posts.isEmpty) {
+      throw ThreadsException(ThreadsErrorKind.noSuchFeed, 'no posts for @$key (GraphQL+SSR empty)');
+    }
+    return posts;
+  }
+
+  Future<String> _fetchProfileHtml(String handle) async {
+    final uri = Uri.parse('$_threadsWeb/@$handle');
+    final response = await _get(
+      uri,
+      {
+        'User-Agent': _safariUa,
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
+      respectCooldown: false,
+    );
     if (response.statusCode == 404) {
       throw ThreadsException(ThreadsErrorKind.noSuchFeed, '$uri: 404');
     }
@@ -466,11 +587,52 @@ class ThreadsDirectClient {
     if (response.statusCode != 200) {
       throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: ${response.statusCode}');
     }
-    final posts = parseThreadsSsrHtml(utf8.decode(response.bodyBytes), handle);
-    if (posts.isEmpty) {
-      throw ThreadsException(ThreadsErrorKind.noSuchFeed, 'no thread_items in SSR for @$handle');
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<List<ThreadsPost>> _fetchGuestGraphqlThreads({
+    required String handle,
+    required String userId,
+    required String lsd,
+  }) async {
+    final uri = Uri.parse('$_threadsWeb/api/graphql');
+    final body = {
+      'lsd': lsd,
+      'doc_id': threadsGuestProfileThreadsDocId,
+      'variables': jsonEncode({'userID': userId}),
+    };
+    final response = await _post(
+      uri,
+      {
+        'User-Agent': _safariUa,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': '*/*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'X-IG-App-ID': _igAppId,
+        'X-ASBD-ID': '129477',
+        'X-FB-LSD': lsd,
+        'X-FB-Friendly-Name': 'BarcelonaProfileThreadsTabQuery',
+        'Origin': _threadsWeb,
+        'Referer': '$_threadsWeb/@$handle',
+      },
+      body.entries.map((e) => '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(e.value)}').join('&'),
+      respectCooldown: false,
+    );
+
+    if (response.statusCode == 429) {
+      throw ThreadsException(ThreadsErrorKind.throttled, '$uri: 429');
     }
-    return posts;
+    if (response.statusCode != 200) {
+      throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: ${response.statusCode}');
+    }
+
+    final decoded = _decodeJson(response, uri);
+    final text = utf8.decode(response.bodyBytes);
+    // Guest GraphQL sometimes returns the HTML shell when headers are wrong.
+    if (text.trimLeft().startsWith('<!') || text.contains('<html')) {
+      throw ThreadsException(ThreadsErrorKind.unreachable, '$uri: HTML instead of JSON');
+    }
+    return parseThreadsGraphqlFeed(decoded);
   }
 
   void _requireCookies() {
